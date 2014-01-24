@@ -1,4 +1,4 @@
-pin_the_cloud
+Pin the Cloud
 =============
 
-pin the cloud
+This is Pin the Cloud project.
