@@ -7,11 +7,17 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using PintheCloud.Resources;
+using Microsoft.WindowsAzure.MobileServices;
 
 namespace PintheCloud
 {
     public partial class App : Application
     {
+        public static MobileServiceClient MobileService = new MobileServiceClient(
+            "https://pinthecloud.azure-mobile.net/",
+            "yvulzHAGRgNsGnPLHKcEFCPJcuyzKj23"
+            );
+
         /// <summary>
         /// 전화 응용 프로그램의 루트 프레임에 간단하게 액세스할 수 있습니다.
         /// </summary>
