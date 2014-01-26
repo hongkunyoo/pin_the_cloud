@@ -6,19 +6,25 @@ using System.Threading.Tasks;
 
 namespace PintheCloud
 {
-    class GlobalVariables
+    class GlobalKeys
     {
         // Azure
         public static string AZURE_CLIENT_ID = "0000000044110129";
 
+
         // Page Name
+        public static string SPLASH_PAGE = "/Pages/SplashPage.xaml";
         public static string EXPLORER_PAGE = "/Pages/ExplorerPage.xaml";
+        public static string SETTINGS_PAGE = "/Pages/SettingsPage.xaml";
+
 
         // Platform Id
-        public static string MICROSOFT = "microsoft";
+        public static string MICROSOFT = "Microsoft";
+
 
         // Account Type
         public static string NORMAL_ACCOUNT_TYPE = "Normal";
+
 
         // Application Account Setting Key
         public static string ACCOUNT_IS_LOGIN = "ACCOUNT_IS_LOGIN";

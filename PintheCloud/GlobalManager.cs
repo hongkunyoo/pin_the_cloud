@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Phone.Controls;
+using Microsoft.Phone.Shell;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +11,13 @@ namespace PintheCloud
 {
     class GlobalManager
     {
-        public static void showNoInternetMessageBox()
+        // Set progress indicator for background working
+        public static void SetProgressIndicator(PhoneApplicationPage page, bool value, string text = "")
         {
-            MessageBoxResult result = MessageBox.Show("Please make sure connection with Internet.",
-                "Internet unavailable", MessageBoxButton.OK);
-        }
+            App.progressIndicator.IsIndeterminate = value;
+            App.progressIndicator.IsVisible = value;
+            App.progressIndicator.Text = text;
+            SystemTray.SetProgressIndicator(page, App.progressIndicator);
+        } 
     }
 }

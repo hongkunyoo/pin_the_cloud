@@ -1,12 +1,14 @@
 ﻿using Microsoft.Live;
 using Microsoft.WindowsAzure.MobileServices;
+using PintheCloud.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
-namespace PintheCloud
+namespace PintheCloud.Managers
 {
     public class AccountManager
     {
@@ -19,37 +21,43 @@ namespace PintheCloud
             bool result = false;
             
             // If it success to register live connect session,
-            if (await this.RegisterLiveConnectionSession())
+            if (await this.RegisterLiveConnectionSessionAsync())
             {
                 // If it success to get user's profile result,
-                dynamic profileResult = await this.GetProfileResult();
+                dynamic profileResult = await this.GetProfileResultAsync();
                 if (profileResult != null)
                 {
                     try
                     {
                         // Login to mobile service for getting access to DB
                         await App.MobileService.LoginWithMicrosoftAccountAsync(this.Session.AuthenticationToken);
-
-                        
-                        // If it success to get access to mobile service, 
-                        // make final account
-                        // save it's information to mobile service DB
-                        // save it's information to isolated storage.
-                        if (App.MobileService.CurrentUser != null)
-                        {
-                            Account account = new Account(App.MobileService.CurrentUser.UserId, GlobalVariables.MICROSOFT, ""+profileResult.name, 
-                                ""+profileResult.first_name, ""+profileResult.last_name, ""+profileResult.locale, 
-                                App.MobileService.CurrentUser.MobileServiceAuthenticationToken, 0, GlobalVariables.NORMAL_ACCOUNT_TYPE);
-
-                            // ERROR, because just for now error in azure mobile service server script.
-                            // Could not find global symbol, as like tables...
-                            await App.MobileService.GetTable<Account>().InsertAsync(account); 
-                            this.SaveProfileReslutToAppSettings(account);
-                            result = true;
-                        }
                     }
                     catch (InvalidOperationException)
                     {
+                    }
+
+                    // If it success to get access to mobile service, 
+                    // Make final account
+                    if (App.MobileService.CurrentUser != null)
+                    {
+                        Account account = new Account(App.MobileService.CurrentUser.UserId, GlobalKeys.MICROSOFT, "" + profileResult.name,
+                            "" + profileResult.first_name, "" + profileResult.last_name, "" + profileResult.locale,
+                            App.MobileService.CurrentUser.MobileServiceAuthenticationToken, 0, GlobalKeys.NORMAL_ACCOUNT_TYPE);
+
+                        // Insert if it is not exists already in DB,
+                        // Otherwise update account.
+                        try
+                        {
+                            await App.MobileService.GetTable<Account>().InsertAsync(account);
+
+                            // If it success to insert account to DB,
+                            // Save it's information to isolated storage.
+                            this.SaveProfileReslutToAppSettings(account);
+                            result = true;
+                        }
+                        catch (InvalidOperationException)
+                        {
+                        }
                     }
                 }
             }
@@ -58,13 +66,13 @@ namespace PintheCloud
 
 
         // Register Live Connect Session for Live Profile
-        public async Task<bool> RegisterLiveConnectionSession()
+        public async Task<bool> RegisterLiveConnectionSessionAsync()
         {
             bool result = false;
             try
             {
                 // Get live connection session
-                LiveAuthClient liveAuthClient = new LiveAuthClient(GlobalVariables.AZURE_CLIENT_ID);
+                LiveAuthClient liveAuthClient = new LiveAuthClient(GlobalKeys.AZURE_CLIENT_ID);
                 LiveLoginResult liveLoginResult = await liveAuthClient.LoginAsync(new[] { "wl.basic" });
                 if (liveLoginResult.Status == LiveConnectSessionStatus.Connected)
                 {
@@ -81,7 +89,7 @@ namespace PintheCloud
 
 
         // Get User Profile information result using registered live connection session
-        public async Task<dynamic> GetProfileResult()
+        public async Task<dynamic> GetProfileResultAsync()
         {
             dynamic result = null;
             try
@@ -91,7 +99,7 @@ namespace PintheCloud
                 result = operationResult.Result;
             }
             catch (LiveConnectException)
-            { 
+            {
             }
             return result;
         }
@@ -100,16 +108,39 @@ namespace PintheCloud
         // Save profile information to local isolated App settings.
         public void SaveProfileReslutToAppSettings(Account account)
         {
-            App.ApplicationSettings.Add(GlobalVariables.ACCOUNT_IS_LOGIN, true);
-            App.ApplicationSettings.Add(GlobalVariables.ACCOUNT_PLATFROM_ID, account.account_platform_id);
-            App.ApplicationSettings.Add(GlobalVariables.ACCOUNT_PLATFROM_ID_TYPE, account.account_platform_id_type);
-            App.ApplicationSettings.Add(GlobalVariables.ACCOUNT_NAME, account.account_name);
-            App.ApplicationSettings.Add(GlobalVariables.ACCOUNT_FIRST_NAME, account.account_first_name);
-            App.ApplicationSettings.Add(GlobalVariables.ACCOUNT_LAST_NAME, account.account_last_name);
-            App.ApplicationSettings.Add(GlobalVariables.ACCOUNT_LOCAL, account.account_locale);
-            App.ApplicationSettings.Add(GlobalVariables.ACCOUNT_TOKEN, account.account_token);
-            App.ApplicationSettings.Add(GlobalVariables.ACCOUNT_USED_SIZE, account.account_used_size);
-            App.ApplicationSettings.Add(GlobalVariables.ACCOUNT_TYPE_NAME, account.account_type_name);
+            App.ApplicationSettings.Add(GlobalKeys.ACCOUNT_IS_LOGIN, true);
+            App.ApplicationSettings.Add(GlobalKeys.ACCOUNT_PLATFROM_ID, account.account_platform_id);
+            App.ApplicationSettings.Add(GlobalKeys.ACCOUNT_PLATFROM_ID_TYPE, account.account_platform_id_type);
+            App.ApplicationSettings.Add(GlobalKeys.ACCOUNT_NAME, account.account_name);
+            App.ApplicationSettings.Add(GlobalKeys.ACCOUNT_FIRST_NAME, account.account_first_name);
+            App.ApplicationSettings.Add(GlobalKeys.ACCOUNT_LAST_NAME, account.account_last_name);
+            App.ApplicationSettings.Add(GlobalKeys.ACCOUNT_LOCAL, account.account_locale);
+            App.ApplicationSettings.Add(GlobalKeys.ACCOUNT_TOKEN, account.account_token);
+            App.ApplicationSettings.Add(GlobalKeys.ACCOUNT_USED_SIZE, account.account_used_size);
+            App.ApplicationSettings.Add(GlobalKeys.ACCOUNT_TYPE_NAME, account.account_type_name);
+        }
+
+        // Get out connection session
+        public void Logout()
+        {
+            LiveAuthClient liveAuthClient = new LiveAuthClient(GlobalKeys.AZURE_CLIENT_ID);
+            liveAuthClient.Logout();
+            this.RemoveProfileReslutFromAppSettings();
+        }
+
+        // Save profile information to local isolated App settings.
+        public void RemoveProfileReslutFromAppSettings()
+        {
+            App.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_IS_LOGIN);
+            App.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_PLATFROM_ID);
+            App.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_PLATFROM_ID_TYPE);
+            App.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_NAME);
+            App.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_FIRST_NAME);
+            App.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_LAST_NAME);
+            App.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_LOCAL);
+            App.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_TOKEN);
+            App.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_USED_SIZE);
+            App.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_TYPE_NAME);
         }
     }
 }

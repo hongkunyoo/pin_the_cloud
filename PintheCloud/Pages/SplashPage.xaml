@@ -1,5 +1,5 @@
 ﻿<phone:PhoneApplicationPage
-    x:Class="PintheCloud.SplashPage"
+    x:Class="PintheCloud.Pages.SplashPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -10,14 +10,14 @@
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
-    shell:SystemTray.IsVisible="True">
+    SupportedOrientations="Portrait" 
+	Orientation="Portrait" >
 
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
     <Grid x:Name="LayoutRoot" Background="Transparent">
     	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-    		<Image Height="30" Source="/Assets/Image/ExampleLogo.png" Stretch="Fill" Width="30"/>
-    		<Button x:Name="uiMicrosoftLoginButton" Content="Login" Margin="0,40,0,0" Visibility="Collapsed" Click="uiMicrosoftLoginButton_Click" FontSize="33.333"/>
+    		<Image Source="/Assets/Image/ExampleLogo.png"/>
+    		<Button x:Name="uiMicrosoftLoginButton" Content="{Binding Path=LocalizedResources.Login, Source={StaticResource LocalizedStrings}}" FontSize="33.333" Click="uiMicrosoftLoginButton_Click"/>
     	</StackPanel>
 
         <!-- 지역화 참고:

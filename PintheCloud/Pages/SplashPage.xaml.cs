@@ -14,7 +14,7 @@ using Microsoft.WindowsAzure.MobileServices;
 using System.IO.IsolatedStorage;
 using Microsoft.Phone.Net.NetworkInformation;
 
-namespace PintheCloud
+namespace PintheCloud.Pages
 {
     public partial class SplashPage : PhoneApplicationPage
     {
@@ -30,10 +30,15 @@ namespace PintheCloud
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            
+
+            // Check if it has backstacks, remove all
+            int backStackCount = NavigationService.BackStack.Count();
+            for (int i = 0; i < backStackCount; i++)
+                NavigationService.RemoveBackEntry();
+
             // Get bool variable whether this account have logined or not.
             bool accountIsLogin = false;
-            App.ApplicationSettings.TryGetValue<bool>(GlobalVariables.ACCOUNT_IS_LOGIN, out accountIsLogin);
+            App.ApplicationSettings.TryGetValue<bool>(GlobalKeys.ACCOUNT_IS_LOGIN, out accountIsLogin);
             if (!accountIsLogin)  // First Login, Show Login Button.
             {
                 uiMicrosoftLoginButton.Visibility = Visibility.Visible;
@@ -41,7 +46,7 @@ namespace PintheCloud
             else  // Second or more Login, Goto Explorer Page after some secconds.
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
-                NavigationService.Navigate(new Uri(GlobalVariables.EXPLORER_PAGE, UriKind.Relative));
+                NavigationService.Navigate(new Uri(GlobalKeys.EXPLORER_PAGE, UriKind.Relative));
             }
         }
 
@@ -56,12 +61,26 @@ namespace PintheCloud
             // otherwise show no internet message box.
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                if (await App.AccountManager.LoginMicrosoftSingleSignOnAsync())
-                    NavigationService.Navigate(new Uri(GlobalVariables.EXPLORER_PAGE, UriKind.Relative));
+                // Show progress indicator, progress login, hide indicator
+                uiMicrosoftLoginButton.Content = AppResources.Wait;
+                uiMicrosoftLoginButton.IsEnabled = false;
+                bool loginResult = await App.AccountManager.LoginMicrosoftSingleSignOnAsync();
+
+                // Move page or show fail message box by login result
+                if (loginResult)
+                {
+                    NavigationService.Navigate(new Uri(GlobalKeys.EXPLORER_PAGE, UriKind.Relative));
+                }
+                else
+                {
+                    uiMicrosoftLoginButton.IsEnabled = true;
+                    uiMicrosoftLoginButton.Content = AppResources.Login;
+                    MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+                }
             }
             else
             {
-                GlobalManager.showNoInternetMessageBox();
+                MessageBox.Show(AppResources.NoInternetMessage, AppResources.NoInternetCaption, MessageBoxButton.OKCancel);
             }
         }
 
