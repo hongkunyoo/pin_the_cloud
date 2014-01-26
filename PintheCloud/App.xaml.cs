@@ -15,15 +15,6 @@ namespace PintheCloud
 {
     public partial class App : Application
     {
-        // Static Instance Variables
-        public static MobileServiceClient MobileService = new MobileServiceClient(
-            "https://pinthecloud.azure-mobile.net/",
-            "yvulzHAGRgNsGnPLHKcEFCPJcuyzKj23"
-            );
-        public static AccountManager AccountManager = new AccountManager();
-        public static IsolatedStorageSettings ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
-        public static ProgressIndicator progressIndicator = new ProgressIndicator();
-
         /// <summary>
         /// 전화 응용 프로그램의 루트 프레임에 간단하게 액세스할 수 있습니다.
         /// </summary>

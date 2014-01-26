@@ -43,18 +43,6 @@ namespace PintheCloud.Pages
             base.OnNavigatedFrom(e);
         }
 
-        // Move to Map Page
-        private void uiAppBarMapButton_Click(object sender, System.EventArgs e)
-        {
-        	// TODO: 여기에 구현된 이벤트 처리기를 추가하십시오.
-        }
-
-        // Go to process of adding space and files
-        private void uiAppBarAddButton_Click(object sender, System.EventArgs e)
-        {
-        	// TODO: 여기에 구현된 이벤트 처리기를 추가하십시오.
-        }
-
         // Move to Setting Page
         private void uiAppBarSettingsButton_Click(object sender, System.EventArgs e)
         {

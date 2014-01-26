@@ -14,10 +14,10 @@ namespace PintheCloud
         // Set progress indicator for background working
         public static void SetProgressIndicator(PhoneApplicationPage page, bool value, string text = "")
         {
-            App.progressIndicator.IsIndeterminate = value;
-            App.progressIndicator.IsVisible = value;
-            App.progressIndicator.Text = text;
-            SystemTray.SetProgressIndicator(page, App.progressIndicator);
+            GlobalObjects.ProgressIndicator.IsIndeterminate = value;
+            GlobalObjects.ProgressIndicator.IsVisible = value;
+            GlobalObjects.ProgressIndicator.Text = text;
+            SystemTray.SetProgressIndicator(page, GlobalObjects.ProgressIndicator);
         } 
     }
 }

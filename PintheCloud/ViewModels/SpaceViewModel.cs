@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.ViewModels
 {
-    class SpaceViewModel : INotifyPropertyChanged
+    public class SpaceViewModel : INotifyPropertyChanged
     {
         /// <summary>
         /// ItemViewModel 개체에 대한 컬렉션입니다.

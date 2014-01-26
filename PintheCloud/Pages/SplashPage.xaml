@@ -17,7 +17,7 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
     	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
     		<Image Source="/Assets/Image/ExampleLogo.png"/>
-    		<Button x:Name="uiMicrosoftLoginButton" Content="{Binding Path=LocalizedResources.Login, Source={StaticResource LocalizedStrings}}" FontSize="33.333" Click="uiMicrosoftLoginButton_Click"/>
+    		<Button x:Name="uiMicrosoftLoginButton" Content="{Binding Path=LocalizedResources.Login, Source={StaticResource LocalizedStrings}}" FontSize="33.333" Click="uiMicrosoftLoginButton_Click" Visibility="Collapsed"/>
     	</StackPanel>
 
         <!-- 지역화 참고:

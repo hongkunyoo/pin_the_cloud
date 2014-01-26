@@ -17,9 +17,10 @@ namespace PintheCloud.Pages
             InitializeComponent();
         }
 
+        // Logout
         private void uiLogoutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.AccountManager.Logout();
+            GlobalObjects.AccountManager.Logout();
             NavigationService.Navigate(new Uri(GlobalKeys.SPLASH_PAGE, UriKind.Relative));
         }
     }
