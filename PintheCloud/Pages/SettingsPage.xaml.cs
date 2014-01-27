@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
+using PintheCloud.Managers;
 
 namespace PintheCloud.Pages
 {
@@ -20,7 +21,8 @@ namespace PintheCloud.Pages
         // Logout
         private void uiLogoutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.AccountManager.Logout();
+            AccountManager accountManager = new AccountYesInternetManager();
+            accountManager.Logout();
             NavigationService.Navigate(new Uri(PtcPage.SPLASH_PAGE, UriKind.Relative));
         }
     }

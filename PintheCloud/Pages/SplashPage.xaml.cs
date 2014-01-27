@@ -14,6 +14,7 @@ using Microsoft.WindowsAzure.MobileServices;
 using System.IO.IsolatedStorage;
 using Microsoft.Phone.Net.NetworkInformation;
 using PintheCloud.Models;
+using PintheCloud.Managers;
 
 namespace PintheCloud.Pages
 {
@@ -43,18 +44,21 @@ namespace PintheCloud.Pages
             }
             else  // Second or more Login, Goto Explorer Page after some secconds.
             {
+                // Get different Account Manager by internet state.
+                AccountManager accountManager = null;
+                if (NetworkInterface.GetIsNetworkAvailable())
+                    accountManager = new AccountYesInternetManager();
+                else
+                    accountManager = new AccountNoInternetManager();
+
                 // If internet is good, update account information.
                 // Otherwise, get account information with old one.
-                if (NetworkInterface.GetIsNetworkAvailable())
+                bool loginResult = await accountManager.LoginMicrosoftSingleSignOnAsync();
+                if (!loginResult)
                 {
-                    // TODO get new information from Internet,
+                    accountManager = new AccountNoInternetManager();
+                    await accountManager.LoginMicrosoftSingleSignOnAsync();
                 }
-                else
-                {
-                    // TODO get old information from local sqlite.
-                }
-
-
 
                 await Task.Delay(TimeSpan.FromSeconds(1));
                 NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
@@ -75,7 +79,9 @@ namespace PintheCloud.Pages
                 // Show progress indicator, progress login, hide indicator
                 uiMicrosoftLoginButton.Content = AppResources.Wait;
                 uiMicrosoftLoginButton.IsEnabled = false;
-                bool loginResult = await App.AccountManager.LoginMicrosoftSingleSignOnAsync();
+
+                AccountManager accountManager = new AccountYesInternetManager();
+                bool loginResult = await accountManager.LoginMicrosoftSingleSignOnAsync();
 
                 // Move page or show fail message box by login result
                 if (loginResult)

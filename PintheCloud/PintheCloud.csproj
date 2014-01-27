@@ -97,6 +97,8 @@
     <Compile Include="GlobalKeys.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Managers\AccountManager.cs" />
+    <Compile Include="Managers\AccountNoInternetManager.cs" />
+    <Compile Include="Managers\AccountYesInternetManager.cs" />
     <Compile Include="Managers\FileManager.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountType.cs" />
