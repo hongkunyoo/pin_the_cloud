@@ -30,9 +30,6 @@ namespace PintheCloud
         public static IsolatedStorageSettings ApplicationSettings = null;
         public static ProgressIndicator ProgressIndicator = null;
 
-        // Manager
-        public static FileManager FileManager = null;
-
         // Model
         public static SpaceViewModel SpaceViewModel = null;
 
@@ -65,7 +62,6 @@ namespace PintheCloud
             );
             ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
             ProgressIndicator = new ProgressIndicator();
-            FileManager = new FileManager();
             SpaceViewModel = new SpaceViewModel();
 
 

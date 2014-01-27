@@ -73,9 +73,9 @@ namespace PintheCloud.Managers
 
                     // If it success to insert account to DB,
                     // Save it's information to isolated storage.
+                    App.CurrentAccount = account;
                     base.RemoveProfileReslutFromAppSettings();
                     base.SaveProfileReslutToAppSettings(account);
-                    App.CurrentAccount = account;
                     result = true;
                 }
             }

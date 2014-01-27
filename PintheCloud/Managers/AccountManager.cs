@@ -32,7 +32,7 @@ namespace PintheCloud.Managers
         /*** Protected ***/
 
         // Get User Profile information result using registered live connection session
-        protected async Task<dynamic> GetProfileResultAsync()
+        public async Task<dynamic> GetProfileResultAsync()
         {
             dynamic result = null;
             try
@@ -73,8 +73,8 @@ namespace PintheCloud.Managers
         protected void SaveProfileReslutToAppSettings(Account account)
         {
             App.ApplicationSettings.Add(Account.ACCOUNT_IS_LOGIN, true);
-            App.ApplicationSettings.Add(Account.ACCOUNT_PLATFROM_ID, account.account_platform_id);
-            App.ApplicationSettings.Add(Account.ACCOUNT_PLATFROM_ID_TYPE, account.account_platform_id_type);
+            App.ApplicationSettings.Add(Account.ACCOUNT_PLATFORM_ID, account.account_platform_id);
+            App.ApplicationSettings.Add(Account.ACCOUNT_PLATFORM_ID_TYPE, account.account_platform_id_type);
             App.ApplicationSettings.Add(Account.ACCOUNT_NAME, account.account_name);
             App.ApplicationSettings.Add(Account.ACCOUNT_FIRST_NAME, account.account_first_name);
             App.ApplicationSettings.Add(Account.ACCOUNT_LAST_NAME, account.account_last_name);
@@ -89,8 +89,8 @@ namespace PintheCloud.Managers
         protected void RemoveProfileReslutFromAppSettings()
         {
             App.ApplicationSettings.Remove(Account.ACCOUNT_IS_LOGIN);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_PLATFROM_ID);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_PLATFROM_ID_TYPE);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_PLATFORM_ID);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_PLATFORM_ID_TYPE);
             App.ApplicationSettings.Remove(Account.ACCOUNT_NAME);
             App.ApplicationSettings.Remove(Account.ACCOUNT_FIRST_NAME);
             App.ApplicationSettings.Remove(Account.ACCOUNT_LAST_NAME);
