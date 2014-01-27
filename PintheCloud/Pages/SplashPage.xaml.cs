@@ -43,6 +43,19 @@ namespace PintheCloud.Pages
             }
             else  // Second or more Login, Goto Explorer Page after some secconds.
             {
+                // If internet is good, update account information.
+                // Otherwise, get account information with old one.
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+                    // TODO get new information from Internet,
+                }
+                else
+                {
+                    // TODO get old information from local sqlite.
+                }
+
+
+
                 await Task.Delay(TimeSpan.FromSeconds(1));
                 NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
             }

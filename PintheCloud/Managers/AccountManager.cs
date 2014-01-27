@@ -15,11 +15,13 @@ namespace PintheCloud.Managers
         private LiveConnectSession Session = null;
 
 
+        /*** Public ***/
+
         // Login with single sign on way.
         public async Task<bool> LoginMicrosoftSingleSignOnAsync()
         {
             bool result = false;
-            
+
             // If it success to register live connect session,
             if (await this.RegisterLiveConnectionSessionAsync())
             {
@@ -34,35 +36,67 @@ namespace PintheCloud.Managers
                     }
                     catch (InvalidOperationException)
                     {
+                        return false;
                     }
 
                     // If it success to get access to mobile service, 
                     // Make final account
                     if (App.MobileService.CurrentUser != null)
                     {
-                        Account account = new Account(App.MobileService.CurrentUser.UserId, GlobalKeys.MICROSOFT, "" + profileResult.name,
-                            "" + profileResult.first_name, "" + profileResult.last_name, "" + profileResult.locale,
-                            App.MobileService.CurrentUser.MobileServiceAuthenticationToken, 0, AccountType.NORMAL_ACCOUNT_TYPE);
-
+                        // Check duplication.
                         // Insert if it is not exists already in DB,
                         // Otherwise update account.
-                        try
+                        Account account = await this.isExistedPerson(App.MobileService.CurrentUser.UserId);
+                        if (account == null)  // First Login.
                         {
-                            await App.MobileService.GetTable<Account>().InsertAsync(account);
+                            account = new Account(App.MobileService.CurrentUser.UserId, GlobalKeys.MICROSOFT, "" + profileResult.name,
+                                "" + profileResult.first_name, "" + profileResult.last_name, "" + profileResult.locale,
+                                App.MobileService.CurrentUser.MobileServiceAuthenticationToken, 0, AccountType.NORMAL_ACCOUNT_TYPE);
+                            try
+                            {
+                                await App.MobileService.GetTable<Account>().InsertAsync(account);
+                            }
+                            catch (InvalidOperationException)
+                            {
+                                return false;
+                            }
+                        }
+                        else  // Second or more Login.
+                        {
+                            // Get new account information.
+                            account.account_platform_id = App.MobileService.CurrentUser.UserId;
+                            account.account_name = profileResult.name;
+                            account.account_first_name = profileResult.first_name;
+                            account.account_last_name = profileResult.last_name;
+                            account.account_locale = profileResult.locale;
+                            account.account_token = App.MobileService.CurrentUser.MobileServiceAuthenticationToken;
+                            try
+                            {
+                                await App.MobileService.GetTable<Account>().UpdateAsync(account);
+                            }
+                            catch (InvalidOperationException)
+                            {
+                                return false;
+                            }
+                        }
 
-                            // If it success to insert account to DB,
-                            // Save it's information to isolated storage.
-                            this.SaveProfileReslutToAppSettings(account);
-                            result = true;
-                        }
-                        catch (InvalidOperationException)
-                        {
-                        }
+                        // If it success to insert account to DB,
+                        // Save it's information to isolated storage.
+                        this.SaveProfileReslutToAppSettings(account);
+                        result = true;
                     }
                 }
             }
             return result;
         }
+
+
+
+        /*** Protected ***/
+
+        /*** Private ***/
+
+        
 
 
         // Register Live Connect Session for Live Profile
@@ -141,6 +175,26 @@ namespace PintheCloud.Managers
             App.ApplicationSettings.Remove(Account.ACCOUNT_TOKEN);
             App.ApplicationSettings.Remove(Account.ACCOUNT_USED_SIZE);
             App.ApplicationSettings.Remove(Account.ACCOUNT_TYPE_NAME);
+        }
+
+        // Check whether it exists in DB
+        private async Task<Account> isExistedPerson(string account_platform_id)
+        {
+            MobileServiceCollection<Account, Account> accounts = null;
+            try
+            {
+                accounts = await App.MobileService.GetTable<Account>()
+                    .Where(a => a.account_platform_id == account_platform_id)
+                    .ToCollectionAsync();
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+            }
+
+            if (accounts.Count > 0)
+                return accounts.First();
+            else
+                return null;
         }
     }
 }

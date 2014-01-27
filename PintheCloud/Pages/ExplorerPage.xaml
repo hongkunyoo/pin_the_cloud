@@ -35,30 +35,12 @@
         <phone:Pivot>
             <!--피벗 항목 1-->
             <phone:PivotItem Header="{Binding LocalizedResources.Explorer, Source={StaticResource LocalizedStrings}}">
-                <Grid>
-                    <phone:LongListSelector ItemsSource="{Binding SpaceViewModel.Items, Mode=TwoWay}">
-                        <phone:LongListSelector.Resources>
-                            <DataTemplate x:Key="DataTemplate1">
-                                <StackPanel>
-                                    <TextBlock Text="{Binding SpaceName}" TextWrapping="Wrap" Style="{StaticResource PhoneTextExtraLargeStyle}"/>
-                                    <TextBlock Text="{Binding SpaceLikeNumber}" TextWrapping="Wrap" Style="{StaticResource PhoneTextSubtleStyle}"/>
-                                    <TextBlock Text="{Binding SpaceDescription}" TextWrapping="Wrap" Style="{StaticResource PhoneTextSubtleStyle}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </phone:LongListSelector.Resources>
-                        <phone:LongListSelector.ItemTemplate>
-                            <StaticResource ResourceKey="DataTemplate1"/>
-                        </phone:LongListSelector.ItemTemplate>
-                    </phone:LongListSelector>
-                </Grid>
+                <Grid/>
             </phone:PivotItem>
 
             <!--피벗 항목 2-->
             <phone:PivotItem Header="{Binding LocalizedResources.Recent, Source={StaticResource LocalizedStrings}}">
-                <Grid>
-                    <phone:LongListSelector ItemsSource="{Binding SpaceViewModel.Items}">
-                    </phone:LongListSelector>
-                </Grid>
+                <Grid/>
             </phone:PivotItem>
 
             <phone:PivotItem Header="{Binding LocalizedResources.MySpaces, Source={StaticResource LocalizedStrings}}">
