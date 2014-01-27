@@ -1,9 +1,8 @@
-﻿<local:PtcPage
+﻿<phone:PhoneApplicationPage
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
-    xmlns:local="clr-namespace:PintheCloud.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ViewModels="clr-namespace:PintheCloud.ViewModels"
@@ -49,6 +48,9 @@
                         <phone:LongListSelector.ItemTemplate>
                             <StaticResource ResourceKey="DataTemplate1"/>
                         </phone:LongListSelector.ItemTemplate>
+                        <phone:LongListSelector.DataContext>
+                            <PintheCloud:GlobalObjects/>
+                        </phone:LongListSelector.DataContext>
                     </phone:LongListSelector>
                 </Grid>
             </phone:PivotItem>
@@ -57,6 +59,9 @@
             <phone:PivotItem Header="{Binding LocalizedResources.Recent, Source={StaticResource LocalizedStrings}}">
                 <Grid>
                     <phone:LongListSelector ItemsSource="{Binding SpaceViewModel.Items}">
+                        <phone:LongListSelector.DataContext>
+                            <PintheCloud:GlobalObjects/>
+                        </phone:LongListSelector.DataContext>
                     </phone:LongListSelector>
                 </Grid>
             </phone:PivotItem>
@@ -66,4 +71,4 @@
             </phone:PivotItem>
         </phone:Pivot>
     </Grid>
-</local:PtcPage>
+</phone:PhoneApplicationPage>

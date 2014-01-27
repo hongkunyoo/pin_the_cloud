@@ -9,9 +9,6 @@ namespace PintheCloud.Models
 {
     class AccountType
     {
-        // Account Type
-        public static string NORMAL_ACCOUNT_TYPE = "Normal";
-
         public string id { get; set; }
 
         [JsonProperty(PropertyName = "account_type_name")]

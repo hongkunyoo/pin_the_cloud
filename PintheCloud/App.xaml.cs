@@ -10,25 +10,19 @@ using PintheCloud.Resources;
 using Microsoft.WindowsAzure.MobileServices;
 using System.IO.IsolatedStorage;
 using PintheCloud.Managers;
-using PintheCloud.ViewModels;
+using PintheCloud.Models;
 
 namespace PintheCloud
 {
     public partial class App : Application
     {
+        public static Account CurrentAccount = null;
+
         /// <summary>
         /// 전화 응용 프로그램의 루트 프레임에 간단하게 액세스할 수 있습니다.
         /// </summary>
         /// <returns>전화 응용 프로그램의 루트 프레임입니다.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
-
-        public static MobileServiceClient MobileService = null;
-        public static IsolatedStorageSettings ApplicationSettings = null;
-        public static ProgressIndicator ProgressIndicator = null;
-        public static AccountManager AccountManager = null;
-        public static FileManager FileManager = null;
-        public static SpaceViewModel SpaceViewModel = null;
-  
 
         /// <summary>
         /// Application 개체의 생성자입니다.
@@ -46,21 +40,6 @@ namespace PintheCloud
 
             // 언어 표시 초기화
             InitializeLanguage();
-
-            //////////////////////////////////////////
-            // Initializing public static instances
-            //////////////////////////////////////////
-            MobileService = new MobileServiceClient(
-                "https://pinthecloud.azure-mobile.net/",
-                "yvulzHAGRgNsGnPLHKcEFCPJcuyzKj23"
-            );
-            ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
-            ProgressIndicator = new ProgressIndicator();
-            AccountManager = new AccountManager();
-            FileManager = new FileManager();
-            SpaceViewModel = new SpaceViewModel();
-
-
 
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.
             if (Debugger.IsAttached)

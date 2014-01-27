@@ -11,7 +11,7 @@ using Microsoft.Phone.Net.NetworkInformation;
 
 namespace PintheCloud.Pages
 {
-    public partial class ExplorerPage : PtcPage
+    public partial class ExplorerPage : PhoneApplicationPage
     {
         public ExplorerPage()
         {
@@ -46,7 +46,7 @@ namespace PintheCloud.Pages
         // Move to Setting Page
         private void uiAppBarSettingsButton_Click(object sender, System.EventArgs e)
         {
-            NavigationService.Navigate(new Uri(PtcPage.SETTINGS_PAGE, UriKind.Relative));
+            NavigationService.Navigate(new Uri(GlobalKeys.SETTINGS_PAGE, UriKind.Relative));
         }
     }
 }
