@@ -14,7 +14,7 @@ namespace PintheCloud.Managers
     {
         /*** Abstract ***/
         public abstract Task<bool> LoginMicrosoftSingleSignOnAsync();
-
+        public abstract Task<bool> RegisterLiveConnectionSessionAsync();
 
 
         /*** Public ***/
@@ -30,29 +30,6 @@ namespace PintheCloud.Managers
 
 
         /*** Protected ***/
-
-        // Register Live Connect Session for Live Profile
-        protected async Task<bool> RegisterLiveConnectionSessionAsync()
-        {
-            bool result = false;
-            try
-            {
-                // Get live connection session
-                LiveAuthClient liveAuthClient = new LiveAuthClient(GlobalKeys.AZURE_CLIENT_ID);
-                LiveLoginResult liveLoginResult = await liveAuthClient.LoginAsync(new[] { "wl.basic" });
-                if (liveLoginResult.Status == LiveConnectSessionStatus.Connected)
-                {
-                    // Register the session which we get above
-                    App.Session = liveLoginResult.Session;
-                    result = true;
-                }
-            }
-            catch (LiveAuthException)
-            {
-            }
-            return result;
-        }
-
 
         // Get User Profile information result using registered live connection session
         protected async Task<dynamic> GetProfileResultAsync()
@@ -108,11 +85,8 @@ namespace PintheCloud.Managers
         }
 
 
-
-        /*** Private ***/
-
         // Save profile information to local isolated App settings.
-        private void RemoveProfileReslutFromAppSettings()
+        protected void RemoveProfileReslutFromAppSettings()
         {
             App.ApplicationSettings.Remove(Account.ACCOUNT_IS_LOGIN);
             App.ApplicationSettings.Remove(Account.ACCOUNT_PLATFROM_ID);
@@ -125,5 +99,10 @@ namespace PintheCloud.Managers
             App.ApplicationSettings.Remove(Account.ACCOUNT_USED_SIZE);
             App.ApplicationSettings.Remove(Account.ACCOUNT_TYPE_NAME);
         }
+
+
+
+        /*** Private ***/
+
     }
 }

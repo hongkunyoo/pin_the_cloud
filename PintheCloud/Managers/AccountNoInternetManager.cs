@@ -13,7 +13,13 @@ namespace PintheCloud.Managers
         {
 
 
-            return null;
+            return Task<bool>.FromResult(true);
+        }
+
+        // Register Live Connect Session for Live Profile
+        public override Task<bool> RegisterLiveConnectionSessionAsync()
+        {
+            return Task<bool>.FromResult(true);
         }
     }
 }

@@ -6,8 +6,6 @@
     xmlns:local="clr-namespace:PintheCloud.Pages"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ViewModels="clr-namespace:PintheCloud.ViewModels"
-	xmlns:PintheCloud="clr-namespace:PintheCloud"
 	x:Class="PintheCloud.Pages.ExplorerPage"
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -15,8 +13,7 @@
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  
 	Orientation="Portrait" 
-	shell:SystemTray.IsVisible="True"
-	shell:SystemTray.ForegroundColor="White" >
+	shell:SystemTray.IsVisible="True" >
 
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBarEditButton">

@@ -26,6 +26,11 @@ namespace PintheCloud.Pages
         {
         }
 
+        public void SetSystemTray(bool value)
+        {
+            SystemTray.IsVisible = value;
+        }
+
         public void SetProgressIndicator(bool value, string text = "")
         {
             App.ProgressIndicator.IsIndeterminate = value;
@@ -33,6 +38,5 @@ namespace PintheCloud.Pages
             App.ProgressIndicator.Text = text;
             SystemTray.SetProgressIndicator(this, App.ProgressIndicator);
         }
-        
     }
 }

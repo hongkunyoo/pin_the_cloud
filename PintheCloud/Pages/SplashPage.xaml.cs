@@ -44,6 +44,8 @@ namespace PintheCloud.Pages
             }
             else  // Second or more Login, Goto Explorer Page after some secconds.
             {
+                await Task.Delay(TimeSpan.FromSeconds(1));
+
                 // Get different Account Manager by internet state.
                 AccountManager accountManager = null;
                 if (NetworkInterface.GetIsNetworkAvailable())
@@ -51,17 +53,31 @@ namespace PintheCloud.Pages
                 else
                     accountManager = new AccountNoInternetManager();
 
-                // If internet is good, update account information.
-                // Otherwise, get account information with old one.
-                bool loginResult = await accountManager.LoginMicrosoftSingleSignOnAsync();
-                if (!loginResult)
+                // If Internet is good, get new information from Internet,
+                // Otherwise get old information from local storage.
+                if (await accountManager.RegisterLiveConnectionSessionAsync())  // Get session success
                 {
-                    accountManager = new AccountNoInternetManager();
-                    await accountManager.LoginMicrosoftSingleSignOnAsync();
-                }
+                    // Show progress indicator
+                    base.SetSystemTray(true);
+                    base.SetProgressIndicator(true);
 
-                await Task.Delay(TimeSpan.FromSeconds(1));
-                NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+                    // If online progress login failed, retry with local storage information.
+                    if (!(await accountManager.LoginMicrosoftSingleSignOnAsync()))
+                    {
+                        // Hide indicator, 
+                        base.SetSystemTray(false);
+                        base.SetProgressIndicator(false);
+                        accountManager = new AccountNoInternetManager();
+                        await accountManager.LoginMicrosoftSingleSignOnAsync();
+                    }
+
+                    // Move to explorer page.
+                    NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+                }
+                else  // Get session fail
+                {
+                    uiMicrosoftLoginButton.Visibility = Visibility.Visible;
+                }
             }
         }
 
@@ -76,23 +92,32 @@ namespace PintheCloud.Pages
             // otherwise show no internet message box.
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                // Show progress indicator, progress login, hide indicator
-                uiMicrosoftLoginButton.Content = AppResources.Wait;
-                uiMicrosoftLoginButton.IsEnabled = false;
-
+                // Get Account Manager
                 AccountManager accountManager = new AccountYesInternetManager();
-                bool loginResult = await accountManager.LoginMicrosoftSingleSignOnAsync();
 
-                // Move page or show fail message box by login result
-                if (loginResult)
+                // If it success to register live connect session,
+                if (await accountManager.RegisterLiveConnectionSessionAsync())
                 {
-                    NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
-                }
-                else
-                {
-                    uiMicrosoftLoginButton.IsEnabled = true;
-                    uiMicrosoftLoginButton.Content = AppResources.Login;
-                    MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+                    // Show progress indicator, progress login
+                    uiMicrosoftLoginButton.IsEnabled = false;
+                    uiMicrosoftLoginButton.Content = AppResources.Wait;
+                    base.SetSystemTray(true);
+                    base.SetProgressIndicator(true);
+
+                    // Move page or show fail message box by login result
+                    if (await accountManager.LoginMicrosoftSingleSignOnAsync())
+                    {
+                        NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+                    }
+                    else
+                    {
+                        // Hide indicator, Show login fail message box.
+                        uiMicrosoftLoginButton.IsEnabled = true;
+                        uiMicrosoftLoginButton.Content = AppResources.Login;
+                        base.SetSystemTray(false);
+                        base.SetProgressIndicator(false);
+                        MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+                    }
                 }
             }
             else
