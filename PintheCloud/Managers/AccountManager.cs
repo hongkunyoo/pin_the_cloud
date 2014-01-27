@@ -40,9 +40,14 @@ namespace PintheCloud.Managers
                     // Make final account
                     if (GlobalObjects.MobileService.CurrentUser != null)
                     {
-                        Account account = new Account(GlobalObjects.MobileService.CurrentUser.UserId, GlobalKeys.MICROSOFT, "" + profileResult.name,
+                        // Check duplication. If it doesn't exist, make it.
+                        Account account = await isExistedAccount(GlobalObjects.MobileService.CurrentUser.UserId);
+                        if (account == null)
+                        {
+                            account = new Account(GlobalObjects.MobileService.CurrentUser.UserId, GlobalKeys.MICROSOFT, "" + profileResult.name,
                             "" + profileResult.first_name, "" + profileResult.last_name, "" + profileResult.locale,
                             GlobalObjects.MobileService.CurrentUser.MobileServiceAuthenticationToken, 0, GlobalKeys.NORMAL_ACCOUNT_TYPE);
+                        }
 
                         // Insert if it is not exists already in DB,
                         // Otherwise update account.
@@ -141,6 +146,27 @@ namespace PintheCloud.Managers
             GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_TOKEN);
             GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_USED_SIZE);
             GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_TYPE_NAME);
+        }
+
+
+        // Check whether it exists in DB
+        private async Task<Account> isExistedAccount(string accountPlatformId)
+        {
+            MobileServiceCollection<Account, Account> accounts = null;
+            try
+            {
+                accounts = await GlobalObjects.MobileService.GetTable<Account>()
+                    .Where(a => a.account_platform_id == accountPlatformId)
+                    .ToCollectionAsync();
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+            }
+
+            if (accounts.Count > 0)
+                return accounts.First();
+            else
+                return null;
         }
     }
 }

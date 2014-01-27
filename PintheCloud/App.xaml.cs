@@ -10,11 +10,14 @@ using PintheCloud.Resources;
 using Microsoft.WindowsAzure.MobileServices;
 using System.IO.IsolatedStorage;
 using PintheCloud.Managers;
+using PintheCloud.Models;
 
 namespace PintheCloud
 {
     public partial class App : Application
     {
+        public static Account CurrentAccount = null;
+
         /// <summary>
         /// 전화 응용 프로그램의 루트 프레임에 간단하게 액세스할 수 있습니다.
         /// </summary>
