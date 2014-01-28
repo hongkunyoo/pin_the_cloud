@@ -13,6 +13,6 @@ namespace PintheCloud
 
         // Platform Id
         public static string MICROSOFT = "Microsoft";
-
+         
     }
 }
