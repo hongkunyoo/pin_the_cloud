@@ -13,7 +13,6 @@ using PintheCloud.Managers;
 using PintheCloud.ViewModels;
 using PintheCloud.Models;
 using Microsoft.Live;
-using PintheCloud.Managers.AccountManagers;
 
 namespace PintheCloud
 {

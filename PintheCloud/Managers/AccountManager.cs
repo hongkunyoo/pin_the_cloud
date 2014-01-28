@@ -1,20 +1,24 @@
 ﻿using Microsoft.Live;
 using PintheCloud.Models;
+using PintheCloud.Workers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Managers.AccountManagers
+namespace PintheCloud.Managers
 {
     public interface AccountManager
     {
-        Account GetCurrentAcccount();
         LiveConnectSession GetLiveConnectSession();
-        void SetAccountManager(AccountWorker accountManager);
+        dynamic GetProfileResult();
+        Account GetCurrentAcccount();
+        void SetAccountWorker(AccountWorker accountManager);
 
+        Task<bool> SetLiveConnectSessionAsync();
+        Task<bool> SetProfileResultAsync();
         Task<bool> LoginMicrosoftAccountSingleSignOnAsync();
-        Task<bool> GetLiveConnectSessionAsync();
+        void Logout();
     }
 }

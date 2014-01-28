@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Managers.AccountManagers
+namespace PintheCloud.Workers
 {
     public class AccountInternetUnavailableWorker : AccountWorker
     {
         // Login with isolated storage information
-        public override Task<Account> LoginMicrosoftAccountSingleSignOnAsync()
+        public override Task<Account> LoginMicrosoftAccountSingleSignOnAsync(LiveConnectSession session, dynamic profileResult)
         {
             string account_platform_id = App.ApplicationSettings[Account.ACCOUNT_PLATFORM_ID].ToString();
             string account_platform_id_type = App.ApplicationSettings[Account.ACCOUNT_PLATFORM_ID_TYPE].ToString();
@@ -33,8 +33,16 @@ namespace PintheCloud.Managers.AccountManagers
             return Task<Account>.FromResult(account);
         }
 
-        // No Internet. No Session. Return true for process.
+
+        // No Internet. No Session. Return null for process.
         public override Task<LiveConnectSession> GetLiveConnectSessionAsync()
+        {
+            return null;
+        }
+
+
+        // No Internet. No Profile result. Return null for process.
+        public override Task<dynamic> GetProfileResultAsync(LiveConnectSession session)
         {
             return null;
         }

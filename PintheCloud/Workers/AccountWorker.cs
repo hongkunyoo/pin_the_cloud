@@ -8,13 +8,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace PintheCloud.Managers.AccountManagers
+namespace PintheCloud.Workers
 {
     public abstract class AccountWorker
     {
         /*** Abstract ***/
-        public abstract Task<Account> LoginMicrosoftAccountSingleSignOnAsync();
         public abstract Task<LiveConnectSession> GetLiveConnectSessionAsync();
+        public abstract Task<dynamic> GetProfileResultAsync(LiveConnectSession session);
+        public abstract Task<Account> LoginMicrosoftAccountSingleSignOnAsync(LiveConnectSession session, dynamic profileResult);
+        
 
 
         /*** Public ***/
@@ -30,23 +32,6 @@ namespace PintheCloud.Managers.AccountManagers
 
 
         /*** Protected ***/
-
-        // Get User Profile information result using registered live connection session
-        public async Task<dynamic> GetProfileResultAsync()
-        {
-            dynamic result = null;
-            try
-            {
-                LiveConnectClient liveClient = new LiveConnectClient(App.Session);
-                LiveOperationResult operationResult = await liveClient.GetAsync("me");
-                result = operationResult.Result;
-            }
-            catch (LiveConnectException)
-            {
-            }
-            return result;
-        }
-
 
         // Check whether it exists in DB
         protected async Task<Account> isExistedPerson(string account_platform_id)
