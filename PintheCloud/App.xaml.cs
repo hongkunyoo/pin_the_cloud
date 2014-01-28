@@ -13,6 +13,7 @@ using PintheCloud.Managers;
 using PintheCloud.ViewModels;
 using PintheCloud.Models;
 using Microsoft.Live;
+using PintheCloud.Managers.AccountManagers;
 
 namespace PintheCloud
 {
@@ -33,9 +34,8 @@ namespace PintheCloud
         // Model
         public static SpaceViewModel SpaceViewModel = null;
 
-        // Account
-        public static Account CurrentAccount = null;
-        public static LiveConnectSession Session = null;
+        // Manager
+        public static AccountManager CurrentAccountManager = null;
 
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace PintheCloud
             ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
             ProgressIndicator = new ProgressIndicator();
             SpaceViewModel = new SpaceViewModel();
-
+            CurrentAccountManager = new AccountManagerImplement();
 
 
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.

@@ -15,6 +15,7 @@ using System.IO.IsolatedStorage;
 using Microsoft.Phone.Net.NetworkInformation;
 using PintheCloud.Models;
 using PintheCloud.Managers;
+using PintheCloud.Managers.AccountManagers;
 
 namespace PintheCloud.Pages
 {
@@ -47,28 +48,25 @@ namespace PintheCloud.Pages
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
                 // Get different Account Manager by internet state.
-                AccountManager accountManager = null;
+                AccountWorker accountWorker = null;
                 if (NetworkInterface.GetIsNetworkAvailable())
-                    accountManager = new AccountYesInternetManager();
+                    accountWorker = new AccountInternetAvailableWorker();
                 else
-                    accountManager = new AccountNoInternetManager();
+                    accountWorker = new AccountInternetUnavailableWorker();
 
                 // If Internet is good, get new information from Internet,
                 // Otherwise get old information from local storage.
-                if (await accountManager.RegisterLiveConnectionSessionAsync())  // Get session success
+                if (await accountWorker.GetLiveConnectSessionAsync())  // Get session success
                 {
                     // Show progress indicator
                     base.SetSystemTray(true);
                     base.SetProgressIndicator(true);
 
                     // If online progress login failed, retry with local storage information.
-                    if (!(await accountManager.LoginMicrosoftSingleSignOnAsync()))
+                    if (!(await accountWorker.LoginMicrosoftAccountSingleSignOnAsync()))
                     {
-                        // Hide indicator, 
-                        base.SetSystemTray(false);
-                        base.SetProgressIndicator(false);
-                        accountManager = new AccountNoInternetManager();
-                        await accountManager.LoginMicrosoftSingleSignOnAsync();
+                        accountWorker = new AccountInternetUnavailableWorker();
+                        await accountWorker.LoginMicrosoftAccountSingleSignOnAsync();
                     }
 
                     // Move to explorer page.
@@ -93,10 +91,10 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 // Get Account Manager
-                AccountManager accountManager = new AccountYesInternetManager();
+                AccountWorker accountWorker = new AccountInternetAvailableWorker();
 
                 // If it success to register live connect session,
-                if (await accountManager.RegisterLiveConnectionSessionAsync())
+                if (await accountWorker.GetLiveConnectSessionAsync())
                 {
                     // Show progress indicator, progress login
                     uiMicrosoftLoginButton.IsEnabled = false;
@@ -105,7 +103,7 @@ namespace PintheCloud.Pages
                     base.SetProgressIndicator(true);
 
                     // Move page or show fail message box by login result
-                    if (await accountManager.LoginMicrosoftSingleSignOnAsync())
+                    if (await accountWorker.LoginMicrosoftAccountSingleSignOnAsync())
                     {
                         NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
                     }

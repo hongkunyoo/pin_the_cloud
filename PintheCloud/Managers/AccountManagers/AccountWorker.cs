@@ -8,13 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace PintheCloud.Managers
+namespace PintheCloud.Managers.AccountManagers
 {
-    public abstract class AccountManager
+    public abstract class AccountWorker
     {
         /*** Abstract ***/
-        public abstract Task<bool> LoginMicrosoftSingleSignOnAsync();
-        public abstract Task<bool> RegisterLiveConnectionSessionAsync();
+        public abstract Task<Account> LoginMicrosoftAccountSingleSignOnAsync();
+        public abstract Task<LiveConnectSession> GetLiveConnectSessionAsync();
 
 
         /*** Public ***/
@@ -99,10 +99,5 @@ namespace PintheCloud.Managers
             App.ApplicationSettings.Remove(Account.ACCOUNT_USED_SIZE);
             App.ApplicationSettings.Remove(Account.ACCOUNT_TYPE_NAME);
         }
-
-
-
-        /*** Private ***/
-
     }
 }

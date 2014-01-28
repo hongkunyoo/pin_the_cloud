@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Managers
+namespace PintheCloud.Managers.AccountManagers
 {
-    public class AccountYesInternetManager : AccountManager
+    public class AccountInternetAvailableWorker : AccountWorker
     {
         // Login with single sign on way.
-        public override async Task<bool> LoginMicrosoftSingleSignOnAsync()
+        public override async Task<Account> LoginMicrosoftAccountSingleSignOnAsync()
         {
-            bool result = false;
+            Account account = null;
 
             // If it success to get user's profile result,
             dynamic profileResult = await base.GetProfileResultAsync();
@@ -27,7 +27,7 @@ namespace PintheCloud.Managers
                 }
                 catch (InvalidOperationException)
                 {
-                    return false;
+                    return null;
                 }
 
                 // If it success to get access to mobile service, 
@@ -37,7 +37,7 @@ namespace PintheCloud.Managers
                     // Check duplication.
                     // Insert if it is not exists already in DB,
                     // Otherwise update account.
-                    Account account = await base.isExistedPerson(App.MobileService.CurrentUser.UserId);
+                    account = await base.isExistedPerson(App.MobileService.CurrentUser.UserId);
                     if (account == null)  // First Login.
                     {
                         account = new Account(App.MobileService.CurrentUser.UserId, GlobalKeys.MICROSOFT, "" + profileResult.name,
@@ -49,7 +49,7 @@ namespace PintheCloud.Managers
                         }
                         catch (InvalidOperationException)
                         {
-                            return false;
+                            return null;
                         }
                     }
                     else  // Second or more Login.
@@ -67,42 +67,39 @@ namespace PintheCloud.Managers
                         }
                         catch (InvalidOperationException)
                         {
-                            return false;
+                            return null;
                         }
                     }
 
                     // If it success to insert account to DB,
                     // Save it's information to isolated storage.
-                    App.CurrentAccount = account;
                     base.RemoveProfileReslutFromAppSettings();
                     base.SaveProfileReslutToAppSettings(account);
-                    result = true;
                 }
             }
-            return result;
+            return account;
         }
 
 
         // Register Live Connect Session for Live Profile
-        public override async Task<bool> RegisterLiveConnectionSessionAsync()
+        public override async Task<LiveConnectSession> GetLiveConnectSessionAsync()
         {
-            bool result = false;
+            LiveConnectSession session = null;
             try
             {
                 // Get live connection session
                 LiveAuthClient liveAuthClient = new LiveAuthClient(GlobalKeys.AZURE_CLIENT_ID);
-                LiveLoginResult liveLoginResult = await liveAuthClient.LoginAsync(new[] { "wl.basic, wl.skydrive" });
+                LiveLoginResult liveLoginResult = await liveAuthClient.LoginAsync(new[] { "wl.basic, wl.offline_access, wl.skydrive" });
                 if (liveLoginResult.Status == LiveConnectSessionStatus.Connected)
                 {
                     // Register the session which we get above
-                    App.Session = liveLoginResult.Session;
-                    result = true;
+                    session = liveLoginResult.Session;
                 }
             }
             catch (LiveAuthException)
             {
             }
-            return result;
+            return session;
         }
     }
 }

@@ -96,10 +96,12 @@
     </Compile>
     <Compile Include="GlobalKeys.cs" />
     <Compile Include="LocalizedStrings.cs" />
-    <Compile Include="Managers\AccountManager.cs" />
-    <Compile Include="Managers\AccountNoInternetManager.cs" />
-    <Compile Include="Managers\AccountYesInternetManager.cs" />
-    <Compile Include="Managers\FileManager.cs" />
+    <Compile Include="Managers\AccountManagers\AccountWorker.cs" />
+    <Compile Include="Managers\AccountManagers\AccountInternetUnavailableWorker.cs" />
+    <Compile Include="Managers\AccountManagers\AccountManager.cs" />
+    <Compile Include="Managers\AccountManagers\AccountManagerImplement.cs" />
+    <Compile Include="Managers\AccountManagers\AccountInternetAvailableWorker.cs" />
+    <Compile Include="Managers\FileManagers\FileManager.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountType.cs" />
     <Compile Include="Pages\PtcPage.cs" />
