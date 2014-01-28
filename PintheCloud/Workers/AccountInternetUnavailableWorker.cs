@@ -12,7 +12,7 @@ namespace PintheCloud.Workers
     public class AccountInternetUnavailableWorker : AccountWorker
     {
         // Login with isolated storage information
-        public override Task<Account> LoginMicrosoftAccountSingleSignOnAsync(LiveConnectSession session, dynamic profileResult)
+        public override async Task<Account> LoginMicrosoftAccountSingleSignOnAsync(LiveConnectSession session, dynamic profileResult)
         {
             string account_platform_id = App.ApplicationSettings[Account.ACCOUNT_PLATFORM_ID].ToString();
             string account_platform_id_type = App.ApplicationSettings[Account.ACCOUNT_PLATFORM_ID_TYPE].ToString();
@@ -30,21 +30,23 @@ namespace PintheCloud.Workers
             Account account = new Account(account_platform_id, account_platform_id_type, account_name, account_first_name, 
                 account_last_name, account_local, account_token, account_used_size, account_type_name);
 
-            return Task<Account>.FromResult(account);
+            return await Task<Account>.FromResult(account);
         }
 
 
         // No Internet. No Session. Return null for process.
-        public override Task<LiveConnectSession> GetLiveConnectSessionAsync()
+        public override async Task<LiveConnectSession> GetLiveConnectSessionAsync()
         {
-            return null;
+            LiveConnectSession session = null;
+            return await Task<LiveConnectSession>.FromResult(session);
         }
 
 
         // No Internet. No Profile result. Return null for process.
-        public override Task<dynamic> GetProfileResultAsync(LiveConnectSession session)
+        public override async Task<dynamic> GetProfileResultAsync(LiveConnectSession session)
         {
-            return null;
+            dynamic profileResult = null;
+            return await Task<dynamic>.FromResult(profileResult);
         }
     }
 }
