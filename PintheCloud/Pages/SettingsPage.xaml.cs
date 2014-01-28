@@ -10,7 +10,7 @@ using Microsoft.Phone.Shell;
 
 namespace PintheCloud.Pages
 {
-    public partial class SettingsPage : PhoneApplicationPage
+    public partial class SettingsPage : PtcPage
     {
         public SettingsPage()
         {
@@ -20,8 +20,8 @@ namespace PintheCloud.Pages
         // Logout
         private void uiLogoutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            GlobalObjects.AccountManager.Logout();
-            NavigationService.Navigate(new Uri(GlobalKeys.SPLASH_PAGE, UriKind.Relative));
+            App.AccountManager.Logout();
+            NavigationService.Navigate(new Uri(PtcPage.SPLASH_PAGE, UriKind.Relative));
         }
     }
 }
