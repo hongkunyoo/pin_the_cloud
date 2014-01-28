@@ -9,6 +9,18 @@ namespace PintheCloud.Models
 {
     public class Account
     {
+        // Application Account Setting Key
+        public static  string ACCOUNT_IS_LOGIN = "ACCOUNT_IS_LOGIN";
+        public static  string ACCOUNT_PLATFROM_ID = "ACCOUNT_PLATFROM_ID";
+        public static string ACCOUNT_PLATFROM_ID_TYPE = "ACCOUNT_PLATFROM_ID_TYPE";
+        public static  string ACCOUNT_NAME = "ACCOUNT_NAME";
+        public static  string ACCOUNT_FIRST_NAME = "ACCOUNT_FIRST_NAME";
+        public static  string ACCOUNT_LAST_NAME = "ACCOUNT_LAST_NAME";
+        public static  string ACCOUNT_LOCAL = "ACCOUNT_LOCAL";
+        public static  string ACCOUNT_TOKEN = "ACCOUNT_TOKEN";
+        public static  string ACCOUNT_USED_SIZE = "ACCOUNT_USED_SIZE";
+        public static  string ACCOUNT_TYPE_NAME = "ACCOUNT_TYPE_NAME";
+
         public string id { get; set; }
 
         [JsonProperty(PropertyName = "account_platform_id")]

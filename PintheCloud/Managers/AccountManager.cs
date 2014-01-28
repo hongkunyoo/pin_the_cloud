@@ -30,7 +30,7 @@ namespace PintheCloud.Managers
                     try
                     {
                         // Login to mobile service for getting access to DB
-                        await GlobalObjects.MobileService.LoginWithMicrosoftAccountAsync(this.Session.AuthenticationToken);
+                        await App.MobileService.LoginWithMicrosoftAccountAsync(this.Session.AuthenticationToken);
                     }
                     catch (InvalidOperationException)
                     {
@@ -38,17 +38,17 @@ namespace PintheCloud.Managers
 
                     // If it success to get access to mobile service, 
                     // Make final account
-                    if (GlobalObjects.MobileService.CurrentUser != null)
+                    if (App.MobileService.CurrentUser != null)
                     {
-                        Account account = new Account(GlobalObjects.MobileService.CurrentUser.UserId, GlobalKeys.MICROSOFT, "" + profileResult.name,
+                        Account account = new Account(App.MobileService.CurrentUser.UserId, GlobalKeys.MICROSOFT, "" + profileResult.name,
                             "" + profileResult.first_name, "" + profileResult.last_name, "" + profileResult.locale,
-                            GlobalObjects.MobileService.CurrentUser.MobileServiceAuthenticationToken, 0, GlobalKeys.NORMAL_ACCOUNT_TYPE);
+                            App.MobileService.CurrentUser.MobileServiceAuthenticationToken, 0, AccountType.NORMAL_ACCOUNT_TYPE);
 
                         // Insert if it is not exists already in DB,
                         // Otherwise update account.
                         try
                         {
-                            await GlobalObjects.MobileService.GetTable<Account>().InsertAsync(account);
+                            await App.MobileService.GetTable<Account>().InsertAsync(account);
 
                             // If it success to insert account to DB,
                             // Save it's information to isolated storage.
@@ -108,16 +108,16 @@ namespace PintheCloud.Managers
         // Save profile information to local isolated App settings.
         public void SaveProfileReslutToAppSettings(Account account)
         {
-            GlobalObjects.ApplicationSettings.Add(GlobalKeys.ACCOUNT_IS_LOGIN, true);
-            GlobalObjects.ApplicationSettings.Add(GlobalKeys.ACCOUNT_PLATFROM_ID, account.account_platform_id);
-            GlobalObjects.ApplicationSettings.Add(GlobalKeys.ACCOUNT_PLATFROM_ID_TYPE, account.account_platform_id_type);
-            GlobalObjects.ApplicationSettings.Add(GlobalKeys.ACCOUNT_NAME, account.account_name);
-            GlobalObjects.ApplicationSettings.Add(GlobalKeys.ACCOUNT_FIRST_NAME, account.account_first_name);
-            GlobalObjects.ApplicationSettings.Add(GlobalKeys.ACCOUNT_LAST_NAME, account.account_last_name);
-            GlobalObjects.ApplicationSettings.Add(GlobalKeys.ACCOUNT_LOCAL, account.account_locale);
-            GlobalObjects.ApplicationSettings.Add(GlobalKeys.ACCOUNT_TOKEN, account.account_token);
-            GlobalObjects.ApplicationSettings.Add(GlobalKeys.ACCOUNT_USED_SIZE, account.account_used_size);
-            GlobalObjects.ApplicationSettings.Add(GlobalKeys.ACCOUNT_TYPE_NAME, account.account_type_name);
+            App.ApplicationSettings.Add(Account.ACCOUNT_IS_LOGIN, true);
+            App.ApplicationSettings.Add(Account.ACCOUNT_PLATFROM_ID, account.account_platform_id);
+            App.ApplicationSettings.Add(Account.ACCOUNT_PLATFROM_ID_TYPE, account.account_platform_id_type);
+            App.ApplicationSettings.Add(Account.ACCOUNT_NAME, account.account_name);
+            App.ApplicationSettings.Add(Account.ACCOUNT_FIRST_NAME, account.account_first_name);
+            App.ApplicationSettings.Add(Account.ACCOUNT_LAST_NAME, account.account_last_name);
+            App.ApplicationSettings.Add(Account.ACCOUNT_LOCAL, account.account_locale);
+            App.ApplicationSettings.Add(Account.ACCOUNT_TOKEN, account.account_token);
+            App.ApplicationSettings.Add(Account.ACCOUNT_USED_SIZE, account.account_used_size);
+            App.ApplicationSettings.Add(Account.ACCOUNT_TYPE_NAME, account.account_type_name);
         }
 
         // Get out connection session
@@ -131,16 +131,16 @@ namespace PintheCloud.Managers
         // Save profile information to local isolated App settings.
         public void RemoveProfileReslutFromAppSettings()
         {
-            GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_IS_LOGIN);
-            GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_PLATFROM_ID);
-            GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_PLATFROM_ID_TYPE);
-            GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_NAME);
-            GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_FIRST_NAME);
-            GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_LAST_NAME);
-            GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_LOCAL);
-            GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_TOKEN);
-            GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_USED_SIZE);
-            GlobalObjects.ApplicationSettings.Remove(GlobalKeys.ACCOUNT_TYPE_NAME);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_IS_LOGIN);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_PLATFROM_ID);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_PLATFROM_ID_TYPE);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_NAME);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_FIRST_NAME);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_LAST_NAME);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_LOCAL);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_TOKEN);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_USED_SIZE);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_TYPE_NAME);
         }
     }
 }

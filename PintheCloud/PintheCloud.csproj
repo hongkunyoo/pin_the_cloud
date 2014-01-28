@@ -94,14 +94,13 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GlobalManager.cs" />
     <Compile Include="GlobalKeys.cs" />
-    <Compile Include="GlobalObjects.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Managers\AccountManager.cs" />
     <Compile Include="Managers\FileManager.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountType.cs" />
+    <Compile Include="Pages\PtcPage.cs" />
     <Compile Include="Pages\ExplorerPage.xaml.cs">
       <DependentUpon>ExplorerPage.xaml</DependentUpon>
     </Compile>

@@ -13,10 +13,11 @@ using Microsoft.Live;
 using Microsoft.WindowsAzure.MobileServices;
 using System.IO.IsolatedStorage;
 using Microsoft.Phone.Net.NetworkInformation;
+using PintheCloud.Models;
 
 namespace PintheCloud.Pages
 {
-    public partial class SplashPage : PhoneApplicationPage
+    public partial class SplashPage : PtcPage
     {
         // 생성자
         public SplashPage()
@@ -35,7 +36,7 @@ namespace PintheCloud.Pages
 
             // Get bool variable whether this account have logined or not.
             bool accountIsLogin = false;
-            GlobalObjects.ApplicationSettings.TryGetValue<bool>(GlobalKeys.ACCOUNT_IS_LOGIN, out accountIsLogin);
+            App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_LOGIN, out accountIsLogin);
             if (!accountIsLogin)  // First Login, Show Login Button.
             {
                 uiMicrosoftLoginButton.Visibility = Visibility.Visible;
@@ -43,7 +44,7 @@ namespace PintheCloud.Pages
             else  // Second or more Login, Goto Explorer Page after some secconds.
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
-                NavigationService.Navigate(new Uri(GlobalKeys.EXPLORER_PAGE, UriKind.Relative));
+                NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
             }
         }
 
@@ -61,12 +62,12 @@ namespace PintheCloud.Pages
                 // Show progress indicator, progress login, hide indicator
                 uiMicrosoftLoginButton.Content = AppResources.Wait;
                 uiMicrosoftLoginButton.IsEnabled = false;
-                bool loginResult = await GlobalObjects.AccountManager.LoginMicrosoftSingleSignOnAsync();
+                bool loginResult = await App.AccountManager.LoginMicrosoftSingleSignOnAsync();
 
                 // Move page or show fail message box by login result
                 if (loginResult)
                 {
-                    NavigationService.Navigate(new Uri(GlobalKeys.EXPLORER_PAGE, UriKind.Relative));
+                    NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
                 }
                 else
                 {
