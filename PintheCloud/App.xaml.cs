@@ -30,11 +30,9 @@ namespace PintheCloud
         public static IsolatedStorageSettings ApplicationSettings = null;
         public static ProgressIndicator ProgressIndicator = null;
 
-        // Model
-        public static SpaceViewModel SpaceViewModel = null;
-
         // Manager
         public static AccountManager CurrentAccountManager = null;
+        public static SpaceManager CurrentSpaceManager = null;
 
 
         /// <summary>
@@ -54,15 +52,22 @@ namespace PintheCloud
             // 언어 표시 초기화
             InitializeLanguage();
 
-            // Initializing public static instances
+
+
+            /*** Injecting objects to public static instances ***/
+            
+            // App
             MobileService = new MobileServiceClient(
                 "https://pinthecloud.azure-mobile.net/",
                 "yvulzHAGRgNsGnPLHKcEFCPJcuyzKj23"
             );
             ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
             ProgressIndicator = new ProgressIndicator();
-            SpaceViewModel = new SpaceViewModel();
+
+            // Manager
             CurrentAccountManager = new AccountManagerImplement();
+            CurrentSpaceManager = new SpaceManagerImplement();
+
 
 
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.

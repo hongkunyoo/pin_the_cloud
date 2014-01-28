@@ -13,20 +13,8 @@ namespace PintheCloud.Managers
     {
         /*** Instance ***/
 
-        
-
         private LiveConnectSession Session = null;
-        public LiveConnectSession GetLiveConnectSession()
-        {
-            return this.Session;
-        }
-
         private dynamic ProfileResult = null;
-        public dynamic GetProfileResult()
-        {
-            return this.ProfileResult;
-        }
-
         private Account CurrentAccount = null;
         public Account GetCurrentAcccount()
         {

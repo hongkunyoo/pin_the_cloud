@@ -13,6 +13,7 @@ namespace PintheCloud.Workers
     public abstract class AccountWorker
     {
         /*** Abstract ***/
+
         public abstract Task<LiveConnectSession> GetLiveConnectSessionAsync();
         public abstract Task<dynamic> GetProfileResultAsync(LiveConnectSession session);
         public abstract Task<Account> LoginMicrosoftAccountSingleSignOnAsync(LiveConnectSession session, dynamic profileResult);

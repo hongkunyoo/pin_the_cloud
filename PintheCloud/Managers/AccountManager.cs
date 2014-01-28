@@ -11,10 +11,8 @@ namespace PintheCloud.Managers
 {
     public interface AccountManager
     {
-        LiveConnectSession GetLiveConnectSession();
-        dynamic GetProfileResult();
         Account GetCurrentAcccount();
-        void SetAccountWorker(AccountWorker accountManager);
+        void SetAccountWorker(AccountWorker CurrentAccountManager);
 
         Task<bool> SetLiveConnectSessionAsync();
         Task<bool> SetProfileResultAsync();
