@@ -14,6 +14,8 @@ using Microsoft.WindowsAzure.MobileServices;
 using System.IO.IsolatedStorage;
 using Microsoft.Phone.Net.NetworkInformation;
 using PintheCloud.Models;
+using PintheCloud.Managers;
+using PintheCloud.Workers;
 
 namespace PintheCloud.Pages
 {
@@ -44,7 +46,76 @@ namespace PintheCloud.Pages
             else  // Second or more Login, Goto Explorer Page after some secconds.
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
-                NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+
+                // Get different Account Worker by internet state.
+                if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+                {
+                    App.CurrentAccountManager.SetAccountWorker(new AccountInternetAvailableWorker());
+
+                    // If Internet is good, get new information from Internet,
+                    // Otherwise get old information from local storage.
+                    if (await App.CurrentAccountManager.SetLiveConnectSessionAsync())  // Get session success
+                    {
+                        // Show progress indicator
+                        base.SetSystemTray(true);
+                        base.SetProgressIndicator(true);
+
+                        // If it success to register live connect session,
+                        // Otherwise, Hide indicator, Show login fail message box.
+                        if (await App.CurrentAccountManager.SetProfileResultAsync())
+                        {
+                            // If online progress login failed, retry with local storage information.
+                            if (await App.CurrentAccountManager.LoginMicrosoftAccountSingleSignOnAsync())  // Login succeed
+                            {
+                                NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+                            }
+                            else  // Login fail
+                            {
+                                // Retry. If it succeed, Move to explorer page.
+                                // Otherwise, Hide indicator, Show login fail message box.
+                                App.CurrentAccountManager.SetAccountWorker(new AccountInternetUnavailableWorker());
+                                if (await App.CurrentAccountManager.LoginMicrosoftAccountSingleSignOnAsync())
+                                {
+                                    NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+                                }
+                                else
+                                {
+                                    base.SetSystemTray(false);
+                                    base.SetProgressIndicator(false);
+                                    MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+                                    uiMicrosoftLoginButton.Visibility = Visibility.Visible;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            base.SetSystemTray(false);
+                            base.SetProgressIndicator(false);
+                            MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+                            uiMicrosoftLoginButton.Visibility = Visibility.Visible;
+                        }
+                    }
+                    else  // Get session fail
+                    {
+                        uiMicrosoftLoginButton.Visibility = Visibility.Visible;
+                    }
+                }
+
+                else  // Internet unavailable
+                {
+                    App.CurrentAccountManager.SetAccountWorker(new AccountInternetUnavailableWorker());
+
+                    // Login with local storage information and Move to explorer page.
+                    if (await App.CurrentAccountManager.LoginMicrosoftAccountSingleSignOnAsync())
+                    {
+                        NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+                    }
+                    else
+                    {
+                        MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+                        uiMicrosoftLoginButton.Visibility = Visibility.Visible;
+                    }
+                }
             }
         }
 
@@ -55,25 +126,48 @@ namespace PintheCloud.Pages
 
         private async void uiMicrosoftLoginButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            // If Internet is good, go login, 
-            // otherwise show no internet message box.
+            // Get different Account Worker by internet state.
+            // If internet is good, progress login.
+            // Otherwise, show warning message box.
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                // Show progress indicator, progress login, hide indicator
-                uiMicrosoftLoginButton.Content = AppResources.Wait;
-                uiMicrosoftLoginButton.IsEnabled = false;
-                bool loginResult = await App.AccountManager.LoginMicrosoftSingleSignOnAsync();
+                App.CurrentAccountManager.SetAccountWorker(new AccountInternetAvailableWorker());
 
-                // Move page or show fail message box by login result
-                if (loginResult)
+                // If it success to register live connect session,
+                if (await App.CurrentAccountManager.SetLiveConnectSessionAsync())
                 {
-                    NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
-                }
-                else
-                {
-                    uiMicrosoftLoginButton.IsEnabled = true;
-                    uiMicrosoftLoginButton.Content = AppResources.Login;
-                    MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+                    // Show progress indicator, progress login
+                    uiMicrosoftLoginButton.IsEnabled = false;
+                    uiMicrosoftLoginButton.Content = AppResources.Wait;
+                    base.SetSystemTray(true);
+                    base.SetProgressIndicator(true);
+
+                    // Get profile result and Login.
+                    // If login succeed, Move to explorer page.
+                    // Otherwise, Hide indicator, Show login fail message box.
+                    if (await App.CurrentAccountManager.SetProfileResultAsync())
+                    {
+                        if (await App.CurrentAccountManager.LoginMicrosoftAccountSingleSignOnAsync())
+                        {
+                            NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+                        }
+                        else
+                        {
+                            uiMicrosoftLoginButton.IsEnabled = true;
+                            uiMicrosoftLoginButton.Content = AppResources.Login;
+                            base.SetSystemTray(false);
+                            base.SetProgressIndicator(false);
+                            MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+                        }
+                    }
+                    else
+                    {
+                        uiMicrosoftLoginButton.IsEnabled = true;
+                        uiMicrosoftLoginButton.Content = AppResources.Login;
+                        base.SetSystemTray(false);
+                        base.SetProgressIndicator(false);
+                        MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+                    }
                 }
             }
             else
