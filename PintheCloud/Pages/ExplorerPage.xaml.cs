@@ -40,11 +40,8 @@ namespace PintheCloud.Pages
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
 
-            // Get different Space Worker by internet state.
-            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
-                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
-            else  // Internet bad.
-                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetUnavailableWorker());
+            // Set data context to space view model of this.
+            this.DataContext = CurrentSpaceViewModel;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -55,36 +52,41 @@ namespace PintheCloud.Pages
         // Construct pivot item by page index
         private async void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            // Get different Space Worker by internet state.
+            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+            else  // Internet bad.
+                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetUnavailableWorker());
+            
             // Set View model for dispaly,
             switch (uiExplorerPivot.SelectedIndex)
             { 
                 case EXPLORER_PIVOT:
-
-                    // If there is spaces, Clear and Add spaces to list
-                    // Otherwise, Show none message.
-                    base.SetProgressIndicator(true);
-                    MobileServiceCollection<Space, Space> spaces = await App.CurrentSpaceManager.GetMyNearSpacesAsync();
-                    if (spaces != null)
-                    {
-                        uiExplorerSpaceList.Visibility = Visibility.Visible;
-                        uiNoSpaceMessage.Visibility = Visibility.Collapsed;
-                        CurrentSpaceViewModel.Items.Clear();
-                        foreach (Space space in spaces)
-                            CurrentSpaceViewModel.Items.Add(space);
-                        this.DataContext = CurrentSpaceViewModel;
-                    }
-                    else
-                    {
-                        uiExplorerSpaceList.Visibility = Visibility.Collapsed;
-                        uiNoSpaceMessage.Visibility = Visibility.Visible;
-                    }
-                    base.SetProgressIndicator(false);
                     break;
 
                 case RECENT_PIVOT:
                     break;
 
                 case MY_SPACES_PIVOT:
+
+                    // If there is spaces, Clear and Add spaces to list
+                    // Otherwise, Show none message.
+                    base.SetProgressIndicator(true);
+                    MobileServiceCollection<Space, Space> spaces = await App.CurrentSpaceManager.GetMySpacesAsync();
+                    if (spaces != null)
+                    {
+                        uiMySpaceList.Visibility = Visibility.Visible;
+                        uiNoSpaceMessage.Visibility = Visibility.Collapsed;
+                        CurrentSpaceViewModel.Items.Clear();
+                        foreach (Space space in spaces)
+                            CurrentSpaceViewModel.Items.Add(space);
+                    }
+                    else
+                    {
+                        uiMySpaceList.Visibility = Visibility.Collapsed;
+                        uiNoSpaceMessage.Visibility = Visibility.Visible;
+                    }
+                    base.SetProgressIndicator(false);
                     break;
             }
         }

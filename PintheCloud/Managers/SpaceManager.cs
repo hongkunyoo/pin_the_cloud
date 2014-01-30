@@ -14,6 +14,6 @@ namespace PintheCloud.Managers
     {
         void SetAccountWorker(SpaceWorker CurrentSpaceWorker);
 
-        Task<MobileServiceCollection<Space, Space>> GetMyNearSpacesAsync();
+        Task<MobileServiceCollection<Space, Space>> GetMySpacesAsync();
     }
 }

@@ -160,6 +160,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   There is no your space. Make it yours.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoMySpaceMessage {
+            get {
+                return ResourceManager.GetString("NoMySpaceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Profile과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Profile {

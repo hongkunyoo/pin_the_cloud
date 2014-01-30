@@ -170,4 +170,7 @@
   <data name="Wait" xml:space="preserve">
     <value>Please Wait...</value>
   </data>
+  <data name="NoMySpaceMessage" xml:space="preserve">
+    <value>There is no your space. Make it yours.</value>
+  </data>
 </root>

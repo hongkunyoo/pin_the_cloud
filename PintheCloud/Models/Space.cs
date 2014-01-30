@@ -14,7 +14,7 @@ namespace PintheCloud.Models
 
         [JsonProperty(PropertyName = "space_name")]
         public string space_name { get; set; }
-        public string Space_name
+        public string SpaceName
         {
             get
             {
@@ -25,14 +25,14 @@ namespace PintheCloud.Models
                 if (space_name != value)
                 {
                     space_name = value;
-                    NotifyPropertyChanged("Space_name");
+                    NotifyPropertyChanged("SpaceName");
                 }
             }
         }
 
         [JsonProperty(PropertyName = "space_latitude")]
         public double space_latitude { get; set; }
-        public double Space_latitude
+        public double SpaceLatitude
         {
             get
             {
@@ -43,14 +43,14 @@ namespace PintheCloud.Models
                 if (space_latitude != value)
                 {
                     space_latitude = value;
-                    NotifyPropertyChanged("Space_latitude");
+                    NotifyPropertyChanged("SpaceLatitude");
                 }
             }
         }
 
         [JsonProperty(PropertyName = "space_longtitude")]
         public double space_longtitude { get; set; }
-        public double Space_longtitude
+        public double SpaceLongtitude
         {
             get
             {
@@ -61,14 +61,14 @@ namespace PintheCloud.Models
                 if (space_longtitude != value)
                 {
                     space_longtitude = value;
-                    NotifyPropertyChanged("Space_longtitude");
+                    NotifyPropertyChanged("SpaceLongtitude");
                 }
             }
         }
 
         [JsonProperty(PropertyName = "account_id")]
         public string account_id { get; set; }
-        public string Account_id
+        public string AccountId
         {
             get
             {
@@ -79,14 +79,14 @@ namespace PintheCloud.Models
                 if (account_id != value)
                 {
                     account_id = value;
-                    NotifyPropertyChanged("Account_id");
+                    NotifyPropertyChanged("AccountId");
                 }
             }
         }
 
         [JsonProperty(PropertyName = "space_like_number")]
         public int space_like_number { get; set; }
-        public int Space_like_number
+        public int SpaceLikeNumber
         {
             get
             {
@@ -97,7 +97,7 @@ namespace PintheCloud.Models
                 if (space_like_number != value)
                 {
                     space_like_number = value;
-                    NotifyPropertyChanged("Space_like_number");
+                    NotifyPropertyChanged("SpaceLikeNumber");
                 }
             }
         }
