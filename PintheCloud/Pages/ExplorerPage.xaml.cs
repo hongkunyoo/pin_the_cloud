@@ -22,9 +22,6 @@ namespace PintheCloud.Pages
         private const int RECENT_PIVOT = 1;
         private const int MY_SPACES_PIVOT = 2;
 
-        // TODO
-        public SpaceViewModel SpaceViewModel { get; set; }
-
 
         public ExplorerPage()
         {

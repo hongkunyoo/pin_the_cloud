@@ -85,7 +85,7 @@ namespace PintheCloud.Workers
             {
                 // Get live connection session
                 LiveAuthClient liveAuthClient = new LiveAuthClient(GlobalKeys.AZURE_CLIENT_ID);
-                LiveLoginResult liveLoginResult = await liveAuthClient.LoginAsync(new[] { "wl.basic, wl.offline_access, wl.skydrive" });
+                LiveLoginResult liveLoginResult = await liveAuthClient.LoginAsync(new[] { "wl.basic, wl.skydrive" });
                 if (liveLoginResult.Status == LiveConnectSessionStatus.Connected)
                 {
                     // Register the session which we get above
