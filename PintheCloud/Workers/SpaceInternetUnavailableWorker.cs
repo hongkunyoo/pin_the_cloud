@@ -11,7 +11,7 @@ namespace PintheCloud.Workers
 {
     public class SpaceInternetUnavailableWorker : SpaceWorker
     {
-        public override Task<MobileServiceCollection<Space, Space>> GetSpaceViewModelAsync(string account_id)
+        public override Task<MobileServiceCollection<Space, Space>> GetMyNearSpacesAsync(string account_id)
         {
             // TODO
             return null;

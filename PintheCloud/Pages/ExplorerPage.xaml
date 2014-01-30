@@ -47,6 +47,7 @@
 							</DataTemplate>
                     </phone:LongListSelector.ItemTemplate>
 					</phone:LongListSelector>
+					<TextBlock x:Name="uiNoSpaceMessage" HorizontalAlignment="Left" TextWrapping="Wrap" Text="Cannot find any spaces from here." VerticalAlignment="Top" FontSize="26.667" Visibility="Collapsed"/>
 				</Grid>
 			</phone:PivotItem>
 

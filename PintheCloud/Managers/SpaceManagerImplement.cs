@@ -22,10 +22,9 @@ namespace PintheCloud.Managers
 
         /*** Implementation ***/
 
-        public async Task<MobileServiceCollection<Space, Space>> GetSpaceViewModelAsync()
+        public async Task<MobileServiceCollection<Space, Space>> GetMyNearSpacesAsync()
         {
-            // TODO Get Space list and set to this space view model.
-            return await this.CurrentSpaceWorker.GetSpaceViewModelAsync(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id);
+            return await this.CurrentSpaceWorker.GetMyNearSpacesAsync(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id);
         }
     }
 }

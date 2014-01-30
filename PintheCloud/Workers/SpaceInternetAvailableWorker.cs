@@ -12,15 +12,27 @@ namespace PintheCloud.Workers
     public class SpaceInternetAvailableWorker : SpaceWorker
     {
         // Get spaces from DB
-        public override async Task<MobileServiceCollection<Space, Space>> GetSpaceViewModelAsync(string account_id)
+        public override async Task<MobileServiceCollection<Space, Space>> GetMyNearSpacesAsync(string account_id)
         {
             MobileServiceCollection<Space, Space> spaces = null;
+
+            for (int i = 0; i < 10; i++)
+            {
+                try
+                {
+                    await App.MobileService.GetTable<Space>().InsertAsync(new Space("Test", 0, 0, account_id, 0));
+                }
+                catch (MobileServiceInvalidOperationException)
+                { 
+                }
+            }
+                
             try
             {
                 // TODO add algorithm of geo calculate
-                // TODO Now, just load all spaces of current account's
+                // Now, just load all spaces of current account's
                 spaces = await App.MobileService.GetTable<Space>()
-                    .Where(s => s.account_id == account_id)
+                    .Where(s => s.Account_id == account_id)
                     .ToCollectionAsync();
             }
             catch (MobileServiceInvalidOperationException)

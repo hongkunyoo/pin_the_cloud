@@ -23,20 +23,6 @@ namespace PintheCloud.ViewModels
             this.Items = new ObservableCollection<Space>();
         }
 
-        public bool IsDataLoaded
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// 몇 개의 ItemViewModel 개체를 만들어 Items 컬렉션에 추가합니다.
-        /// </summary>
-        public async void LoadData(string account_id)
-        {
-            this.IsDataLoaded = true;
-        }
-
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(String propertyName)
         {

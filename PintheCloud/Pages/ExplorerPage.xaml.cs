@@ -55,20 +55,30 @@ namespace PintheCloud.Pages
         // Construct pivot item by page index
         private async void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            // Set View model for dispaly,
             switch (uiExplorerPivot.SelectedIndex)
             { 
                 case EXPLORER_PIVOT:
-                    // Set Space View model for dispaly,
-                    
-                    
-                    CurrentSpaceViewModel.Items.Clear();
 
-                    // add items
-                    MobileServiceCollection<Space, Space> spaces = await App.CurrentSpaceManager.GetSpaceViewModelAsync();
-                    foreach(Space space in spaces)
-                        CurrentSpaceViewModel.Items.Add(space);
-                    this.DataContext = CurrentSpaceViewModel;
-                    
+                    // If there is spaces, Clear and Add spaces to list
+                    // Otherwise, Show none message.
+                    base.SetProgressIndicator(true);
+                    MobileServiceCollection<Space, Space> spaces = await App.CurrentSpaceManager.GetMyNearSpacesAsync();
+                    if (spaces != null)
+                    {
+                        uiExplorerSpaceList.Visibility = Visibility.Visible;
+                        uiNoSpaceMessage.Visibility = Visibility.Collapsed;
+                        CurrentSpaceViewModel.Items.Clear();
+                        foreach (Space space in spaces)
+                            CurrentSpaceViewModel.Items.Add(space);
+                        this.DataContext = CurrentSpaceViewModel;
+                    }
+                    else
+                    {
+                        uiExplorerSpaceList.Visibility = Visibility.Collapsed;
+                        uiNoSpaceMessage.Visibility = Visibility.Visible;
+                    }
+                    base.SetProgressIndicator(false);
                     break;
 
                 case RECENT_PIVOT:

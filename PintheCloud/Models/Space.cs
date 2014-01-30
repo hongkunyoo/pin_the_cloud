@@ -13,7 +13,7 @@ namespace PintheCloud.Models
         public string id { get; set; }
 
         [JsonProperty(PropertyName = "space_name")]
-        public string space_name;
+        public string space_name { get; set; }
         public string Space_name
         {
             get
@@ -31,7 +31,7 @@ namespace PintheCloud.Models
         }
 
         [JsonProperty(PropertyName = "space_latitude")]
-        public double space_latitude;
+        public double space_latitude { get; set; }
         public double Space_latitude
         {
             get
@@ -49,7 +49,7 @@ namespace PintheCloud.Models
         }
 
         [JsonProperty(PropertyName = "space_longtitude")]
-        public double space_longtitude;
+        public double space_longtitude { get; set; }
         public double Space_longtitude
         {
             get
@@ -67,7 +67,7 @@ namespace PintheCloud.Models
         }
 
         [JsonProperty(PropertyName = "account_id")]
-        public string account_id;
+        public string account_id { get; set; }
         public string Account_id
         {
             get
@@ -85,7 +85,7 @@ namespace PintheCloud.Models
         }
 
         [JsonProperty(PropertyName = "space_like_number")]
-        public int space_like_number;
+        public int space_like_number { get; set; }
         public int Space_like_number
         {
             get
@@ -111,6 +111,7 @@ namespace PintheCloud.Models
             this.account_id = account_id;
             this.space_like_number = space_like_number;
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(String propertyName)
