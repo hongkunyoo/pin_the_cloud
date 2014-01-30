@@ -16,7 +16,7 @@ namespace PintheCloud.ViewModels
         /// <summary>
         /// ItemViewModel 개체에 대한 컬렉션입니다.
         /// </summary>
-        public ObservableCollection<Space> Items { get; set; }
+        public ObservableCollection<Space> Items { get; private set; }
 
         public SpaceViewModel()
         {

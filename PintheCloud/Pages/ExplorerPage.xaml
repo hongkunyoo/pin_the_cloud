@@ -34,18 +34,18 @@
 			<!--피벗 항목 1-->
 			<phone:PivotItem Header="{Binding LocalizedResources.Explorer, Source={StaticResource LocalizedStrings}}">
 				<Grid>
-					<phone:LongListSelector x:Name="uiExplorerSpaceList" ItemsSource="{Binding}">
-						<phone:LongListSelector.Resources>
-							<DataTemplate x:Key="ExplorerSpaceListTemplate">
+					<phone:LongListSelector x:Name="uiExplorerSpaceList" ItemsSource="{Binding Items}">
+						<phone:LongListSelector.ItemTemplate>
+							<DataTemplate>
 								<Grid>
 									<StackPanel>
-										<TextBlock x:Name="uiExplorerSpaceName" TextWrapping="Wrap" Text="{Binding space_name, Mode=TwoWay}"/>
-										<TextBlock x:Name="uiExplorerSpaceLikeNumber" TextWrapping="Wrap" Text="{Binding space_like_number, Mode=TwoWay}"/>
-										<TextBlock x:Name="uiExplorerSpaceDescription" TextWrapping="Wrap" Text="{Binding space_latitude}"/>
+										<TextBlock x:Name="uiExplorerSpaceName" TextWrapping="Wrap" Text="{Binding Space_name, Mode=TwoWay}"/>
+										<TextBlock x:Name="uiExplorerSpaceLikeNumber" TextWrapping="Wrap" Text="{Binding Space_like_number, Mode=TwoWay}"/>
+										<TextBlock x:Name="uiExplorerSpaceDescription" TextWrapping="Wrap" Text="{Binding Space_latitude}"/>
 									</StackPanel>
 								</Grid>
 							</DataTemplate>
-						</phone:LongListSelector.Resources>
+                    </phone:LongListSelector.ItemTemplate>
 					</phone:LongListSelector>
 				</Grid>
 			</phone:PivotItem>

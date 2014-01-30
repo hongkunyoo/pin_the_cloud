@@ -12,6 +12,8 @@ using PintheCloud.Managers;
 using System.Threading.Tasks;
 using PintheCloud.Workers;
 using PintheCloud.ViewModels;
+using PintheCloud.Models;
+using Microsoft.WindowsAzure.MobileServices;
 
 namespace PintheCloud.Pages
 {
@@ -62,8 +64,10 @@ namespace PintheCloud.Pages
                     CurrentSpaceViewModel.Items.Clear();
 
                     // add items
-                    await App.CurrentSpaceManager.GetSpaceViewModelAsync();
-                    //CurrentSpaceViewModel.Items.Add()
+                    MobileServiceCollection<Space, Space> spaces = await App.CurrentSpaceManager.GetSpaceViewModelAsync();
+                    foreach(Space space in spaces)
+                        CurrentSpaceViewModel.Items.Add(space);
+                    this.DataContext = CurrentSpaceViewModel;
                     
                     break;
 
