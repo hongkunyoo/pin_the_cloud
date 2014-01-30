@@ -8,11 +8,21 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Microsoft.Phone.Net.NetworkInformation;
+using PintheCloud.Managers;
+using System.Threading.Tasks;
+using PintheCloud.Workers;
+using PintheCloud.ViewModels;
 
 namespace PintheCloud.Pages
 {
     public partial class ExplorerPage : PtcPage
     {
+        // Instances
+        private const int EXPLORER_PIVOT = 0;
+        private const int RECENT_PIVOT = 1;
+        private const int MY_SPACES_PIVOT = 2;
+
+
         public ExplorerPage()
         {
             InitializeComponent();
@@ -21,26 +31,39 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            
+
             // Check if it is on the backstack from SplashPage and remove that.
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
 
-            // If Internet is good, get new information from Internet,
-            // Otherwise get old information from local sqlite.
-            if (NetworkInterface.GetIsNetworkAvailable())
-            {
-                // TODO get new information from Internet,
-            }
-            else
-            {
-                // TODO get old information from local sqlite.
-            }
+            // Get different Space Worker by internet state.
+            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+            else  // Internet bad.
+                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetUnavailableWorker());
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+        }
+
+        // Construct pivot item by page index
+        private void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            switch (uiExplorerPivot.SelectedIndex)
+            { 
+                case EXPLORER_PIVOT:
+                    // Set Space View model for dispaly,
+                    //await App.CurrentSpaceManager.GetSpaceViewModelAsync();
+                    break;
+
+                case RECENT_PIVOT:
+                    break;
+
+                case MY_SPACES_PIVOT:
+                    break;
+            }
         }
 
         // Move to Setting Page

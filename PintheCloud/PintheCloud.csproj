@@ -96,11 +96,18 @@
     </Compile>
     <Compile Include="GlobalKeys.cs" />
     <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="Managers\SpaceManager.cs" />
+    <Compile Include="Managers\SpaceManagerImplement.cs" />
+    <Compile Include="Models\Space.cs" />
+    <Compile Include="Workers\AccountWorker.cs" />
+    <Compile Include="Workers\AccountInternetUnavailableWorker.cs" />
     <Compile Include="Managers\AccountManager.cs" />
     <Compile Include="Managers\FileManager.cs" />
     <Compile Include="Map\Page1.xaml.cs">
       <DependentUpon>Page1.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Managers\AccountManagerImplement.cs" />
+    <Compile Include="Workers\AccountInternetAvailableWorker.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountType.cs" />
     <Compile Include="Pages\PtcPage.cs" />
@@ -121,6 +128,9 @@
     </Compile>
     <Compile Include="ViewModels\SpaceViewModel.cs" />
     <Compile Include="ViewModels\SpaceViewModelItem.cs" />
+    <Compile Include="Workers\SpaceInternetAvailableWorker.cs" />
+    <Compile Include="Workers\SpaceInternetUnavailableWorker.cs" />
+    <Compile Include="Workers\SpaceWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

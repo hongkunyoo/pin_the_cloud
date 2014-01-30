@@ -24,19 +24,13 @@ namespace PintheCloud.Pages
 
         public PtcPage()
         {
-            //InitializeComponent();
-        }
-        /*
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        public void SetSystemTray(bool value)
         {
-            base.OnNavigatedFrom(e);
+            SystemTray.IsVisible = value;
         }
-        */
+
         public void SetProgressIndicator(bool value, string text = "")
         {
             App.ProgressIndicator.IsIndeterminate = value;
@@ -44,6 +38,5 @@ namespace PintheCloud.Pages
             App.ProgressIndicator.Text = text;
             SystemTray.SetProgressIndicator(this, App.ProgressIndicator);
         }
-        
     }
 }
