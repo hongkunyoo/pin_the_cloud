@@ -12,6 +12,8 @@ using PintheCloud.Managers;
 using System.Threading.Tasks;
 using PintheCloud.Workers;
 using PintheCloud.ViewModels;
+using PintheCloud.Models;
+using Microsoft.WindowsAzure.MobileServices;
 
 namespace PintheCloud.Pages
 {
@@ -21,6 +23,8 @@ namespace PintheCloud.Pages
         private const int EXPLORER_PIVOT = 0;
         private const int RECENT_PIVOT = 1;
         private const int MY_SPACES_PIVOT = 2;
+
+        public SpaceViewModel CurrentSpaceViewModel = new SpaceViewModel();
 
 
         public ExplorerPage()
@@ -36,11 +40,8 @@ namespace PintheCloud.Pages
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
 
-            // Get different Space Worker by internet state.
-            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
-                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
-            else  // Internet bad.
-                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetUnavailableWorker());
+            // Set data context to space view model of this.
+            this.DataContext = CurrentSpaceViewModel;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -49,19 +50,43 @@ namespace PintheCloud.Pages
         }
 
         // Construct pivot item by page index
-        private void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private async void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            // Get different Space Worker by internet state.
+            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+            else  // Internet bad.
+                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetUnavailableWorker());
+            
+            // Set View model for dispaly,
             switch (uiExplorerPivot.SelectedIndex)
             { 
                 case EXPLORER_PIVOT:
-                    // Set Space View model for dispaly,
-                    //await App.CurrentSpaceManager.GetSpaceViewModelAsync();
                     break;
 
                 case RECENT_PIVOT:
                     break;
 
                 case MY_SPACES_PIVOT:
+
+                    // If there is spaces, Clear and Add spaces to list
+                    // Otherwise, Show none message.
+                    base.SetProgressIndicator(true);
+                    MobileServiceCollection<Space, Space> spaces = await App.CurrentSpaceManager.GetMySpacesAsync();
+                    if (spaces != null)
+                    {
+                        uiMySpaceList.Visibility = Visibility.Visible;
+                        uiNoSpaceMessage.Visibility = Visibility.Collapsed;
+                        CurrentSpaceViewModel.Items.Clear();
+                        foreach (Space space in spaces)
+                            CurrentSpaceViewModel.Items.Add(space);
+                    }
+                    else
+                    {
+                        uiMySpaceList.Visibility = Visibility.Collapsed;
+                        uiNoSpaceMessage.Visibility = Visibility.Visible;
+                    }
+                    base.SetProgressIndicator(false);
                     break;
             }
         }

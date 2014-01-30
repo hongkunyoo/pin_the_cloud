@@ -1,4 +1,6 @@
-﻿using PintheCloud.ViewModels;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using PintheCloud.Models;
+using PintheCloud.ViewModels;
 using PintheCloud.Workers;
 using System;
 using System.Collections.Generic;
@@ -12,6 +14,6 @@ namespace PintheCloud.Managers
     {
         void SetAccountWorker(SpaceWorker CurrentSpaceWorker);
 
-        Task<SpaceViewModel> GetSpaceViewModelAsync();
+        Task<MobileServiceCollection<Space, Space>> GetMySpacesAsync();
     }
 }
