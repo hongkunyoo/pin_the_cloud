@@ -22,6 +22,8 @@ namespace PintheCloud.Pages
         private const int RECENT_PIVOT = 1;
         private const int MY_SPACES_PIVOT = 2;
 
+        public SpaceViewModel CurrentSpaceViewModel = new SpaceViewModel();
+
 
         public ExplorerPage()
         {
@@ -49,13 +51,20 @@ namespace PintheCloud.Pages
         }
 
         // Construct pivot item by page index
-        private void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private async void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             switch (uiExplorerPivot.SelectedIndex)
             { 
                 case EXPLORER_PIVOT:
                     // Set Space View model for dispaly,
-                    //await App.CurrentSpaceManager.GetSpaceViewModelAsync();
+                    
+                    
+                    CurrentSpaceViewModel.Items.Clear();
+
+                    // add items
+                    await App.CurrentSpaceManager.GetSpaceViewModelAsync();
+                    //CurrentSpaceViewModel.Items.Add()
+                    
                     break;
 
                 case RECENT_PIVOT:

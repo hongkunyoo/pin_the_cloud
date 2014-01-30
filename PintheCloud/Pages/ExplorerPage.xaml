@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:Managers="clr-namespace:PintheCloud.Managers"
+	xmlns:System="clr-namespace:System;assembly=mscorlib"
 	x:Class="PintheCloud.Pages.ExplorerPage"
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -33,14 +34,14 @@
 			<!--피벗 항목 1-->
 			<phone:PivotItem Header="{Binding LocalizedResources.Explorer, Source={StaticResource LocalizedStrings}}">
 				<Grid>
-					<phone:LongListSelector x:Name="uiExplorerSpaceList">
+					<phone:LongListSelector x:Name="uiExplorerSpaceList" ItemsSource="{Binding}">
 						<phone:LongListSelector.Resources>
 							<DataTemplate x:Key="ExplorerSpaceListTemplate">
 								<Grid>
 									<StackPanel>
-										<TextBlock x:Name="uiExplorerSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}"/>
-										<TextBlock x:Name="uiExplorerSpaceLikeNumber" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}"/>
-										<TextBlock x:Name="uiExplorerSpaceDescription" TextWrapping="Wrap" Text="{Binding SpaceDescription}"/>
+										<TextBlock x:Name="uiExplorerSpaceName" TextWrapping="Wrap" Text="{Binding space_name, Mode=TwoWay}"/>
+										<TextBlock x:Name="uiExplorerSpaceLikeNumber" TextWrapping="Wrap" Text="{Binding space_like_number, Mode=TwoWay}"/>
+										<TextBlock x:Name="uiExplorerSpaceDescription" TextWrapping="Wrap" Text="{Binding space_latitude}"/>
 									</StackPanel>
 								</Grid>
 							</DataTemplate>

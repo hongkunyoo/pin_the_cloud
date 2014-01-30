@@ -96,6 +96,8 @@
     </Compile>
     <Compile Include="GlobalKeys.cs" />
     <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="Managers\GeoCalculateManager.cs" />
+    <Compile Include="Managers\GeoCalculateManagerImplement.cs" />
     <Compile Include="Managers\SpaceManager.cs" />
     <Compile Include="Managers\SpaceManagerImplement.cs" />
     <Compile Include="Models\Space.cs" />
