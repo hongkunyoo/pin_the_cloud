@@ -13,5 +13,10 @@ namespace PintheCloud.Managers
             // TODO Use math algorightm
             return 0;
         }
+
+        public double GetCurrentPosition()
+        {
+            return 0;
+        }
     }
 }

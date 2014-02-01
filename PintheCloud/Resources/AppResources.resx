@@ -173,4 +173,16 @@
   <data name="NoMySpaceMessage" xml:space="preserve">
     <value>There is no your space. Make it yours.</value>
   </data>
+  <data name="LocationAccess" xml:space="preserve">
+    <value>Location Access</value>
+  </data>
+  <data name="LocationAccessMessage" xml:space="preserve">
+    <value>This app accesses your phone's location. Is that ok?</value>
+  </data>
+  <data name="LogoutMessage" xml:space="preserve">
+    <value>Do you want logout? Your setting will be intialized.</value>
+  </data>
+  <data name="NoNearSpaceMessage" xml:space="preserve">
+    <value>There is no space near from here. Make it yours.</value>
+  </data>
 </root>

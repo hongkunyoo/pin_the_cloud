@@ -41,8 +41,15 @@ namespace PintheCloud.Pages
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
 
-            // Set data context to space view model of this.
-            this.DataContext = CurrentSpaceViewModel;
+            // Check whether user consented for location access.
+            if (base.GetLocationAccessConsent())  // Got consent of location access.
+            {
+
+            }
+            else  // First or not consented of access in location information.
+            {
+                
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -78,13 +85,14 @@ namespace PintheCloud.Pages
                     if (items != null)
                     {
                         uiMySpaceList.Visibility = Visibility.Visible;
-                        uiNoSpaceMessage.Visibility = Visibility.Collapsed;
+                        uiNoMySpaceMessage.Visibility = Visibility.Collapsed;
                         CurrentSpaceViewModel.Items = items;
+                        this.DataContext = CurrentSpaceViewModel;
                     }
                     else
                     {
                         uiMySpaceList.Visibility = Visibility.Collapsed;
-                        uiNoSpaceMessage.Visibility = Visibility.Visible;
+                        uiNoMySpaceMessage.Visibility = Visibility.Visible;
                     }
                     base.SetProgressIndicator(false);
                     break;

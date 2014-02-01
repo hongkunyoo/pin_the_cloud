@@ -9,6 +9,6 @@ namespace PintheCloud.Managers
     public interface GeoCalculateManager
     {
         double GetDistanceFromLatitudeLongtitude(double latitude, double longtitude);
-        // TODO Get current location information using GPS.
+        double GetCurrentPosition();
     }
 }

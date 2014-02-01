@@ -11,8 +11,12 @@ namespace PintheCloud
         // Azure
         public static string AZURE_CLIENT_ID = "0000000044110129";
 
-        // Platform Id
+
+        // App
+        public static string LOCATION_ACCESS = "LOCATION_ACCESS";
+
+
+        // Platform Type
         public static string MICROSOFT = "Microsoft";
-         
     }
 }

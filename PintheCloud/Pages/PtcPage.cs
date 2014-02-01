@@ -38,5 +38,23 @@ namespace PintheCloud.Pages
             App.ProgressIndicator.Text = text;
             SystemTray.SetProgressIndicator(this, App.ProgressIndicator);
         }
+
+        public bool GetLocationAccessConsent()
+        {
+            bool locationAccess = false;
+            App.ApplicationSettings.TryGetValue<bool>(GlobalKeys.LOCATION_ACCESS, out locationAccess);
+            if (!locationAccess)  // First or not consented of access in location information.
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.LocationAccessMessage, AppResources.LocationAccess, MessageBoxButton.OKCancel);
+
+                if (result == MessageBoxResult.OK)
+                    App.ApplicationSettings[GlobalKeys.LOCATION_ACCESS] = true;
+                else
+                    App.ApplicationSettings[GlobalKeys.LOCATION_ACCESS] = false;
+                App.ApplicationSettings.Save();
+            }
+
+            return (bool) App.ApplicationSettings[GlobalKeys.LOCATION_ACCESS];
+        }
     }
 }

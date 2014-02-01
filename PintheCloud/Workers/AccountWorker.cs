@@ -58,16 +58,17 @@ namespace PintheCloud.Workers
         // Save profile information to local isolated App settings.
         protected void SaveProfileReslutToAppSettings(Account account)
         {
-            App.ApplicationSettings.Add(Account.ACCOUNT_IS_LOGIN, true);
-            App.ApplicationSettings.Add(Account.ACCOUNT_PLATFORM_ID, account.account_platform_id);
-            App.ApplicationSettings.Add(Account.ACCOUNT_PLATFORM_ID_TYPE, account.account_platform_id_type);
-            App.ApplicationSettings.Add(Account.ACCOUNT_NAME, account.account_name);
-            App.ApplicationSettings.Add(Account.ACCOUNT_FIRST_NAME, account.account_first_name);
-            App.ApplicationSettings.Add(Account.ACCOUNT_LAST_NAME, account.account_last_name);
-            App.ApplicationSettings.Add(Account.ACCOUNT_LOCAL, account.account_locale);
-            App.ApplicationSettings.Add(Account.ACCOUNT_TOKEN, account.account_token);
-            App.ApplicationSettings.Add(Account.ACCOUNT_USED_SIZE, account.account_used_size);
-            App.ApplicationSettings.Add(Account.ACCOUNT_TYPE_NAME, account.account_type_name);
+            App.ApplicationSettings[Account.ACCOUNT_IS_LOGIN] = true;
+            App.ApplicationSettings[Account.ACCOUNT_PLATFORM_ID] = account.account_platform_id;
+            App.ApplicationSettings[Account.ACCOUNT_PLATFORM_ID_TYPE] = account.account_platform_id_type;
+            App.ApplicationSettings[Account.ACCOUNT_NAME] = account.account_name;
+            App.ApplicationSettings[Account.ACCOUNT_FIRST_NAME] = account.account_first_name;
+            App.ApplicationSettings[Account.ACCOUNT_LAST_NAME] = account.account_last_name;
+            App.ApplicationSettings[Account.ACCOUNT_LOCAL] = account.account_locale;
+            App.ApplicationSettings[Account.ACCOUNT_TOKEN] = account.account_token;
+            App.ApplicationSettings[Account.ACCOUNT_USED_SIZE] = account.account_used_size;
+            App.ApplicationSettings[Account.ACCOUNT_TYPE_NAME] = account.account_type_name;
+            App.ApplicationSettings.Save();
         }
 
 

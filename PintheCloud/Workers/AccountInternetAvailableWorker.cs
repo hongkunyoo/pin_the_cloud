@@ -70,7 +70,6 @@ namespace PintheCloud.Workers
 
                 // If it success to insert account to DB,
                 // Save it's information to isolated storage.
-                base.RemoveProfileReslutFromAppSettings();
                 base.SaveProfileReslutToAppSettings(account);
             }
             return account;
@@ -85,7 +84,7 @@ namespace PintheCloud.Workers
             {
                 // Get live connection session
                 LiveAuthClient liveAuthClient = new LiveAuthClient(GlobalKeys.AZURE_CLIENT_ID);
-                LiveLoginResult liveLoginResult = await liveAuthClient.LoginAsync(new[] { "wl.basic, wl.skydrive" });
+                LiveLoginResult liveLoginResult = await liveAuthClient.LoginAsync(new[] { "wl.basic, wl.offline_access, wl.skydrive" });
                 if (liveLoginResult.Status == LiveConnectSessionStatus.Connected)
                 {
                     // Register the session which we get above
