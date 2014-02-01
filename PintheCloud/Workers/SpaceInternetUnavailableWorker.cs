@@ -13,7 +13,7 @@ namespace PintheCloud.Workers
     {
         public override Task<MobileServiceCollection<Space, Space>> GetMySpacesAsync(string account_id)
         {
-            // TODO
+            // TODO Get my spaces from internal DB
             return null;
         }
     }

@@ -8,6 +8,10 @@ namespace PintheCloud.Managers
 {
     public class GeoCalculateManagerImplement : GeoCalculateManager
     {
-
+        public double GetDistanceFromLatitudeLongtitude(double latitude, double longtitude)
+        {
+            // TODO Use math algorightm
+            return 0;
+        }
     }
 }

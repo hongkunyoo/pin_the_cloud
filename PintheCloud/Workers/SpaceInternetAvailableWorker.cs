@@ -26,7 +26,10 @@ namespace PintheCloud.Workers
             {
             }
 
-            return spaces;
+            if (spaces.Count > 0)
+                return spaces;
+            else
+                return null;
         }
     }
 }

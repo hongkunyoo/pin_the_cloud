@@ -101,6 +101,7 @@
     <Compile Include="Managers\SpaceManager.cs" />
     <Compile Include="Managers\SpaceManagerImplement.cs" />
     <Compile Include="Models\Space.cs" />
+    <Compile Include="ViewModels\SpaceViewItem.cs" />
     <Compile Include="Workers\AccountWorker.cs" />
     <Compile Include="Workers\AccountInternetUnavailableWorker.cs" />
     <Compile Include="Managers\AccountManager.cs" />

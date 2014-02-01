@@ -14,6 +14,7 @@ using PintheCloud.Workers;
 using PintheCloud.ViewModels;
 using PintheCloud.Models;
 using Microsoft.WindowsAzure.MobileServices;
+using System.Collections.ObjectModel;
 
 namespace PintheCloud.Pages
 {
@@ -62,6 +63,7 @@ namespace PintheCloud.Pages
             switch (uiExplorerPivot.SelectedIndex)
             { 
                 case EXPLORER_PIVOT:
+                    // TODO load near space use GPS information
                     break;
 
                 case RECENT_PIVOT:
@@ -72,14 +74,12 @@ namespace PintheCloud.Pages
                     // If there is spaces, Clear and Add spaces to list
                     // Otherwise, Show none message.
                     base.SetProgressIndicator(true);
-                    MobileServiceCollection<Space, Space> spaces = await App.CurrentSpaceManager.GetMySpacesAsync();
-                    if (spaces != null)
+                    ObservableCollection<SpaceViewItem> items = await App.CurrentSpaceManager.GetMySpaceViewItemsAsync();
+                    if (items != null)
                     {
                         uiMySpaceList.Visibility = Visibility.Visible;
                         uiNoSpaceMessage.Visibility = Visibility.Collapsed;
-                        CurrentSpaceViewModel.Items.Clear();
-                        foreach (Space space in spaces)
-                            CurrentSpaceViewModel.Items.Add(space);
+                        CurrentSpaceViewModel.Items = items;
                     }
                     else
                     {
