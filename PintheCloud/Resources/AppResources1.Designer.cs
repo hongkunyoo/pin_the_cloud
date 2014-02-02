@@ -88,6 +88,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   GPS doesn&apos;t work well not. Please load it again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadGpsMessage {
+            get {
+                return ResourceManager.GetString("BadGpsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Login failed과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string BadLoginCaption {
@@ -187,11 +196,29 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Location serivces are disabled. Please enable it at your system to use GPS.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoGpsOnMessage {
+            get {
+                return ResourceManager.GetString("NoGpsOnMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Interent unavailable과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoInternetCaption {
             get {
                 return ResourceManager.GetString("NoInternetCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   This app requires consent to access location information. Please consent it.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoLocationAcessConsentMessage {
+            get {
+                return ResourceManager.GetString("NoLocationAcessConsentMessage", resourceCulture);
             }
         }
         
