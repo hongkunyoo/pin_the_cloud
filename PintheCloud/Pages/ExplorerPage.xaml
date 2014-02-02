@@ -19,6 +19,8 @@
 
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBarEditButton">
+        	<shell:ApplicationBarIconButton x:Name="uiAppBarMapButton" IsEnabled="True" Text="map" Click="uiAppBarMapButton_Click" IconUri="/Assets/AppBar/basecircle.png"/>
+        	<shell:ApplicationBarIconButton x:Name="uiAppBarMakeSpaceButton" IconUri="/Assets/AppBar/folder.png" IsEnabled="True" Text="make space" Click="uiAppBarMakeSpaceButton_Click"/>
         	<shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/AppBar/feature.settings.png" IsEnabled="True" 
         		Text="settings" Click="uiAppBarSettingsButton_Click"/>
         </shell:ApplicationBar>
@@ -33,7 +35,15 @@
 		<phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged">
 			<!--피벗 항목 1-->
 			<phone:PivotItem Header="{Binding LocalizedResources.Explorer, Source={StaticResource LocalizedStrings}}">
-				<Grid/>
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="70"/>
+						<RowDefinition/>
+					</Grid.RowDefinitions>
+					<Button x:Name="uiRefreshButton" Content="Refresh" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" Click="uiRefreshButton_Click"/>
+					<phone:LongListSelector x:Name="uiNearSpaceList" Grid.RowSpan="2"/>
+					<TextBlock x:Name="uiNearSpaceMessage" TextWrapping="Wrap" FontSize="26.667" Visibility="Collapsed" Grid.Row="1"/>
+				</Grid>
 			</phone:PivotItem>
 
 			<!--피벗 항목 2-->
@@ -49,14 +59,14 @@
 								<Grid>
 									<StackPanel>
 										<TextBlock x:Name="uiMySpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}"/>
-										<TextBlock x:Name="uiMySpaceLikeNumber" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}"/>
-										<TextBlock x:Name="uiMySpaceDescription" TextWrapping="Wrap" Text="{Binding SpaceLatitude}"/>
+										<TextBlock x:Name="uiMySpaceLikeNumber" TextWrapping="Wrap" Text="{Binding SpaceLikeDescription}"/>
+										<TextBlock x:Name="uiMySpaceDescription" TextWrapping="Wrap" Text="{Binding SpaceDescription}"/>
 									</StackPanel>
 								</Grid>
 							</DataTemplate>
                     </phone:LongListSelector.ItemTemplate>
 					</phone:LongListSelector>
-					<TextBlock x:Name="uiNoSpaceMessage" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding LocalizedResources.NoMySpaceMessage, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Top" FontSize="26.667" Visibility="Collapsed"/>
+					<TextBlock x:Name="uiMySpaceMessage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="26.667" Visibility="Collapsed"/>
 				</Grid>
 			</phone:PivotItem>
 		</phone:Pivot>

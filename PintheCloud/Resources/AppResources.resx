@@ -138,7 +138,7 @@
     <value>Login failed</value>
   </data>
   <data name="BadLoginMessage" xml:space="preserve">
-    <value>Login process stopped. Please try it again.</value>
+    <value>Login process stopped. Please try it again</value>
   </data>
   <data name="Explorer" xml:space="preserve">
     <value>Explorer</value>
@@ -155,8 +155,8 @@
   <data name="NoInternetCaption" xml:space="preserve">
     <value>Interent unavailable</value>
   </data>
-  <data name="NoInternetMessage" xml:space="preserve">
-    <value>Please make sure connection with Internet.</value>
+  <data name="InternetUnavailableMessage" xml:space="preserve">
+    <value>Sorry. Could not connect to Pin the Cloud. Please make sure connection with Internet and try again.</value>
   </data>
   <data name="Profile" xml:space="preserve">
     <value>Profile</value>
@@ -167,10 +167,22 @@
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
-  <data name="Wait" xml:space="preserve">
-    <value>Please Wait...</value>
-  </data>
   <data name="NoMySpaceMessage" xml:space="preserve">
     <value>There is no your space. Make it yours.</value>
+  </data>
+  <data name="LocationAccess" xml:space="preserve">
+    <value>Location Access</value>
+  </data>
+  <data name="LocationAccessMessage" xml:space="preserve">
+    <value>This app accesses your phone's location. Is that ok?</value>
+  </data>
+  <data name="LogoutMessage" xml:space="preserve">
+    <value>Do you want logout? Your setting will be intialized.</value>
+  </data>
+  <data name="NoNearSpaceMessage" xml:space="preserve">
+    <value>There is no near space. Make it yours.</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Loading...</value>
   </data>
 </root>

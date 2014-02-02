@@ -14,6 +14,9 @@ using PintheCloud.Workers;
 using PintheCloud.ViewModels;
 using PintheCloud.Models;
 using Microsoft.WindowsAzure.MobileServices;
+using System.Collections.ObjectModel;
+using Windows.Devices.Geolocation;
+using PintheCloud.Resources;
 
 namespace PintheCloud.Pages
 {
@@ -40,8 +43,15 @@ namespace PintheCloud.Pages
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
 
-            // Set data context to space view model of this.
-            this.DataContext = CurrentSpaceViewModel;
+            // Check whether user consented for location access.
+            if (base.GetLocationAccessConsent())  // Got consent of location access.
+            {
+
+            }
+            else  // First or not consented of access in location information.
+            {
+                
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -52,49 +62,95 @@ namespace PintheCloud.Pages
         // Construct pivot item by page index
         private async void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            // Get different Space Worker by internet state.
-            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
-                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
-            else  // Internet bad.
-                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetUnavailableWorker());
-            
             // Set View model for dispaly,
             switch (uiExplorerPivot.SelectedIndex)
             { 
                 case EXPLORER_PIVOT:
+                    
+                    // Get different Space Worker by internet state.
+                    if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+                    {
+                        App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+
+                        // TODO If there is spaces, Clear and Add spaces to list
+                        // TODO Otherwise, Show none message.
+                        // TODO load near space use GPS information
+                    }
+                    else  // Internet bad.
+                    {
+                        // Show bad Internet message box.
+                        uiNearSpaceList.Visibility = Visibility.Collapsed;
+                        uiNearSpaceMessage.Text = AppResources.InternetUnavailableMessage;
+                        uiNearSpaceMessage.Visibility = Visibility.Visible;
+                    }
                     break;
 
                 case RECENT_PIVOT:
+                    // TODO
                     break;
 
                 case MY_SPACES_PIVOT:
 
-                    // If there is spaces, Clear and Add spaces to list
-                    // Otherwise, Show none message.
-                    base.SetProgressIndicator(true);
-                    MobileServiceCollection<Space, Space> spaces = await App.CurrentSpaceManager.GetMySpacesAsync();
-                    if (spaces != null)
+                    // Get different Space Worker by internet state.
+                    if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
                     {
-                        uiMySpaceList.Visibility = Visibility.Visible;
-                        uiNoSpaceMessage.Visibility = Visibility.Collapsed;
-                        CurrentSpaceViewModel.Items.Clear();
-                        foreach (Space space in spaces)
-                            CurrentSpaceViewModel.Items.Add(space);
+                        App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+
+                        // If there is spaces, Clear and Add spaces to list
+                        // Otherwise, Show none message.
+                        base.SetProgressIndicator(true, AppResources.Loading);
+                        ObservableCollection<SpaceViewItem> items = await App.CurrentSpaceManager.GetMySpaceViewItemsAsync();
+                        if (items != null)
+                        {
+                            uiMySpaceList.Visibility = Visibility.Visible;
+                            uiMySpaceMessage.Visibility = Visibility.Collapsed;
+                            CurrentSpaceViewModel.Items = items;
+                            this.DataContext = CurrentSpaceViewModel;
+                        }
+                        else
+                        {
+                            uiMySpaceList.Visibility = Visibility.Collapsed;
+                            uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
+                            uiMySpaceMessage.Visibility = Visibility.Visible;
+                        }
+                        base.SetProgressIndicator(false);
                     }
-                    else
+                    else  // Internet bad.
                     {
+                        // Show bad Internet message box.
                         uiMySpaceList.Visibility = Visibility.Collapsed;
-                        uiNoSpaceMessage.Visibility = Visibility.Visible;
+                        uiMySpaceMessage.Text = AppResources.InternetUnavailableMessage;
+                        uiMySpaceMessage.Visibility = Visibility.Visible;
                     }
-                    base.SetProgressIndicator(false);
                     break;
             }
         }
+
+
+        private void uiRefreshButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // TODO Load new near spaces.
+        }
+
 
         // Move to Setting Page
         private void uiAppBarSettingsButton_Click(object sender, System.EventArgs e)
         {
             NavigationService.Navigate(new Uri(PtcPage.SETTINGS_PAGE, UriKind.Relative));
+        }
+
+
+        // Move to Make Space Page
+        private void uiAppBarMakeSpaceButton_Click(object sender, System.EventArgs e)
+        {
+            NavigationService.Navigate(new Uri(PtcPage.SKYDRIVE_PICKER_PAGE, UriKind.Relative));
+        }
+
+
+        // Move to Map Page
+        private void uiAppBarMapButton_Click(object sender, System.EventArgs e)
+        {
+            NavigationService.Navigate(new Uri(PtcPage.MAP_VIEW_PAGE, UriKind.Relative));
         }
     }
 }

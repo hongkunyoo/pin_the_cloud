@@ -11,8 +11,7 @@ namespace PintheCloud
         // Azure
         public static string AZURE_CLIENT_ID = "0000000044110129";
 
-        // Platform Id
+        // Platform Type
         public static string MICROSOFT = "Microsoft";
-         
     }
 }
