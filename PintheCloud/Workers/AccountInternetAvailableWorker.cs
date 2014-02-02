@@ -94,6 +94,9 @@ namespace PintheCloud.Workers
             catch (LiveAuthException)
             {
             }
+            catch (Exception)
+            { 
+            }
             return session;
         }
 
