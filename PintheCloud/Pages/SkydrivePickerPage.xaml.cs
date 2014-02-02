@@ -10,9 +10,9 @@ using Microsoft.Phone.Shell;
 
 namespace PintheCloud.Pages
 {
-    public partial class SkydrivePickerPage : PhoneApplicationPage
+    public partial class SkyDrivePickerPage : PhoneApplicationPage
     {
-        public SkydrivePickerPage()
+        public SkyDrivePickerPage()
         {
             InitializeComponent();
         }

@@ -113,8 +113,8 @@
     <Compile Include="Pages\MapViewPage.xaml.cs">
       <DependentUpon>MapViewPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\SkydrivePickerPage.xaml.cs">
-      <DependentUpon>SkydrivePickerPage.xaml</DependentUpon>
+    <Compile Include="Pages\SkyDrivePickerPage.xaml.cs">
+      <DependentUpon>SkyDrivePickerPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Resources\AppResources1.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -162,7 +162,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\SkydrivePickerPage.xaml">
+    <Page Include="Pages\SkyDrivePickerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
