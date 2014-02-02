@@ -52,7 +52,6 @@ namespace PintheCloud.Managers
             if (watcher.Position.Location.IsUnknown == false)
             {
                 address = resolver.ResolveAddress(watcher.Position.Location);
-                int a = 1;
             }
 
             return address;

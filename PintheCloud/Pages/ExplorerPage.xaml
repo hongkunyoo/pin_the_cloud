@@ -19,6 +19,8 @@
 
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBarEditButton">
+        	<shell:ApplicationBarIconButton x:Name="uiAppBarMapButton" IsEnabled="True" Text="map" Click="uiAppBarMapButton_Click" IconUri="/Assets/AppBar/basecircle.png"/>
+        	<shell:ApplicationBarIconButton x:Name="uiAppBarMakeSpaceButton" IconUri="/Assets/AppBar/folder.png" IsEnabled="True" Text="make space" Click="uiAppBarMakeSpaceButton_Click"/>
         	<shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/AppBar/feature.settings.png" IsEnabled="True" 
         		Text="settings" Click="uiAppBarSettingsButton_Click"/>
         </shell:ApplicationBar>
@@ -40,7 +42,7 @@
 					</Grid.RowDefinitions>
 					<Button x:Name="uiRefreshButton" Content="Refresh" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" Click="uiRefreshButton_Click"/>
 					<phone:LongListSelector x:Name="uiNearSpaceList" Grid.RowSpan="2"/>
-					<TextBlock x:Name="uiNoNearSpaceMessage" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding LocalizedResources.NoNearSpaceMessage, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Top" FontSize="26.667" Visibility="Collapsed" Margin="0,0,0,-822" Grid.RowSpan="2"/>
+					<TextBlock x:Name="uiNearSpaceMessage" TextWrapping="Wrap" FontSize="26.667" Visibility="Collapsed" Grid.Row="1"/>
 				</Grid>
 			</phone:PivotItem>
 
@@ -64,7 +66,7 @@
 							</DataTemplate>
                     </phone:LongListSelector.ItemTemplate>
 					</phone:LongListSelector>
-					<TextBlock x:Name="uiNoMySpaceMessage" HorizontalAlignment="Left" TextWrapping="Wrap" Text="{Binding LocalizedResources.NoMySpaceMessage, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Top" FontSize="26.667" Visibility="Collapsed"/>
+					<TextBlock x:Name="uiMySpaceMessage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="26.667" Visibility="Collapsed"/>
 				</Grid>
 			</phone:PivotItem>
 		</phone:Pivot>

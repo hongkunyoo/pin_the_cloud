@@ -85,6 +85,7 @@ namespace PintheCloud.Workers
             App.ApplicationSettings.Remove(Account.ACCOUNT_TOKEN);
             App.ApplicationSettings.Remove(Account.ACCOUNT_USED_SIZE);
             App.ApplicationSettings.Remove(Account.ACCOUNT_TYPE_NAME);
+            App.ApplicationSettings.Remove(Account.LOCATION_ACCESS);
         }
     }
 }

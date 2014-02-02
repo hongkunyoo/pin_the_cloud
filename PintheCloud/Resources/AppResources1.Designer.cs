@@ -97,7 +97,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Login process stopped. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Login process stopped. Please try it again과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string BadLoginMessage {
             get {
@@ -111,6 +111,24 @@ namespace PintheCloud.Resources {
         public static string Explorer {
             get {
                 return ResourceManager.GetString("Explorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sorry. Could not connect to Pin the Cloud. Please make sure connection with Internet and try again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string InternetUnavailableMessage {
+            get {
+                return ResourceManager.GetString("InternetUnavailableMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Loading...과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Loading {
+            get {
+                return ResourceManager.GetString("Loading", resourceCulture);
             }
         }
         
@@ -178,15 +196,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Please make sure connection with Internet.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string NoInternetMessage {
-            get {
-                return ResourceManager.GetString("NoInternetMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   There is no your space. Make it yours.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoMySpaceMessage {
@@ -196,7 +205,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   There is no space near from here. Make it yours.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   There is no near space. Make it yours.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoNearSpaceMessage {
             get {
@@ -246,15 +255,6 @@ namespace PintheCloud.Resources {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Please Wait...과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Wait {
-            get {
-                return ResourceManager.GetString("Wait", resourceCulture);
             }
         }
     }

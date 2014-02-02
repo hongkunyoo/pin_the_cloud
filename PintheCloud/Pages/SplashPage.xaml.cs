@@ -138,9 +138,7 @@ namespace PintheCloud.Pages
                 {
                     // Show progress indicator, progress login
                     uiMicrosoftLoginButton.IsEnabled = false;
-                    uiMicrosoftLoginButton.Content = AppResources.Wait;
-                    base.SetSystemTray(true);
-                    base.SetProgressIndicator(true);
+                    uiMicrosoftLoginButton.Content = AppResources.Loading;
 
                     // Get profile result and Login.
                     // If login succeed, Move to explorer page.
@@ -155,8 +153,6 @@ namespace PintheCloud.Pages
                         {
                             uiMicrosoftLoginButton.IsEnabled = true;
                             uiMicrosoftLoginButton.Content = AppResources.Login;
-                            base.SetSystemTray(false);
-                            base.SetProgressIndicator(false);
                             MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
                         }
                     }
@@ -164,15 +160,13 @@ namespace PintheCloud.Pages
                     {
                         uiMicrosoftLoginButton.IsEnabled = true;
                         uiMicrosoftLoginButton.Content = AppResources.Login;
-                        base.SetSystemTray(false);
-                        base.SetProgressIndicator(false);
                         MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
                     }
                 }
             }
             else
             {
-                MessageBox.Show(AppResources.NoInternetMessage, AppResources.NoInternetCaption, MessageBoxButton.OKCancel);
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.NoInternetCaption, MessageBoxButton.OK);
             }
         }
     }

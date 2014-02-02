@@ -11,8 +11,36 @@ namespace PintheCloud.Workers
 {
     public abstract class SpaceWorker
     {
-        public abstract Task<MobileServiceCollection<Space, Space>> GetMySpacesAsync(string account_id);
-        public abstract Task<MobileServiceCollection<Space, Space>> GetNearSpacesAsync(string account_id);
+        // Get spaces from DB
+        public async Task<MobileServiceCollection<Space, Space>> GetMySpacesAsync(string account_id)
+        {
+            MobileServiceCollection<Space, Space> spaces = null;
+            try
+            {
+                // Load current account's spaces
+                spaces = await App.MobileService.GetTable<Space>()
+                    .Where(s => s.account_id == account_id)
+                    .ToCollectionAsync();
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+            }
+
+            if (spaces.Count > 0)
+                return spaces;
+            else
+                return null;
+        }
+
+
+        public Task<MobileServiceCollection<Space, Space>> GetNearSpacesAsync(string account_id)
+        {
+            // TODO
+            // Get current position.
+            // Calc distance between each space to current position
+            // Get spaces 300m away from here
+            return null;
+        }
 
 
         public SpaceViewItem MakeSpaceViewItemFromSpace(Space space)
