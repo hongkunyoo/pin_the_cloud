@@ -41,7 +41,19 @@
 						<RowDefinition/>
 					</Grid.RowDefinitions>
 					<Button x:Name="uiRefreshButton" Content="Refresh" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" Click="uiRefreshButton_Click"/>
-					<phone:LongListSelector x:Name="uiNearSpaceList" Grid.RowSpan="2"/>
+					<phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" Grid.Row="1">
+						<phone:LongListSelector.ItemTemplate>
+							<DataTemplate>
+								<Grid>
+									<StackPanel>
+										<TextBlock x:Name="uiMySpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}"/>
+										<TextBlock x:Name="uiMySpaceLikeNumber" TextWrapping="Wrap" Text="{Binding SpaceLikeDescription}"/>
+										<TextBlock x:Name="uiMySpaceDescription" TextWrapping="Wrap" Text="{Binding SpaceDescription}"/>
+									</StackPanel>
+								</Grid>
+							</DataTemplate>
+						</phone:LongListSelector.ItemTemplate>
+					</phone:LongListSelector>
 					<TextBlock x:Name="uiNearSpaceMessage" TextWrapping="Wrap" FontSize="26.667" Visibility="Collapsed" Grid.Row="1"/>
 				</Grid>
 			</phone:PivotItem>
@@ -64,7 +76,7 @@
 									</StackPanel>
 								</Grid>
 							</DataTemplate>
-                    </phone:LongListSelector.ItemTemplate>
+						</phone:LongListSelector.ItemTemplate>
 					</phone:LongListSelector>
 					<TextBlock x:Name="uiMySpaceMessage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="26.667" Visibility="Collapsed"/>
 				</Grid>

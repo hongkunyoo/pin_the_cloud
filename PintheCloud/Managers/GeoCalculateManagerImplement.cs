@@ -10,17 +10,20 @@ namespace PintheCloud.Managers
 {
     public class GeoCalculateManagerImplement : GeoCalculateManager
     {
-        public double GetDistanceFromLatitudeLongtitude(double latitude, double longtitude)
+        // Get distance between given coordinates
+        public double GetDistanceFromLatitudeLongtitude(double currentLatitude, double currentLongtitude, double destinationLatitude, double destinationLongtitude)
         {
-            // TODO Use math algorightm
-            return 0;
+            double x = currentLongtitude - destinationLongtitude;
+            double y = currentLatitude - destinationLatitude;
+            return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
         }
 
+        // Get Geolocator to use GPS for getting location info.
         public async Task<Geoposition> GetCurrentGeopositionAsync()
         {
+
             Geolocator geolocator = new Geolocator();
             geolocator.DesiredAccuracyInMeters = 50;
-
             Geoposition geoposition = null;
             try
             {
@@ -29,32 +32,10 @@ namespace PintheCloud.Managers
                     timeout: TimeSpan.FromSeconds(10)
                     );
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                // the application does not have the right capability or the location master switch is off
-                if ((uint)ex.HResult == 0x80004004)  
-                {
-                    
-                }
             }
             return geoposition;
-        }
-
-        public System.Device.Location.CivicAddress GetCurrentCivicAddress()
-        {
-            GeoCoordinateWatcher watcher = new GeoCoordinateWatcher(GeoPositionAccuracy.High);
-            watcher.MovementThreshold = 1.0; // set to one meter
-            watcher.TryStart(false, TimeSpan.FromMilliseconds(1000));
-
-            CivicAddressResolver resolver = new CivicAddressResolver();
-
-            System.Device.Location.CivicAddress address = null;
-            if (watcher.Position.Location.IsUnknown == false)
-            {
-                address = resolver.ResolveAddress(watcher.Position.Location);
-            }
-
-            return address;
         }
     }
 }
