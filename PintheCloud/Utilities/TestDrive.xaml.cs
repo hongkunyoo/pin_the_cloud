@@ -31,9 +31,10 @@ namespace PintheCloud.Utilities
             {
                 //FileObject fo = await App.SkyDriveManager.Synchronize();
                 //FileObject.PrintFileObject(fo);
-                await App.SkyDriveManager.Download("file.b96a113f78eb1c6f.B96A113F78EB1C6F!314", new Uri("/shared/transfers/mytest.pdf", UriKind.Relative));
-                StorageFile file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/shared/transfers/mytest.pdf"));
-                await Launcher.LaunchFileAsync(file);
+                //await App.SkyDriveManager.DownloadFile("file.b96a113f78eb1c6f.B96A113F78EB1C6F!314", new Uri("/shared/transfers/mytest.pdf", UriKind.Relative));
+                //StorageFile file = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/shared/transfers/mytest.pdf"));
+                //await Launcher.LaunchFileAsync(file);
+                await App.BlobManager.GetFilesFromRootAsync();
             }
             catch
             {

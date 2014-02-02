@@ -96,6 +96,8 @@
     </Compile>
     <Compile Include="GlobalKeys.cs" />
     <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="Managers\BlobManager.cs" />
+    <Compile Include="Managers\LocalStorageManager.cs" />
     <Compile Include="Managers\SkyDriveManager.cs" />
     <Compile Include="Managers\GeoCalculateManager.cs" />
     <Compile Include="Managers\GeoCalculateManagerImplement.cs" />

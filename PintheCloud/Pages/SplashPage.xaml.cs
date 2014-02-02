@@ -38,7 +38,6 @@ namespace PintheCloud.Pages
             // DEBUG MODE SETTING
             // Debugger
             StorageFile file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\user.xml");
-
             using (XmlReader reader = XmlReader.Create(await file.OpenStreamForReadAsync()))
             {
                 reader.Read();
@@ -47,6 +46,7 @@ namespace PintheCloud.Pages
                 reader.Read();
                 GlobalKeys.USER = reader.Value.ToString().Trim();
             }
+
             /////////////////////////////////////////////////////////////////////////////////////////////
 
             // Check if it has backstacks, remove all
@@ -60,6 +60,9 @@ namespace PintheCloud.Pages
             if (!accountIsLogin)  // First Login, Show Login Button.
             {
                 uiMicrosoftLoginButton.Visibility = Visibility.Visible;
+
+                await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.SKYDRIVE_FOLDER, CreationCollisionOption.FailIfExists);
+                await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.BLOBSTORAGE_FOLDER, CreationCollisionOption.FailIfExists);
             }
             else  // Second or more Login, Goto Explorer Page after some secconds.
             {
@@ -74,9 +77,6 @@ namespace PintheCloud.Pages
                     // Otherwise get old information from local storage.
                     if (await App.CurrentAccountManager.SetLiveConnectSessionAsync())  // Get session success
                     {
-
-                        // SkyDriveManager Allocation
-                        App.SkyDriveManager = new SkyDriveManager(App.CurrentAccountManager.GetLiveConnectSession());
 
                         // Show progress indicator
                         base.SetSystemTray(true);
@@ -145,7 +145,11 @@ namespace PintheCloud.Pages
         {
             base.OnNavigatedFrom(e);
 
-            if (GlobalKeys.DEBUG)
+            // Other manager allocation
+            App.SkyDriveManager = new SkyDriveManager(App.CurrentAccountManager.GetLiveConnectSession());
+            App.BlobManager = new BlobManager();
+
+            if (GlobalKeys.USER.Equals("hongkun"))
             {
                 NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
             }

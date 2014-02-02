@@ -108,4 +108,4 @@ Backup*/
 UpgradeLog*.XML
 
 # For Debug
-Assets/user.xml
+PintheCloud/Assets/user.xml

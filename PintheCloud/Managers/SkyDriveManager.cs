@@ -100,7 +100,7 @@ namespace PintheCloud.Managers
             return fo;
         }
 
-        public async Task<bool> Download(string sourceFileId, Uri destinationUri)
+        public async Task<bool> DownloadFile(string sourceFileId, Uri destinationUri)
         {
             
             ProgressBar progressBar = new ProgressBar();
