@@ -12,6 +12,8 @@ namespace PintheCloud.Workers
     public abstract class SpaceWorker
     {
         public abstract Task<MobileServiceCollection<Space, Space>> GetMySpacesAsync(string account_id);
+        public abstract Task<MobileServiceCollection<Space, Space>> GetNearSpacesAsync(string account_id);
+
 
         public SpaceViewItem MakeSpaceViewItemFromSpace(Space space)
         {

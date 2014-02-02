@@ -31,5 +31,14 @@ namespace PintheCloud.Workers
             else
                 return null;
         }
+
+        public override Task<MobileServiceCollection<Space, Space>> GetNearSpacesAsync(string account_id)
+        {
+            // TODO
+            // Get current position.
+            // Calc distance between each space to current position
+            // Get spaces 300m away from here
+            return null;
+        }
     }
 }

@@ -33,6 +33,7 @@ namespace PintheCloud
         // Manager
         public static AccountManager CurrentAccountManager = null;
         public static SpaceManager CurrentSpaceManager = null;
+        public static GeoCalculateManager CurrentGeoCalculateManager = null;
 
 
         /// <summary>
@@ -67,6 +68,7 @@ namespace PintheCloud
             // Manager
             CurrentAccountManager = new AccountManagerImplement();
             CurrentSpaceManager = new SpaceManagerImplement();
+            CurrentGeoCalculateManager = new GeoCalculateManagerImplement();
 
 
 

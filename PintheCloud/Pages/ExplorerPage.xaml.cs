@@ -15,6 +15,7 @@ using PintheCloud.ViewModels;
 using PintheCloud.Models;
 using Microsoft.WindowsAzure.MobileServices;
 using System.Collections.ObjectModel;
+using Windows.Devices.Geolocation;
 
 namespace PintheCloud.Pages
 {
@@ -44,6 +45,7 @@ namespace PintheCloud.Pages
             // Check whether user consented for location access.
             if (base.GetLocationAccessConsent())  // Got consent of location access.
             {
+                System.Device.Location.CivicAddress civicAddress = App.CurrentGeoCalculateManager.GetCurrentCivicAddress();
 
             }
             else  // First or not consented of access in location information.
@@ -103,6 +105,11 @@ namespace PintheCloud.Pages
         private void uiAppBarSettingsButton_Click(object sender, System.EventArgs e)
         {
             NavigationService.Navigate(new Uri(PtcPage.SETTINGS_PAGE, UriKind.Relative));
+        }
+
+        private void uiRefreshButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+        	// TODO: 여기에 구현된 이벤트 처리기를 추가하십시오.
         }
     }
 }
