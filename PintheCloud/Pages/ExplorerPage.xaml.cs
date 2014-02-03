@@ -27,7 +27,8 @@ namespace PintheCloud.Pages
         private const int RECENT_PIVOT = 1;
         private const int MY_SPACES_PIVOT = 2;
 
-        public SpaceViewModel CurrentSpaceViewModel = new SpaceViewModel();
+        public static SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
+        public static SpaceViewModel MySpaceViewModel = new SpaceViewModel();
 
 
         public ExplorerPage()
@@ -53,10 +54,12 @@ namespace PintheCloud.Pages
         private async void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Set View model for dispaly,
+            // One time loading.
             switch (uiExplorerPivot.SelectedIndex)
             { 
                 case EXPLORER_PIVOT:
-                    await this.SetExplorerPivotAsync();
+                    if (!NearSpaceViewModel.IsDataLoaded)
+                        await this.SetExplorerPivotAsync(AppResources.Loading);
                     break;
 
                 case RECENT_PIVOT:
@@ -64,15 +67,10 @@ namespace PintheCloud.Pages
                     break;
 
                 case MY_SPACES_PIVOT:
-                    await this.SetMySpacePivotAsync();
+                    if (!MySpaceViewModel.IsDataLoaded)
+                        await this.SetMySpacePivotAsync(AppResources.Loading);
                     break;
             }
-        }
-
-
-        private async void uiExplorerRefreshButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            await this.SetExplorerPivotAsync();
         }
 
 
@@ -97,10 +95,33 @@ namespace PintheCloud.Pages
         }
 
 
+        // Refresh space list.
+        private async void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
+        {
+            // Set View model for dispaly,
+            switch (uiExplorerPivot.SelectedIndex)
+            { 
+                case EXPLORER_PIVOT:
+                    NearSpaceViewModel.IsDataLoaded = false;
+                    await this.SetExplorerPivotAsync(AppResources.Refresh);
+                    break;
+
+                case RECENT_PIVOT:
+                    // TODO
+                    break;
+
+                case MY_SPACES_PIVOT:
+                    MySpaceViewModel.IsDataLoaded = false;
+                    await this.SetMySpacePivotAsync(AppResources.Refresh);
+                    break;
+            }
+        }
+
+
 
         /*** Self Method ***/
 
-        private async Task SetExplorerPivotAsync()
+        private async Task SetExplorerPivotAsync(string message)
         {
             // Get different Space Worker by internet state.
             if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
@@ -108,11 +129,11 @@ namespace PintheCloud.Pages
                 // Set worker and show loading message
                 App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
                 uiNearSpaceList.Visibility = Visibility.Collapsed;
-                uiNearSpaceMessage.Text = AppResources.Loading;
+                uiNearSpaceMessage.Text = message;
                 uiNearSpaceMessage.Visibility = Visibility.Visible;
+                base.SetProgressIndicator(true);
 
                 // Check whether user consented for location access.
-                base.SetProgressIndicator(true);
                 if (base.GetLocationAccessConsent())  // Got consent of location access.
                 {
                     // Check whether GPS is on or not
@@ -125,14 +146,12 @@ namespace PintheCloud.Pages
                         {
                             // If there is near spaces, Clear and Add spaces to list
                             // Otherwise, Show none message.
-                            ObservableCollection<SpaceViewItem> items = 
-                                await App.CurrentSpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);
-                            if (items != null)  // There are near spaces
+                            if (await App.CurrentSpaceManager.SetNearSpaceViewItemsToSpaceViewModelAsync(currentGeoposition))  // There are near spaces
                             {
                                 uiNearSpaceList.Visibility = Visibility.Visible;
                                 uiNearSpaceMessage.Visibility = Visibility.Collapsed;
-                                CurrentSpaceViewModel.Items = items;
-                                this.DataContext = CurrentSpaceViewModel;
+                                NearSpaceViewModel.IsDataLoaded = true;
+                                uiNearSpaceList.DataContext = NearSpaceViewModel;
                             }
                             else  // No near spaces
                             {
@@ -164,8 +183,11 @@ namespace PintheCloud.Pages
                     uiNearSpaceMessage.Text = AppResources.NoLocationAcessConsentMessage;
                     uiNearSpaceMessage.Visibility = Visibility.Visible;
                 }
+
+                // Hide progress indicator
                 base.SetProgressIndicator(false);
             }
+
             else  // Internet bad.
             {
                 // Show bad Internet message box.
@@ -176,7 +198,7 @@ namespace PintheCloud.Pages
         }
 
 
-        private async Task SetMySpacePivotAsync()
+        private async Task SetMySpacePivotAsync(string message)
         {
             // Get different Space Worker by internet state.
             if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
@@ -184,28 +206,30 @@ namespace PintheCloud.Pages
                 // Set worker and show loading message
                 App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
                 uiMySpaceList.Visibility = Visibility.Collapsed;
-                uiMySpaceMessage.Text = AppResources.Loading;
+                uiMySpaceMessage.Text = message;
                 uiMySpaceMessage.Visibility = Visibility.Visible;
+                base.SetProgressIndicator(true);
 
                 // If there is my spaces, Clear and Add spaces to list
                 // Otherwise, Show none message.
-                base.SetProgressIndicator(true);
-                ObservableCollection<SpaceViewItem> items = await App.CurrentSpaceManager.GetMySpaceViewItemsAsync();
-                if (items != null)
+                if (await App.CurrentSpaceManager.SetMySpaceViewItemsToSpaceViewModelAsync())  // There are my spaces
                 {
                     uiMySpaceList.Visibility = Visibility.Visible;
                     uiMySpaceMessage.Visibility = Visibility.Collapsed;
-                    CurrentSpaceViewModel.Items = items;
-                    this.DataContext = CurrentSpaceViewModel;
+                    MySpaceViewModel.IsDataLoaded = true;
+                    uiMySpaceList.DataContext = MySpaceViewModel;
                 }
-                else
+                else  // No my spaces
                 {
                     uiMySpaceList.Visibility = Visibility.Collapsed;
                     uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
                     uiMySpaceMessage.Visibility = Visibility.Visible;
                 }
+
+                // Hide progress indicator
                 base.SetProgressIndicator(false);
             }
+
             else  // Internet bad.
             {
                 // Show bad Internet message box.

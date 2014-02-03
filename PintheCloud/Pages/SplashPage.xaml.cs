@@ -59,7 +59,12 @@ namespace PintheCloud.Pages
             App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_LOGIN, out accountIsLogin);
             if (!accountIsLogin)  // First Login, Show Login Button.
             {
-                uiMicrosoftLoginButton.Visibility = Visibility.Visible;
+                uiSplashLogo.Visibility = Visibility.Collapsed;
+                uiLoginStackPanel.Visibility = Visibility.Visible;
+                
+                // It makes ERROR
+                //await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.SKYDRIVE_FOLDER, CreationCollisionOption.FailIfExists);
+                //await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.BLOBSTORAGE_FOLDER, CreationCollisionOption.FailIfExists);
             }
             else  // Second or more Login, Goto Explorer Page after some secconds.
             {
@@ -77,7 +82,7 @@ namespace PintheCloud.Pages
 
                         // Show progress indicator
                         base.SetSystemTray(true);
-                        base.SetProgressIndicator(true);
+                        base.SetProgressIndicator(true, AppResources.Loading);
 
                         // If it success to register live connect session,
                         // Otherwise, Hide indicator, Show login fail message box.
@@ -99,20 +104,22 @@ namespace PintheCloud.Pages
                                 }
                                 else
                                 {
-                                    base.SetSystemTray(false);
-                                    base.SetProgressIndicator(false);
+                                    uiSplashLogo.Visibility = Visibility.Collapsed;
+                                    uiLoginStackPanel.Visibility = Visibility.Visible;
                                     MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
-                                    uiMicrosoftLoginButton.Visibility = Visibility.Visible;
                                 }
                             }
                         }
                         else
                         {
-                            base.SetSystemTray(false);
-                            base.SetProgressIndicator(false);
+                            uiSplashLogo.Visibility = Visibility.Collapsed;
+                            uiLoginStackPanel.Visibility = Visibility.Visible;
                             MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
-                            uiMicrosoftLoginButton.Visibility = Visibility.Visible;
                         }
+
+                        // Hide progress indicator
+                        base.SetSystemTray(false);
+                        base.SetProgressIndicator(false);
                     }
                     else  // Get session fail
                     {
@@ -167,8 +174,10 @@ namespace PintheCloud.Pages
                 if (await App.CurrentAccountManager.SetLiveConnectSessionAsync())
                 {
                     // Show progress indicator, progress login
+                    // Show progress indicator
+                    base.SetSystemTray(true);
+                    base.SetProgressIndicator(true, AppResources.Loading);
                     uiMicrosoftLoginButton.IsEnabled = false;
-                    uiMicrosoftLoginButton.Content = AppResources.Loading;
 
                     // Get profile result and Login.
                     // If login succeed, Move to explorer page.
@@ -182,16 +191,18 @@ namespace PintheCloud.Pages
                         else
                         {
                             uiMicrosoftLoginButton.IsEnabled = true;
-                            uiMicrosoftLoginButton.Content = AppResources.Login;
                             MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
                         }
                     }
                     else
                     {
                         uiMicrosoftLoginButton.IsEnabled = true;
-                        uiMicrosoftLoginButton.Content = AppResources.Login;
                         MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
                     }
+
+                    // Hide progress indicator
+                    base.SetSystemTray(false);
+                    base.SetProgressIndicator(false);
                 }
             }
             else

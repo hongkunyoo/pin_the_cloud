@@ -56,29 +56,5 @@ namespace PintheCloud.Workers
             else
                 return null;
         }
-
-
-        // Make new space view item from space model object.
-        public SpaceViewItem MakeSpaceViewItemFromSpace(Space space, double currentLatitude = -1, double currentLongtitude = -1)
-        {
-            // Set new space view item
-            SpaceViewItem spaceViewItem = new SpaceViewItem();
-            spaceViewItem.SpaceName = space.space_name;
-            spaceViewItem.SpaceLikeDescription = space.space_like_number + " " + AppResources.LikeDescription;
-
-            // If it requires distance, set distance description
-            // Otherwise, Set blank.
-            if (currentLatitude != -1)
-            {
-                double distance = App.CurrentGeoCalculateManager.GetDistanceBetweenTwoCoordiantes
-                    (currentLatitude, space.space_latitude, currentLongtitude, space.space_longtitude);
-                spaceViewItem.SpaceDescription = Math.Round(distance) + " " + AppResources.DistanceDescription;
-            }
-            else
-            {
-                spaceViewItem.SpaceDescription = "";
-            }
-            return spaceViewItem;
-        }
     }
 }
