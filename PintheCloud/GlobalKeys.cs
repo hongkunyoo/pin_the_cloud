@@ -14,5 +14,8 @@ namespace PintheCloud
         // Platform Id
         public static string MICROSOFT = "Microsoft";
          
+        // Current Usrer
+        public static string USER;
+        public static bool DEBUG = true;
     }
 }

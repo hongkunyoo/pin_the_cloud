@@ -15,6 +15,7 @@ namespace PintheCloud.Managers
         void SetAccountWorker(AccountWorker CurrentAccountManager);
 
         Task<bool> SetLiveConnectSessionAsync();
+        LiveConnectSession GetLiveConnectSession();
         Task<bool> SetProfileResultAsync();
         Task<bool> LoginMicrosoftAccountSingleSignOnAsync();
         void Logout();

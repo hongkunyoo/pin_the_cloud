@@ -16,6 +16,10 @@ using Microsoft.Phone.Net.NetworkInformation;
 using PintheCloud.Models;
 using PintheCloud.Managers;
 using PintheCloud.Workers;
+using PintheCloud.Utilities;
+using Windows.Storage;
+using System.Xml;
+using System.IO;
 
 namespace PintheCloud.Pages
 {
@@ -30,6 +34,20 @@ namespace PintheCloud.Pages
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            // DEBUG MODE SETTING
+            // Debugger
+            StorageFile file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\user.xml");
+
+            using (XmlReader reader = XmlReader.Create(await file.OpenStreamForReadAsync()))
+            {
+                reader.Read();
+                reader.Read();
+                reader.Read();
+                reader.Read();
+                GlobalKeys.USER = reader.Value.ToString().Trim();
+            }
+            /////////////////////////////////////////////////////////////////////////////////////////////
 
             // Check if it has backstacks, remove all
             int backStackCount = NavigationService.BackStack.Count();
@@ -56,6 +74,10 @@ namespace PintheCloud.Pages
                     // Otherwise get old information from local storage.
                     if (await App.CurrentAccountManager.SetLiveConnectSessionAsync())  // Get session success
                     {
+
+                        // SkyDriveManager Allocation
+                        App.SkyDriveManager = new SkyDriveManager(App.CurrentAccountManager.GetLiveConnectSession());
+
                         // Show progress indicator
                         base.SetSystemTray(true);
                         base.SetProgressIndicator(true);
@@ -122,6 +144,11 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+
+            if (GlobalKeys.DEBUG)
+            {
+                NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
+            }
         }
 
         private async void uiMicrosoftLoginButton_Click(object sender, System.Windows.RoutedEventArgs e)

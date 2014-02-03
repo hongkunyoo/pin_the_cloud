@@ -96,9 +96,18 @@
     </Compile>
     <Compile Include="GlobalKeys.cs" />
     <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="Managers\SkyDriveManager.cs" />
     <Compile Include="Managers\SpaceManager.cs" />
     <Compile Include="Managers\SpaceManagerImplement.cs" />
+    <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Space.cs" />
+    <Compile Include="Utilities\CDebug.cs" />
+    <Compile Include="Utilities\HDebug.cs" />
+    <Compile Include="Utilities\MyDebug.cs" />
+    <Compile Include="Utilities\RDebug.cs" />
+    <Compile Include="Utilities\TestDrive.xaml.cs">
+      <DependentUpon>TestDrive.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Workers\AccountWorker.cs" />
     <Compile Include="Workers\AccountInternetUnavailableWorker.cs" />
     <Compile Include="Managers\AccountManager.cs" />
@@ -145,6 +154,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Utilities\TestDrive.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="Fonts\LiveSymbol.ttf" />
@@ -178,6 +191,7 @@
     <Content Include="Assets\Tiles\IconicTileSmall.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\user.xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AppResources.resx">
@@ -227,9 +241,7 @@
       <HintPath>..\packages\System.Spatial.5.6.0\lib\portable-net40+sl5+wp8+win8\System.Spatial.Portable.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utilities\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

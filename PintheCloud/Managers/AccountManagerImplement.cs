@@ -40,6 +40,11 @@ namespace PintheCloud.Managers
                 return true;
         }
 
+        public LiveConnectSession GetLiveConnectSession()
+        {
+            return this.Session;
+        }
+
         public async Task<bool> SetProfileResultAsync()
         {
             this.ProfileResult = await this.CurrentAccountWorker.GetProfileResultAsync(this.Session);
