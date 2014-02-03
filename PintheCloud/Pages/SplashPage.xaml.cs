@@ -36,7 +36,6 @@ namespace PintheCloud.Pages
             base.OnNavigatedTo(e);
 
             // DEBUG MODE SETTING
-            // Debugger
             StorageFile file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\user.xml");
             using (XmlReader reader = XmlReader.Create(await file.OpenStreamForReadAsync()))
             {
@@ -47,7 +46,7 @@ namespace PintheCloud.Pages
                 GlobalKeys.USER = reader.Value.ToString().Trim();
             }
 
-            /////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             // Check if it has backstacks, remove all
             int backStackCount = NavigationService.BackStack.Count();
@@ -148,11 +147,6 @@ namespace PintheCloud.Pages
             // Other manager allocation
             App.SkyDriveManager = new SkyDriveManager(App.CurrentAccountManager.GetLiveConnectSession());
             App.BlobManager = new BlobManager();
-
-            if (GlobalKeys.USER.Equals("hongkun"))
-            {
-                NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
-            }
         }
 
         private async void uiMicrosoftLoginButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -168,6 +162,8 @@ namespace PintheCloud.Pages
                 if (await App.CurrentAccountManager.SetLiveConnectSessionAsync())
                 {
                     // Show progress indicator, progress login
+                    base.SetSystemTray(true);
+                    base.SetProgressIndicator(true);
                     uiMicrosoftLoginButton.IsEnabled = false;
                     uiMicrosoftLoginButton.Content = AppResources.Loading;
 
@@ -182,6 +178,8 @@ namespace PintheCloud.Pages
                         }
                         else
                         {
+                            base.SetSystemTray(false);
+                            base.SetProgressIndicator(false);
                             uiMicrosoftLoginButton.IsEnabled = true;
                             uiMicrosoftLoginButton.Content = AppResources.Login;
                             MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
@@ -189,6 +187,8 @@ namespace PintheCloud.Pages
                     }
                     else
                     {
+                        base.SetSystemTray(false);
+                        base.SetProgressIndicator(false);
                         uiMicrosoftLoginButton.IsEnabled = true;
                         uiMicrosoftLoginButton.Content = AppResources.Login;
                         MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);

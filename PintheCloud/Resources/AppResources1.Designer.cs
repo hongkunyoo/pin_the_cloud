@@ -133,6 +133,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   number of people like this space.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string LikeDescription {
+            get {
+                return ResourceManager.GetString("LikeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Loading...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Loading {

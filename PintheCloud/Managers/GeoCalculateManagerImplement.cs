@@ -18,10 +18,10 @@ namespace PintheCloud.Managers
             return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2));
         }
 
+
         // Get Geolocator to use GPS for getting location info.
         public async Task<Geoposition> GetCurrentGeopositionAsync()
         {
-
             Geolocator geolocator = new Geolocator();
             geolocator.DesiredAccuracyInMeters = 50;
             Geoposition geoposition = null;

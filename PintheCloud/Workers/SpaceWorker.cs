@@ -1,9 +1,13 @@
 ﻿using Microsoft.WindowsAzure.MobileServices;
+using Newtonsoft.Json.Linq;
 using PintheCloud.Models;
+using PintheCloud.Resources;
 using PintheCloud.ViewModels;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,13 +37,25 @@ namespace PintheCloud.Workers
         }
 
 
-        public async Task<MobileServiceCollection<Space, Space>> GetNearSpacesAsync(double currentLatitude, double currentLongtitude)
+        public async Task<JArray> GetNearSpacesAsync(double currentLatitude, double currentLongtitude)
         {
             // TODO
-            // Get current position.
-            // Calc distance between each space to current position
-            // Get spaces 300m(?) away from here
-            return await Task<MobileServiceCollection<Space, Space>>.FromResult<MobileServiceCollection<Space, Space>>(null);
+            // Get spaces 300m away from here
+
+            JArray spaces = null;
+            try
+            {
+                string json = @"{'currentLatitude':" + currentLatitude + ",'currentLongtitude':" + currentLongtitude + "}";
+                JToken jToken = JToken.Parse(json);
+                spaces = (JArray) await App.MobileService.InvokeApiAsync("select_near_spaces_async", jToken);
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+            }
+            if (spaces.Count > 0)
+                return spaces;
+            else
+                return null;
         }
 
 
@@ -47,7 +63,7 @@ namespace PintheCloud.Workers
         {
             SpaceViewItem spaceViewItem = new SpaceViewItem();
             spaceViewItem.SpaceName = space.space_name;
-            spaceViewItem.SpaceLikeDescription = space.space_like_number + " People like this space.";
+            spaceViewItem.SpaceLikeDescription = space.space_like_number + " " + AppResources.LikeDescription;
             spaceViewItem.SpaceDescription = space.space_latitude + "";  // TODO Use algorithm to calc distance from lati and longti
             return spaceViewItem;
         }
