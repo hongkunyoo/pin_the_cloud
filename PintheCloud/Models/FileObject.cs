@@ -33,6 +33,7 @@ namespace PintheCloud.Models
             this.CreateAt = createAt;
             this.UpdateAt = updateAt;
         }
+
         public static void PrintFileObject(FileObject fo){
             if (fo != null)
             {
