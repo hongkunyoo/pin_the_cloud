@@ -1,4 +1,6 @@
-﻿using PintheCloud.Resources;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using PintheCloud.Models;
+using PintheCloud.Resources;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,25 +16,11 @@ namespace PintheCloud.ViewModels
         /// <summary>
         /// ItemViewModel 개체에 대한 컬렉션입니다.
         /// </summary>
-        public ObservableCollection<SpaceViewModelItem> Items { get; private set; }
+        public ObservableCollection<SpaceViewItem> Items { get; set; }
 
         public SpaceViewModel()
         {
-            this.Items = new ObservableCollection<SpaceViewModelItem>();
-        }
-
-        public bool IsDataLoaded
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// 몇 개의 ItemViewModel 개체를 만들어 Items 컬렉션에 추가합니다.
-        /// </summary>
-        public void LoadData()
-        {
-            this.IsDataLoaded = true;
+            this.Items = new ObservableCollection<SpaceViewItem>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

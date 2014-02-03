@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:Managers="clr-namespace:PintheCloud.Managers"
+	xmlns:System="clr-namespace:System;assembly=mscorlib"
 	x:Class="PintheCloud.Pages.ExplorerPage"
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -18,6 +19,8 @@
 
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBarEditButton">
+        	<shell:ApplicationBarIconButton x:Name="uiAppBarMapButton" IsEnabled="True" Text="map" Click="uiAppBarMapButton_Click" IconUri="/Assets/AppBar/basecircle.png"/>
+        	<shell:ApplicationBarIconButton x:Name="uiAppBarMakeSpaceButton" IconUri="/Assets/AppBar/folder.png" IsEnabled="True" Text="make space" Click="uiAppBarMakeSpaceButton_Click"/>
         	<shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/AppBar/feature.settings.png" IsEnabled="True" 
         		Text="settings" Click="uiAppBarSettingsButton_Click"/>
         </shell:ApplicationBar>
@@ -33,19 +36,13 @@
 			<!--피벗 항목 1-->
 			<phone:PivotItem Header="{Binding LocalizedResources.Explorer, Source={StaticResource LocalizedStrings}}">
 				<Grid>
-					<phone:LongListSelector x:Name="uiExplorerSpaceList">
-						<phone:LongListSelector.Resources>
-							<DataTemplate x:Key="ExplorerSpaceListTemplate">
-								<Grid>
-									<StackPanel>
-										<TextBlock x:Name="uiExplorerSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}"/>
-										<TextBlock x:Name="uiExplorerSpaceLikeNumber" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}"/>
-										<TextBlock x:Name="uiExplorerSpaceDescription" TextWrapping="Wrap" Text="{Binding SpaceDescription}"/>
-									</StackPanel>
-								</Grid>
-							</DataTemplate>
-						</phone:LongListSelector.Resources>
-					</phone:LongListSelector>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="70"/>
+						<RowDefinition/>
+					</Grid.RowDefinitions>
+					<Button x:Name="uiRefreshButton" Content="Refresh" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" Click="uiRefreshButton_Click"/>
+					<phone:LongListSelector x:Name="uiNearSpaceList" Grid.RowSpan="2"/>
+					<TextBlock x:Name="uiNearSpaceMessage" TextWrapping="Wrap" FontSize="26.667" Visibility="Collapsed" Grid.Row="1"/>
 				</Grid>
 			</phone:PivotItem>
 
@@ -55,7 +52,22 @@
 			</phone:PivotItem>
 
 			<phone:PivotItem Header="{Binding LocalizedResources.MySpaces, Source={StaticResource LocalizedStrings}}">
-				<Grid/>
+				<Grid>
+					<phone:LongListSelector x:Name="uiMySpaceList" ItemsSource="{Binding Items}">
+						<phone:LongListSelector.ItemTemplate>
+							<DataTemplate>
+								<Grid>
+									<StackPanel>
+										<TextBlock x:Name="uiMySpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}"/>
+										<TextBlock x:Name="uiMySpaceLikeNumber" TextWrapping="Wrap" Text="{Binding SpaceLikeDescription}"/>
+										<TextBlock x:Name="uiMySpaceDescription" TextWrapping="Wrap" Text="{Binding SpaceDescription}"/>
+									</StackPanel>
+								</Grid>
+							</DataTemplate>
+                    </phone:LongListSelector.ItemTemplate>
+					</phone:LongListSelector>
+					<TextBlock x:Name="uiMySpaceMessage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="26.667" Visibility="Collapsed"/>
+				</Grid>
 			</phone:PivotItem>
 		</phone:Pivot>
 	</Grid>

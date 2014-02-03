@@ -1,7 +1,10 @@
-﻿using PintheCloud.ViewModels;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using PintheCloud.Models;
+using PintheCloud.ViewModels;
 using PintheCloud.Workers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,10 +23,20 @@ namespace PintheCloud.Managers
 
         /*** Implementation ***/
 
-        public async Task<SpaceViewModel> GetSpaceViewModelAsync()
+        public async Task<ObservableCollection<SpaceViewItem>> GetMySpaceViewItemsAsync()
         {
-            // TODO Get Space list and set to this space view model.
-            return await this.CurrentSpaceWorker.GetSpaceViewModelAsync();
+            // Get space view item from space list.
+            MobileServiceCollection<Space, Space> spaces = await this.CurrentSpaceWorker
+                .GetMySpacesAsync(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id);
+            ObservableCollection<SpaceViewItem> items = null;
+            if (spaces != null)
+            {
+                items = new ObservableCollection<SpaceViewItem>();
+                foreach (Space space in spaces)
+                    items.Add(this.CurrentSpaceWorker.MakeSpaceViewItemFromSpace(space));
+            }
+
+            return items;
         }
     }
 }

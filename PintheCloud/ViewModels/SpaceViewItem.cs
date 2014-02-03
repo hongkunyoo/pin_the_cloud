@@ -7,13 +7,9 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.ViewModels
 {
-    public class SpaceViewModelItem : INotifyPropertyChanged
+    public class SpaceViewItem : INotifyPropertyChanged
     {
         private string spaceName;
-        /// <summary>
-        /// 샘플 ViewModel 속성: 이 속성은 바인딩을 사용하여 해당 값을 표시하기 위해 뷰에서 사용됩니다.
-        /// </summary>
-        /// <returns></returns>
         public string SpaceName
         {
             get
@@ -30,32 +26,24 @@ namespace PintheCloud.ViewModels
             }
         }
 
-        private int spaceLikeNumber;
-        /// <summary>
-        /// 샘플 ViewModel 속성: 이 속성은 바인딩을 사용하여 해당 값을 표시하기 위해 뷰에서 사용됩니다.
-        /// </summary>
-        /// <returns></returns>
-        public int SpaceLikeNumber
+        private string spaceLikeDescription;
+        public string SpaceLikeDescription
         {
             get
             {
-                return spaceLikeNumber;
+                return spaceLikeDescription;
             }
             set
             {
-                if (spaceLikeNumber != value)
+                if (spaceLikeDescription != value)
                 {
-                    spaceLikeNumber = value;
-                    NotifyPropertyChanged("SpaceLikeNumber");
+                    spaceLikeDescription = value;
+                    NotifyPropertyChanged("SpaceLikeDescription");
                 }
             }
         }
 
         private string spaceDescription;
-        /// <summary>
-        /// 샘플 ViewModel 속성: 이 속성은 바인딩을 사용하여 해당 값을 표시하기 위해 뷰에서 사용됩니다.
-        /// </summary>
-        /// <returns></returns>
         public string SpaceDescription
         {
             get

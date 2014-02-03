@@ -97,7 +97,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Login process stopped. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Login process stopped. Please try it again과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string BadLoginMessage {
             get {
@@ -111,6 +111,42 @@ namespace PintheCloud.Resources {
         public static string Explorer {
             get {
                 return ResourceManager.GetString("Explorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sorry. Could not connect to Pin the Cloud. Please make sure connection with Internet and try again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string InternetUnavailableMessage {
+            get {
+                return ResourceManager.GetString("InternetUnavailableMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Loading...과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Loading {
+            get {
+                return ResourceManager.GetString("Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Location Access과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string LocationAccess {
+            get {
+                return ResourceManager.GetString("LocationAccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   This app accesses your phone&apos;s location. Is that ok?과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string LocationAccessMessage {
+            get {
+                return ResourceManager.GetString("LocationAccessMessage", resourceCulture);
             }
         }
         
@@ -133,6 +169,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Do you want logout? Your setting will be intialized.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string LogoutMessage {
+            get {
+                return ResourceManager.GetString("LogoutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   My Spaces과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MySpaces {
@@ -151,11 +196,20 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Please make sure connection with Internet.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   There is no your space. Make it yours.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string NoInternetMessage {
+        public static string NoMySpaceMessage {
             get {
-                return ResourceManager.GetString("NoInternetMessage", resourceCulture);
+                return ResourceManager.GetString("NoMySpaceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   There is no near space. Make it yours.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoNearSpaceMessage {
+            get {
+                return ResourceManager.GetString("NoNearSpaceMessage", resourceCulture);
             }
         }
         
@@ -201,15 +255,6 @@ namespace PintheCloud.Resources {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Please Wait...과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Wait {
-            get {
-                return ResourceManager.GetString("Wait", resourceCulture);
             }
         }
     }

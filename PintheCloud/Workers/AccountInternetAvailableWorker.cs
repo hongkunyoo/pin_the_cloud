@@ -70,7 +70,6 @@ namespace PintheCloud.Workers
 
                 // If it success to insert account to DB,
                 // Save it's information to isolated storage.
-                base.RemoveProfileReslutFromAppSettings();
                 base.SaveProfileReslutToAppSettings(account);
             }
             return account;
@@ -94,6 +93,9 @@ namespace PintheCloud.Workers
             }
             catch (LiveAuthException)
             {
+            }
+            catch (Exception)
+            { 
             }
             return session;
         }
