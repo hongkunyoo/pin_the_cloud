@@ -56,7 +56,7 @@ namespace PintheCloud.Pages
             switch (uiExplorerPivot.SelectedIndex)
             { 
                 case EXPLORER_PIVOT:
-                    this.SetExplorerPivot();
+                    await this.SetExplorerPivotAsync();
                     break;
 
                 case RECENT_PIVOT:
@@ -64,50 +64,15 @@ namespace PintheCloud.Pages
                     break;
 
                 case MY_SPACES_PIVOT:
-
-                    // Get different Space Worker by internet state.
-                    if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
-                    {
-                        // Set worker and show loading message
-                        App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
-                        uiMySpaceList.Visibility = Visibility.Collapsed;
-                        uiMySpaceMessage.Text = AppResources.Loading;
-                        uiMySpaceMessage.Visibility = Visibility.Visible;
-
-                        // If there is my spaces, Clear and Add spaces to list
-                        // Otherwise, Show none message.
-                        base.SetProgressIndicator(true);
-                        ObservableCollection<SpaceViewItem> items = await App.CurrentSpaceManager.GetMySpaceViewItemsAsync();
-                        if (items != null)
-                        {
-                            uiMySpaceList.Visibility = Visibility.Visible;
-                            uiMySpaceMessage.Visibility = Visibility.Collapsed;
-                            CurrentSpaceViewModel.Items = items;
-                            this.DataContext = CurrentSpaceViewModel;
-                        }
-                        else
-                        {
-                            uiMySpaceList.Visibility = Visibility.Collapsed;
-                            uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
-                            uiMySpaceMessage.Visibility = Visibility.Visible;
-                        }
-                        base.SetProgressIndicator(false);
-                    }
-                    else  // Internet bad.
-                    {
-                        // Show bad Internet message box.
-                        uiMySpaceList.Visibility = Visibility.Collapsed;
-                        uiMySpaceMessage.Text = AppResources.InternetUnavailableMessage;
-                        uiMySpaceMessage.Visibility = Visibility.Visible;
-                    }
+                    await this.SetMySpacePivotAsync();
                     break;
             }
         }
 
 
-        private void uiExplorerRefreshButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private async void uiExplorerRefreshButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            this.SetExplorerPivot();
+            await this.SetExplorerPivotAsync();
         }
 
 
@@ -135,7 +100,7 @@ namespace PintheCloud.Pages
 
         /*** Self Method ***/
 
-        private async void SetExplorerPivot()
+        private async Task SetExplorerPivotAsync()
         {
             // Get different Space Worker by internet state.
             if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
@@ -162,7 +127,7 @@ namespace PintheCloud.Pages
                             // If there is near spaces, Clear and Add spaces to list
                             // Otherwise, Show none message.
                             ObservableCollection<SpaceViewItem> items = 
-                                await App.CurrentSpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);  // TODO
+                                await App.CurrentSpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);
                             if (items != null)  // There are near spaces
                             {
                                 uiNearSpaceList.Visibility = Visibility.Visible;
@@ -208,6 +173,46 @@ namespace PintheCloud.Pages
                 uiNearSpaceList.Visibility = Visibility.Collapsed;
                 uiNearSpaceMessage.Text = AppResources.InternetUnavailableMessage;
                 uiNearSpaceMessage.Visibility = Visibility.Visible;
+            }
+        }
+
+
+        private async Task SetMySpacePivotAsync()
+        {
+            // Get different Space Worker by internet state.
+            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+            {
+                // Set worker and show loading message
+                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+                uiMySpaceList.Visibility = Visibility.Collapsed;
+                uiMySpaceMessage.Text = AppResources.Loading;
+                uiMySpaceMessage.Visibility = Visibility.Visible;
+
+                // If there is my spaces, Clear and Add spaces to list
+                // Otherwise, Show none message.
+                base.SetProgressIndicator(true);
+                ObservableCollection<SpaceViewItem> items = await App.CurrentSpaceManager.GetMySpaceViewItemsAsync();
+                if (items != null)
+                {
+                    uiMySpaceList.Visibility = Visibility.Visible;
+                    uiMySpaceMessage.Visibility = Visibility.Collapsed;
+                    CurrentSpaceViewModel.Items = items;
+                    this.DataContext = CurrentSpaceViewModel;
+                }
+                else
+                {
+                    uiMySpaceList.Visibility = Visibility.Collapsed;
+                    uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
+                    uiMySpaceMessage.Visibility = Visibility.Visible;
+                }
+                base.SetProgressIndicator(false);
+            }
+            else  // Internet bad.
+            {
+                // Show bad Internet message box.
+                uiMySpaceList.Visibility = Visibility.Collapsed;
+                uiMySpaceMessage.Text = AppResources.InternetUnavailableMessage;
+                uiMySpaceMessage.Visibility = Visibility.Visible;
             }
         }
     }
