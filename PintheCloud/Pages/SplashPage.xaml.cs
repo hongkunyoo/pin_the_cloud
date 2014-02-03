@@ -174,7 +174,6 @@ namespace PintheCloud.Pages
                 if (await App.CurrentAccountManager.SetLiveConnectSessionAsync())
                 {
                     // Show progress indicator, progress login
-                    // Show progress indicator
                     base.SetSystemTray(true);
                     base.SetProgressIndicator(true, AppResources.Loading);
                     uiMicrosoftLoginButton.IsEnabled = false;
