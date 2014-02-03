@@ -60,9 +60,10 @@ namespace PintheCloud.Pages
             {
                 uiSplashLogo.Visibility = Visibility.Collapsed;
                 uiLoginStackPanel.Visibility = Visibility.Visible;
-
-                await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.SKYDRIVE_FOLDER, CreationCollisionOption.FailIfExists);
-                await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.BLOBSTORAGE_FOLDER, CreationCollisionOption.FailIfExists);
+                
+                // It makes ERROR
+                //await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.SKYDRIVE_FOLDER, CreationCollisionOption.FailIfExists);
+                //await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.BLOBSTORAGE_FOLDER, CreationCollisionOption.FailIfExists);
             }
             else  // Second or more Login, Goto Explorer Page after some secconds.
             {
@@ -80,7 +81,7 @@ namespace PintheCloud.Pages
 
                         // Show progress indicator
                         base.SetSystemTray(true);
-                        base.SetProgressIndicator(true);
+                        base.SetProgressIndicator(true, AppResources.Loading);
 
                         // If it success to register live connect session,
                         // Otherwise, Hide indicator, Show login fail message box.
@@ -102,8 +103,6 @@ namespace PintheCloud.Pages
                                 }
                                 else
                                 {
-                                    base.SetSystemTray(false);
-                                    base.SetProgressIndicator(false);
                                     uiSplashLogo.Visibility = Visibility.Collapsed;
                                     uiLoginStackPanel.Visibility = Visibility.Visible;
                                     MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
@@ -112,12 +111,14 @@ namespace PintheCloud.Pages
                         }
                         else
                         {
-                            base.SetSystemTray(false);
-                            base.SetProgressIndicator(false);
                             uiSplashLogo.Visibility = Visibility.Collapsed;
                             uiLoginStackPanel.Visibility = Visibility.Visible;
                             MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
                         }
+
+                        // Hide progress indicator
+                        base.SetSystemTray(false);
+                        base.SetProgressIndicator(false);
                     }
                     else  // Get session fail
                     {
@@ -182,19 +183,19 @@ namespace PintheCloud.Pages
                         }
                         else
                         {
-                            base.SetSystemTray(false);
-                            base.SetProgressIndicator(false);
                             uiMicrosoftLoginButton.IsEnabled = true;
                             MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
                         }
                     }
                     else
                     {
-                        base.SetSystemTray(false);
-                        base.SetProgressIndicator(false);
                         uiMicrosoftLoginButton.IsEnabled = true;
                         MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
                     }
+
+                    // Hide progress indicator
+                    base.SetSystemTray(false);
+                    base.SetProgressIndicator(false);
                 }
             }
             else

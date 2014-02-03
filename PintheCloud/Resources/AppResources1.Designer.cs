@@ -268,6 +268,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Refreshing...과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Refresh {
+            get {
+                return ResourceManager.GetString("Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   LeftToRight과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string ResourceFlowDirection {

@@ -10,7 +10,7 @@ using Microsoft.Phone.Shell;
 
 namespace PintheCloud.Pages
 {
-    public partial class MapViewPage : PhoneApplicationPage
+    public partial class MapViewPage : PtcPage
     {
         public MapViewPage()
         {
