@@ -118,7 +118,6 @@ namespace PintheCloud.Pages
                     // Check whether GPS is on or not
                     if (base.GetGeolocatorPositionStatus())  // GPS is on
                     {
-                        base.SetProgressIndicator(true);
                         Geoposition currentGeoposition = await App.CurrentGeoCalculateManager.GetCurrentGeopositionAsync();
 
                         // Check whether GPS works well or not
