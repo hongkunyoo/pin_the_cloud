@@ -42,16 +42,6 @@ namespace PintheCloud.Pages
             // Check if it is on the backstack from SplashPage and remove that.
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
-
-            // Check whether user consented for location access.
-            if (base.GetLocationAccessConsent())  // Got consent of location access.
-            {
-
-            }
-            else  // First or not consented of access in location information.
-            {
-                
-            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -75,6 +65,61 @@ namespace PintheCloud.Pages
                         // TODO If there is spaces, Clear and Add spaces to list
                         // TODO Otherwise, Show none message.
                         // TODO load near space use GPS information
+
+                        // Check whether user consented for location access.
+                        base.SetProgressIndicator(true, AppResources.Loading);
+                        if (base.GetLocationAccessConsent())  // Got consent of location access.
+                        {
+                            // Check whether GPS is on or not
+                            if (base.GetGeolocatorPositionStatus())  // GPS is on
+                            {
+                                base.SetProgressIndicator(true, AppResources.Loading);
+                                Geoposition currentGeoposition = await App.CurrentGeoCalculateManager.GetCurrentGeopositionAsync();
+
+                                // Check whether GPS works well or not
+                                if (currentGeoposition != null)  // works well
+                                {
+                                    // If there is near spaces, Clear and Add spaces to list
+                                    // Otherwise, Show none message.
+                                    ObservableCollection<SpaceViewItem> items = await App.CurrentSpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);
+                                    if (items != null)  // There are near spaces
+                                    {
+                                        uiNearSpaceList.Visibility = Visibility.Visible;
+                                        uiNearSpaceMessage.Visibility = Visibility.Collapsed;
+                                        CurrentSpaceViewModel.Items = items;
+                                        this.DataContext = CurrentSpaceViewModel;
+                                    }
+                                    else  // No near spaces
+                                    {
+                                        uiNearSpaceList.Visibility = Visibility.Collapsed;
+                                        uiNearSpaceMessage.Text = AppResources.NoNearSpaceMessage;
+                                        uiNearSpaceMessage.Visibility = Visibility.Visible;
+                                    }
+                                }
+                                else  // works bad
+                                {
+                                    // Show GPS off message box.
+                                    uiNearSpaceList.Visibility = Visibility.Collapsed;
+                                    uiNearSpaceMessage.Text = AppResources.BadGpsMessage;
+                                    uiNearSpaceMessage.Visibility = Visibility.Visible;
+                                }
+                            }
+                            else  // GPS is off
+                            {
+                                // Show GPS off message box.
+                                uiNearSpaceList.Visibility = Visibility.Collapsed;
+                                uiNearSpaceMessage.Text = AppResources.NoGpsOnMessage;
+                                uiNearSpaceMessage.Visibility = Visibility.Visible;
+                            }
+                        }
+                        else  // First or not consented of access in location information.
+                        {
+                            // Show no consent message box.
+                            uiNearSpaceList.Visibility = Visibility.Collapsed;
+                            uiNearSpaceMessage.Text = AppResources.NoLocationAcessConsentMessage;
+                            uiNearSpaceMessage.Visibility = Visibility.Visible;
+                        }
+                        base.SetProgressIndicator(false);
                     }
                     else  // Internet bad.
                     {
@@ -85,9 +130,11 @@ namespace PintheCloud.Pages
                     }
                     break;
 
+
                 case RECENT_PIVOT:
                     // TODO
                     break;
+
 
                 case MY_SPACES_PIVOT:
 
@@ -96,7 +143,7 @@ namespace PintheCloud.Pages
                     {
                         App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
 
-                        // If there is spaces, Clear and Add spaces to list
+                        // If there is my spaces, Clear and Add spaces to list
                         // Otherwise, Show none message.
                         base.SetProgressIndicator(true, AppResources.Loading);
                         ObservableCollection<SpaceViewItem> items = await App.CurrentSpaceManager.GetMySpaceViewItemsAsync();

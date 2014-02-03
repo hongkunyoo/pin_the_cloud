@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Devices.Geolocation;
 
 namespace PintheCloud.Managers
 {
@@ -16,5 +17,6 @@ namespace PintheCloud.Managers
         void SetAccountWorker(SpaceWorker CurrentSpaceWorker);
 
         Task<ObservableCollection<SpaceViewItem>> GetMySpaceViewItemsAsync();
+        Task<ObservableCollection<SpaceViewItem>> GetNearSpaceViewItemsAsync(Geoposition currentGeoposition);
     }
 }

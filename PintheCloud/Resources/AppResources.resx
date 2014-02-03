@@ -185,4 +185,13 @@
   <data name="Loading" xml:space="preserve">
     <value>Loading...</value>
   </data>
+  <data name="BadGpsMessage" xml:space="preserve">
+    <value>GPS doesn't work well not. Please load it again.</value>
+  </data>
+  <data name="NoGpsOnMessage" xml:space="preserve">
+    <value>Location serivces are disabled. Please enable it at your system to use GPS.</value>
+  </data>
+  <data name="NoLocationAcessConsentMessage" xml:space="preserve">
+    <value>This app requires consent to access location information. Please consent it.</value>
+  </data>
 </root>

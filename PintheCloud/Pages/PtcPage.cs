@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using Microsoft.Phone.Shell;
 using PintheCloud.Resources;
 using PintheCloud.Models;
+using Windows.Devices.Geolocation;
 //using System.Threading.Tasks;
 
 namespace PintheCloud.Pages
@@ -59,6 +60,15 @@ namespace PintheCloud.Pages
             }
 
             return (bool)App.ApplicationSettings[Account.LOCATION_ACCESS];
+        }
+
+        public bool GetGeolocatorPositionStatus()
+        { 
+            Geolocator geolocator = new Geolocator();
+            if (geolocator.LocationStatus != PositionStatus.Disabled)
+                return true;
+            else
+                return false;
         }
     }
 }

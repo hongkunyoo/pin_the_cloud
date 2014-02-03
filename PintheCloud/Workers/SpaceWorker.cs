@@ -33,13 +33,13 @@ namespace PintheCloud.Workers
         }
 
 
-        public Task<MobileServiceCollection<Space, Space>> GetNearSpacesAsync(string account_id)
+        public async Task<MobileServiceCollection<Space, Space>> GetNearSpacesAsync(double currentLatitude, double currentLongtitude)
         {
             // TODO
             // Get current position.
             // Calc distance between each space to current position
-            // Get spaces 300m away from here
-            return null;
+            // Get spaces 300m(?) away from here
+            return await Task<MobileServiceCollection<Space, Space>>.FromResult<MobileServiceCollection<Space, Space>>(null);
         }
 
 
