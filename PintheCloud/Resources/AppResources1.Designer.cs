@@ -169,15 +169,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Login과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Login {
-            get {
-                return ResourceManager.GetString("Login", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Logout과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Logout {

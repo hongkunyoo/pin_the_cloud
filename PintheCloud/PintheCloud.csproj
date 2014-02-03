@@ -152,6 +152,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Assets\CustomResources.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\ExplorerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -186,7 +190,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\AlignmentGrid.png" />
     <Content Include="Assets\AppBar\basecircle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -196,11 +199,43 @@
     <Content Include="Assets\AppBar\folder.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\ApplicationIcon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Image\ExampleLogo.png" />
     <Content Include="Assets\pajeon\png\app_icon.png" />
+    <Content Include="Assets\pajeon\png%402x\filelist_edit.png" />
+    <Content Include="Assets\pajeon\png%402x\filelist_like.png" />
+    <Content Include="Assets\pajeon\png%402x\filelist_like_p.png" />
+    <Content Include="Assets\pajeon\png%402x\filelist_view.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_check.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_circle.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_delete.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_map.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_new.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_setting.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_upload.png" />
+    <Content Include="Assets\pajeon\png%402x\general_checkbox.png" />
+    <Content Include="Assets\pajeon\png%402x\general_checkbox_p.png" />
+    <Content Include="Assets\pajeon\png%402x\general_download.png" />
+    <Content Include="Assets\pajeon\png%402x\general_edit.png" />
+    <Content Include="Assets\pajeon\png%402x\general_like.png" />
+    <Content Include="Assets\pajeon\png%402x\general_like_p.png" />
+    <Content Include="Assets\pajeon\png%402x\general_logo.png" />
+    <Content Include="Assets\pajeon\png%402x\general_view.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_doc.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_etc.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_folder.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_hwp.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_image.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_pdf.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_ppt.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_sound.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_video.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_xls.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_zip.png" />
+    <Content Include="Assets\pajeon\png%402x\login_btn.png" />
+    <Content Include="Assets\pajeon\png%402x\login_logo.png" />
+    <Content Include="Assets\pajeon\png%402x\map_now.png" />
+    <Content Include="Assets\pajeon\png%402x\map_pin.png" />
+    <Content Include="Assets\pajeon\png%402x\map_point.png" />
+    <Content Include="Assets\pajeon\png%402x\splash_logo.png" />
     <Content Include="Assets\pajeon\png\filelist_edit.png" />
     <Content Include="Assets\pajeon\png\filelist_like.png" />
     <Content Include="Assets\pajeon\png\filelist_like_p.png" />
