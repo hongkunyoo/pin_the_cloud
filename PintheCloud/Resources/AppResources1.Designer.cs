@@ -115,6 +115,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   meter away from here.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DistanceDescription {
+            get {
+                return ResourceManager.GetString("DistanceDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Explorer과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Explorer {

@@ -37,16 +37,15 @@ namespace PintheCloud.Workers
         }
 
 
+        // Get spaces 300m away from here
         public async Task<JArray> GetNearSpacesAsync(double currentLatitude, double currentLongtitude)
         {
-            // TODO
-            // Get spaces 300m away from here
-
+            string json = @"{'currentLatitude':" + currentLatitude + ",'currentLongtitude':" + currentLongtitude + "}";
+            JToken jToken = JToken.Parse(json);
             JArray spaces = null;
             try
             {
-                string json = @"{'currentLatitude':" + currentLatitude + ",'currentLongtitude':" + currentLongtitude + "}";
-                JToken jToken = JToken.Parse(json);
+                // Load near spaces use custom api in server script
                 spaces = (JArray) await App.MobileService.InvokeApiAsync("select_near_spaces_async", jToken);
             }
             catch (MobileServiceInvalidOperationException)
@@ -59,12 +58,26 @@ namespace PintheCloud.Workers
         }
 
 
-        public SpaceViewItem MakeSpaceViewItemFromSpace(Space space)
+        // Make new space view item from space model object.
+        public SpaceViewItem MakeSpaceViewItemFromSpace(Space space, double currentLatitude = -1, double currentLongtitude = -1)
         {
+            // Set new space view item
             SpaceViewItem spaceViewItem = new SpaceViewItem();
             spaceViewItem.SpaceName = space.space_name;
             spaceViewItem.SpaceLikeDescription = space.space_like_number + " " + AppResources.LikeDescription;
-            spaceViewItem.SpaceDescription = space.space_latitude + "";  // TODO Use algorithm to calc distance from lati and longti
+
+            // If it requires distance, set distance description
+            // Otherwise, Set blank.
+            if (currentLatitude != -1)
+            {
+                double distance = App.CurrentGeoCalculateManager.GetDistanceBetweenTwoCoordiantes
+                    (currentLatitude, space.space_latitude, currentLongtitude, space.space_longtitude);
+                spaceViewItem.SpaceDescription = Math.Round(distance) + " " + AppResources.DistanceDescription;
+            }
+            else
+            {
+                spaceViewItem.SpaceDescription = "";
+            }
             return spaceViewItem;
         }
     }

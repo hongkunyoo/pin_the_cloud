@@ -194,6 +194,9 @@
   <data name="NoLocationAcessConsentMessage" xml:space="preserve">
     <value>This app requires consent to access location information. Please consent it.</value>
   </data>
+  <data name="DistanceDescription" xml:space="preserve">
+    <value>meter away from here.</value>
+  </data>
   <data name="LikeDescription" xml:space="preserve">
     <value>number of people like this space.</value>
   </data>
