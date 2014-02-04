@@ -115,7 +115,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Explorer과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   explorer과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Explorer {
             get {
@@ -124,7 +124,16 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Sorry. Could not connect to Pin the Cloud. Please make sure connection with Internet and try again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Interent unavailable과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string InternetUnavailableCaption {
+            get {
+                return ResourceManager.GetString("InternetUnavailableCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sorry. Could not connect to at Here. Please make sure connection with Internet and try again.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string InternetUnavailableMessage {
             get {
@@ -196,11 +205,11 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   My Spaces과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   my space과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string MySpaces {
+        public static string MySpace {
             get {
-                return ResourceManager.GetString("MySpaces", resourceCulture);
+                return ResourceManager.GetString("MySpace", resourceCulture);
             }
         }
         
@@ -210,15 +219,6 @@ namespace PintheCloud.Resources {
         public static string NoGpsOnMessage {
             get {
                 return ResourceManager.GetString("NoGpsOnMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Interent unavailable과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string NoInternetCaption {
-            get {
-                return ResourceManager.GetString("NoInternetCaption", resourceCulture);
             }
         }
         
@@ -255,15 +255,6 @@ namespace PintheCloud.Resources {
         public static string Profile {
             get {
                 return ResourceManager.GetString("Profile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Recent과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Recent {
-            get {
-                return ResourceManager.GetString("Recent", resourceCulture);
             }
         }
         

@@ -32,7 +32,7 @@ namespace PintheCloud.Workers
                 // Check duplication.
                 // Insert if it is not exists already in DB,
                 // Otherwise update account.
-                account = await base.isExistedPerson(App.MobileService.CurrentUser.UserId);
+                account = await base.IsExistedPerson(App.MobileService.CurrentUser.UserId);
 
                 if (account == null)  // First Login.
                 {

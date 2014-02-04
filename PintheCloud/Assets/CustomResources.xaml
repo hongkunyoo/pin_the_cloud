@@ -50,7 +50,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<Style x:Key="NoBorderMarginPaddingPressEffectButtonStyle" TargetType="Button">
+	<Style x:Key="NoBorderNoMarginNoPaddingPressEffectButtonStyle" TargetType="Button">
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="BorderBrush" Value="{StaticResource PhoneForegroundBrush}"/>
 		<Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
@@ -127,7 +127,7 @@
 							<RowDefinition Height="*"/>
 						</Grid.RowDefinitions>
 						<Grid Background="{TemplateBinding Background}" Grid.RowSpan="3"/>
-						<ContentControl ContentTemplate="{TemplateBinding TitleTemplate}" Content="{TemplateBinding Title}" HorizontalAlignment="Left" Margin="24,17,0,-7" Style="{StaticResource PivotTitleStyle}"/>
+						<ContentControl ContentTemplate="{TemplateBinding TitleTemplate}" Content="{TemplateBinding Title}" HorizontalAlignment="Left" Margin="24,17,0,-7" Style="{StaticResource PivotTitleStyle}" FontWeight="Medium"/>
 						<Primitives:PivotHeadersControl x:Name="HeadersListElement" Grid.Row="1" FontWeight="Medium"/>
 						<ItemsPresenter x:Name="PivotItemPresenter" Margin="{TemplateBinding Padding}" Grid.Row="2"/>
 					</Grid>

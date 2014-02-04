@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.Workers
 {
-    public abstract class SpaceWorker
+    public class SpaceWorker
     {
         // Get spaces from DB
         public async Task<MobileServiceCollection<Space, Space>> GetMySpacesAsync(string account_id)
@@ -55,27 +55,6 @@ namespace PintheCloud.Workers
                 return spaces;
             else
                 return null;
-        }
-
-        // Get whether the account likes the space
-        public async Task<bool> IsLike(string account_id, string space_id)
-        {
-            MobileServiceCollection<AccountSpaceRelation, AccountSpaceRelation> relations = null;
-            try
-            {
-                // Load current account's spaces
-                relations = await App.MobileService.GetTable<AccountSpaceRelation>()
-                    .Where(s => s.account_id == account_id && s.space_id == space_id)
-                    .ToCollectionAsync();
-            }
-            catch (MobileServiceInvalidOperationException)
-            {
-            }
-
-            if (relations.Count > 0)
-                return true;
-            else
-                return false;
         }
     }
 }

@@ -18,103 +18,76 @@
 
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
-        	<shell:ApplicationBar.MenuItems>
-        		<shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshButton" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
-        	</shell:ApplicationBar.MenuItems>
-        	<shell:ApplicationBarIconButton x:Name="uiAppBarMapButton" IsEnabled="True" Text="map" Click="uiAppBarMapButton_Click" IconUri="/Assets/pajeon/png/general_bar_map.png"/>
-        	<shell:ApplicationBarIconButton x:Name="uiAppBarMakeSpaceButton" IconUri="/Assets/pajeon/png/general_bar_new.png" IsEnabled="True" Text="make space" Click="uiAppBarMakeSpaceButton_Click"/>
-        	<shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/pajeon/png/general_bar_setting.png" IsEnabled="True" Text="settings" Click="uiAppBarSettingsButton_Click"/>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshButton" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
+            </shell:ApplicationBar.MenuItems>
+            <shell:ApplicationBarIconButton x:Name="uiAppBarMapButton" IsEnabled="True" Text="map" Click="uiAppBarMapButton_Click" IconUri="/Assets/pajeon/png/general_bar_map.png"/>
+            <shell:ApplicationBarIconButton x:Name="uiAppBarMakeSpaceButton" IconUri="/Assets/pajeon/png/general_bar_new.png" IsEnabled="True" Text="make space" Click="uiAppBarMakeSpaceButton_Click"/>
+            <shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/pajeon/png/general_bar_setting.png" IsEnabled="True" Text="settings" Click="uiAppBarSettingsButton_Click"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
 
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
-	<Grid x:Name="LayoutRoot" Background="White">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="72"/>
-			<RowDefinition/>
-			<RowDefinition Height="72"/>
-		</Grid.RowDefinitions>
-		<!--피벗 컨트롤--><!--피벗 컨트롤-->
-		<Grid Background="#FF3ABDBE">
-			<Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-		</Grid>
-		<!--피벗 컨트롤-->
-		<phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged" Grid.Row="1" Foreground="Black" Style="{StaticResource CustomPivotStyle}">
-			<!--피벗 항목 1-->
-			<phone:PivotItem Header="{Binding LocalizedResources.Explorer, Source={StaticResource LocalizedStrings}}" Margin="0">
-				<Grid>
-					<phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" Foreground="Black">
-						<phone:LongListSelector.ItemTemplate>
-							<DataTemplate>
-								<Grid>
-									<Grid.RowDefinitions>
-										<RowDefinition/>
-										<RowDefinition Height="1"/>
-									</Grid.RowDefinitions>
-									<Grid Margin="22,17.5,22,14">
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition/>
-											<ColumnDefinition Width="107"/>
-										</Grid.ColumnDefinitions>
-										<StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0">
-											<TextBlock x:Name="uiNearSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="32" LineHeight="37" Margin="0,0,0,10.5"/>
-											<TextBlock x:Name="uiNearSpaceId" TextWrapping="Wrap" Text="{Binding SpaceId}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
-											<StackPanel Orientation="Horizontal">
-												<TextBlock x:Name="uiNearSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLike}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,10,0"/>
-												<TextBlock x:Name="uiNearSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22"/>
-											</StackPanel>
-										</StackPanel>
-										<Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource NoBorderMarginPaddingPressEffectButtonStyle}" Grid.Column="1">
-											<Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage}"/>
-										</Button>
-									</Grid>
-									<Grid Grid.Row="1" Background="#FFCED7DD"/>
-								</Grid>
-							</DataTemplate>
-						</phone:LongListSelector.ItemTemplate>
-					</phone:LongListSelector>
-					<TextBlock x:Name="uiNearSpaceMessage" TextWrapping="Wrap" FontSize="32" Visibility="Collapsed" Grid.Row="1" Margin="22,17.5,0,0"/>
-				</Grid>
-			</phone:PivotItem>
+    <Grid x:Name="LayoutRoot" Background="White">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="72"/>
+            <RowDefinition/>
+            <RowDefinition Height="72"/>
+        </Grid.RowDefinitions>
+        <!--피벗 컨트롤-->
+        <!--피벗 컨트롤-->
+        <Grid Background="#FF3ABDBE">
+            <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Button x:Name="uiSpaceEditButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Visibility="Collapsed" Click="uiSpaceEditButton_Click">
+            	<Image x:Name="uiSpaceEditButtonImage" Source="/Assets/pajeon/png/filelist_edit.png" Stretch="None" Height="72" Width="72"/>
+            </Button>
+        </Grid>
+        <!--피벗 컨트롤-->
+        <phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged" Grid.Row="1" Foreground="Black" Style="{StaticResource CustomPivotStyle}">
+            <phone:Pivot.Resources>
+                <DataTemplate x:Key="uiSpaceListItemTemplate">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="1"/>
+                        </Grid.RowDefinitions>
+                        <Grid Margin="22,17.5,22,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="107"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0">
+                                <TextBlock x:Name="uiNearSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="32" LineHeight="37" Margin="0,0,0,10.5"/>
+                                <TextBlock x:Name="uiNearSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountId}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="uiNearSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLike}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,10,0"/>
+                                    <TextBlock x:Name="uiNearSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <Button x:Name="uiNearSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiNearSpaceLikeButton_Click" >
+                                <Image x:Name="uiNearSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage}" Tag="{Binding SpaceId}" />
+                            </Button>
+                        </Grid>
+                        <Grid Grid.Row="1" Background="#FFCED7DD"/>
+                    </Grid>
+                </DataTemplate>
+            </phone:Pivot.Resources>
 
-			<!--피벗 항목 2-->
-			<phone:PivotItem Header="{Binding LocalizedResources.Recent, Source={StaticResource LocalizedStrings}}">
-				<Grid/>
-			</phone:PivotItem>
+            <!--피벗 항목 1-->
+            <phone:PivotItem Header="{Binding LocalizedResources.Explorer, Source={StaticResource LocalizedStrings}}" Margin="0">
+                <Grid>
+                    <phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" Foreground="Black" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" />
+                    <TextBlock x:Name="uiNearSpaceMessage" TextWrapping="Wrap" FontSize="32" Visibility="Collapsed" Grid.Row="1" Margin="22,17.5,0,0"/>
+                </Grid>
+            </phone:PivotItem>
 
-			<phone:PivotItem Header="{Binding LocalizedResources.MySpaces, Source={StaticResource LocalizedStrings}}">
-				<Grid>
-					<phone:LongListSelector x:Name="uiMySpaceList" ItemsSource="{Binding Items}" Foreground="Black">
-						<phone:LongListSelector.ItemTemplate>
-							<DataTemplate>
-								<Grid>
-									<Grid.RowDefinitions>
-										<RowDefinition/>
-										<RowDefinition Height="1"/>
-									</Grid.RowDefinitions>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition/>
-										<ColumnDefinition Width="70"/>
-									</Grid.ColumnDefinitions>
-									<StackPanel HorizontalAlignment="Left" VerticalAlignment="Center">
-										<TextBlock x:Name="uiNearSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="32" LineHeight="37"/>
-										<StackPanel Orientation="Horizontal">
-											<TextBlock x:Name="uiNearSpaceId" TextWrapping="Wrap" Text="{Binding SpaceId}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,10,0"/>
-											<TextBlock x:Name="uiNearSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22"/>
-										</StackPanel>
-										<TextBlock x:Name="uiNearSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLike}" FontSize="22" Foreground="#FFA7B6BE"/>
-									</StackPanel>
-									<Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource NoBorderMarginPaddingPressEffectButtonStyle}" Margin="4,49,3,22.684" Grid.Column="1">
-										<Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage}"/>
-									</Button>
-									<Grid Grid.ColumnSpan="2" Grid.Row="1" Background="#FFCED7DD"/>
-								</Grid>
-							</DataTemplate>
-						</phone:LongListSelector.ItemTemplate>
-					</phone:LongListSelector>
-					<TextBlock x:Name="uiMySpaceMessage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="32" Visibility="Collapsed"/>
-				</Grid>
-			</phone:PivotItem>
-		</phone:Pivot>
-	</Grid>
+            <!--피벗 항목 2-->
+            <phone:PivotItem Header="{Binding LocalizedResources.MySpace, Source={StaticResource LocalizedStrings}}">
+                <Grid>
+                    <phone:LongListSelector x:Name="uiMySpaceList" ItemsSource="{Binding Items}" Foreground="Black" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" />
+                    <TextBlock x:Name="uiMySpaceMessage" TextWrapping="Wrap" FontSize="32" Visibility="Collapsed" Grid.Row="1" Margin="22,17.5,0,0"/>
+                </Grid>
+            </phone:PivotItem>
+        </phone:Pivot>
+    </Grid>
 </local:PtcPage>

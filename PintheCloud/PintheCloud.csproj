@@ -96,6 +96,8 @@
     </Compile>
     <Compile Include="GlobalKeys.cs" />
     <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="Managers\AccountSpaceRelationManagerImplement.cs" />
+    <Compile Include="Managers\AccountSpaceRelationManager.cs" />
     <Compile Include="Managers\BlobManager.cs" />
     <Compile Include="Managers\LocalStorageManager.cs" />
     <Compile Include="Managers\SkyDriveManager.cs" />
@@ -125,6 +127,9 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\SpaceViewItem.cs" />
+    <Compile Include="Workers\AccountSpaceRelationInternetAvailableWorker.cs" />
+    <Compile Include="Workers\AccountSpaceRelationInternetUnavailableWorker.cs" />
+    <Compile Include="Workers\AccountSpaceRelationWorker.cs" />
     <Compile Include="Workers\AccountWorker.cs" />
     <Compile Include="Workers\AccountInternetUnavailableWorker.cs" />
     <Compile Include="Managers\AccountManager.cs" />

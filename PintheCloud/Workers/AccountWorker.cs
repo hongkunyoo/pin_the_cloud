@@ -35,7 +35,7 @@ namespace PintheCloud.Workers
         /*** Protected ***/
 
         // Check whether it exists in DB
-        protected async Task<Account> isExistedPerson(string account_platform_id)
+        protected async Task<Account> IsExistedPerson(string account_platform_id)
         {
             MobileServiceCollection<Account, Account> accounts = null;
             try

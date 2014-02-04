@@ -25,6 +25,14 @@ namespace PintheCloud.Managers
             this.CurrentSpaceWorker = CurrentSpaceWorker;
         }
 
+        private AccountSpaceRelationWorker CurrentAccountSpaceRelationWorker = null;
+        public void SetAccountSpaceRelationWorker(AccountSpaceRelationWorker CurrentAccountSpaceRelationWorker)
+        {
+            this.CurrentAccountSpaceRelationWorker = CurrentAccountSpaceRelationWorker;
+        }
+
+
+
         /*** Implementation ***/
 
         // Get space view item from space list.
@@ -37,23 +45,26 @@ namespace PintheCloud.Managers
             // Get spaces formed JArray
             JArray spaces = await this.CurrentSpaceWorker.GetNearSpacesAsync(currentLatitude, currentLongtitude);
 
-            // Convert jarray spaces to space view items
+            // Convert jarray spaces to space view items and set to view model
             if (spaces != null)
             {
-                foreach (JObject space in spaces)
+                foreach (JObject jSpace in spaces)
                 {
-                    string space_id = (string)space["id"];
-                    string space_name = (string)space["space_name"];
-                    double space_latitude = (double)space["space_latitude"];
-                    double space_longtitude = (double)space["space_longtitude"];
-                    string account_id = (string)space["account_id"];
-                    int space_like_number = (int)space["space_like_number"];
+                    string space_id = (string) jSpace["id"];
+                    string space_name = (string) jSpace["space_name"];
+                    double space_latitude = (double) jSpace["space_latitude"];
+                    double space_longtitude = (double) jSpace["space_longtitude"];
+                    string account_id = (string) jSpace["account_id"];
+                    int space_like_number = (int) jSpace["space_like_number"];
 
                     // Get whether this account likes this space
-                    bool isLike = await this.CurrentSpaceWorker.IsLike(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id, space_id);
+                    AccountSpaceRelation isLike = await this.CurrentAccountSpaceRelationWorker
+                        .IsLikeAsync(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id, space_id);
 
-                    ExplorerPage.NearSpaceViewModel.Items.Add(this.MakeSpaceViewItemFromSpace
-                        (new Space(space_name, space_latitude, space_longtitude, account_id, space_like_number), isLike, currentLatitude, currentLongtitude));
+                    Space space = new Space(space_name, space_latitude, space_longtitude, account_id, space_like_number);
+                    space.id = space_id;
+                    ExplorerPage.NearSpaceViewModel.Items
+                        .Add(this.MakeSpaceViewItemFromSpace(space, isLike, currentLatitude, currentLongtitude));
                 }
             }
             if (ExplorerPage.NearSpaceViewModel.Items.Count > 0)
@@ -70,13 +81,15 @@ namespace PintheCloud.Managers
             MobileServiceCollection<Space, Space> spaces = await this.CurrentSpaceWorker
                 .GetMySpacesAsync(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id);
 
-            // Convert spaces to space view items
+            // Convert spaces to space view items and set to view model
             if (spaces != null)
             {
                 foreach (Space space in spaces)
                 {
                     // Get whether this account likes this space
-                    bool isLike = await this.CurrentSpaceWorker.IsLike(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id, space.id);
+                    AccountSpaceRelation isLike = await this.CurrentAccountSpaceRelationWorker
+                        .IsLikeAsync(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id, space.id);
+
                     ExplorerPage.MySpaceViewModel.Items.Add(this.MakeSpaceViewItemFromSpace(space, isLike));
                 }
             }
@@ -91,19 +104,15 @@ namespace PintheCloud.Managers
         /*** Self Method ***/
 
         // Make new space view item from space model object.
-        private SpaceViewItem MakeSpaceViewItemFromSpace(Space space, bool isLike, double currentLatitude = -1, double currentLongtitude = -1)
+        private SpaceViewItem MakeSpaceViewItemFromSpace(Space space, AccountSpaceRelation isLike, double currentLatitude = -1, double currentLongtitude = -1)
         {
             // Set new space view item
             SpaceViewItem spaceViewItem = new SpaceViewItem();
             spaceViewItem.SpaceName = space.space_name;
-            spaceViewItem.SpaceId = space.account_id;
+            spaceViewItem.AccountId = space.account_id;
             spaceViewItem.SpaceLike = space.space_like_number + " " + AppResources.LikeDescription;
-
-            if (isLike)
-                spaceViewItem.SpaceLikeButtonImage = new Uri("/Assets/pajeon/png/general_like_p.png", UriKind.Relative);
-            else
-                spaceViewItem.SpaceLikeButtonImage = new Uri("/Assets/pajeon/png/general_like.png", UriKind.Relative);
-
+            spaceViewItem.SpaceId = space.id;
+ 
             // If it requires distance, set distance description
             // Otherwise, Set blank.
             if (currentLatitude != -1)
@@ -116,7 +125,16 @@ namespace PintheCloud.Managers
             {
                 spaceViewItem.SpaceDistance = "";
             }
+
+            // If this account likes this space, set like image
+            // Otherwise, set not like image
+            if (isLike != null)
+                spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative);
+            else
+                spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
             return spaceViewItem;
         }
+
+        // TODO Sort space list
     }
 }

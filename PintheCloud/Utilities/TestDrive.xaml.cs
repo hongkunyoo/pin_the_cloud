@@ -41,11 +41,11 @@ namespace PintheCloud.Utilities
                 //FileObject f = list[1];
                 //System.Diagnostics.Debug.WriteLine(f.Id);
                 //FileObject.PrintFileObjectList(await App.BlobManager.GetFilesFromFolderAsync(f.Id));
-                await App.LocalStorageManager.CreateFileToLocalSkyDriveStorageAsync("/mypath/myfolder/myfile");
-                await App.LocalStorageManager.CreateFileToLocalSkyDriveStorageAsync("/mypath/myfolder/myfile2");
-                await App.LocalStorageManager.CreateFileToLocalSkyDriveStorageAsync("/mypath/myfolder2/ttmyfile");
-                await App.LocalStorageManager.CreateFileToLocalSkyDriveStorageAsync("/mypath3/fefe/ttmyfile");
-                await App.LocalStorageManager.PrintFolderAsync(await App.LocalStorageManager.GetSkyDriveStorageFolderAsync());
+                await App.CurrentLocalStorageManager.CreateFileToLocalSkyDriveStorageAsync("/mypath/myfolder/myfile");
+                await App.CurrentLocalStorageManager.CreateFileToLocalSkyDriveStorageAsync("/mypath/myfolder/myfile2");
+                await App.CurrentLocalStorageManager.CreateFileToLocalSkyDriveStorageAsync("/mypath/myfolder2/ttmyfile");
+                await App.CurrentLocalStorageManager.CreateFileToLocalSkyDriveStorageAsync("/mypath3/fefe/ttmyfile");
+                await App.CurrentLocalStorageManager.PrintFolderAsync(await App.CurrentLocalStorageManager.GetSkyDriveStorageFolderAsync());
 
 
                 /*

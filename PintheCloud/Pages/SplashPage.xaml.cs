@@ -150,9 +150,9 @@ namespace PintheCloud.Pages
             base.OnNavigatedFrom(e);
 
             // Other manager allocation
-            App.SkyDriveManager = new SkyDriveManager(App.CurrentAccountManager.GetLiveConnectSession());
-            App.BlobManager = new BlobManager();
-            await App.LocalStorageManager.SetupAsync();
+            App.CurrentSkyDriveManager = new SkyDriveManager(App.CurrentAccountManager.GetLiveConnectSession());
+            App.CurrentBlobManager = new BlobManager();
+            await App.CurrentLocalStorageManager.SetupAsync();
 
             if (GlobalKeys.USER.Equals("hongkun"))
             {
@@ -206,7 +206,7 @@ namespace PintheCloud.Pages
             }
             else
             {
-                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.NoInternetCaption, MessageBoxButton.OK);
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
             }
         }
     }

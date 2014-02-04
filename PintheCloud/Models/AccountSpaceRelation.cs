@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.Models
 {
-    class AccountSpaceRelation
+    public class AccountSpaceRelation
     {
         public string id { get; set; }
 
@@ -16,6 +16,7 @@ namespace PintheCloud.Models
 
         [JsonProperty(PropertyName = "space_id")]
         public string space_id { get; set; }
+
 
         public AccountSpaceRelation(string account_id, string space_id)
         {

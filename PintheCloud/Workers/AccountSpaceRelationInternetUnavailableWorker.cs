@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.Workers
 {
-    public class SpaceInternetAvailableWorker : SpaceWorker
+    public class AccountSpaceRelationInternetUnavailableWorker : AccountSpaceRelationWorker
     {
     }
 }

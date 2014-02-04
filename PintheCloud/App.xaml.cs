@@ -34,15 +34,18 @@ namespace PintheCloud
         // Manager
         public static AccountManager CurrentAccountManager = null;
         public static SpaceManager CurrentSpaceManager = null;
+        public static AccountSpaceRelationManager CurrentAccountSpaceRelationManager = null;
         public static GeoCalculateManager CurrentGeoCalculateManager = null;
-        public static SkyDriveManager SkyDriveManager = null;
-        public static BlobManager BlobManager = null;
-        public static LocalStorageManager LocalStorageManager = null;
+        public static SkyDriveManager CurrentSkyDriveManager = null;
+        public static BlobManager CurrentBlobManager = null;
+        public static LocalStorageManager CurrentLocalStorageManager = null;
 
         // Debugger
         public static HDebug HDebug = new HDebug();
         public static RDebug RDebug = new RDebug();
         public static CDebug CDebug = new CDebug();
+
+
 
         /// <summary>
         /// Application 개체의 생성자입니다.
@@ -76,8 +79,9 @@ namespace PintheCloud
             // Manager
             CurrentAccountManager = new AccountManagerImplement();
             CurrentSpaceManager = new SpaceManagerImplement();
+            CurrentAccountSpaceRelationManager = new AccountSpaceRelationManagerImplement();
             CurrentGeoCalculateManager = new GeoCalculateManagerImplement();
-            LocalStorageManager = new LocalStorageManager();
+            CurrentLocalStorageManager = new LocalStorageManager();
 
 
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.

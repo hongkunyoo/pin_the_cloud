@@ -26,19 +26,19 @@ namespace PintheCloud.ViewModels
             }
         }
 
-        private string spaceId;
-        public string SpaceId
+        private string accountId;
+        public string AccountId
         {
             get
             {
-                return spaceId;
+                return accountId;
             }
             set
             {
-                if (spaceId != value)
+                if (accountId != value)
                 {
-                    spaceId = value;
-                    NotifyPropertyChanged("SpaceId");
+                    accountId = value;
+                    NotifyPropertyChanged("AccountId");
                 }
             }
         }
@@ -93,6 +93,24 @@ namespace PintheCloud.ViewModels
                 }
             }
         }
+
+        private string spaceId;
+        public string SpaceId
+        {
+            get
+            {
+                return spaceId;
+            }
+            set
+            {
+                if (spaceId != value)
+                {
+                    spaceId = value;
+                    NotifyPropertyChanged("SpaceId");
+                }
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(String propertyName)
