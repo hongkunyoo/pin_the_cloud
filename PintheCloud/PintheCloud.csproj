@@ -115,8 +115,8 @@
     <Compile Include="Pages\MapViewPage.xaml.cs">
       <DependentUpon>MapViewPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\SkydrivePickerPage.xaml.cs">
-      <DependentUpon>SkydrivePickerPage.xaml</DependentUpon>
+    <Compile Include="Pages\SkyDrivePickerPage.xaml.cs">
+      <DependentUpon>SkyDrivePickerPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Resources\AppResources1.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -152,6 +152,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Page Include="Assets\CustomResources.xaml">
+      <Generator>MSBuild:MarkupCompilePass1</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\ExplorerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -164,7 +168,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\SkydrivePickerPage.xaml">
+    <Page Include="Pages\SkyDrivePickerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -186,7 +190,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\AlignmentGrid.png" />
     <Content Include="Assets\AppBar\basecircle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -196,10 +199,91 @@
     <Content Include="Assets\AppBar\folder.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\ApplicationIcon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Image\ExampleLogo.png" />
+    <Content Include="Assets\pajeon\png\app_icon.png" />
+    <Content Include="Assets\pajeon\png%402x\filelist_edit.png" />
+    <Content Include="Assets\pajeon\png%402x\filelist_like.png" />
+    <Content Include="Assets\pajeon\png%402x\filelist_like_p.png" />
+    <Content Include="Assets\pajeon\png%402x\filelist_view.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_check.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_circle.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_delete.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_map.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_new.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_setting.png" />
+    <Content Include="Assets\pajeon\png%402x\general_bar_upload.png" />
+    <Content Include="Assets\pajeon\png%402x\general_checkbox.png" />
+    <Content Include="Assets\pajeon\png%402x\general_checkbox_p.png" />
+    <Content Include="Assets\pajeon\png%402x\general_download.png" />
+    <Content Include="Assets\pajeon\png%402x\general_edit.png" />
+    <Content Include="Assets\pajeon\png%402x\general_like.png" />
+    <Content Include="Assets\pajeon\png%402x\general_like_p.png" />
+    <Content Include="Assets\pajeon\png%402x\general_logo.png" />
+    <Content Include="Assets\pajeon\png%402x\general_view.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_doc.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_etc.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_folder.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_hwp.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_image.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_pdf.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_ppt.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_sound.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_video.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_xls.png" />
+    <Content Include="Assets\pajeon\png%402x\icon_file_zip.png" />
+    <Content Include="Assets\pajeon\png%402x\login_btn.png" />
+    <Content Include="Assets\pajeon\png%402x\login_logo.png" />
+    <Content Include="Assets\pajeon\png%402x\map_now.png" />
+    <Content Include="Assets\pajeon\png%402x\map_pin.png" />
+    <Content Include="Assets\pajeon\png%402x\map_point.png" />
+    <Content Include="Assets\pajeon\png%402x\splash_logo.png" />
+    <Content Include="Assets\pajeon\png\filelist_edit.png" />
+    <Content Include="Assets\pajeon\png\filelist_like.png" />
+    <Content Include="Assets\pajeon\png\filelist_like_p.png" />
+    <Content Include="Assets\pajeon\png\filelist_view.png" />
+    <Content Include="Assets\pajeon\png\general_bar_check.png" />
+    <Content Include="Assets\pajeon\png\general_bar_circle.png" />
+    <Content Include="Assets\pajeon\png\general_bar_delete.png" />
+    <Content Include="Assets\pajeon\png\general_bar_map.png" />
+    <Content Include="Assets\pajeon\png\general_bar_new.png" />
+    <Content Include="Assets\pajeon\png\general_bar_setting.png" />
+    <Content Include="Assets\pajeon\png\general_bar_upload.png" />
+    <Content Include="Assets\pajeon\png\general_checkbox.png" />
+    <Content Include="Assets\pajeon\png\general_checkbox_p.png" />
+    <Content Include="Assets\pajeon\png\general_download.png" />
+    <Content Include="Assets\pajeon\png\general_edit.png" />
+    <Content Include="Assets\pajeon\png\general_like.png" />
+    <Content Include="Assets\pajeon\png\general_like_p.png" />
+    <Content Include="Assets\pajeon\png\general_logo.png" />
+    <Content Include="Assets\pajeon\png\general_view.png" />
+    <Content Include="Assets\pajeon\png\icon_file_doc.png" />
+    <Content Include="Assets\pajeon\png\icon_file_etc.png" />
+    <Content Include="Assets\pajeon\png\icon_file_folder.png" />
+    <Content Include="Assets\pajeon\png\icon_file_hwp.png" />
+    <Content Include="Assets\pajeon\png\icon_file_image.png" />
+    <Content Include="Assets\pajeon\png\icon_file_pdf.png" />
+    <Content Include="Assets\pajeon\png\icon_file_ppt.png" />
+    <Content Include="Assets\pajeon\png\icon_file_sound.png" />
+    <Content Include="Assets\pajeon\png\icon_file_video.png" />
+    <Content Include="Assets\pajeon\png\icon_file_xls.png" />
+    <Content Include="Assets\pajeon\png\icon_file_zip.png" />
+    <Content Include="Assets\pajeon\png\login_btn.png" />
+    <Content Include="Assets\pajeon\png\login_logo.png" />
+    <Content Include="Assets\pajeon\png\map_now.png" />
+    <Content Include="Assets\pajeon\png\map_pin.png" />
+    <Content Include="Assets\pajeon\png\map_point.png" />
+    <Content Include="Assets\pajeon\png\splash_logo.png" />
+    <Content Include="Assets\pajeon\screenshot\explorer.png" />
+    <Content Include="Assets\pajeon\screenshot\filelist.png" />
+    <Content Include="Assets\pajeon\screenshot\filelist_me.png" />
+    <Content Include="Assets\pajeon\screenshot\filelist_me_edit.png" />
+    <Content Include="Assets\pajeon\screenshot\login.png" />
+    <Content Include="Assets\pajeon\screenshot\mapview.png" />
+    <Content Include="Assets\pajeon\screenshot\mySpace.png" />
+    <Content Include="Assets\pajeon\screenshot\mySpace_edit.png" />
+    <Content Include="Assets\pajeon\screenshot\splash.png" />
+    <Content Include="Assets\pajeon\screenshot\upload-list.png" />
+    <Content Include="Assets\pajeon\screenshot\upload-list_edit.png" />
+    <Content Include="Assets\pajeon\screenshot\upload.png" />
     <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -265,7 +349,6 @@
       <HintPath>..\packages\System.Spatial.5.6.0\lib\portable-net40+sl5+wp8+win8\System.Spatial.Portable.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -7,7 +7,12 @@
 
     <!--응용 프로그램 리소스-->
     <Application.Resources>
-        <local:LocalizedStrings xmlns:local="clr-namespace:PintheCloud" x:Key="LocalizedStrings"/>
+    	<ResourceDictionary>
+    		<ResourceDictionary.MergedDictionaries>
+    			<ResourceDictionary Source="Assets/CustomResources.xaml"/>
+    		</ResourceDictionary.MergedDictionaries>
+    		<local:LocalizedStrings xmlns:local="clr-namespace:PintheCloud" x:Key="LocalizedStrings"/>
+    	</ResourceDictionary>
     </Application.Resources>
 
     <Application.ApplicationLifetimeObjects>

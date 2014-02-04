@@ -40,7 +40,7 @@
 						<RowDefinition Height="70"/>
 						<RowDefinition/>
 					</Grid.RowDefinitions>
-					<Button x:Name="uiRefreshButton" Content="Refresh" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" Click="uiRefreshButton_Click"/>
+					<Button x:Name="uiExplorerRefreshButton" Content="Refresh" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" Click="uiExplorerRefreshButton_Click"/>
 					<phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" Grid.Row="1">
 						<phone:LongListSelector.ItemTemplate>
 							<DataTemplate>
@@ -48,7 +48,7 @@
 									<StackPanel>
 										<TextBlock x:Name="uiMySpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}"/>
 										<TextBlock x:Name="uiMySpaceLikeNumber" TextWrapping="Wrap" Text="{Binding SpaceLikeDescription}"/>
-										<TextBlock x:Name="uiMySpaceDescription" TextWrapping="Wrap" Text="{Binding SpaceDescription}"/>
+                                        <TextBlock x:Name="uiMySpaceDescription" TextWrapping="Wrap" Text="{Binding SpaceDescription}"/>
 									</StackPanel>
 								</Grid>
 							</DataTemplate>
@@ -72,7 +72,7 @@
 									<StackPanel>
 										<TextBlock x:Name="uiMySpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}"/>
 										<TextBlock x:Name="uiMySpaceLikeNumber" TextWrapping="Wrap" Text="{Binding SpaceLikeDescription}"/>
-										<TextBlock x:Name="uiMySpaceDescription" TextWrapping="Wrap" Text="{Binding SpaceDescription}"/>
+                                        <TextBlock x:Name="uiMySpaceDescription" TextWrapping="Wrap" Text="{Binding SpaceDescription}"/>
 									</StackPanel>
 								</Grid>
 							</DataTemplate>

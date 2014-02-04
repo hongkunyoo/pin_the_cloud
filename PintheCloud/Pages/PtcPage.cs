@@ -24,7 +24,7 @@ namespace PintheCloud.Pages
         public static string EXPLORER_PAGE = "/Pages/ExplorerPage.xaml";
         public static string SETTINGS_PAGE = "/Pages/SettingsPage.xaml";
         public static string MAP_VIEW_PAGE = "/Pages/MapViewPage.xaml";
-        public static string SKYDRIVE_PICKER_PAGE = "/Pages/SkydrivePickerPage.xaml";
+        public static string SKY_DRIVE_PICKER_PAGE = "/Pages/SkyDrivePickerPage.xaml";
 
 
         public PtcPage()
@@ -33,6 +33,7 @@ namespace PintheCloud.Pages
 
         public void SetSystemTray(bool value)
         {
+            SystemTray.Opacity = 0;
             SystemTray.IsVisible = value;
         }
 

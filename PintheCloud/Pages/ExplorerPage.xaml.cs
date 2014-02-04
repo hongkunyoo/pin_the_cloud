@@ -56,127 +56,23 @@ namespace PintheCloud.Pages
             switch (uiExplorerPivot.SelectedIndex)
             { 
                 case EXPLORER_PIVOT:
-                    
-                    // Get different Space Worker by internet state.
-                    if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
-                    {
-                        App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
-
-                        // TODO If there is spaces, Clear and Add spaces to list
-                        // TODO Otherwise, Show none message.
-                        // TODO load near space use GPS information
-
-                        // Check whether user consented for location access.
-                        base.SetProgressIndicator(true, AppResources.Loading);
-                        if (base.GetLocationAccessConsent())  // Got consent of location access.
-                        {
-                            // Check whether GPS is on or not
-                            if (base.GetGeolocatorPositionStatus())  // GPS is on
-                            {
-                                base.SetProgressIndicator(true, AppResources.Loading);
-                                Geoposition currentGeoposition = await App.CurrentGeoCalculateManager.GetCurrentGeopositionAsync();
-
-                                // Check whether GPS works well or not
-                                if (currentGeoposition != null)  // works well
-                                {
-                                    // If there is near spaces, Clear and Add spaces to list
-                                    // Otherwise, Show none message.
-                                    ObservableCollection<SpaceViewItem> items = await App.CurrentSpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);
-                                    if (items != null)  // There are near spaces
-                                    {
-                                        uiNearSpaceList.Visibility = Visibility.Visible;
-                                        uiNearSpaceMessage.Visibility = Visibility.Collapsed;
-                                        CurrentSpaceViewModel.Items = items;
-                                        this.DataContext = CurrentSpaceViewModel;
-                                    }
-                                    else  // No near spaces
-                                    {
-                                        uiNearSpaceList.Visibility = Visibility.Collapsed;
-                                        uiNearSpaceMessage.Text = AppResources.NoNearSpaceMessage;
-                                        uiNearSpaceMessage.Visibility = Visibility.Visible;
-                                    }
-                                }
-                                else  // works bad
-                                {
-                                    // Show GPS off message box.
-                                    uiNearSpaceList.Visibility = Visibility.Collapsed;
-                                    uiNearSpaceMessage.Text = AppResources.BadGpsMessage;
-                                    uiNearSpaceMessage.Visibility = Visibility.Visible;
-                                }
-                            }
-                            else  // GPS is off
-                            {
-                                // Show GPS off message box.
-                                uiNearSpaceList.Visibility = Visibility.Collapsed;
-                                uiNearSpaceMessage.Text = AppResources.NoGpsOnMessage;
-                                uiNearSpaceMessage.Visibility = Visibility.Visible;
-                            }
-                        }
-                        else  // First or not consented of access in location information.
-                        {
-                            // Show no consent message box.
-                            uiNearSpaceList.Visibility = Visibility.Collapsed;
-                            uiNearSpaceMessage.Text = AppResources.NoLocationAcessConsentMessage;
-                            uiNearSpaceMessage.Visibility = Visibility.Visible;
-                        }
-                        base.SetProgressIndicator(false);
-                    }
-                    else  // Internet bad.
-                    {
-                        // Show bad Internet message box.
-                        uiNearSpaceList.Visibility = Visibility.Collapsed;
-                        uiNearSpaceMessage.Text = AppResources.InternetUnavailableMessage;
-                        uiNearSpaceMessage.Visibility = Visibility.Visible;
-                    }
+                    await this.SetExplorerPivotAsync();
                     break;
-
 
                 case RECENT_PIVOT:
                     // TODO
                     break;
 
-
                 case MY_SPACES_PIVOT:
-
-                    // Get different Space Worker by internet state.
-                    if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
-                    {
-                        App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
-
-                        // If there is my spaces, Clear and Add spaces to list
-                        // Otherwise, Show none message.
-                        base.SetProgressIndicator(true, AppResources.Loading);
-                        ObservableCollection<SpaceViewItem> items = await App.CurrentSpaceManager.GetMySpaceViewItemsAsync();
-                        if (items != null)
-                        {
-                            uiMySpaceList.Visibility = Visibility.Visible;
-                            uiMySpaceMessage.Visibility = Visibility.Collapsed;
-                            CurrentSpaceViewModel.Items = items;
-                            this.DataContext = CurrentSpaceViewModel;
-                        }
-                        else
-                        {
-                            uiMySpaceList.Visibility = Visibility.Collapsed;
-                            uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
-                            uiMySpaceMessage.Visibility = Visibility.Visible;
-                        }
-                        base.SetProgressIndicator(false);
-                    }
-                    else  // Internet bad.
-                    {
-                        // Show bad Internet message box.
-                        uiMySpaceList.Visibility = Visibility.Collapsed;
-                        uiMySpaceMessage.Text = AppResources.InternetUnavailableMessage;
-                        uiMySpaceMessage.Visibility = Visibility.Visible;
-                    }
+                    await this.SetMySpacePivotAsync();
                     break;
             }
         }
 
 
-        private void uiRefreshButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private async void uiExplorerRefreshButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            // TODO Load new near spaces.
+            await this.SetExplorerPivotAsync();
         }
 
 
@@ -190,7 +86,7 @@ namespace PintheCloud.Pages
         // Move to Make Space Page
         private void uiAppBarMakeSpaceButton_Click(object sender, System.EventArgs e)
         {
-            NavigationService.Navigate(new Uri(PtcPage.SKYDRIVE_PICKER_PAGE, UriKind.Relative));
+            NavigationService.Navigate(new Uri(PtcPage.SKY_DRIVE_PICKER_PAGE, UriKind.Relative));
         }
 
 
@@ -198,6 +94,126 @@ namespace PintheCloud.Pages
         private void uiAppBarMapButton_Click(object sender, System.EventArgs e)
         {
             NavigationService.Navigate(new Uri(PtcPage.MAP_VIEW_PAGE, UriKind.Relative));
+        }
+
+
+
+        /*** Self Method ***/
+
+        private async Task SetExplorerPivotAsync()
+        {
+            // Get different Space Worker by internet state.
+            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+            {
+                // Set worker and show loading message
+                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+                uiNearSpaceList.Visibility = Visibility.Collapsed;
+                uiNearSpaceMessage.Text = AppResources.Loading;
+                uiNearSpaceMessage.Visibility = Visibility.Visible;
+
+                // Check whether user consented for location access.
+                base.SetProgressIndicator(true);
+                if (base.GetLocationAccessConsent())  // Got consent of location access.
+                {
+                    // Check whether GPS is on or not
+                    if (base.GetGeolocatorPositionStatus())  // GPS is on
+                    {
+                        base.SetProgressIndicator(true);
+                        Geoposition currentGeoposition = await App.CurrentGeoCalculateManager.GetCurrentGeopositionAsync();
+
+                        // Check whether GPS works well or not
+                        if (currentGeoposition != null)  // works well
+                        {
+                            // If there is near spaces, Clear and Add spaces to list
+                            // Otherwise, Show none message.
+                            ObservableCollection<SpaceViewItem> items = 
+                                await App.CurrentSpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);
+                            if (items != null)  // There are near spaces
+                            {
+                                uiNearSpaceList.Visibility = Visibility.Visible;
+                                uiNearSpaceMessage.Visibility = Visibility.Collapsed;
+                                CurrentSpaceViewModel.Items = items;
+                                this.DataContext = CurrentSpaceViewModel;
+                            }
+                            else  // No near spaces
+                            {
+                                uiNearSpaceList.Visibility = Visibility.Collapsed;
+                                uiNearSpaceMessage.Text = AppResources.NoNearSpaceMessage;
+                                uiNearSpaceMessage.Visibility = Visibility.Visible;
+                            }
+                        }
+                        else  // works bad
+                        {
+                            // Show GPS off message box.
+                            uiNearSpaceList.Visibility = Visibility.Collapsed;
+                            uiNearSpaceMessage.Text = AppResources.BadGpsMessage;
+                            uiNearSpaceMessage.Visibility = Visibility.Visible;
+                        }
+                    }
+                    else  // GPS is off
+                    {
+                        // Show GPS off message box.
+                        uiNearSpaceList.Visibility = Visibility.Collapsed;
+                        uiNearSpaceMessage.Text = AppResources.NoGpsOnMessage;
+                        uiNearSpaceMessage.Visibility = Visibility.Visible;
+                    }
+                }
+                else  // First or not consented of access in location information.
+                {
+                    // Show no consent message box.
+                    uiNearSpaceList.Visibility = Visibility.Collapsed;
+                    uiNearSpaceMessage.Text = AppResources.NoLocationAcessConsentMessage;
+                    uiNearSpaceMessage.Visibility = Visibility.Visible;
+                }
+                base.SetProgressIndicator(false);
+            }
+            else  // Internet bad.
+            {
+                // Show bad Internet message box.
+                uiNearSpaceList.Visibility = Visibility.Collapsed;
+                uiNearSpaceMessage.Text = AppResources.InternetUnavailableMessage;
+                uiNearSpaceMessage.Visibility = Visibility.Visible;
+            }
+        }
+
+
+        private async Task SetMySpacePivotAsync()
+        {
+            // Get different Space Worker by internet state.
+            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+            {
+                // Set worker and show loading message
+                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+                uiMySpaceList.Visibility = Visibility.Collapsed;
+                uiMySpaceMessage.Text = AppResources.Loading;
+                uiMySpaceMessage.Visibility = Visibility.Visible;
+
+                // If there is my spaces, Clear and Add spaces to list
+                // Otherwise, Show none message.
+                base.SetProgressIndicator(true);
+                ObservableCollection<SpaceViewItem> items = await App.CurrentSpaceManager.GetMySpaceViewItemsAsync();
+                if (items != null)
+                {
+                    uiMySpaceList.Visibility = Visibility.Visible;
+                    uiMySpaceMessage.Visibility = Visibility.Collapsed;
+                    CurrentSpaceViewModel.Items = items;
+                    this.DataContext = CurrentSpaceViewModel;
+                }
+                else
+                {
+                    uiMySpaceList.Visibility = Visibility.Collapsed;
+                    uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
+                    uiMySpaceMessage.Visibility = Visibility.Visible;
+                }
+                base.SetProgressIndicator(false);
+            }
+            else  // Internet bad.
+            {
+                // Show bad Internet message box.
+                uiMySpaceList.Visibility = Visibility.Collapsed;
+                uiMySpaceMessage.Text = AppResources.InternetUnavailableMessage;
+                uiMySpaceMessage.Visibility = Visibility.Visible;
+            }
         }
     }
 }

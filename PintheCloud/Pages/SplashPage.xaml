@@ -16,10 +16,13 @@
 	Orientation="Portrait" >
 
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
-    	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-    		<Image Source="/Assets/Image/ExampleLogo.png"/>
-    		<Button x:Name="uiMicrosoftLoginButton" Content="{Binding Path=LocalizedResources.Login, Source={StaticResource LocalizedStrings}}" FontSize="33.333" Click="uiMicrosoftLoginButton_Click" Visibility="Collapsed"/>
+    <Grid x:Name="LayoutRoot" Background="#FF3ABDBE">
+    	<Image x:Name="uiSplashLogo" Source="/Assets/pajeon/png/splash_logo.png" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    	<StackPanel x:Name="uiLoginStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
+    		<Image Source="/Assets/pajeon/png/login_logo.png" Stretch="None"/>
+    		<Button x:Name="uiMicrosoftLoginButton" Click="uiMicrosoftLoginButton_Click" Style="{StaticResource CustomButtonStyle}">
+    			<Image Stretch="None" Source="/Assets/pajeon/png/login_btn.png"/>
+    		</Button>
     	</StackPanel>
 
         <!-- 지역화 참고:
