@@ -128,6 +128,8 @@ namespace PintheCloud.Pages
             {
                 // Set worker and show loading message
                 App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+                NearSpaceViewModel.IsDataLoaded = true;
+                NearSpaceViewModel.Items.Clear();
                 uiNearSpaceList.Visibility = Visibility.Collapsed;
                 uiNearSpaceMessage.Text = message;
                 uiNearSpaceMessage.Visibility = Visibility.Visible;
@@ -150,7 +152,6 @@ namespace PintheCloud.Pages
                             {
                                 uiNearSpaceList.Visibility = Visibility.Visible;
                                 uiNearSpaceMessage.Visibility = Visibility.Collapsed;
-                                NearSpaceViewModel.IsDataLoaded = true;
                                 uiNearSpaceList.DataContext = NearSpaceViewModel;
                             }
                             else  // No near spaces
@@ -158,6 +159,7 @@ namespace PintheCloud.Pages
                                 uiNearSpaceList.Visibility = Visibility.Collapsed;
                                 uiNearSpaceMessage.Text = AppResources.NoNearSpaceMessage;
                                 uiNearSpaceMessage.Visibility = Visibility.Visible;
+                                NearSpaceViewModel.IsDataLoaded = false;
                             }
                         }
                         else  // works bad
@@ -166,6 +168,7 @@ namespace PintheCloud.Pages
                             uiNearSpaceList.Visibility = Visibility.Collapsed;
                             uiNearSpaceMessage.Text = AppResources.BadGpsMessage;
                             uiNearSpaceMessage.Visibility = Visibility.Visible;
+                            NearSpaceViewModel.IsDataLoaded = false;
                         }
                     }
                     else  // GPS is off
@@ -174,6 +177,7 @@ namespace PintheCloud.Pages
                         uiNearSpaceList.Visibility = Visibility.Collapsed;
                         uiNearSpaceMessage.Text = AppResources.NoGpsOnMessage;
                         uiNearSpaceMessage.Visibility = Visibility.Visible;
+                        NearSpaceViewModel.IsDataLoaded = false;
                     }
                 }
                 else  // First or not consented of access in location information.
@@ -182,6 +186,7 @@ namespace PintheCloud.Pages
                     uiNearSpaceList.Visibility = Visibility.Collapsed;
                     uiNearSpaceMessage.Text = AppResources.NoLocationAcessConsentMessage;
                     uiNearSpaceMessage.Visibility = Visibility.Visible;
+                    NearSpaceViewModel.IsDataLoaded = false;
                 }
 
                 // Hide progress indicator
@@ -205,6 +210,8 @@ namespace PintheCloud.Pages
             {
                 // Set worker and show loading message
                 App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+                MySpaceViewModel.IsDataLoaded = true;
+                MySpaceViewModel.Items.Clear();
                 uiMySpaceList.Visibility = Visibility.Collapsed;
                 uiMySpaceMessage.Text = message;
                 uiMySpaceMessage.Visibility = Visibility.Visible;
@@ -216,7 +223,6 @@ namespace PintheCloud.Pages
                 {
                     uiMySpaceList.Visibility = Visibility.Visible;
                     uiMySpaceMessage.Visibility = Visibility.Collapsed;
-                    MySpaceViewModel.IsDataLoaded = true;
                     uiMySpaceList.DataContext = MySpaceViewModel;
                 }
                 else  // No my spaces
@@ -224,6 +230,7 @@ namespace PintheCloud.Pages
                     uiMySpaceList.Visibility = Visibility.Collapsed;
                     uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
                     uiMySpaceMessage.Visibility = Visibility.Visible;
+                    MySpaceViewModel.IsDataLoaded = false;
                 }
 
                 // Hide progress indicator

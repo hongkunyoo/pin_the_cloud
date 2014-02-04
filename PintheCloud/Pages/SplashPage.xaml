@@ -19,7 +19,7 @@
     	<Image x:Name="uiSplashLogo" Source="/Assets/pajeon/png/splash_logo.png" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     	<StackPanel x:Name="uiLoginStackPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Collapsed">
     		<Image Source="/Assets/pajeon/png/login_logo.png" Stretch="None"/>
-    		<Button x:Name="uiMicrosoftLoginButton" Click="uiMicrosoftLoginButton_Click" Style="{StaticResource CustomButtonStyle}">
+    		<Button x:Name="uiMicrosoftLoginButton" Click="uiMicrosoftLoginButton_Click" Style="{StaticResource NoMarginNoPaddingButtonStyle}">
     			<Image Stretch="None" Source="/Assets/pajeon/png/login_btn.png"/>
     		</Button>
     	</StackPanel>

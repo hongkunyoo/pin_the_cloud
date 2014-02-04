@@ -103,6 +103,7 @@
     <Compile Include="Managers\GeoCalculateManagerImplement.cs" />
     <Compile Include="Managers\SpaceManager.cs" />
     <Compile Include="Managers\SpaceManagerImplement.cs" />
+    <Compile Include="Models\AccountSpaceRelation.cs" />
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Space.cs" />
     <Compile Include="Utilities\CDebug.cs" />
