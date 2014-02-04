@@ -115,15 +115,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   meter away from here.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string DistanceDescription {
-            get {
-                return ResourceManager.GetString("DistanceDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Explorer과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Explorer {
@@ -142,7 +133,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   number of people like this space.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   likes과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string LikeDescription {
             get {
@@ -192,6 +183,15 @@ namespace PintheCloud.Resources {
         public static string LogoutMessage {
             get {
                 return ResourceManager.GetString("LogoutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   m과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Meter {
+            get {
+                return ResourceManager.GetString("Meter", resourceCulture);
             }
         }
         

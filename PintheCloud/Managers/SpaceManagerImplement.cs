@@ -42,13 +42,18 @@ namespace PintheCloud.Managers
             {
                 foreach (JObject space in spaces)
                 {
+                    string space_id = (string)space["id"];
                     string space_name = (string)space["space_name"];
                     double space_latitude = (double)space["space_latitude"];
                     double space_longtitude = (double)space["space_longtitude"];
                     string account_id = (string)space["account_id"];
                     int space_like_number = (int)space["space_like_number"];
+
+                    // Get whether this account likes this space
+                    bool isLike = await this.CurrentSpaceWorker.IsLike(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id, space_id);
+
                     ExplorerPage.NearSpaceViewModel.Items.Add(this.MakeSpaceViewItemFromSpace
-                        (new Space(space_name, space_latitude, space_longtitude, account_id, space_like_number), currentLatitude, currentLongtitude));
+                        (new Space(space_name, space_latitude, space_longtitude, account_id, space_like_number), isLike, currentLatitude, currentLongtitude));
                 }
             }
             if (ExplorerPage.NearSpaceViewModel.Items.Count > 0)
@@ -69,7 +74,11 @@ namespace PintheCloud.Managers
             if (spaces != null)
             {
                 foreach (Space space in spaces)
-                    ExplorerPage.MySpaceViewModel.Items.Add(this.MakeSpaceViewItemFromSpace(space));
+                {
+                    // Get whether this account likes this space
+                    bool isLike = await this.CurrentSpaceWorker.IsLike(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id, space.id);
+                    ExplorerPage.MySpaceViewModel.Items.Add(this.MakeSpaceViewItemFromSpace(space, isLike));
+                }
             }
             if (ExplorerPage.MySpaceViewModel.Items.Count > 0)
                 return true;
@@ -82,12 +91,18 @@ namespace PintheCloud.Managers
         /*** Self Method ***/
 
         // Make new space view item from space model object.
-        private SpaceViewItem MakeSpaceViewItemFromSpace(Space space, double currentLatitude = -1, double currentLongtitude = -1)
+        private SpaceViewItem MakeSpaceViewItemFromSpace(Space space, bool isLike, double currentLatitude = -1, double currentLongtitude = -1)
         {
             // Set new space view item
             SpaceViewItem spaceViewItem = new SpaceViewItem();
             spaceViewItem.SpaceName = space.space_name;
-            spaceViewItem.SpaceLikeDescription = space.space_like_number + " " + AppResources.LikeDescription;
+            spaceViewItem.SpaceId = space.account_id;
+            spaceViewItem.SpaceLike = space.space_like_number + " " + AppResources.LikeDescription;
+
+            if (isLike)
+                spaceViewItem.SpaceLikeButtonImage = new Uri("/Assets/pajeon/png/general_like_p.png", UriKind.Relative);
+            else
+                spaceViewItem.SpaceLikeButtonImage = new Uri("/Assets/pajeon/png/general_like.png", UriKind.Relative);
 
             // If it requires distance, set distance description
             // Otherwise, Set blank.
@@ -95,11 +110,11 @@ namespace PintheCloud.Managers
             {
                 double distance = App.CurrentGeoCalculateManager.GetDistanceBetweenTwoCoordiantes
                     (currentLatitude, space.space_latitude, currentLongtitude, space.space_longtitude);
-                spaceViewItem.SpaceDescription = Math.Round(distance) + " " + AppResources.DistanceDescription;
+                spaceViewItem.SpaceDistance = Math.Round(distance) + AppResources.Meter;
             }
             else
             {
-                spaceViewItem.SpaceDescription = "";
+                spaceViewItem.SpaceDistance = "";
             }
             return spaceViewItem;
         }
