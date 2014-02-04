@@ -5,7 +5,7 @@
     <Language code="en-US" />
   </Languages>
   <App xmlns="" ProductID="{76c7756f-1a04-4893-9b4f-378be731ebdf}" Title="Pin the Cloud" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Pin the Service" Description="This is windows phone 8 Pin the Cloud application." Publisher="Pin the Service" PublisherID="{31aa57a5-2fdd-42c4-94a4-237e72675918}">
-    <IconPath IsRelative="true" IsResource="false">Assets\ApplicationIcon.png</IconPath>
+    <IconPath IsRelative="true" IsResource="false">Assets\pajeon\png\app_icon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />
       <Capability Name="ID_CAP_LOCATION" />
@@ -18,9 +18,9 @@
     <Tokens>
       <PrimaryToken TokenID="PintheCloudToken" TaskName="_default">
         <TemplateFlip>
-          <SmallImageURI IsRelative="true" IsResource="false">Assets\Tiles\FlipCycleTileSmall.png</SmallImageURI>
+          <SmallImageURI IsRelative="true" IsResource="false">Assets\pajeon\png\app_icon.png</SmallImageURI>
           <Count>0</Count>
-          <BackgroundImageURI IsRelative="true" IsResource="false">Assets\Tiles\FlipCycleTileMedium.png</BackgroundImageURI>
+          <BackgroundImageURI IsRelative="true" IsResource="false">Assets\pajeon\png\app_icon.png</BackgroundImageURI>
           <Title>Pin the Cloud</Title>
           <BackContent>
           </BackContent>
@@ -30,8 +30,7 @@
           </BackTitle>
           <DeviceLockImageURI>
           </DeviceLockImageURI>
-          <HasLarge>
-          </HasLarge>
+          <HasLarge>False</HasLarge>
         </TemplateFlip>
       </PrimaryToken>
     </Tokens>

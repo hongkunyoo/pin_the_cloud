@@ -13,15 +13,15 @@ namespace PintheCloud.ViewModels
 {
     public class SpaceViewModel : INotifyPropertyChanged
     {
-        /// <summary>
-        /// ItemViewModel 개체에 대한 컬렉션입니다.
-        /// </summary>
-        public ObservableCollection<SpaceViewItem> Items { get; set; }
+        public ObservableCollection<SpaceViewItem> Items { get; private set; }
+        public bool IsDataLoaded { get; set; }
+
 
         public SpaceViewModel()
         {
             this.Items = new ObservableCollection<SpaceViewItem>();
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(String propertyName)
