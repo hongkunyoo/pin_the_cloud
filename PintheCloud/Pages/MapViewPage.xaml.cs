@@ -57,6 +57,5 @@ namespace PintheCloud.Pages
             this.UserLocationMarker.GeoCoordinate = geoposition.Coordinate.ToGeoCoordinate();
             this.UserLocationMarker.Visibility = System.Windows.Visibility.Visible;
         }
-
     }
 }
