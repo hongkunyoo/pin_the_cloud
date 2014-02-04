@@ -199,5 +199,10 @@ namespace PintheCloud.Pages
         {
             NavigationService.Navigate(new Uri(PtcPage.MAP_VIEW_PAGE, UriKind.Relative));
         }
+
+        private void uiNearSpaceList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

@@ -70,5 +70,7 @@ namespace PintheCloud.Pages
             else
                 return false;
         }
+
+        public static Uri Ex { get; set; }
     }
 }

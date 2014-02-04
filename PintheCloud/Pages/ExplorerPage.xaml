@@ -41,7 +41,7 @@
 						<RowDefinition/>
 					</Grid.RowDefinitions>
 					<Button x:Name="uiRefreshButton" Content="Refresh" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="20" Click="uiRefreshButton_Click"/>
-					<phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" Grid.Row="1">
+					<phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" Grid.Row="1" Margin="-10,0,10,0">
 						<phone:LongListSelector.ItemTemplate>
 							<DataTemplate>
 								<Grid>
