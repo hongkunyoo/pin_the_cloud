@@ -37,6 +37,7 @@ namespace PintheCloud
         public static GeoCalculateManager CurrentGeoCalculateManager = null;
         public static SkyDriveManager SkyDriveManager = null;
         public static BlobManager BlobManager = null;
+        public static LocalStorageManager LocalStorageManager = null;
 
         // Debugger
         public static HDebug HDebug = new HDebug();
@@ -76,7 +77,7 @@ namespace PintheCloud
             CurrentAccountManager = new AccountManagerImplement();
             CurrentSpaceManager = new SpaceManagerImplement();
             CurrentGeoCalculateManager = new GeoCalculateManagerImplement();
-            
+            LocalStorageManager = new LocalStorageManager();
 
 
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.

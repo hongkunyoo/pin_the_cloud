@@ -22,13 +22,14 @@ namespace PintheCloud.Models
         {
 
         }
-        public FileObject(string id, string name, string parentId, int size, string typeDetail, string createAt, string updateAt)
+        public FileObject(string id, string name, string parentId, int size, string type, string typeDetail, string createAt, string updateAt)
         {
             this.Id = id;
             this.Name = name;
             this.ParentId = parentId;
             this.Size = size;
-            this.Type = id.Substring(0,id.IndexOf("."));
+            //this.Type = id.Substring(0,id.IndexOf("."));
+            this.Type = type;
             this.TypeDetail = typeDetail;
             this.CreateAt = createAt;
             this.UpdateAt = updateAt;
