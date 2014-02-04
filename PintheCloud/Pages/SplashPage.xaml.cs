@@ -36,17 +36,18 @@ namespace PintheCloud.Pages
             base.OnNavigatedTo(e);
 
             // DEBUG MODE SETTING
-            StorageFile file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\user.xml");
-            using (XmlReader reader = XmlReader.Create(await file.OpenStreamForReadAsync()))
-            {
-                reader.Read();
-                reader.Read();
-                reader.Read();
-                reader.Read();
-                GlobalKeys.USER = reader.Value.ToString().Trim();
-            }
+            // Debugger
+            //StorageFile file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\user.xml");
+            //using (XmlReader reader = XmlReader.Create(await file.OpenStreamForReadAsync()))
+            //{
+            //    reader.Read();
+            //    reader.Read();
+            //    reader.Read();
+            //    reader.Read();
+            //    GlobalKeys.USER = reader.Value.ToString().Trim();
+            //}
 
-            /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////////////////////////////////////
 
             // Check if it has backstacks, remove all
             int backStackCount = NavigationService.BackStack.Count();
@@ -122,8 +123,7 @@ namespace PintheCloud.Pages
                     }
                     else  // Get session fail
                     {
-                        uiSplashLogo.Visibility = Visibility.Collapsed;
-                        uiLoginStackPanel.Visibility = Visibility.Visible;
+                        uiMicrosoftLoginButton.Visibility = Visibility.Visible;
                     }
                 }
 
@@ -138,21 +138,27 @@ namespace PintheCloud.Pages
                     }
                     else
                     {
-                        uiSplashLogo.Visibility = Visibility.Collapsed;
-                        uiLoginStackPanel.Visibility = Visibility.Visible;
                         MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+                        uiMicrosoftLoginButton.Visibility = Visibility.Visible;
                     }
                 }
             }
         }
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        protected async override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
 
             // Other manager allocation
             App.SkyDriveManager = new SkyDriveManager(App.CurrentAccountManager.GetLiveConnectSession());
             App.BlobManager = new BlobManager();
+            await App.LocalStorageManager.SetupAsync();
+
+            if (GlobalKeys.USER.Equals("hongkun"))
+            {
+                
+                NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
+            }
         }
 
         private async void uiMicrosoftLoginButton_Click(object sender, System.Windows.RoutedEventArgs e)

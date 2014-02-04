@@ -40,7 +40,7 @@ namespace PintheCloud.Managers
             string createAt = (string)dic["created_time"] ?? DateTime.Now.ToString();
             string updateAt = (string)dic["updated_time"] ?? DateTime.Now.ToString();
 
-            return new FileObject(id, name, parent_id, size, type, createAt, updateAt);
+            return new FileObject(id, name, parent_id, size, id.Substring(0,id.IndexOf(".")),type, createAt, updateAt);
             
         }
 
