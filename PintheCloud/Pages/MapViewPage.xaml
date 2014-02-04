@@ -42,7 +42,7 @@
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBarEditButton">
             <shell:ApplicationBarIconButton x:Name="MyLocationButton" IconUri="/Assets/AppBar/app_bar_me_icon.png" IsEnabled="True" Text="me" Click="uiMyLocation_Click" />
-            <shell:ApplicationBarIconButton x:Name="uiAppBarMakeSpaceButton" IconUri="/Assets/AppBar/folder.png" IsEnabled="True" Text="make space" Click="uiAppBarMakeSpaceButton_Click"/>
+            <shell:ApplicationBarIconButton x:Name="uiAppBarMakeSpaceButton" IconUri="/Assets/AppBar/folder.png" IsEnabled="True" Text="make space" />
             <shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/AppBar/feature.settings.png" IsEnabled="True" Text="settings" Click="uiAppBarSettingsButton_Click"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
