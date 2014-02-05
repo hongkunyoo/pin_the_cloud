@@ -19,7 +19,7 @@ namespace PintheCloud.ViewModels
         public ObservableCollection<SpaceViewItem> Items { get; set; }
         
         // Mutex
-        public bool IsDataLoaded { get; set; }
+        public bool IsDataLoading { get; set; }
 
 
         public SpaceViewModel()

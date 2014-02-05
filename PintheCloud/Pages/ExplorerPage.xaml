@@ -39,7 +39,7 @@
         <Grid Background="#FF3ABDBE">
             <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             <Button x:Name="uiSpaceEditButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Visibility="Collapsed" Click="uiSpaceEditButton_Click">
-            	<Image x:Name="uiSpaceEditButtonImage" Source="/Assets/pajeon/png/filelist_edit.png" Stretch="None" Height="72" Width="72"/>
+            	<Image x:Name="uiSpaceEditButtonImage" Source="/Assets/pajeon/png/general_edit.png" Stretch="None" Height="72" Width="72"/>
             </Button>
         </Grid>
         <!--피벗 컨트롤-->

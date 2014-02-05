@@ -123,7 +123,8 @@ namespace PintheCloud.Pages
                     }
                     else  // Get session fail
                     {
-                        uiMicrosoftLoginButton.Visibility = Visibility.Visible;
+                        uiSplashLogo.Visibility = Visibility.Collapsed;
+                        uiLoginStackPanel.Visibility = Visibility.Visible;
                     }
                 }
 
@@ -139,7 +140,8 @@ namespace PintheCloud.Pages
                     else
                     {
                         MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
-                        uiMicrosoftLoginButton.Visibility = Visibility.Visible;
+                        uiSplashLogo.Visibility = Visibility.Collapsed;
+                        uiLoginStackPanel.Visibility = Visibility.Visible;
                     }
                 }
             }

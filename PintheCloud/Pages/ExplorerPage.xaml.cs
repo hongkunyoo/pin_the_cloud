@@ -27,8 +27,8 @@ namespace PintheCloud.Pages
         private const int EXPLORER_PIVOT = 0;
         private const int MY_SPACES_PIVOT = 1;
 
-        private const string EDIT_IMAGE_PATH= "/Assets/pajeon/png/filelist_edit.png";
-        private const string VIEW_IMAGE_PATH = "/Assets/pajeon/png/filelist_view.png";
+        private const string EDIT_IMAGE_PATH = "/Assets/pajeon/png/general_edit.png";
+        private const string VIEW_IMAGE_PATH = "/Assets/pajeon/png/general_view.png";
 
         public SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
         public SpaceViewModel MySpaceViewModel = new SpaceViewModel();
@@ -63,13 +63,13 @@ namespace PintheCloud.Pages
             { 
                 case EXPLORER_PIVOT:
                     uiSpaceEditButton.Visibility = Visibility.Collapsed;
-                    if (!NearSpaceViewModel.IsDataLoaded)  // Mutex check
+                    if (!NearSpaceViewModel.IsDataLoading)  // Mutex check
                         await this.SetExplorerPivotAsync(AppResources.Loading);
                     break;
 
                 case MY_SPACES_PIVOT:
                     uiSpaceEditButton.Visibility = Visibility.Visible;
-                    if (!MySpaceViewModel.IsDataLoaded)  // Mutex check
+                    if (!MySpaceViewModel.IsDataLoading)  // Mutex check
                         await this.SetMySpacePivotAsync(AppResources.Loading);
                     break;
             }
@@ -126,18 +126,32 @@ namespace PintheCloud.Pages
                 {
                     likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative));
 
+                    // If like success, set like number ++
                     // If like fail, set image back to original
-                    if (!await App.CurrentAccountSpaceRelationManager.LikeAysnc(spaceId, true))
+                    if (await App.CurrentAccountSpaceRelationManager.LikeAysnc(spaceId, true))
+                    {
+                        // TODO ++ 
+                    }
+                    else
+                    {
                         likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative));
+                    }       
                 }
 
                 else  // Do Not Like
                 {
                     likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative));
 
+                    // If not like success, set like number --
                     // If not like fail, set image back to original
-                    if (!await App.CurrentAccountSpaceRelationManager.LikeAysnc(spaceId, false))
+                    if (await App.CurrentAccountSpaceRelationManager.LikeAysnc(spaceId, false))
+                    {
+                        // TODO --
+                    }
+                    else 
+                    {
                         likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative));
+                    }
                 }
             }
             else  // // Internet bad.
@@ -175,12 +189,12 @@ namespace PintheCloud.Pages
             switch (uiExplorerPivot.SelectedIndex)
             { 
                 case EXPLORER_PIVOT:
-                    NearSpaceViewModel.IsDataLoaded = false;  // Mutex
+                    NearSpaceViewModel.IsDataLoading = false;  // Mutex
                     await this.SetExplorerPivotAsync(AppResources.Refresh);
                     break;
 
                 case MY_SPACES_PIVOT:
-                    MySpaceViewModel.IsDataLoaded = false;  // Mutex
+                    MySpaceViewModel.IsDataLoading = false;  // Mutex
                     await this.SetMySpacePivotAsync(AppResources.Refresh);
                     break;
             }
@@ -200,12 +214,14 @@ namespace PintheCloud.Pages
                 App.CurrentSpaceManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
 
                 // Show progress indicator 
-                NearSpaceViewModel.IsDataLoaded = true;  // Mutex
-                NearSpaceViewModel.Items.Clear();
                 uiNearSpaceList.Visibility = Visibility.Collapsed;
                 uiNearSpaceMessage.Text = message;
                 uiNearSpaceMessage.Visibility = Visibility.Visible;
                 base.SetProgressIndicator(true);
+
+                // Before go load, set mutex to true.
+                NearSpaceViewModel.IsDataLoading = true;
+
 
                 // Check whether user consented for location access.
                 if (base.GetLocationAccessConsent())  // Got consent of location access.
@@ -226,6 +242,7 @@ namespace PintheCloud.Pages
                             if (items != null)  // There are near spaces
                             {
                                 this.NearSpaceViewModel.Items = items;
+                                uiNearSpaceList.DataContext = null;
                                 uiNearSpaceList.DataContext = this.NearSpaceViewModel;
                                 uiNearSpaceList.Visibility = Visibility.Visible;
                                 uiNearSpaceMessage.Visibility = Visibility.Collapsed;
@@ -235,7 +252,7 @@ namespace PintheCloud.Pages
                                 uiNearSpaceList.Visibility = Visibility.Collapsed;
                                 uiNearSpaceMessage.Text = AppResources.NoNearSpaceMessage;
                                 uiNearSpaceMessage.Visibility = Visibility.Visible;
-                                NearSpaceViewModel.IsDataLoaded = false;  // Mutex
+                                NearSpaceViewModel.IsDataLoading = false;  // Mutex
                             }
                         }
                         else  // works bad
@@ -244,7 +261,7 @@ namespace PintheCloud.Pages
                             uiNearSpaceList.Visibility = Visibility.Collapsed;
                             uiNearSpaceMessage.Text = AppResources.BadGpsMessage;
                             uiNearSpaceMessage.Visibility = Visibility.Visible;
-                            NearSpaceViewModel.IsDataLoaded = false;  // Mutex
+                            NearSpaceViewModel.IsDataLoading = false;  // Mutex
                         }
                     }
                     else  // GPS is off
@@ -253,7 +270,7 @@ namespace PintheCloud.Pages
                         uiNearSpaceList.Visibility = Visibility.Collapsed;
                         uiNearSpaceMessage.Text = AppResources.NoGpsOnMessage;
                         uiNearSpaceMessage.Visibility = Visibility.Visible;
-                        NearSpaceViewModel.IsDataLoaded = false;  // Mutex
+                        NearSpaceViewModel.IsDataLoading = false;  // Mutex
                     }
                 }
                 else  // First or not consented of access in location information.
@@ -262,8 +279,9 @@ namespace PintheCloud.Pages
                     uiNearSpaceList.Visibility = Visibility.Collapsed;
                     uiNearSpaceMessage.Text = AppResources.NoLocationAcessConsentMessage;
                     uiNearSpaceMessage.Visibility = Visibility.Visible;
-                    NearSpaceViewModel.IsDataLoaded = false;  // Mutex
+                    NearSpaceViewModel.IsDataLoading = false;  // Mutex
                 }
+
 
                 // Hide progress indicator
                 base.SetProgressIndicator(false);
@@ -289,12 +307,13 @@ namespace PintheCloud.Pages
                 App.CurrentSpaceManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
 
                 // Show progress indicator 
-                MySpaceViewModel.IsDataLoaded = true;  // Mutex
-                MySpaceViewModel.Items.Clear();
                 uiMySpaceList.Visibility = Visibility.Collapsed;
                 uiMySpaceMessage.Text = message;
                 uiMySpaceMessage.Visibility = Visibility.Visible;
                 base.SetProgressIndicator(true);
+
+                // Before go load, set mutex to true.
+                MySpaceViewModel.IsDataLoading = true;
 
 
                 // If there is my spaces, Clear and Add spaces to list
@@ -305,6 +324,7 @@ namespace PintheCloud.Pages
                 if (items != null)  // There are my spaces
                 {
                     this.MySpaceViewModel.Items = items;
+                    uiMySpaceList.DataContext = null;
                     uiMySpaceList.DataContext = this.MySpaceViewModel;
                     uiMySpaceList.Visibility = Visibility.Visible;
                     uiMySpaceMessage.Visibility = Visibility.Collapsed;
@@ -314,8 +334,9 @@ namespace PintheCloud.Pages
                     uiMySpaceList.Visibility = Visibility.Collapsed;
                     uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
                     uiMySpaceMessage.Visibility = Visibility.Visible;
-                    MySpaceViewModel.IsDataLoaded = false;  // Mutex
+                    MySpaceViewModel.IsDataLoading = false;  // Mutex
                 }
+
 
                 // Hide progress indicator
                 base.SetProgressIndicator(false);
