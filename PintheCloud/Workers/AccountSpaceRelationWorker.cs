@@ -15,32 +15,20 @@ namespace PintheCloud.Workers
         // Otherwise, Not like, Delete relation
         public async Task<bool> LikeAsync(string accountId, string spaceId, bool whether)
         {
-            if (whether)
+            // Set parameters
+            string json = @"{'accountId':'" + accountId + "','spaceId':'" + spaceId + "'}";
+            JToken jToken = JToken.Parse(json);
+
+            try
             {
-                try
-                {
-                    // TODO ++ Like Number
-                    await App.MobileService.GetTable<AccountSpaceRelation>().InsertAsync(new AccountSpaceRelation(accountId, spaceId));
-                }
-                catch (MobileServiceInvalidOperationException)
-                {
-                    return false;
-                }
+                if (whether)
+                    await App.MobileService.InvokeApiAsync("like", jToken);
+                else
+                    await App.MobileService.InvokeApiAsync("not_like", jToken);
             }
-            else
+            catch (MobileServiceInvalidOperationException)
             {
-                // TODO -- Like Number
-                string json = @"{'accountId':'" + accountId + "','spaceId':'" + spaceId + "'}";
-                JToken jToken = JToken.Parse(json);
-                try
-                {
-                    // Load near spaces use custom api in server script
-                    await App.MobileService.InvokeApiAsync("delete_account_space_relation_without_id", jToken);
-                }
-                catch (MobileServiceInvalidOperationException)
-                {
-                    return false;
-                }
+                return false;
             }
             return true;
         }
