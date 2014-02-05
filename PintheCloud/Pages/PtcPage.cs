@@ -31,7 +31,7 @@ namespace PintheCloud.Pages
         {
         }
 
-        public void SetSystemTray(bool value, double opacity = 1)
+        public void SetSystemTray(bool value, double opacity)
         {
             SystemTray.Opacity = opacity;
             SystemTray.IsVisible = value;

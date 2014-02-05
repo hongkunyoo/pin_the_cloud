@@ -17,22 +17,18 @@
 	shell:SystemTray.Opacity="0" >
 
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
-    <Grid x:Name="LayoutRoot" Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
+    <Grid x:Name="LayoutRoot" Background="White">
+    	<Grid.RowDefinitions>
+    		<RowDefinition Height="72"/>
+    		<RowDefinition/>
+    	</Grid.RowDefinitions>
+		<Grid Background="#FF00A4BF">
+        	<Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        </Grid>
         <!--TitlePanel에는 응용 프로그램 이름 및 페이지 제목이 포함됩니다.-->
-        <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="내 응용 프로그램" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock Text="페이지 이름" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
-        </StackPanel>
 
         <!--ContentPanel - 여기에 추가 내용을 배치합니다.-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-
-        </Grid>
+        <Grid x:Name="ContentPanel" Grid.Row="1"/>
     </Grid>
 
 </local:PtcPage>

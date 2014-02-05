@@ -62,7 +62,7 @@ namespace PintheCloud.Managers
 
                     // Get whether this account likes this space
                     AccountSpaceRelation isLike = await this.CurrentAccountSpaceRelationWorker
-                        .IsLikeAsync(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id, space_id);
+                        .IsLikeAsync(App.AccountManager.GetCurrentAcccount().account_platform_id, space_id);
 
                     Space space = new Space(space_name, space_latitude, space_longtitude, account_id, account_name, space_like_number);
                     space.id = space_id;
@@ -80,7 +80,7 @@ namespace PintheCloud.Managers
         {
             // Get spaces
             MobileServiceCollection<Space, Space> spaces = await this.CurrentSpaceWorker
-                .GetMySpacesAsync(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id);
+                .GetMySpacesAsync(App.AccountManager.GetCurrentAcccount().account_platform_id);
             ObservableCollection<SpaceViewItem> items = null;
 
             // Convert spaces to space view items and set to view model
@@ -91,7 +91,7 @@ namespace PintheCloud.Managers
                 {
                     // Get whether this account likes this space
                     AccountSpaceRelation isLike = await this.CurrentAccountSpaceRelationWorker
-                        .IsLikeAsync(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id, space.id);
+                        .IsLikeAsync(App.AccountManager.GetCurrentAcccount().account_platform_id, space.id);
 
                     items.Add(this.MakeSpaceViewItemFromSpace(space, isLike));
                 }
@@ -118,7 +118,7 @@ namespace PintheCloud.Managers
             // Otherwise, Set blank.
             if (currentLatitude != -1)
             {
-                double distance = App.CurrentGeoCalculateManager.GetDistanceBetweenTwoCoordiantes
+                double distance = App.GeoCalculateManager.GetDistanceBetweenTwoCoordiantes
                     (currentLatitude, space.space_latitude, currentLongtitude, space.space_longtitude);
                 spaceViewItem.SpaceDistance = Math.Round(distance) + AppResources.Meter;
             }

@@ -114,7 +114,7 @@ namespace PintheCloud.Pages
             // Get different Account Space Relation Worker by internet state.
             if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
             {
-                App.CurrentAccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
+                App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
 
 
                 // Get information about image
@@ -134,7 +134,7 @@ namespace PintheCloud.Pages
 
                     // If like success, set like number ++
                     // If like fail, set image back to original
-                    if (await App.CurrentAccountSpaceRelationManager.LikeAysnc(spaceId, true))
+                    if (await App.AccountSpaceRelationManager.LikeAysnc(spaceId, true))
                     {
                         // TODO ++ 
                     }
@@ -150,7 +150,7 @@ namespace PintheCloud.Pages
 
                     // If not like success, set like number --
                     // If not like fail, set image back to original
-                    if (await App.CurrentAccountSpaceRelationManager.LikeAysnc(spaceId, false))
+                    if (await App.AccountSpaceRelationManager.LikeAysnc(spaceId, false))
                     {
                         // TODO --
                     }
@@ -216,8 +216,8 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
             {
                 // Set worker and show loading message
-                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
-                App.CurrentSpaceManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
+                App.SpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+                App.SpaceManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
 
                 // Show progress indicator 
                 uiNearSpaceList.Visibility = Visibility.Collapsed;
@@ -235,7 +235,7 @@ namespace PintheCloud.Pages
                     // Check whether GPS is on or not
                     if (base.GetGeolocatorPositionStatus())  // GPS is on
                     {
-                        Geoposition currentGeoposition = await App.CurrentGeoCalculateManager.GetCurrentGeopositionAsync();
+                        Geoposition currentGeoposition = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
 
                         // Check whether GPS works well or not
                         if (currentGeoposition != null)  // works well
@@ -243,7 +243,7 @@ namespace PintheCloud.Pages
                             // If there is near spaces, Clear and Add spaces to list
                             // Otherwise, Show none message.
                             ObservableCollection<SpaceViewItem> items =
-                                await App.CurrentSpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);
+                                await App.SpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);
 
                             if (items != null)  // There are near spaces
                             {
@@ -305,8 +305,8 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
             {
                 // Set worker and show loading message
-                App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
-                App.CurrentSpaceManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
+                App.SpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+                App.SpaceManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
 
                 // Show progress indicator 
                 uiMySpaceList.Visibility = Visibility.Collapsed;
@@ -321,7 +321,7 @@ namespace PintheCloud.Pages
                 // If there is my spaces, Clear and Add spaces to list
                 // Otherwise, Show none message.
                 ObservableCollection<SpaceViewItem> items =
-                                await App.CurrentSpaceManager.GetMySpaceViewItemsAsync();
+                                await App.SpaceManager.GetMySpaceViewItemsAsync();
 
                 if (items != null)  // There are my spaces
                 {

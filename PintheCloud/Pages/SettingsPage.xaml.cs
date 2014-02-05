@@ -26,7 +26,7 @@ namespace PintheCloud.Pages
             MessageBoxResult result = MessageBox.Show(AppResources.LogoutMessage, AppResources.Logout, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
-                App.CurrentAccountManager.Logout();
+                App.AccountManager.Logout();
                 NavigationService.Navigate(new Uri(PtcPage.SPLASH_PAGE, UriKind.Relative));
             }
         }

@@ -26,7 +26,7 @@ namespace PintheCloud.Managers
             {
                 this.IsLikeProcessing = true;  // Mutex
                 bool likeSuccess = await this.CurrentAccountSpaceRelationWorker
-                        .LikeAsync(App.CurrentAccountManager.GetCurrentAcccount().account_platform_id, spaceId, whether);
+                        .LikeAsync(App.AccountManager.GetCurrentAcccount().account_platform_id, spaceId, whether);
                 this.IsLikeProcessing = false;  // Mutex
 
                 if (likeSuccess)

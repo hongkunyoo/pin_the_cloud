@@ -153,7 +153,7 @@
     <value>Interent unavailable</value>
   </data>
   <data name="InternetUnavailableMessage" xml:space="preserve">
-    <value>Sorry. Could not connect to at Here. Please make sure connection with Internet and try again.</value>
+    <value>Sorry. Could not connect to At Here. Please check WIFI and try again.</value>
   </data>
   <data name="Profile" xml:space="preserve">
     <value>Profile</value>

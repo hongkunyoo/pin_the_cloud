@@ -62,12 +62,15 @@ namespace PintheCloud.Pages
             NavigationService.Navigate(new Uri(PtcPage.SETTINGS_PAGE, UriKind.Relative));
         }
 
+
+
+        /*** Self Method ***/
+
         // Move map location to user's location and set marker
         private async Task ShowUserLocation()
         {
-            Geoposition geoposition = await App.CurrentGeoCalculateManager.GetCurrentGeopositionAsync();
-            uiUserLocationMarker.GeoCoordinate = geoposition.Coordinate.ToGeoCoordinate();
-            uiMapView.SetView(uiUserLocationMarker.GeoCoordinate, ZOOM_LEVEL);
+            Geoposition geoposition = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
+            uiMapView.SetView(geoposition.Coordinate.ToGeoCoordinate(), ZOOM_LEVEL);
         }
     }
 }

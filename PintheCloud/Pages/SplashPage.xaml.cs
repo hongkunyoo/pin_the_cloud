@@ -60,26 +60,26 @@ namespace PintheCloud.Pages
                 // Get different Account Worker by internet state.
                 if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
                 {
-                    App.CurrentAccountManager.SetAccountWorker(new AccountInternetAvailableWorker());
+                    App.AccountManager.SetAccountWorker(new AccountInternetAvailableWorker());
 
 
                     // If Internet is good, get new information from Internet,
                     // Otherwise get old information from local storage.
-                    if (await App.CurrentAccountManager.SetLiveConnectSessionAsync())  // Get session success
+                    if (await App.AccountManager.SetLiveConnectSessionAsync())  // Get session success
                     {
                         // Show progress indicator
-                        base.SetSystemTray(true);
+                        base.SetSystemTray(true, 0);
                         base.SetProgressIndicator(true, AppResources.Loading);
 
                         // If it success to register live connect session,
                         // Otherwise, Hide indicator, Show login fail message box.
-                        if (await App.CurrentAccountManager.SetProfileResultAsync())
+                        if (await App.AccountManager.SetProfileResultAsync())
                         {
                             // If online progress login failed, retry with local storage information.
-                            if (await App.CurrentAccountManager.LoginMicrosoftAccountSingleSignOnAsync())  // Login succeed
+                            if (await App.AccountManager.LoginMicrosoftAccountSingleSignOnAsync())  // Login succeed
                             {
                                 // Other manager allocation
-                                App.SkyDriveManager = new SkyDriveManager(App.CurrentAccountManager.GetLiveConnectSession());
+                                App.SkyDriveManager = new SkyDriveManager(App.AccountManager.GetLiveConnectSession());
                                 App.BlobManager = new BlobManager();
                                 await App.LocalStorageManager.SetupAsync();
 
@@ -95,8 +95,8 @@ namespace PintheCloud.Pages
                             {
                                 // Retry. If it succeed, Move to explorer page.
                                 // Otherwise, Hide indicator, Show login fail message box.
-                                App.CurrentAccountManager.SetAccountWorker(new AccountInternetUnavailableWorker());
-                                if (await App.CurrentAccountManager.LoginMicrosoftAccountSingleSignOnAsync())
+                                App.AccountManager.SetAccountWorker(new AccountInternetUnavailableWorker());
+                                if (await App.AccountManager.LoginMicrosoftAccountSingleSignOnAsync())
                                 {
                                     NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
                                 }
@@ -116,7 +116,7 @@ namespace PintheCloud.Pages
                         }
 
                         // Hide progress indicator
-                        base.SetSystemTray(false);
+                        base.SetSystemTray(false, 0);
                         base.SetProgressIndicator(false);
                     }
                     else  // Get session fail
@@ -127,10 +127,10 @@ namespace PintheCloud.Pages
 
                 else  // Internet unavailable
                 {
-                    App.CurrentAccountManager.SetAccountWorker(new AccountInternetUnavailableWorker());
+                    App.AccountManager.SetAccountWorker(new AccountInternetUnavailableWorker());
 
                     // Login with local storage information and Move to explorer page.
-                    if (await App.CurrentAccountManager.LoginMicrosoftAccountSingleSignOnAsync())
+                    if (await App.AccountManager.LoginMicrosoftAccountSingleSignOnAsync())
                     {
                         NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
                     }
@@ -155,10 +155,10 @@ namespace PintheCloud.Pages
             // Otherwise, show warning message box.
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                App.CurrentAccountManager.SetAccountWorker(new AccountInternetAvailableWorker());
+                App.AccountManager.SetAccountWorker(new AccountInternetAvailableWorker());
 
                 // If it success to register live connect session,
-                if (await App.CurrentAccountManager.SetLiveConnectSessionAsync())
+                if (await App.AccountManager.SetLiveConnectSessionAsync())
                 {
                     // Show progress indicator, progress login
                     base.SetSystemTray(true, 0);
@@ -168,9 +168,9 @@ namespace PintheCloud.Pages
                     // Get profile result and Login.
                     // If login succeed, Move to explorer page.
                     // Otherwise, Hide indicator, Show login fail message box.
-                    if (await App.CurrentAccountManager.SetProfileResultAsync())
+                    if (await App.AccountManager.SetProfileResultAsync())
                     {
-                        if (await App.CurrentAccountManager.LoginMicrosoftAccountSingleSignOnAsync())
+                        if (await App.AccountManager.LoginMicrosoftAccountSingleSignOnAsync())
                         {
                             NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
                         }
@@ -187,7 +187,7 @@ namespace PintheCloud.Pages
                     }
 
                     // Hide progress indicator
-                    base.SetSystemTray(false);
+                    base.SetSystemTray(false, 0);
                     base.SetProgressIndicator(false);
                 }
             }

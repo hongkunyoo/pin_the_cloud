@@ -142,7 +142,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Sorry. Could not connect to at Here. Please make sure connection with Internet and try again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Sorry. Could not connect to At Here. Please check WIFI and try again.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string InternetUnavailableMessage {
             get {

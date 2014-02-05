@@ -33,10 +33,10 @@ namespace PintheCloud
         public static ProgressIndicator ProgressIndicator = null;
 
         // Manager
-        public static AccountManager CurrentAccountManager = null;
-        public static SpaceManager CurrentSpaceManager = null;
-        public static AccountSpaceRelationManager CurrentAccountSpaceRelationManager = null;
-        public static GeoCalculateManager CurrentGeoCalculateManager = null;
+        public static AccountManager AccountManager = null;
+        public static SpaceManager SpaceManager = null;
+        public static AccountSpaceRelationManager AccountSpaceRelationManager = null;
+        public static GeoCalculateManager GeoCalculateManager = null;
         public static SkyDriveManager SkyDriveManager = null;
         public static BlobManager BlobManager = null;
         public static LocalStorageManager LocalStorageManager = null;
@@ -71,10 +71,10 @@ namespace PintheCloud
             ProgressIndicator = new ProgressIndicator();
 
             // Manager
-            CurrentAccountManager = new AccountManagerImplement();
-            CurrentSpaceManager = new SpaceManagerImplement();
-            CurrentAccountSpaceRelationManager = new AccountSpaceRelationManagerImplement();
-            CurrentGeoCalculateManager = new GeoCalculateManagerImplement();
+            AccountManager = new AccountManagerImplement();
+            SpaceManager = new SpaceManagerImplement();
+            AccountSpaceRelationManager = new AccountSpaceRelationManagerImplement();
+            GeoCalculateManager = new GeoCalculateManagerImplement();
             LocalStorageManager = new LocalStorageManager();
 
 

@@ -81,7 +81,7 @@
 			<phone:PivotItem Header="{Binding LocalizedResources.Explorer, Source={StaticResource LocalizedStrings}}" Margin="0">
 				<Grid>
 					<phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" Foreground="Black" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" />
-					<TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="21.333" Grid.Row="1" Margin="22,17.5,18,0"/>
+					<TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,17.5,18,0"/>
 				</Grid>
 			</phone:PivotItem>
 
@@ -89,7 +89,7 @@
 			<phone:PivotItem Header="{Binding LocalizedResources.MySpace, Source={StaticResource LocalizedStrings}}" Margin="0">
 				<Grid>
 					<phone:LongListSelector x:Name="uiMySpaceList" ItemsSource="{Binding Items}" Foreground="Black" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" />
-					<TextBlock x:Name="uiMySpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="21.333" Grid.Row="1" Margin="22,17.5,18,0"/>
+					<TextBlock x:Name="uiMySpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,17.5,18,0"/>
 				</Grid>
 			</phone:PivotItem>
 		</phone:Pivot>

@@ -22,7 +22,7 @@
     		<RowDefinition/>
     	</Grid.RowDefinitions>
         <!--피벗 컨트롤-->
-        <Grid Background="#FF3ABDBE">
+        <Grid Background="#FF00A4BF">
         	<Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         </Grid>
         <!--피벗 컨트롤-->
