@@ -70,16 +70,17 @@ namespace PintheCloud.Pages
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
+
                 // Get different Account Worker by internet state.
                 if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
                 {
                     App.CurrentAccountManager.SetAccountWorker(new AccountInternetAvailableWorker());
 
+
                     // If Internet is good, get new information from Internet,
                     // Otherwise get old information from local storage.
                     if (await App.CurrentAccountManager.SetLiveConnectSessionAsync())  // Get session success
                     {
-
                         // Show progress indicator
                         base.SetSystemTray(true, 0);
                         base.SetProgressIndicator(true, AppResources.Loading);
@@ -147,20 +148,20 @@ namespace PintheCloud.Pages
             }
         }
 
-        protected async override void OnNavigatedFrom(NavigationEventArgs e)
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
 
+            // It makes error in situation of unavailable internet
             // Other manager allocation
-            App.CurrentSkyDriveManager = new SkyDriveManager(App.CurrentAccountManager.GetLiveConnectSession());
-            App.CurrentBlobManager = new BlobManager();
-            await App.CurrentLocalStorageManager.SetupAsync();
+            //App.CurrentSkyDriveManager = new SkyDriveManager(App.CurrentAccountManager.GetLiveConnectSession());
+            //App.CurrentBlobManager = new BlobManager();
+            //await App.CurrentLocalStorageManager.SetupAsync();
 
-            if (GlobalKeys.USER.Equals("hongkun"))
-            {
-                
-                NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
-            }
+            //if (GlobalKeys.USER.Equals("hongkun"))
+            //{
+            //    NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
+            //}
         }
 
         private async void uiMicrosoftLoginButton_Click(object sender, System.Windows.RoutedEventArgs e)
