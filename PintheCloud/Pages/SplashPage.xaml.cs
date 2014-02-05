@@ -56,16 +56,17 @@ namespace PintheCloud.Pages
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
 
+
                 // Get different Account Worker by internet state.
                 if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
                 {
                     App.CurrentAccountManager.SetAccountWorker(new AccountInternetAvailableWorker());
 
+
                     // If Internet is good, get new information from Internet,
                     // Otherwise get old information from local storage.
                     if (await App.CurrentAccountManager.SetLiveConnectSessionAsync())  // Get session success
                     {
-
                         // Show progress indicator
                         base.SetSystemTray(true);
                         base.SetProgressIndicator(true, AppResources.Loading);
@@ -145,8 +146,6 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-
-            
         }
 
         private async void uiMicrosoftLoginButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -162,7 +161,7 @@ namespace PintheCloud.Pages
                 if (await App.CurrentAccountManager.SetLiveConnectSessionAsync())
                 {
                     // Show progress indicator, progress login
-                    base.SetSystemTray(true);
+                    base.SetSystemTray(true, 0);
                     base.SetProgressIndicator(true, AppResources.Loading);
                     uiMicrosoftLoginButton.IsEnabled = false;
 

@@ -60,17 +60,23 @@ namespace PintheCloud.Pages
             // Set View model for dispaly,
             // One time loading.
             switch (uiExplorerPivot.SelectedIndex)
-            { 
+            {
                 case EXPLORER_PIVOT:
                     uiSpaceEditButton.Visibility = Visibility.Collapsed;
-                    if (!NearSpaceViewModel.IsDataLoading)  // Mutex check
-                        await this.SetExplorerPivotAsync(AppResources.Loading);
+
+                    // If Internet available, Set space list
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                        if (!NearSpaceViewModel.IsDataLoading)  // Mutex check
+                            await this.SetExplorerPivotAsync(AppResources.Loading);
                     break;
 
                 case MY_SPACES_PIVOT:
                     uiSpaceEditButton.Visibility = Visibility.Visible;
-                    if (!MySpaceViewModel.IsDataLoading)  // Mutex check
-                        await this.SetMySpacePivotAsync(AppResources.Loading);
+
+                    // If Internet available, Set space list
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                        if (!MySpaceViewModel.IsDataLoading)  // Mutex check
+                            await this.SetMySpacePivotAsync(AppResources.Loading);
                     break;
             }
         }
@@ -103,7 +109,7 @@ namespace PintheCloud.Pages
 
 
         // Process Like or Not Like by current state
-        private async void uiNearSpaceLikeButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private async void uiSpaceLikeButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             // Get different Account Space Relation Worker by internet state.
             if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
@@ -135,7 +141,7 @@ namespace PintheCloud.Pages
                     else
                     {
                         likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative));
-                    }       
+                    }
                 }
 
                 else  // Do Not Like
@@ -148,7 +154,7 @@ namespace PintheCloud.Pages
                     {
                         // TODO --
                     }
-                    else 
+                    else
                     {
                         likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative));
                     }
@@ -187,7 +193,7 @@ namespace PintheCloud.Pages
         {
             // Set View model for dispaly,
             switch (uiExplorerPivot.SelectedIndex)
-            { 
+            {
                 case EXPLORER_PIVOT:
                     NearSpaceViewModel.IsDataLoading = false;  // Mutex
                     await this.SetExplorerPivotAsync(AppResources.Refresh);
@@ -285,14 +291,10 @@ namespace PintheCloud.Pages
 
                 // Hide progress indicator
                 base.SetProgressIndicator(false);
-            }
 
-            else  // Internet bad.
-            {
-                // Show bad Internet message box.
-                uiNearSpaceList.Visibility = Visibility.Collapsed;
-                uiNearSpaceMessage.Text = AppResources.InternetUnavailableMessage;
-                uiNearSpaceMessage.Visibility = Visibility.Visible;
+                // If it works bad but no error resluts, repeat.
+                if (uiNearSpaceMessage.Visibility == Visibility.Visible && uiNearSpaceMessage.Text.Equals(AppResources.Loading))
+                    await this.SetExplorerPivotAsync(message);
             }
         }
 
@@ -340,14 +342,10 @@ namespace PintheCloud.Pages
 
                 // Hide progress indicator
                 base.SetProgressIndicator(false);
-            }
 
-            else  // Internet bad.
-            {
-                // Show bad Internet message box.
-                uiMySpaceList.Visibility = Visibility.Collapsed;
-                uiMySpaceMessage.Text = AppResources.InternetUnavailableMessage;
-                uiMySpaceMessage.Visibility = Visibility.Visible;
+                // If it works bad but no error resluts, repeat.
+                if (uiMySpaceMessage.Visibility == Visibility.Visible && uiMySpaceMessage.Text.Equals(AppResources.Loading))
+                    await this.SetMySpacePivotAsync(message);
             }
         }
     }

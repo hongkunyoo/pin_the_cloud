@@ -196,16 +196,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\AppBar\app_bar_me_icon.png" />
-    <Content Include="Assets\AppBar\basecircle.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\AppBar\feature.settings.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\AppBar\folder.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Assets\AppBar\general_bar_me.png" />
     <Content Include="Assets\pajeon\png\app_icon.png" />
     <Content Include="Assets\pajeon\png%402x\filelist_edit.png" />
     <Content Include="Assets\pajeon\png%402x\filelist_like.png" />

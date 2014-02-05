@@ -34,10 +34,36 @@
                 </Grid>
             </phone:PivotItem>
 			<phone:PivotItem Header="{Binding LocalizedResources.Application, Source={StaticResource LocalizedStrings}}">
-                <Grid/>
+                <Grid>
+                	<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                		<CheckBox x:Name="uiLocationServiceConsentCheckBox" Content="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Foreground="Black" BorderBrush="Black" Style="{StaticResource CustomCheckBoxStyle}"/>
+                		<HyperlinkButton Content="{Binding LocalizedResources.TermsOfService, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
+                		<HyperlinkButton Content="{Binding LocalizedResources.PrivatePolicy, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
+                	</StackPanel>
+                </Grid>
             </phone:PivotItem>
 			<phone:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
-                <Grid/>
+                <Grid>
+                	<StackPanel>
+                		<RichTextBox Foreground="Black" Margin="0,0,0,18" >
+                			<Paragraph>
+                				<Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
+                			</Paragraph>
+                			<Paragraph>
+                				<Run FontSize="1.5" Text=""/>
+                			</Paragraph>
+                			<Paragraph>
+                				<Run/>
+                				<Run Text="At Here helps you share information with people around you through space."/>
+                			</Paragraph>
+                		</RichTextBox>
+                		<StackPanel Orientation="Horizontal" Margin="22,0,0,18" HorizontalAlignment="Left">
+                			<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Version, Source={StaticResource LocalizedStrings}}" FontSize="21.333"/>
+                			<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.VersionInfo, Source={StaticResource LocalizedStrings}}" FontSize="21.333"/>
+                		</StackPanel>
+                		<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Copyright, Source={StaticResource LocalizedStrings}}" FontSize="21.333" Padding="22,0,0,0"/>
+                	</StackPanel>
+                </Grid>
             </phone:PivotItem>
         </phone:Pivot>
     </Grid>
