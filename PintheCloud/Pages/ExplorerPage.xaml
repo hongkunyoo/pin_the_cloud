@@ -58,7 +58,7 @@
                             </Grid.ColumnDefinitions>
                             <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0">
                                 <TextBlock x:Name="uiNearSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="32" LineHeight="37" Margin="0,0,0,10.5"/>
-                                <TextBlock x:Name="uiNearSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountId}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
+                                <TextBlock x:Name="uiNearSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock x:Name="uiNearSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLike}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,10,0"/>
                                     <TextBlock x:Name="uiNearSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22"/>

@@ -26,19 +26,19 @@ namespace PintheCloud.ViewModels
             }
         }
 
-        private string accountId;
-        public string AccountId
+        private string accountName;
+        public string AccountName
         {
             get
             {
-                return accountId;
+                return accountName;
             }
             set
             {
-                if (accountId != value)
+                if (accountName != value)
                 {
-                    accountId = value;
-                    NotifyPropertyChanged("AccountId");
+                    accountName = value;
+                    NotifyPropertyChanged("AccountName");
                 }
             }
         }

@@ -19,6 +19,7 @@ namespace PintheCloud.Workers
             {
                 try
                 {
+                    // TODO ++ Like Number
                     await App.MobileService.GetTable<AccountSpaceRelation>().InsertAsync(new AccountSpaceRelation(accountId, spaceId));
                 }
                 catch (MobileServiceInvalidOperationException)
@@ -28,6 +29,7 @@ namespace PintheCloud.Workers
             }
             else
             {
+                // TODO -- Like Number
                 string json = @"{'accountId':'" + accountId + "','spaceId':'" + spaceId + "'}";
                 JToken jToken = JToken.Parse(json);
                 try

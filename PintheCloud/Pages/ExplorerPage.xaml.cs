@@ -30,8 +30,8 @@ namespace PintheCloud.Pages
         private const string EDIT_IMAGE_PATH= "/Assets/pajeon/png/filelist_edit.png";
         private const string VIEW_IMAGE_PATH = "/Assets/pajeon/png/filelist_view.png";
 
-        public static SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
-        public static SpaceViewModel MySpaceViewModel = new SpaceViewModel();
+        public SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
+        public SpaceViewModel MySpaceViewModel = new SpaceViewModel();
 
 
         public ExplorerPage()
@@ -220,11 +220,15 @@ namespace PintheCloud.Pages
                         {
                             // If there is near spaces, Clear and Add spaces to list
                             // Otherwise, Show none message.
-                            if (await App.CurrentSpaceManager.SetNearSpaceViewItemsToSpaceViewModelAsync(currentGeoposition))  // There are near spaces
+                            ObservableCollection<SpaceViewItem> items =
+                                await App.CurrentSpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);
+
+                            if (items != null)  // There are near spaces
                             {
+                                this.NearSpaceViewModel.Items = items;
+                                uiNearSpaceList.DataContext = this.NearSpaceViewModel;
                                 uiNearSpaceList.Visibility = Visibility.Visible;
                                 uiNearSpaceMessage.Visibility = Visibility.Collapsed;
-                                uiNearSpaceList.DataContext = NearSpaceViewModel;
                             }
                             else  // No near spaces
                             {
@@ -292,13 +296,18 @@ namespace PintheCloud.Pages
                 uiMySpaceMessage.Visibility = Visibility.Visible;
                 base.SetProgressIndicator(true);
 
+
                 // If there is my spaces, Clear and Add spaces to list
                 // Otherwise, Show none message.
-                if (await App.CurrentSpaceManager.SetMySpaceViewItemsToSpaceViewModelAsync())  // There are my spaces
+                ObservableCollection<SpaceViewItem> items =
+                                await App.CurrentSpaceManager.GetMySpaceViewItemsAsync();
+
+                if (items != null)  // There are my spaces
                 {
+                    this.MySpaceViewModel.Items = items;
+                    uiMySpaceList.DataContext = this.MySpaceViewModel;
                     uiMySpaceList.Visibility = Visibility.Visible;
                     uiMySpaceMessage.Visibility = Visibility.Collapsed;
-                    uiMySpaceList.DataContext = MySpaceViewModel;
                 }
                 else  // No my spaces
                 {

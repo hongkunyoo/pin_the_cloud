@@ -16,7 +16,7 @@ namespace PintheCloud.ViewModels
         public static string LIKE_NOT_PRESS_IMAGE_PATH = "/Assets/pajeon/png/general_like.png";
         public static string LIKE_PRESS_IMAGE_PATH = "/Assets/pajeon/png/general_like_p.png";
 
-        public ObservableCollection<SpaceViewItem> Items { get; private set; }
+        public ObservableCollection<SpaceViewItem> Items { get; set; }
         
         // Mutex
         public bool IsDataLoaded { get; set; }

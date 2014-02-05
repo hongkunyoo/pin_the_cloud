@@ -18,7 +18,7 @@ namespace PintheCloud.Managers
         void SetAccountSpaceRelationWorker(AccountSpaceRelationWorker CurrentAccountSpaceRelationWorker);
 
 
-        Task<bool> SetNearSpaceViewItemsToSpaceViewModelAsync(Geoposition currentGeoposition);
-        Task<bool> SetMySpaceViewItemsToSpaceViewModelAsync();
+        Task<ObservableCollection<SpaceViewItem>> GetNearSpaceViewItemsAsync(Geoposition currentGeoposition);
+        Task<ObservableCollection<SpaceViewItem>> GetMySpaceViewItemsAsync();
     }
 }
