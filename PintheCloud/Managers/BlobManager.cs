@@ -24,8 +24,8 @@ namespace PintheCloud.Managers
         {
             this.storageAccount = CloudStorageAccount.Parse(BlobManager.BLOB_CONNECTION);
             this.blobClient = this.storageAccount.CreateCloudBlobClient();
-            //this.account = App.CurrentAccountManager.GetCurrentAcccount().account_name.Replace(" ", string.Empty);
-            this.account = "rfrost77@gmail.com";
+            this.account = App.CurrentAccountManager.GetCurrentAcccount().account_platform_id.Replace(" ", string.Empty);
+            //this.account = "rfrost77@gmail.com";
             this.container = blobClient.GetContainerReference("images");
         }
         

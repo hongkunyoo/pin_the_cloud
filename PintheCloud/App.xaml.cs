@@ -14,6 +14,7 @@ using PintheCloud.ViewModels;
 using PintheCloud.Models;
 using Microsoft.Live;
 using PintheCloud.Utilities;
+using Microsoft.Phone.Logging;
 
 namespace PintheCloud
 {
@@ -106,24 +107,36 @@ namespace PintheCloud
         // 이 코드는 응용 프로그램이 다시 활성화될 때는 실행되지 않습니다.
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
+            App.HDebug.WriteLine("Launching : " + sender + e);
         }
 
         // 응용 프로그램이 활성화(포그라운드로 이동)될 때 실행할 코드입니다.
         // 이 코드는 응용 프로그램이 처음 시작될 때는 실행되지 않습니다.
         private void Application_Activated(object sender, ActivatedEventArgs e)
         {
+            // coming from dormant
+            if (e.IsApplicationInstancePreserved)
+            {
+                App.HDebug.WriteLine("Activated Preserved");
+            }
+            else // coming from tombstone
+            {
+                App.HDebug.WriteLine("Activated Not Preserved");
+            }
         }
 
         // 응용 프로그램이 비활성화(백그라운드로 전송)될 때 실행할 코드입니다.
         // 이 코드는 응용 프로그램이 닫힐 때는 실행되지 않습니다.
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
+            App.HDebug.WriteLine("Deactivated : " + sender + e);
         }
 
         // 응용 프로그램이 닫힐 때(예: 사용자가 [뒤로]를 누르는 경우) 실행할 코드입니다.
         // 이 코드는 응용 프로그램이 비활성화될 때는 실행되지 않습니다.
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
+            App.HDebug.WriteLine("Closing : " + sender + e);
         }
 
         // 탐색이 실패할 때 실행할 코드입니다.
@@ -142,6 +155,10 @@ namespace PintheCloud
             if (Debugger.IsAttached)
             {
                 System.Diagnostics.Debug.WriteLine(e.ExceptionObject.ToString());
+                System.Diagnostics.Debug.WriteLine("-------------------------");
+                System.Diagnostics.Debug.WriteLine(new StackFrame(1, true));
+                System.Diagnostics.Debug.WriteLine("-------------------------");
+                
                 // 처리되지 않은 예외가 발생했습니다. 중단하고 디버거를 실행합니다.
                 Debugger.Break();
             }

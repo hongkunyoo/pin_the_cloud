@@ -1,5 +1,6 @@
 ﻿using Microsoft.Live;
 using PintheCloud.Models;
+using PintheCloud.Utilities;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,8 +15,8 @@ namespace PintheCloud.Managers
     public class SkyDriveManager
     {
         private LiveConnectClient LiveClient;
-        private LiveAuthClient LiveAuth;
-        private LiveLoginResult LiveResult;
+        //private LiveAuthClient LiveAuth;
+        //private LiveLoginResult LiveResult;
         private LiveConnectSession LiveSession;
         private string ClientId;
         private string[] Scopes;
@@ -74,7 +75,7 @@ namespace PintheCloud.Managers
             return getDataList((await this.LiveClient.GetAsync(folderId + "/files")).Result);
         }
 
-        private async Task<List<FileObject>> GetChild(FileObject fo)
+        private async Task<List<FileObject>> GetChildAsync(FileObject fo)
         {
             if ("folder".Equals(fo.Type))
             {
@@ -82,7 +83,7 @@ namespace PintheCloud.Managers
                 
                 foreach (FileObject file in list)
                 {
-                    file.FileList = await GetChild(file);
+                    file.FileList = await GetChildAsync(file);
                 }
                 return list;
             }
@@ -96,11 +97,10 @@ namespace PintheCloud.Managers
         public async Task<FileObject> Synchronize()
         {
             FileObject fo = await GetRootFolderAsync();
-            fo.FileList = await GetChild(fo);
+            fo.FileList = await GetChildAsync(fo);
             return fo;
         }
-
-        public async Task<bool> DownloadFile(string sourceFileId, Uri destinationUri)
+        public async Task<StorageFile> DownloadFileAsync(string sourceFileId, Uri destinationUri)
         {
             
             ProgressBar progressBar = new ProgressBar();
@@ -109,17 +109,58 @@ namespace PintheCloud.Managers
                 (progress) => { progressBar.Value = progress.ProgressPercentage; });
             
             System.Threading.CancellationTokenSource ctsDownload = new System.Threading.CancellationTokenSource();
-
+            
             try
             {
-                await this.LiveClient.BackgroundDownloadAsync(sourceFileId + "/content", destinationUri, ctsDownload.Token, progressHandler);
+                /*
+                string name;
+                string[] path = ParseHelper.Parse(destinationUri.ToString(),ParseHelper.Mode.FULL_PATH,out name);
+                string[] _name = ParseHelper.SplitName(name);
+                string newUriString = "";
+                foreach (string s in path)
+                {
+                    newUriString += "/" + s;
+                }
+                newUriString += "/" + MyEncoder.Encode(_name[0]);
+                newUriString += "." + _name[1];
+                Uri newUri = new Uri(newUriString, UriKind.Relative);
+                */
+                string ss = destinationUri.ToString();
+                ss = System.Uri.EscapeUriString(ss).Replace("%", ";");
+
+                destinationUri = new Uri(ss, UriKind.Relative);
+                LiveOperationResult result = await this.LiveClient.BackgroundDownloadAsync(sourceFileId + "/content", destinationUri, ctsDownload.Token, progressHandler);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
-                return false;
+                return null;
             }
-            return true;
+            return await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/"+destinationUri));
+        }
+       
+        public async Task<StorageFolder> DownloadFolderAsync(string sourceFolder, StorageFolder folder)
+        {
+            FileObject file = await this.GetFileAsync(sourceFolder);
+            file.FileList = await this.GetChildAsync(file);
+
+            int index = folder.Path.IndexOf("Local");
+            string folderUriString = ((folder.Path.Substring(index + "Local".Length, folder.Path.Length - (index + "Local".Length))));
+            folderUriString = folderUriString.Replace("\\", "/");
+            foreach(FileObject f in file.FileList)
+            {
+                if ("folder".Equals(f.Type))
+                {
+                    StorageFolder innerFolder = await folder.CreateFolderAsync(MyEncoder.Encode(f.Name));
+                    await this.DownloadFolderAsync(f.Id, innerFolder);
+                }
+                else
+                {
+                    await this.DownloadFileAsync(f.Id, new Uri(folderUriString + "/" + f.Name, UriKind.Relative));
+                }
+            }
+
+            return folder;
         }
     }
 }

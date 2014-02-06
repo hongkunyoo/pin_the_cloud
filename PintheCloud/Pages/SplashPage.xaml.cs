@@ -91,6 +91,17 @@ namespace PintheCloud.Pages
                             // If online progress login failed, retry with local storage information.
                             if (await App.CurrentAccountManager.LoginMicrosoftAccountSingleSignOnAsync())  // Login succeed
                             {
+                                // Other manager allocation
+                                App.SkyDriveManager = new SkyDriveManager(App.CurrentAccountManager.GetLiveConnectSession());
+                                App.BlobManager = new BlobManager();
+                                await App.LocalStorageManager.SetupAsync();
+
+                                if (GlobalKeys.USER.Equals("hongkun"))
+                                {
+
+                                    NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
+                                }
+
                                 NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
                             }
                             else  // Login fail
@@ -149,16 +160,7 @@ namespace PintheCloud.Pages
         {
             base.OnNavigatedFrom(e);
 
-            // Other manager allocation
-            App.SkyDriveManager = new SkyDriveManager(App.CurrentAccountManager.GetLiveConnectSession());
-            App.BlobManager = new BlobManager();
-            await App.LocalStorageManager.SetupAsync();
-
-            if (GlobalKeys.USER.Equals("hongkun"))
-            {
-                
-                NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
-            }
+            
         }
 
         private async void uiMicrosoftLoginButton_Click(object sender, System.Windows.RoutedEventArgs e)

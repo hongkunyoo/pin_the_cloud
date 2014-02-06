@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PintheCloud.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,21 +10,18 @@ namespace PintheCloud.Managers
 {
     public class LocalStorageManager
     {
+        public static string SKYDRIVE_DIRECTORY = "Shared/Transfers/";
         public static string SKYDRIVE_FOLDER = "skydrive";
         public static string BLOBSTORAGE_FOLDER = "blobstorage";
-        public LocalStorageManager()
-        {
-
-        }
 
         public async Task SetupAsync()
         {
-            await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.SKYDRIVE_FOLDER, CreationCollisionOption.ReplaceExisting);
+            await (await (await ApplicationData.Current.LocalFolder.GetFolderAsync("Shared")).GetFolderAsync("Transfers")).CreateFolderAsync(LocalStorageManager.SKYDRIVE_FOLDER, CreationCollisionOption.ReplaceExisting);
             await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.BLOBSTORAGE_FOLDER, CreationCollisionOption.ReplaceExisting);
         }
         public async Task<StorageFolder> GetSkyDriveStorageFolderAsync()
         {
-            return await ApplicationData.Current.LocalFolder.GetFolderAsync(LocalStorageManager.SKYDRIVE_FOLDER);
+            return await (await (await ApplicationData.Current.LocalFolder.GetFolderAsync("Shared")).GetFolderAsync("Transfers")).GetFolderAsync(LocalStorageManager.SKYDRIVE_FOLDER);
         }
         public async Task<StorageFolder> GetBlobStorageFolderAsync()
         {
@@ -39,34 +37,62 @@ namespace PintheCloud.Managers
             return await this.CreateFileToLocalStorageAsync(path, await this.GetBlobStorageFolderAsync());
         }
 
-        private async Task<StorageFile> CreateFileToLocalStorageAsync(string path, StorageFolder blob)
+        public async Task<StorageFolder> CreateFolderToSkyDriveStorage(string path)
         {
-            string folderName;
-            StorageFolder folder = blob;
-            while (path.Contains("/"))
-            {
-                folderName = getToken(path, out path);
-                folder = await folder.CreateFolderAsync(folderName, CreationCollisionOption.OpenIfExists);
-            }
-            return await folder.CreateFileAsync(path, CreationCollisionOption.OpenIfExists);
+            return await this.CreateFolderToLocalStorageAsync(path, await this.GetSkyDriveStorageFolderAsync());
         }
-        private string getToken(string path, out string slicedPath)
+        public async Task<StorageFile> GetSkyDriveStorageFileAsync(string path)
         {
-            slicedPath = path;
-            if (path.StartsWith("/"))
-                path = path.Substring(1, path.Length - 1);
-            if (path.EndsWith("/"))
-                path = path.Substring(0, path.Length - 1);
-            if (path.Contains("/"))
+            string name;
+            string[] _path = ParseHelper.Parse(path, ParseHelper.Mode.FULL_PATH, out name);
+            StorageFolder folder = await this.GetSkyDriveStorageFolderAsync();
+            foreach (string p in _path)
             {
-                string[] strlist = path.Split(new Char[] { '/' }, 2);
-                slicedPath = strlist[1];
-                return strlist[0];
+                folder = await folder.GetFolderAsync(p);
             }
-            return null;
+            return await folder.GetFileAsync(name);
         }
+
+        public async Task<Uri> GetSkyDriveDownloadUriFromPath(string path)
+        {
+            string name;
+            string ori_path = path;
+            string[] list = ParseHelper.Parse(path, ParseHelper.Mode.FULL_PATH, out name);
+            //await this.CreateFileToLocalStorageAsync(path, await this.GetSkyDriveStorageFolderAsync());
+            StorageFolder folder = await this.GetSkyDriveStorageFolderAsync();
+            foreach (string s in list)
+            {
+                folder = await folder.CreateFolderAsync(s, CreationCollisionOption.OpenIfExists);
+            }
+
+            return new Uri("/" + LocalStorageManager.SKYDRIVE_DIRECTORY + LocalStorageManager.SKYDRIVE_FOLDER + (ori_path.StartsWith("/") ? ori_path : "/" + ori_path), UriKind.Relative);
+        }
+        private async Task<StorageFile> CreateFileToLocalStorageAsync(string path, StorageFolder folder)
+        {
+            string name;
+            string[] list = ParseHelper.Parse(path, ParseHelper.Mode.DIRECTORY, out name);
+
+            foreach (string s in list)
+            {
+                folder = await folder.CreateFolderAsync(s, CreationCollisionOption.OpenIfExists);
+            }
+            return await folder.CreateFileAsync(name, CreationCollisionOption.OpenIfExists);
+        }
+        private async Task<StorageFolder> CreateFolderToLocalStorageAsync(string path, StorageFolder folder)
+        {
+            string name;
+            string[] list = ParseHelper.Parse(path, ParseHelper.Mode.DIRECTORY, out name);
+
+            foreach (string s in list)
+            {
+                folder = await folder.CreateFolderAsync(s, CreationCollisionOption.OpenIfExists);
+            }
+            return folder;
+        }
+
+
         private int count = 0;
-        public string getCount()
+        private string getCount()
         {
             string str = "";
             for (int i = 0; i < count; i++)
@@ -80,7 +106,31 @@ namespace PintheCloud.Managers
             if (file != null)
             {
                 count++;
-                App.HDebug.WriteLine(this.getCount() + file.Name+"("+file.Path+")");
+                App.HDebug.WriteLine(this.getCount() + MyEncoder.Decode(file.Name)+"("+file.Path+")");
+                count--;
+            }
+        }
+        public void PrintFiles(IReadOnlyList<StorageFile> files)
+        {
+            if (files != null)
+            {
+                count++;
+                foreach (StorageFile file in files)
+                {
+                    PrintFile(file);
+                }
+                count--;
+            }
+        }
+        public async void PrintFolders(IReadOnlyList<StorageFolder> folders)
+        {
+            if (folders != null)
+            {
+                count++;
+                foreach (StorageFolder folder in folders)
+                {
+                    await PrintFolderAsync(folder);
+                }
                 count--;
             }
         }
@@ -89,7 +139,7 @@ namespace PintheCloud.Managers
             if (folder != null)
             {
                 count++;
-                App.HDebug.WriteLine(this.getCount() + folder.Name+"("+folder.Path+")");
+                App.HDebug.WriteLine(this.getCount() + "folder : " + MyEncoder.Decode(folder.Name) + "(" + folder.Path + ")");
                 IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
                 IReadOnlyList<StorageFolder> folderList = await folder.GetFoldersAsync();
                 foreach (StorageFile file in fileList)

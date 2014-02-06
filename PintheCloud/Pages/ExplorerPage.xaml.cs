@@ -84,7 +84,7 @@ namespace PintheCloud.Pages
         // Move to Make Space Page
         private void uiAppBarMakeSpaceButton_Click(object sender, System.EventArgs e)
         {
-            NavigationService.Navigate(new Uri(PtcPage.SKY_DRIVE_PICKER_PAGE, UriKind.Relative));
+            NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
         }
 
 
