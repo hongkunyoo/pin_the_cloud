@@ -26,39 +26,91 @@ namespace PintheCloud.ViewModels
             }
         }
 
-        private string spaceLikeDescription;
-        public string SpaceLikeDescription
+        private string accountName;
+        public string AccountName
         {
             get
             {
-                return spaceLikeDescription;
+                return accountName;
             }
             set
             {
-                if (spaceLikeDescription != value)
+                if (accountName != value)
                 {
-                    spaceLikeDescription = value;
-                    NotifyPropertyChanged("SpaceLikeDescription");
+                    accountName = value;
+                    NotifyPropertyChanged("AccountName");
                 }
             }
         }
 
-        private string spaceDescription;
-        public string SpaceDescription
+        private string spaceDistance;
+        public string SpaceDistance
         {
             get
             {
-                return spaceDescription;
+                return spaceDistance;
             }
             set
             {
-                if (spaceDescription != value)
+                if (spaceDistance != value)
                 {
-                    spaceDescription = value;
-                    NotifyPropertyChanged("SpaceDescription");
+                    spaceDistance = value;
+                    NotifyPropertyChanged("SpaceDistance");
                 }
             }
         }
+
+        private string spaceLike;
+        public string SpaceLike
+        {
+            get
+            {
+                return spaceLike;
+            }
+            set
+            {
+                if (spaceLike != value)
+                {
+                    spaceLike = value;
+                    NotifyPropertyChanged("SpaceLike");
+                }
+            }
+        }
+
+        private Uri spaceLikeButtonImage;
+        public Uri SpaceLikeButtonImage
+        {
+            get
+            {
+                return spaceLikeButtonImage;
+            }
+            set
+            {
+                if (spaceLikeButtonImage != value)
+                {
+                    spaceLikeButtonImage = value;
+                    NotifyPropertyChanged("SpaceLikeButtonImage");
+                }
+            }
+        }
+
+        private string spaceId;
+        public string SpaceId
+        {
+            get
+            {
+                return spaceId;
+            }
+            set
+            {
+                if (spaceId != value)
+                {
+                    spaceId = value;
+                    NotifyPropertyChanged("SpaceId");
+                }
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         

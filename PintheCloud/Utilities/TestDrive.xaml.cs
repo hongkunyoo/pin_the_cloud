@@ -105,7 +105,7 @@ namespace PintheCloud.Utilities
             }
             catch(Exception e)
             {
-                App.HDebug.WriteLine(e.ToString());
+                MyDebug.WriteLine(e.ToString());
             }
             
             
@@ -122,7 +122,7 @@ namespace PintheCloud.Utilities
         }
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
-            App.HDebug.WriteLine("Chooser Done");
+            MyDebug.WriteLine("Chooser Done");
         }
 
     }

@@ -141,25 +141,22 @@
     <value>Login process stopped. Please try it again</value>
   </data>
   <data name="Explorer" xml:space="preserve">
-    <value>Explorer</value>
+    <value>explorer</value>
   </data>
   <data name="Logout" xml:space="preserve">
     <value>Logout</value>
   </data>
-  <data name="MySpaces" xml:space="preserve">
-    <value>My Spaces</value>
+  <data name="MySpace" xml:space="preserve">
+    <value>my space</value>
   </data>
-  <data name="NoInternetCaption" xml:space="preserve">
+  <data name="InternetUnavailableCaption" xml:space="preserve">
     <value>Interent unavailable</value>
   </data>
   <data name="InternetUnavailableMessage" xml:space="preserve">
-    <value>Sorry. Could not connect to Pin the Cloud. Please make sure connection with Internet and try again.</value>
+    <value>Sorry. Could not connect to at Here. Please make sure connection with Internet and try again.</value>
   </data>
   <data name="Profile" xml:space="preserve">
     <value>Profile</value>
-  </data>
-  <data name="Recent" xml:space="preserve">
-    <value>Recent</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
@@ -191,13 +188,13 @@
   <data name="NoLocationAcessConsentMessage" xml:space="preserve">
     <value>This app requires consent to access location information. Please consent it.</value>
   </data>
-  <data name="DistanceDescription" xml:space="preserve">
-    <value>meter away from here.</value>
-  </data>
   <data name="LikeDescription" xml:space="preserve">
-    <value>number of people like this space.</value>
+    <value>likes</value>
   </data>
   <data name="Refresh" xml:space="preserve">
     <value>Refreshing...</value>
+  </data>
+  <data name="Meter" xml:space="preserve">
+    <value>m</value>
   </data>
 </root>

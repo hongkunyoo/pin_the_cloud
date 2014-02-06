@@ -35,15 +35,11 @@ namespace PintheCloud
         // Manager
         public static AccountManager CurrentAccountManager = null;
         public static SpaceManager CurrentSpaceManager = null;
+        public static AccountSpaceRelationManager CurrentAccountSpaceRelationManager = null;
         public static GeoCalculateManager CurrentGeoCalculateManager = null;
         public static SkyDriveManager SkyDriveManager = null;
         public static BlobManager BlobManager = null;
         public static LocalStorageManager LocalStorageManager = null;
-
-        // Debugger
-        public static HDebug HDebug = new HDebug();
-        public static RDebug RDebug = new RDebug();
-        public static CDebug CDebug = new CDebug();
 
         /// <summary>
         /// Application 개체의 생성자입니다.
@@ -77,6 +73,7 @@ namespace PintheCloud
             // Manager
             CurrentAccountManager = new AccountManagerImplement();
             CurrentSpaceManager = new SpaceManagerImplement();
+            CurrentAccountSpaceRelationManager = new AccountSpaceRelationManagerImplement();
             CurrentGeoCalculateManager = new GeoCalculateManagerImplement();
             LocalStorageManager = new LocalStorageManager();
 
@@ -107,7 +104,7 @@ namespace PintheCloud
         // 이 코드는 응용 프로그램이 다시 활성화될 때는 실행되지 않습니다.
         private void Application_Launching(object sender, LaunchingEventArgs e)
         {
-            App.HDebug.WriteLine("Launching : " + sender + e);
+            MyDebug.WriteLine("Launching : " + sender + e);
         }
 
         // 응용 프로그램이 활성화(포그라운드로 이동)될 때 실행할 코드입니다.
@@ -117,11 +114,11 @@ namespace PintheCloud
             // coming from dormant
             if (e.IsApplicationInstancePreserved)
             {
-                App.HDebug.WriteLine("Activated Preserved");
+                MyDebug.WriteLine("Activated Preserved");
             }
             else // coming from tombstone
             {
-                App.HDebug.WriteLine("Activated Not Preserved");
+                MyDebug.WriteLine("Activated Not Preserved");
             }
         }
 
@@ -129,14 +126,14 @@ namespace PintheCloud
         // 이 코드는 응용 프로그램이 닫힐 때는 실행되지 않습니다.
         private void Application_Deactivated(object sender, DeactivatedEventArgs e)
         {
-            App.HDebug.WriteLine("Deactivated : " + sender + e);
+            MyDebug.WriteLine("Deactivated : " + sender + e);
         }
 
         // 응용 프로그램이 닫힐 때(예: 사용자가 [뒤로]를 누르는 경우) 실행할 코드입니다.
         // 이 코드는 응용 프로그램이 비활성화될 때는 실행되지 않습니다.
         private void Application_Closing(object sender, ClosingEventArgs e)
         {
-            App.HDebug.WriteLine("Closing : " + sender + e);
+            MyDebug.WriteLine("Closing : " + sender + e);
         }
 
         // 탐색이 실패할 때 실행할 코드입니다.

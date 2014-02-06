@@ -33,12 +33,6 @@ namespace PintheCloud.Utilities
 
             return Name;
             */
-        }
-
-        internal static string Decode(Uri destinationUri)
-        {
-            throw new NotImplementedException();
-        }
-     
+        }    
     }
 }

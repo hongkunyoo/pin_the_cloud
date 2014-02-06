@@ -13,8 +13,29 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.Workers
 {
-    public abstract class SpaceWorker
+    public class SpaceWorker
     {
+        // Get spaces 300m away from here
+        public async Task<JArray> GetNearSpacesAsync(double currentLatitude, double currentLongtitude)
+        {
+            string json = @"{'currentLatitude':" + currentLatitude + ",'currentLongtitude':" + currentLongtitude + "}";
+            JToken jToken = JToken.Parse(json);
+            JArray spaces = null;
+            try
+            {
+                // Load near spaces use custom api in server script
+                spaces = (JArray)await App.MobileService.InvokeApiAsync("select_near_spaces_async", jToken);
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+            }
+            if (spaces.Count > 0)
+                return spaces;
+            else
+                return null;
+        }
+
+
         // Get spaces from DB
         public async Task<MobileServiceCollection<Space, Space>> GetMySpacesAsync(string account_id)
         {
@@ -30,27 +51,6 @@ namespace PintheCloud.Workers
             {
             }
 
-            if (spaces.Count > 0)
-                return spaces;
-            else
-                return null;
-        }
-
-
-        // Get spaces 300m away from here
-        public async Task<JArray> GetNearSpacesAsync(double currentLatitude, double currentLongtitude)
-        {
-            string json = @"{'currentLatitude':" + currentLatitude + ",'currentLongtitude':" + currentLongtitude + "}";
-            JToken jToken = JToken.Parse(json);
-            JArray spaces = null;
-            try
-            {
-                // Load near spaces use custom api in server script
-                spaces = (JArray) await App.MobileService.InvokeApiAsync("select_near_spaces_async", jToken);
-            }
-            catch (MobileServiceInvalidOperationException)
-            {
-            }
             if (spaces.Count > 0)
                 return spaces;
             else

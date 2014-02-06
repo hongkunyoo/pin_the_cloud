@@ -96,23 +96,22 @@
     </Compile>
     <Compile Include="GlobalKeys.cs" />
     <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="Managers\AccountSpaceRelationManagerImplement.cs" />
+    <Compile Include="Managers\AccountSpaceRelationManager.cs" />
     <Compile Include="Managers\BlobManager.cs" />
     <Compile Include="Managers\LocalStorageManager.cs" />
-    <Compile Include="Managers\MySpaceManager.cs" />
     <Compile Include="Managers\SkyDriveManager.cs" />
     <Compile Include="Managers\GeoCalculateManager.cs" />
     <Compile Include="Managers\GeoCalculateManagerImplement.cs" />
     <Compile Include="Managers\SpaceManager.cs" />
     <Compile Include="Managers\SpaceManagerImplement.cs" />
+    <Compile Include="Models\AccountSpaceRelation.cs" />
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Space.cs" />
     <Compile Include="Models\TestModel.cs" />
-    <Compile Include="Utilities\CDebug.cs" />
     <Compile Include="Utilities\MyEncoder.cs" />
-    <Compile Include="Utilities\HDebug.cs" />
     <Compile Include="Utilities\MyDebug.cs" />
     <Compile Include="Utilities\ParseHelper.cs" />
-    <Compile Include="Utilities\RDebug.cs" />
     <Compile Include="Utilities\TestDrive.xaml.cs">
       <DependentUpon>TestDrive.xaml</DependentUpon>
     </Compile>
@@ -128,6 +127,9 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
     <Compile Include="ViewModels\SpaceViewItem.cs" />
+    <Compile Include="Workers\AccountSpaceRelationInternetAvailableWorker.cs" />
+    <Compile Include="Workers\AccountSpaceRelationInternetUnavailableWorker.cs" />
+    <Compile Include="Workers\AccountSpaceRelationWorker.cs" />
     <Compile Include="Workers\AccountWorker.cs" />
     <Compile Include="Workers\AccountInternetUnavailableWorker.cs" />
     <Compile Include="Managers\AccountManager.cs" />
@@ -194,6 +196,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\AppBar\app_bar_me_icon.png" />
     <Content Include="Assets\AppBar\basecircle.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -303,7 +306,12 @@
     <Content Include="Assets\Tiles\IconicTileSmall.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\user.xml" />
+    <Content Include="README_FIRST.txt" />
+    <Content Include="Toolkit.Content\ApplicationBar.Add.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
+    <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AppResources.resx">
@@ -325,6 +333,9 @@
       <HintPath>..\packages\LiveSDK.5.5\lib\WindowsPhone8\Microsoft.Live.Controls.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Phone.Controls, Version=8.0.0.0, Culture=neutral, PublicKeyToken=24eec0d8c86cda1e, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Phone.Controls.Toolkit">
+      <HintPath>..\packages\WPtoolkit.4.2013.08.16\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WindowsAzure.Mobile">
       <HintPath>..\packages\WindowsAzure.MobileServices.1.1.2\lib\wp8\Microsoft.WindowsAzure.Mobile.dll</HintPath>
     </Reference>

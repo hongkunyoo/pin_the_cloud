@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PintheCloud.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,22 +39,22 @@ namespace PintheCloud.Models
         public static void PrintFileObject(FileObject fo){
             if (fo != null)
             {
-                App.HDebug.WriteLine("id : " + fo.Id);
-                App.HDebug.WriteLine("Name : " + fo.Name);
-                App.HDebug.WriteLine("ParentId : " + fo.ParentId);
-                App.HDebug.WriteLine("Size : " + fo.Size);
-                App.HDebug.WriteLine("Type : " + fo.Type);
-                App.HDebug.WriteLine("TypeDetail : " + fo.TypeDetail);
-                App.HDebug.WriteLine("CreateAt : " + fo.CreateAt);
-                App.HDebug.WriteLine("UpdateAt : " + fo.UpdateAt);
+                MyDebug.WriteLine("id : " + fo.Id);
+                MyDebug.WriteLine("Name : " + fo.Name);
+                MyDebug.WriteLine("ParentId : " + fo.ParentId);
+                MyDebug.WriteLine("Size : " + fo.Size);
+                MyDebug.WriteLine("Type : " + fo.Type);
+                MyDebug.WriteLine("TypeDetail : " + fo.TypeDetail);
+                MyDebug.WriteLine("CreateAt : " + fo.CreateAt);
+                MyDebug.WriteLine("UpdateAt : " + fo.UpdateAt);
 
-                App.HDebug.WriteLine("-----------------------------------------");
+                MyDebug.WriteLine("-----------------------------------------");
                 if (fo.FileList != null)
                     FileObject.PrintFileObjectList(fo.FileList);
             }
             else
             {
-                App.HDebug.WriteLine("FileObject Null!");
+                MyDebug.WriteLine("FileObject Null!");
                 if(System.Diagnostics.Debugger.IsAttached)
                     System.Diagnostics.Debugger.Break();
             }

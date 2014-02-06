@@ -6,20 +6,23 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.Utilities
 {
-    public abstract class MyDebug
+    public static class MyDebug
     {
-        public abstract bool IsEnable();
+        public static bool IsEnable()
+        {
+            return GlobalKeys.USER.Equals("hongkun");
+        }
 
-        public bool Enable = false;
-        public void WriteLine(object obj)
+        public static bool Enable = false;
+        public static void WriteLine(object obj)
         {
             if (IsEnable()) System.Diagnostics.Debug.WriteLine(obj);
         }
-        public void WriteLine(string message)
+        public static void WriteLine(string message)
         {
             if (IsEnable()) System.Diagnostics.Debug.WriteLine(message);
         }
-        public void WriteLine(string format, object[] args)
+        public static void WriteLine(string format, object[] args)
         {
             if (IsEnable()) System.Diagnostics.Debug.WriteLine(format, args);
         }

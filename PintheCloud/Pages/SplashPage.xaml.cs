@@ -35,20 +35,6 @@ namespace PintheCloud.Pages
         {
             base.OnNavigatedTo(e);
 
-            // DEBUG MODE SETTING
-            // Debugger
-            //StorageFile file = await Windows.ApplicationModel.Package.Current.InstalledLocation.GetFileAsync(@"Assets\user.xml");
-            //using (XmlReader reader = XmlReader.Create(await file.OpenStreamForReadAsync()))
-            //{
-            //    reader.Read();
-            //    reader.Read();
-            //    reader.Read();
-            //    reader.Read();
-            //    GlobalKeys.USER = reader.Value.ToString().Trim();
-            //}
-
-            /////////////////////////////////////////////////////////////////////////////////////////////
-
             // Check if it has backstacks, remove all
             int backStackCount = NavigationService.BackStack.Count();
             for (int i = 0; i < backStackCount; i++)
@@ -156,7 +142,7 @@ namespace PintheCloud.Pages
             }
         }
 
-        protected async override void OnNavigatedFrom(NavigationEventArgs e)
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
 
@@ -208,7 +194,7 @@ namespace PintheCloud.Pages
             }
             else
             {
-                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.NoInternetCaption, MessageBoxButton.OK);
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
             }
         }
     }

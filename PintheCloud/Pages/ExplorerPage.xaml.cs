@@ -17,6 +17,7 @@ using Microsoft.WindowsAzure.MobileServices;
 using System.Collections.ObjectModel;
 using Windows.Devices.Geolocation;
 using PintheCloud.Resources;
+using System.Windows.Media.Imaging;
 
 namespace PintheCloud.Pages
 {
@@ -24,11 +25,13 @@ namespace PintheCloud.Pages
     {
         // Instances
         private const int EXPLORER_PIVOT = 0;
-        private const int RECENT_PIVOT = 1;
-        private const int MY_SPACES_PIVOT = 2;
+        private const int MY_SPACES_PIVOT = 1;
 
-        public static SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
-        public static SpaceViewModel MySpaceViewModel = new SpaceViewModel();
+        private const string EDIT_IMAGE_PATH = "/Assets/pajeon/png/general_edit.png";
+        private const string VIEW_IMAGE_PATH = "/Assets/pajeon/png/general_view.png";
+
+        public SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
+        public SpaceViewModel MySpaceViewModel = new SpaceViewModel();
 
 
         public ExplorerPage()
@@ -50,6 +53,7 @@ namespace PintheCloud.Pages
             base.OnNavigatedFrom(e);
         }
 
+
         // Construct pivot item by page index
         private async void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -58,18 +62,101 @@ namespace PintheCloud.Pages
             switch (uiExplorerPivot.SelectedIndex)
             { 
                 case EXPLORER_PIVOT:
-                    if (!NearSpaceViewModel.IsDataLoaded)
+                    uiSpaceEditButton.Visibility = Visibility.Collapsed;
+                    if (!NearSpaceViewModel.IsDataLoading)  // Mutex check
                         await this.SetExplorerPivotAsync(AppResources.Loading);
                     break;
 
-                case RECENT_PIVOT:
-                    // TODO
-                    break;
-
                 case MY_SPACES_PIVOT:
-                    if (!MySpaceViewModel.IsDataLoaded)
+                    uiSpaceEditButton.Visibility = Visibility.Visible;
+                    if (!MySpaceViewModel.IsDataLoading)  // Mutex check
                         await this.SetMySpacePivotAsync(AppResources.Loading);
                     break;
+            }
+        }
+
+
+        // Process of editing spaces, especially deleting or not.
+        private void uiSpaceEditButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // Get information about image
+            Button editButton = (Button)sender;
+            Image editButtonImage = (Image)editButton.Content;
+            BitmapImage editButtonImageBitmap = (BitmapImage)editButtonImage.Source;
+            string editButtonImageUriSource = editButtonImageBitmap.UriSource.ToString();
+
+            // If it is not view mode, go edit
+            // Otherwise, go view mode
+            if (editButtonImageUriSource.Equals(EDIT_IMAGE_PATH))  // It is View mode
+            {
+                editButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_PATH, UriKind.Relative));
+
+                // TODO Chande mode to edit mode
+            }
+            else  // It is Edit mode
+            {
+                editButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_PATH, UriKind.Relative));
+
+                // TODO Chande mode to view mode
+            }
+        }
+
+
+        // Process Like or Not Like by current state
+        private async void uiNearSpaceLikeButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // Get different Account Space Relation Worker by internet state.
+            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+            {
+                App.CurrentAccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
+
+
+                // Get information about image
+                Button likeButton = (Button)sender;
+                Image likeButtonImage = (Image)likeButton.Content;
+                string spaceId = likeButtonImage.Tag.ToString();
+
+                BitmapImage likeButtonImageBitmap = (BitmapImage)likeButtonImage.Source;
+                string likeButtonImageUriSource = likeButtonImageBitmap.UriSource.ToString();
+
+
+                // Set Image first for good user experience.
+                // Like or Note LIke by current state
+                if (likeButtonImageUriSource.Equals(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH))  // Do Like
+                {
+                    likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative));
+
+                    // If like success, set like number ++
+                    // If like fail, set image back to original
+                    if (await App.CurrentAccountSpaceRelationManager.LikeAysnc(spaceId, true))
+                    {
+                        // TODO ++ 
+                    }
+                    else
+                    {
+                        likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative));
+                    }       
+                }
+
+                else  // Do Not Like
+                {
+                    likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative));
+
+                    // If not like success, set like number --
+                    // If not like fail, set image back to original
+                    if (await App.CurrentAccountSpaceRelationManager.LikeAysnc(spaceId, false))
+                    {
+                        // TODO --
+                    }
+                    else 
+                    {
+                        likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative));
+                    }
+                }
+            }
+            else  // // Internet bad.
+            {
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
             }
         }
 
@@ -102,16 +189,12 @@ namespace PintheCloud.Pages
             switch (uiExplorerPivot.SelectedIndex)
             { 
                 case EXPLORER_PIVOT:
-                    NearSpaceViewModel.IsDataLoaded = false;
+                    NearSpaceViewModel.IsDataLoading = false;  // Mutex
                     await this.SetExplorerPivotAsync(AppResources.Refresh);
                     break;
 
-                case RECENT_PIVOT:
-                    // TODO
-                    break;
-
                 case MY_SPACES_PIVOT:
-                    MySpaceViewModel.IsDataLoaded = false;
+                    MySpaceViewModel.IsDataLoading = false;  // Mutex
                     await this.SetMySpacePivotAsync(AppResources.Refresh);
                     break;
             }
@@ -128,10 +211,17 @@ namespace PintheCloud.Pages
             {
                 // Set worker and show loading message
                 App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+                App.CurrentSpaceManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
+
+                // Show progress indicator 
                 uiNearSpaceList.Visibility = Visibility.Collapsed;
                 uiNearSpaceMessage.Text = message;
                 uiNearSpaceMessage.Visibility = Visibility.Visible;
                 base.SetProgressIndicator(true);
+
+                // Before go load, set mutex to true.
+                NearSpaceViewModel.IsDataLoading = true;
+
 
                 // Check whether user consented for location access.
                 if (base.GetLocationAccessConsent())  // Got consent of location access.
@@ -146,18 +236,23 @@ namespace PintheCloud.Pages
                         {
                             // If there is near spaces, Clear and Add spaces to list
                             // Otherwise, Show none message.
-                            if (await App.CurrentSpaceManager.SetNearSpaceViewItemsToSpaceViewModelAsync(currentGeoposition))  // There are near spaces
+                            ObservableCollection<SpaceViewItem> items =
+                                await App.CurrentSpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);
+
+                            if (items != null)  // There are near spaces
                             {
+                                this.NearSpaceViewModel.Items = items;
+                                uiNearSpaceList.DataContext = null;
+                                uiNearSpaceList.DataContext = this.NearSpaceViewModel;
                                 uiNearSpaceList.Visibility = Visibility.Visible;
                                 uiNearSpaceMessage.Visibility = Visibility.Collapsed;
-                                NearSpaceViewModel.IsDataLoaded = true;
-                                uiNearSpaceList.DataContext = NearSpaceViewModel;
                             }
                             else  // No near spaces
                             {
                                 uiNearSpaceList.Visibility = Visibility.Collapsed;
                                 uiNearSpaceMessage.Text = AppResources.NoNearSpaceMessage;
                                 uiNearSpaceMessage.Visibility = Visibility.Visible;
+                                NearSpaceViewModel.IsDataLoading = false;  // Mutex
                             }
                         }
                         else  // works bad
@@ -166,6 +261,7 @@ namespace PintheCloud.Pages
                             uiNearSpaceList.Visibility = Visibility.Collapsed;
                             uiNearSpaceMessage.Text = AppResources.BadGpsMessage;
                             uiNearSpaceMessage.Visibility = Visibility.Visible;
+                            NearSpaceViewModel.IsDataLoading = false;  // Mutex
                         }
                     }
                     else  // GPS is off
@@ -174,6 +270,7 @@ namespace PintheCloud.Pages
                         uiNearSpaceList.Visibility = Visibility.Collapsed;
                         uiNearSpaceMessage.Text = AppResources.NoGpsOnMessage;
                         uiNearSpaceMessage.Visibility = Visibility.Visible;
+                        NearSpaceViewModel.IsDataLoading = false;  // Mutex
                     }
                 }
                 else  // First or not consented of access in location information.
@@ -182,7 +279,9 @@ namespace PintheCloud.Pages
                     uiNearSpaceList.Visibility = Visibility.Collapsed;
                     uiNearSpaceMessage.Text = AppResources.NoLocationAcessConsentMessage;
                     uiNearSpaceMessage.Visibility = Visibility.Visible;
+                    NearSpaceViewModel.IsDataLoading = false;  // Mutex
                 }
+
 
                 // Hide progress indicator
                 base.SetProgressIndicator(false);
@@ -205,26 +304,39 @@ namespace PintheCloud.Pages
             {
                 // Set worker and show loading message
                 App.CurrentSpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+                App.CurrentSpaceManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
+
+                // Show progress indicator 
                 uiMySpaceList.Visibility = Visibility.Collapsed;
                 uiMySpaceMessage.Text = message;
                 uiMySpaceMessage.Visibility = Visibility.Visible;
                 base.SetProgressIndicator(true);
 
+                // Before go load, set mutex to true.
+                MySpaceViewModel.IsDataLoading = true;
+
+
                 // If there is my spaces, Clear and Add spaces to list
                 // Otherwise, Show none message.
-                if (await App.CurrentSpaceManager.SetMySpaceViewItemsToSpaceViewModelAsync())  // There are my spaces
+                ObservableCollection<SpaceViewItem> items =
+                                await App.CurrentSpaceManager.GetMySpaceViewItemsAsync();
+
+                if (items != null)  // There are my spaces
                 {
+                    this.MySpaceViewModel.Items = items;
+                    uiMySpaceList.DataContext = null;
+                    uiMySpaceList.DataContext = this.MySpaceViewModel;
                     uiMySpaceList.Visibility = Visibility.Visible;
                     uiMySpaceMessage.Visibility = Visibility.Collapsed;
-                    MySpaceViewModel.IsDataLoaded = true;
-                    uiMySpaceList.DataContext = MySpaceViewModel;
                 }
                 else  // No my spaces
                 {
                     uiMySpaceList.Visibility = Visibility.Collapsed;
                     uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
                     uiMySpaceMessage.Visibility = Visibility.Visible;
+                    MySpaceViewModel.IsDataLoading = false;  // Mutex
                 }
+
 
                 // Hide progress indicator
                 base.SetProgressIndicator(false);
