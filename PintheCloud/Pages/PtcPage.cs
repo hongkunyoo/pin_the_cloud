@@ -25,6 +25,7 @@ namespace PintheCloud.Pages
         public static string SETTINGS_PAGE = "/Pages/SettingsPage.xaml";
         public static string MAP_VIEW_PAGE = "/Pages/MapViewPage.xaml";
         public static string SKY_DRIVE_PICKER_PAGE = "/Pages/SkyDrivePickerPage.xaml";
+        public static string FILE_LIST_PAGE = "/Pages/FileListPage.xaml";
 
 
         public PtcPage()

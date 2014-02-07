@@ -31,7 +31,7 @@
         <Grid Grid.Row="1">
         	<maps:Map x:Name="uiMapView" ZoomLevel="10"/>
         	<maptk:MapChildControl>
-        		<maptk:UserLocationMarker x:Name="uiUserLocationMarker" Visibility="Collapsed"/>
+        		<maptk:UserLocationMarker x:Name="uiUserLocationMarker"/>
         	</maptk:MapChildControl>
         </Grid>
         

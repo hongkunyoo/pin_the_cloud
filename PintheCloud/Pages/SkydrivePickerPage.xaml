@@ -51,7 +51,7 @@
                 </DataTemplate>
             </Grid.Resources>
             <Grid/>
-            <toolkit:LongListMultiSelector x:Name="uiSkyDriveFileList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSkyDriveFileListItemTemplate}" Grid.Row="1" />
+            <toolkit:LongListMultiSelector x:Name="uiSkyDriveFileList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSkyDriveFileListItemTemplate}" Grid.Row="1" IsSelectionEnabled="True" />
         </Grid>
     </Grid>
 

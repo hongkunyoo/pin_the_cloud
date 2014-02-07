@@ -80,7 +80,7 @@
 			<!--피벗 항목 1-->
 			<phone:PivotItem Header="{Binding LocalizedResources.Explorer, Source={StaticResource LocalizedStrings}}" Margin="0">
 				<Grid>
-					<phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" Foreground="Black" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" />
+					<phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" Foreground="Black" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpaceList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" />
 					<TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,17.5,18,0"/>
 				</Grid>
 			</phone:PivotItem>
@@ -88,7 +88,7 @@
 			<!--피벗 항목 2-->
 			<phone:PivotItem Header="{Binding LocalizedResources.MySpace, Source={StaticResource LocalizedStrings}}" Margin="0">
 				<Grid>
-					<phone:LongListSelector x:Name="uiMySpaceList" ItemsSource="{Binding Items}" Foreground="Black" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" />
+					<phone:LongListSelector x:Name="uiMySpaceList" ItemsSource="{Binding Items}" Foreground="Black" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" Style="{StaticResource CustomLongListSelectorStyle}" SelectionChanged="uiMySpaceList_SelectionChanged" />
 					<TextBlock x:Name="uiMySpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,17.5,18,0"/>
 				</Grid>
 			</phone:PivotItem>

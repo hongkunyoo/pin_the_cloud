@@ -108,6 +108,52 @@ namespace PintheCloud.Pages
         }
 
 
+        // Near Space List select event
+        private void uiNearSpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            // Get Selected Space View Item
+            SpaceViewItem spaceViewItem = uiNearSpaceList.SelectedItem as SpaceViewItem;
+
+            // If selected item isn't null, do something.
+            if (spaceViewItem != null) 
+            {
+                // Go to File List Page with parameters.
+                string spaceId = spaceViewItem.SpaceId;
+                string spaceName = spaceViewItem.SpaceName;
+                string accountName = spaceViewItem.AccountName;
+                string spaceLike = spaceViewItem.SpaceLike;
+                Uri spaceLikeButtonImage = spaceViewItem.SpaceLikeButtonImage;
+                string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountName=" + accountName
+                    + "&spaceLike=" + spaceLike + "&spaceLikeButtonImage=" + spaceLikeButtonImage;
+
+                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
+            }
+        }
+
+
+        // My Space List select event
+        private void uiMySpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            // Get Selected Space View Item
+            SpaceViewItem spaceViewItem = uiMySpaceList.SelectedItem as SpaceViewItem;
+
+            // If selected item isn't null, do something.
+            if (spaceViewItem != null)
+            {
+                // Go to File List Page with parameters.
+                string spaceId = spaceViewItem.SpaceId;
+                string spaceName = spaceViewItem.SpaceName;
+                string accountName = spaceViewItem.AccountName;
+                string spaceLike = spaceViewItem.SpaceLike;
+                Uri spaceLikeButtonImage = spaceViewItem.SpaceLikeButtonImage;
+                string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountName=" + accountName
+                    + "&spaceLike=" + spaceLike + "&spaceLikeButtonImage=" + spaceLikeButtonImage;
+
+                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
+            }
+        }
+
+
         // Process Like or Not Like by current state
         private async void uiSpaceLikeButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
