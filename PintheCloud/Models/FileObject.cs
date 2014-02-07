@@ -10,14 +10,14 @@ namespace PintheCloud.Models
     public class FileObject
     {
         public string Id { get; set; }
-        public string Name { get; set; }
+        public string Name { get; set; }    // Name
         public string ParentId { get; set; }
-        public int Size { get; set; }
-        public string Type { get; set; }
-        public string TypeDetail { get; set; }
-        public string CreateAt { get; set; }
-        public string UpdateAt { get; set; }
-        public List<FileObject> FileList { get; set; }
+        public int Size { get; set; }   // file size
+        public string Type { get; set; }    // whethere it is file or folder
+        public string TypeDetail { get; set; }  // file extension such as PDF, MP3
+        public string CreateAt { get; set; }    // do not use this
+        public string UpdateAt { get; set; }    // updated time & created time
+        public List<FileObject> FileList { get; set; }  // child List
 
         public FileObject()
         {

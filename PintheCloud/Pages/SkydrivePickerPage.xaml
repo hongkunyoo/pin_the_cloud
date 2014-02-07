@@ -1,5 +1,4 @@
 ﻿<local:PtcPage
-    x:Class="PintheCloud.Pages.SkyDrivePickerPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:PintheCloud.Pages"
@@ -7,6 +6,8 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    x:Class="PintheCloud.Pages.SkyDrivePickerPage"
 	mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -18,17 +19,40 @@
 
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
     <Grid x:Name="LayoutRoot" Background="White">
-    	<Grid.RowDefinitions>
-    		<RowDefinition Height="72"/>
-    		<RowDefinition/>
-    	</Grid.RowDefinitions>
-		<Grid Background="#FF00A4BF">
-        	<Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="72"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid Background="#FF00A4BF">
+            <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         </Grid>
         <!--TitlePanel에는 응용 프로그램 이름 및 페이지 제목이 포함됩니다.-->
 
         <!--ContentPanel - 여기에 추가 내용을 배치합니다.-->
-        <Grid x:Name="ContentPanel" Grid.Row="1"/>
+        <Grid x:Name="ContentPanel" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="72"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.Resources>
+                <DataTemplate x:Key="uiSkyDriveFileListItemTemplate">
+                    <Grid x:Name="uiSkyDriveFileListItem">
+                    	<Grid.RowDefinitions>
+                    		<RowDefinition/>
+                    		<RowDefinition Height="1"/>
+                    	</Grid.RowDefinitions>
+                    	<StackPanel Orientation="Horizontal">
+                    		<CheckBox x:Name="uiSkyDriveFileSelectCheckBox" Style="{StaticResource CustomCheckBoxStyle}"/>
+                    		<Image x:Name="uiSkyDriveFileThumnail"/>
+                    		<TextBlock x:Name="uiSkyDriveFileName" TextWrapping="Wrap"/>
+                    	</StackPanel>
+                    	<Grid Grid.Row="1" Background="#FFCED7DD"/>
+                    </Grid>
+                </DataTemplate>
+            </Grid.Resources>
+            <Grid/>
+            <toolkit:LongListMultiSelector x:Name="uiSkyDriveFileList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSkyDriveFileListItemTemplate}" Grid.Row="1" />
+        </Grid>
     </Grid>
 
 </local:PtcPage>

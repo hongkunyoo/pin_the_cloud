@@ -46,7 +46,7 @@
 		<phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged" Grid.Row="1" Foreground="Black">
 			<phone:Pivot.Resources>
 				<DataTemplate x:Key="uiSpaceListItemTemplate">
-					<Grid x:Name="uiSpaceListTemplate">
+					<Grid x:Name="uiSpaceListItem">
 						<Grid.RowDefinitions>
 							<RowDefinition/>
 							<RowDefinition Height="1"/>
