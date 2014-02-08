@@ -109,6 +109,7 @@
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Space.cs" />
     <Compile Include="Models\TestModel.cs" />
+    <Compile Include="Utilities\FileObjectConverter.cs" />
     <Compile Include="Utilities\MyEncoder.cs" />
     <Compile Include="Utilities\MyDebug.cs" />
     <Compile Include="Utilities\ParseHelper.cs" />
