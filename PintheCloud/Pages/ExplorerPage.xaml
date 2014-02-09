@@ -51,23 +51,25 @@
 							<RowDefinition/>
 							<RowDefinition Height="1"/>
 						</Grid.RowDefinitions>
-						<Grid Margin="22,17.5,0,14">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition/>
-								<ColumnDefinition Width="107"/>
-							</Grid.ColumnDefinitions>
-							<StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0">
-								<TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True"/>
-								<TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
-								<StackPanel Orientation="Horizontal">
-									<TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLike}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,10,0"/>
-									<TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22"/>
+						<Button x:Name="uiSpaceButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Center">
+							<Grid Margin="22,17.5,0,14">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition MinWidth="350" MaxWidth="350"/>
+									<ColumnDefinition Width="93"/>
+								</Grid.ColumnDefinitions>
+								<StackPanel Margin="0">
+									<TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
+									<TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
+									<StackPanel Orientation="Horizontal">
+										<TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLike}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,10,0"/>
+										<TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22"/>
+									</StackPanel>
 								</StackPanel>
-							</StackPanel>
-							<Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiSpaceLikeButton_Click" >
-								<Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage}" Tag="{Binding SpaceId}" />
-							</Button>
-						</Grid>
+								<Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiSpaceLikeButton_Click" >
+									<Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage}" Tag="{Binding SpaceId}" />
+								</Button>
+							</Grid>
+						</Button>
 						<Grid Grid.Row="1" Background="#FFCED7DD"/>
 					</Grid>
 				</DataTemplate>
@@ -76,11 +78,11 @@
 			<phone:Pivot.Style>
 				<StaticResource ResourceKey="CustomPivotStyle"/>
 			</phone:Pivot.Style>
-
+			
 			<!--피벗 항목 1-->
 			<phone:PivotItem Header="{Binding LocalizedResources.Explorer, Source={StaticResource LocalizedStrings}}" Margin="0">
 				<Grid>
-					<phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" Foreground="Black" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpaceList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" />
+					<phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" Foreground="Black" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpaceList_SelectionChanged" />
 					<TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,17.5,18,0"/>
 				</Grid>
 			</phone:PivotItem>
@@ -88,7 +90,7 @@
 			<!--피벗 항목 2-->
 			<phone:PivotItem Header="{Binding LocalizedResources.MySpace, Source={StaticResource LocalizedStrings}}" Margin="0">
 				<Grid>
-					<phone:LongListSelector x:Name="uiMySpaceList" ItemsSource="{Binding Items}" Foreground="Black" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" Style="{StaticResource CustomLongListSelectorStyle}" SelectionChanged="uiMySpaceList_SelectionChanged" />
+					<phone:LongListSelector x:Name="uiMySpaceList" ItemsSource="{Binding Items}" Foreground="Black" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpaceList_SelectionChanged" />
 					<TextBlock x:Name="uiMySpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,17.5,18,0"/>
 				</Grid>
 			</phone:PivotItem>

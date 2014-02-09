@@ -33,6 +33,8 @@ namespace PintheCloud.Pages
         public SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
         public SpaceViewModel MySpaceViewModel = new SpaceViewModel();
 
+        private bool IsLikeButtonClicked = false;
+
 
         public ExplorerPage()
         {
@@ -108,108 +110,36 @@ namespace PintheCloud.Pages
         }
 
 
-        // Near Space List select event
-        private void uiNearSpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        // List select event
+        private async void uiNearSpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected Space View Item
+            // Do selection changed event job.
+            // Set selected item to null for next selection of list item. 
             SpaceViewItem spaceViewItem = uiNearSpaceList.SelectedItem as SpaceViewItem;
-
-            // If selected item isn't null, do something.
-            if (spaceViewItem != null) 
-            {
-                // Go to File List Page with parameters.
-                string spaceId = spaceViewItem.SpaceId;
-                string spaceName = spaceViewItem.SpaceName;
-                string accountName = spaceViewItem.AccountName;
-                string spaceLike = spaceViewItem.SpaceLike;
-                Uri spaceLikeButtonImage = spaceViewItem.SpaceLikeButtonImage;
-                string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountName=" + accountName
-                    + "&spaceLike=" + spaceLike + "&spaceLikeButtonImage=" + spaceLikeButtonImage;
-
-                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
-            }
+            await this.uiSpaceList_SelectionChanged(spaceViewItem);
+            uiNearSpaceList.SelectedItem = null;
         }
 
 
-        // My Space List select event
-        private void uiMySpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        // List select event
+        private async void uiMySpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected Space View Item
+            // Do selection changed event job.
+            // Set selected item to null for next selection of list item. 
             SpaceViewItem spaceViewItem = uiMySpaceList.SelectedItem as SpaceViewItem;
-
-            // If selected item isn't null, do something.
-            if (spaceViewItem != null)
-            {
-                // Go to File List Page with parameters.
-                string spaceId = spaceViewItem.SpaceId;
-                string spaceName = spaceViewItem.SpaceName;
-                string accountName = spaceViewItem.AccountName;
-                string spaceLike = spaceViewItem.SpaceLike;
-                Uri spaceLikeButtonImage = spaceViewItem.SpaceLikeButtonImage;
-                string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountName=" + accountName
-                    + "&spaceLike=" + spaceLike + "&spaceLikeButtonImage=" + spaceLikeButtonImage;
-
-                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
-            }
+            await this.uiSpaceList_SelectionChanged(spaceViewItem);
+            uiMySpaceList.SelectedItem = null;
         }
-
+        
 
         // Process Like or Not Like by current state
-        private async void uiSpaceLikeButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void uiSpaceLikeButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            // Get different Account Space Relation Worker by internet state.
-            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
-            {
-                App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
-
-
-                // Get information about image
-                Button likeButton = (Button)sender;
-                Image likeButtonImage = (Image)likeButton.Content;
-                string spaceId = likeButtonImage.Tag.ToString();
-
-                BitmapImage likeButtonImageBitmap = (BitmapImage)likeButtonImage.Source;
-                string likeButtonImageUriSource = likeButtonImageBitmap.UriSource.ToString();
-
-
-                // Set Image first for good user experience.
-                // Like or Note LIke by current state
-                if (likeButtonImageUriSource.Equals(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH))  // Do Like
-                {
-                    likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative));
-
-                    // If like success, set like number ++
-                    // If like fail, set image back to original
-                    if (await App.AccountSpaceRelationManager.LikeAysnc(spaceId, true))
-                    {
-                        // TODO ++ 
-                    }
-                    else
-                    {
-                        likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative));
-                    }
-                }
-
-                else  // Do Not Like
-                {
-                    likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative));
-
-                    // If not like success, set like number --
-                    // If not like fail, set image back to original
-                    if (await App.AccountSpaceRelationManager.LikeAysnc(spaceId, false))
-                    {
-                        // TODO --
-                    }
-                    else
-                    {
-                        likeButtonImage.Source = new BitmapImage(new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative));
-                    }
-                }
-            }
-            else  // // Internet bad.
-            {
-                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
-            }
+            // Set this is like button click
+            // It is required to seperate between space button and like button
+            this.IsLikeButtonClicked = true;
         }
 
 
@@ -339,8 +269,8 @@ namespace PintheCloud.Pages
                 base.SetProgressIndicator(false);
 
                 // If it works bad but no error resluts, repeat.
-                if (uiNearSpaceMessage.Visibility == Visibility.Visible && uiNearSpaceMessage.Text.Equals(AppResources.Loading))
-                    await this.SetExplorerPivotAsync(message);
+                if (uiMySpaceMessage.Visibility == Visibility.Visible && uiMySpaceMessage.Text.Equals(AppResources.Loading))
+                    await this.SetMySpacePivotAsync(message);
             }
         }
 
@@ -390,8 +320,86 @@ namespace PintheCloud.Pages
                 base.SetProgressIndicator(false);
 
                 // If it works bad but no error resluts, repeat.
-                if (uiMySpaceMessage.Visibility == Visibility.Visible && uiMySpaceMessage.Text.Equals(AppResources.Loading))
-                    await this.SetMySpacePivotAsync(message);
+                if (uiNearSpaceMessage.Visibility == Visibility.Visible && uiNearSpaceMessage.Text.Equals(AppResources.Loading))
+                    await this.SetExplorerPivotAsync(message);
+            }
+        }
+
+
+        // Do selection changed event job.
+        private async Task uiSpaceList_SelectionChanged(SpaceViewItem spaceViewItem)
+        {
+            // If selected item isn't null and it doesn't come from like button, goto File list page.
+            // Otherwise, Process Like or Not Like by current state
+            if (spaceViewItem != null && !this.IsLikeButtonClicked)  // Go to FIle List Page
+            {
+                // Go to File List Page with parameters.
+                string spaceId = spaceViewItem.SpaceId;
+                string spaceName = spaceViewItem.SpaceName;
+                string accountName = spaceViewItem.AccountName;
+                string spaceLike = spaceViewItem.SpaceLike;
+                Uri spaceLikeButtonImage = spaceViewItem.SpaceLikeButtonImage;
+                string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountName=" + accountName
+                    + "&spaceLike=" + spaceLike + "&spaceLikeButtonImage=" + spaceLikeButtonImage;
+
+                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
+            }
+
+            else if (this.IsLikeButtonClicked)  // Do like
+            {
+                // Get different Account Space Relation Worker by internet state.
+                if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+                {
+                    App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
+
+
+                    // Get information about image
+                    string spaceId = spaceViewItem.SpaceId;
+                    string spaceLikeButtonImageUri = spaceViewItem.SpaceLikeButtonImage.ToString();
+
+
+                    // Set Image first for good user experience.
+                    // Like or Note LIke by current state
+                    if (spaceLikeButtonImageUri.Equals(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH))  // Do Like
+                    {
+                        spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative);
+
+                        // If like success, set like number ++
+                        // If like fail, set image back to original
+                        if (await App.AccountSpaceRelationManager.LikeAysnc(spaceId, true))
+                        {
+                            // TODO ++ like number
+                        }
+                        else
+                        {
+                            spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
+                        }
+                    }
+
+                    else  // Do Not Like
+                    {
+                        spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
+
+                        // If not like success, set like number --
+                        // If not like fail, set image back to original
+                        if (await App.AccountSpaceRelationManager.LikeAysnc(spaceId, false))
+                        {
+                            // TODO -- like number
+                        }
+                        else
+                        {
+                            spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative);
+                        }
+                    }
+
+                }
+                else  // Internet bad.
+                {
+                    MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+                }
+
+                // Set like button clicked false for next like button click.
+                this.IsLikeButtonClicked = false;
             }
         }
     }
