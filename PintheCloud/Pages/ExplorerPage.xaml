@@ -22,7 +22,6 @@
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshButton" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
             </shell:ApplicationBar.MenuItems>
-            <shell:ApplicationBarIconButton x:Name="uiAppBarMakeSpaceButton" IconUri="/Assets/pajeon/png/general_bar_new.png" IsEnabled="True" Text="make space" Click="uiAppBarMakeSpaceButton_Click"/>
             <shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/pajeon/png/general_bar_setting.png" IsEnabled="True" Text="settings" Click="uiAppBarSettingsButton_Click"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
@@ -68,8 +67,17 @@
                     </Grid>
                 </DataTemplate>
             </Grid.Resources>
-            <phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpaceList_SelectionChanged" />
-            <TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,17.5,18,0" Foreground="Black"/>
+            <phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged" Style="{StaticResource CustomPivotStyle}" Foreground="Black">
+        		<phone:PivotItem x:Name="uiPickPivot" Header="{Binding LocalizedResources.Pick, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
+        			<Grid>
+        				<phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpaceList_SelectionChanged" />
+        				<TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,0,18,0" Foreground="Black"/>
+        			</Grid>
+        		</phone:PivotItem>
+        		<phone:PivotItem x:Name="uiPinPivot" Header="{Binding LocalizedResources.Pin, Source={StaticResource LocalizedStrings}}">
+        			<Grid/>
+        		</phone:PivotItem>
+        	</phone:Pivot>
         </Grid>
         <!--피벗 컨트롤-->
     </Grid>

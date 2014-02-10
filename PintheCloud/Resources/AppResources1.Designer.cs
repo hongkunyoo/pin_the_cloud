@@ -115,24 +115,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Copyright (c) 2014, Pin the Cloud All rights reserved.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Copyright {
-            get {
-                return ResourceManager.GetString("Copyright", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   explorer과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Explorer {
-            get {
-                return ResourceManager.GetString("Explorer", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Interent unavailable과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string InternetUnavailableCaption {
@@ -268,6 +250,24 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   pick과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Pick {
+            get {
+                return ResourceManager.GetString("Pick", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   pin과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Pin {
+            get {
+                return ResourceManager.GetString("Pin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Private Policy과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string PrivatePolicy {
@@ -327,24 +327,6 @@ namespace PintheCloud.Resources {
         public static string TermsOfService {
             get {
                 return ResourceManager.GetString("TermsOfService", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Version : 과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Version {
-            get {
-                return ResourceManager.GetString("Version", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   1.0과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string VersionInfo {
-            get {
-                return ResourceManager.GetString("VersionInfo", resourceCulture);
             }
         }
     }

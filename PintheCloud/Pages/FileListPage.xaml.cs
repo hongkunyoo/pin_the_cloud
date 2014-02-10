@@ -52,5 +52,11 @@ namespace PintheCloud.Pages
         {
             base.OnNavigatedFrom(e);
         }
+
+
+        private void uiFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+        	// TODO: 여기에 구현된 이벤트 처리기를 추가하십시오.
+        }
     }
 }

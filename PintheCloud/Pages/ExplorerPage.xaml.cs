@@ -24,8 +24,13 @@ namespace PintheCloud.Pages
     public partial class ExplorerPage : PtcPage
     {
         // Instances
-        public SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
+        private const int PICK_PIVOT = 0;
+        private const int PIN_PIVOT = 1;
+
         private bool IsLikeButtonClicked = false;
+
+        public SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
+        public FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
 
 
         public ExplorerPage()
@@ -33,23 +38,39 @@ namespace PintheCloud.Pages
             InitializeComponent();
         }
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
             // Check if it is on the backstack from SplashPage and remove that.
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
-
-            // If Internet available, Set space list
-            if (NetworkInterface.GetIsNetworkAvailable())
-                if (!NearSpaceViewModel.IsDataLoading)  // Mutex check
-                    await this.SetExplorerPivotAsync(AppResources.Loading);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+        }
+
+
+        // Construct pivot item by page index
+        private async void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            // Set View model for dispaly,
+            // One time loading.
+            switch (uiExplorerPivot.SelectedIndex)
+            {
+                case PICK_PIVOT:
+                    // If Internet available, Set space list
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                        if (!NearSpaceViewModel.IsDataLoading)  // Mutex check
+                            await this.SetExplorerPivotAsync(AppResources.Loading);
+                    break;
+
+                case PIN_PIVOT:
+                    // TODO
+                    break;
+            }
         }
 
 
@@ -81,20 +102,18 @@ namespace PintheCloud.Pages
         }
 
 
-        // Move to Make Space Page
-        private void uiAppBarMakeSpaceButton_Click(object sender, System.EventArgs e)
-        {
-            NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
-        }
-
-
         // Refresh space list.
         private async void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
         {
-            // Set View model for dispaly,
-            NearSpaceViewModel.IsDataLoading = false;  // Mutex
-            await this.SetExplorerPivotAsync(AppResources.Refresh);
-
+            // Refresh only if pivot is in pin pivot.
+            switch (uiExplorerPivot.SelectedIndex)
+            {
+                case PIN_PIVOT:
+                    // Set View model for dispaly,
+                    NearSpaceViewModel.IsDataLoading = false;  // Mutex
+                    await this.SetExplorerPivotAsync(AppResources.Refresh);
+                    break;
+            }
         }
 
 

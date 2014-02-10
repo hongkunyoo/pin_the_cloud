@@ -140,8 +140,8 @@
   <data name="BadLoginMessage" xml:space="preserve">
     <value>Login process stopped. Please try it again</value>
   </data>
-  <data name="Explorer" xml:space="preserve">
-    <value>explorer</value>
+  <data name="Pin" xml:space="preserve">
+    <value>pin</value>
   </data>
   <data name="Logout" xml:space="preserve">
     <value>Logout</value>
@@ -197,9 +197,6 @@
   <data name="Meter" xml:space="preserve">
     <value>m</value>
   </data>
-  <data name="Copyright" xml:space="preserve">
-    <value>Copyright (c) 2014, Pin the Cloud All rights reserved.</value>
-  </data>
   <data name="LocationService" xml:space="preserve">
     <value>Location Service</value>
   </data>
@@ -209,10 +206,7 @@
   <data name="TermsOfService" xml:space="preserve">
     <value>Terms of Service</value>
   </data>
-  <data name="Version" xml:space="preserve">
-    <value>Version : </value>
-  </data>
-  <data name="VersionInfo" xml:space="preserve">
-    <value>1.0</value>
+  <data name="Pick" xml:space="preserve">
+    <value>pick</value>
   </data>
 </root>

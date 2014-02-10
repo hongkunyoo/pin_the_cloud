@@ -85,7 +85,6 @@ namespace PintheCloud.Pages
 
                                 if (GlobalKeys.USER.Equals("hongkun"))
                                 {
-
                                     NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
                                 }
 
