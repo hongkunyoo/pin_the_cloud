@@ -61,7 +61,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   About과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   about과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string About {
             get {
@@ -70,7 +70,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Application과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   application과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Application {
             get {
@@ -277,7 +277,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Profile과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   profile과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Profile {
             get {

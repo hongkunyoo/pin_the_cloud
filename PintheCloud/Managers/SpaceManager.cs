@@ -20,6 +20,7 @@ namespace PintheCloud.Managers
 
         Task<ObservableCollection<SpaceViewItem>> GetNearSpaceViewItemsAsync(Geoposition currentGeoposition);
         Task<ObservableCollection<SpaceViewItem>> GetMySpaceViewItemsAsync();
+        string GetParameterStringFromSpaceViewItem(SpaceViewItem spaceViewItem);
 
         Space GetSpace(string id);
     }
