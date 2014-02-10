@@ -1,4 +1,5 @@
 ﻿using Microsoft.WindowsAzure.MobileServices;
+using Newtonsoft.Json.Linq;
 using PintheCloud.Models;
 using PintheCloud.ViewModels;
 using PintheCloud.Workers;
@@ -15,11 +16,9 @@ namespace PintheCloud.Managers
     public interface SpaceManager
     {
         void SetAccountWorker(SpaceWorker CurrentSpaceWorker);
-        void SetAccountSpaceRelationWorker(AccountSpaceRelationWorker CurrentAccountSpaceRelationWorker);
 
-
-        Task<ObservableCollection<SpaceViewItem>> GetNearSpaceViewItemsAsync(Geoposition currentGeoposition);
-        Task<ObservableCollection<SpaceViewItem>> GetMySpaceViewItemsAsync();
+        Task<JArray> GetNearSpaceViewItemsAsync(Geoposition currentGeoposition);
+        Task<MobileServiceCollection<Space, Space>> GetMySpaceViewItemsAsync();
         string GetParameterStringFromSpaceViewItem(SpaceViewItem spaceViewItem);
 
         Space GetSpace(string id);

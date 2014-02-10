@@ -43,8 +43,8 @@ namespace PintheCloud.ViewModels
             }
         }
 
-        private string spaceDistance;
-        public string SpaceDistance
+        private double spaceDistance;
+        public double SpaceDistance
         {
             get
             {
@@ -60,19 +60,19 @@ namespace PintheCloud.ViewModels
             }
         }
 
-        private string spaceLike;
-        public string SpaceLike
+        private int spaceLikeNumber;
+        public int SpaceLikeNumber
         {
             get
             {
-                return spaceLike;
+                return spaceLikeNumber;
             }
             set
             {
-                if (spaceLike != value)
+                if (spaceLikeNumber != value)
                 {
-                    spaceLike = value;
-                    NotifyPropertyChanged("SpaceLike");
+                    spaceLikeNumber = value;
+                    NotifyPropertyChanged("SpaceLikeNumber");
                 }
             }
         }
@@ -113,7 +113,6 @@ namespace PintheCloud.ViewModels
 
 
         public event PropertyChangedEventHandler PropertyChanged;
-        
         private void NotifyPropertyChanged(String propertyName)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -122,6 +121,5 @@ namespace PintheCloud.ViewModels
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-         
     }
 }
