@@ -26,25 +26,17 @@
 
         <!--ContentPanel - 여기에 추가 내용을 배치합니다.-->
 		<Grid x:Name="ContentPanel" Grid.Row="1">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="180"/>
-				<RowDefinition/>
-			</Grid.RowDefinitions>
-			<Grid>
-				<StackPanel Margin="22,0,0,0">
-					<TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Foreground="Black" FontSize="45" LineHeight="53" FontWeight="Medium" Padding="0,0,0,10.5" />
-					<StackPanel Orientation="Horizontal" Margin="0,0,0,10.5">
-						<TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" Padding="0,0,10,0" />
-						<TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Foreground="#FFA7B6BE" FontSize="32" />
-					</StackPanel>
-					<Button x:Name="uiSpaceLikeButton" BorderBrush="Black" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}">
-						<Image x:Name="uiSpaceLikeButtonImage" Stretch="None"/>
-					</Button>
+			<StackPanel Margin="22,28,18,0">
+				<TextBlock x:Name="uiSpaceName" Foreground="Black" FontSize="45" LineHeight="53" FontWeight="Medium" Padding="0,0,0,10.5" Margin="0,0,0,10.5" TextTrimming="WordEllipsis" />
+				<StackPanel Orientation="Horizontal" Margin="0,0,0,10.5">
+					<TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" Padding="0,0,10,0" Margin="0,0,10,0" />
+					<TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Foreground="#FFA7B6BE" FontSize="32" />
 				</StackPanel>
-			</Grid>
-			<Grid Grid.Row="1">
-				<toolkit:LongListMultiSelector x:Name="uiFileList"/>
-			</Grid>
+				<Button x:Name="uiSpaceLikeButton" BorderBrush="Black" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Margin="0,0,0,10.5">
+					<Image x:Name="uiSpaceLikeButtonImage" Stretch="None"/>
+				</Button>
+				<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged"/>
+			</StackPanel>
 		</Grid>
 	</Grid>
 

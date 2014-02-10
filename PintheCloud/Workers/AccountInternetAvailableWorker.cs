@@ -79,21 +79,37 @@ namespace PintheCloud.Workers
         // Register Live Connect Session for Live Profile
         public override async Task<LiveConnectSession> GetLiveConnectSessionAsync()
         {
+            LiveAuthClient liveAuthClient = new LiveAuthClient(GlobalKeys.AZURE_CLIENT_ID);
+            string[] scopes = new[] { "wl.basic, wl.offline_access, wl.skydrive, wl.skydrive_update" };
+            LiveLoginResult liveLoginResult = null;
             LiveConnectSession session = null;
+
+            // Get Current live connection session
             try
             {
-                // Get live connection session
-                LiveAuthClient liveAuthClient = new LiveAuthClient(GlobalKeys.AZURE_CLIENT_ID);
-                LiveLoginResult liveLoginResult = await liveAuthClient.LoginAsync(new[] { "wl.basic, wl.offline_access, wl.skydrive" });
-                if (liveLoginResult.Status == LiveConnectSessionStatus.Connected)
-                {
-                    // Register the session which we get above
-                    session = liveLoginResult.Session;
-                }
+                liveLoginResult = await liveAuthClient.InitializeAsync(scopes);
             }
             catch (LiveAuthException)
             {
+                return null;
             }
+
+            // If session doesn't exist, get new one.
+            // Otherwise, get the session.
+            if (liveLoginResult.Status != LiveConnectSessionStatus.Connected)
+            {
+                try
+                {
+                    liveLoginResult = await liveAuthClient.LoginAsync(scopes);
+                }
+                catch (InvalidOperationException)
+                {
+                    return null;
+                }
+            }
+
+            // Register session which we get above
+            session = liveLoginResult.Session;
             return session;
         }
 

@@ -15,6 +15,10 @@
     	</ResourceDictionary>
     </Application.Resources>
 
+
+
+
+
     <Application.ApplicationLifetimeObjects>
         <!--응용 프로그램에 대한 수명 이벤트를 처리하는 필수 개체입니다.-->
         <shell:PhoneApplicationService
