@@ -13,20 +13,22 @@ namespace PintheCloud.Models
     public class FileObject : INotifyPropertyChanged
     {
         // Instances
-        private const string CHECK_NOT_IMAGE_PATH = "/Assets/pajeon/png/general_checkbox.png";
-        private const string CHECK_IMAGE_PATH = "/Assets/pajeon/png/general_checkbox_p.png";
-
+        public static string CHECK_NOT_IMAGE_PATH = "/Assets/pajeon/png/general_checkbox.png";
+        public static string CHECK_IMAGE_PATH = "/Assets/pajeon/png/general_checkbox_p.png";
+        public static string TRANSPARENT_PATH = "/Assets/pajeon/png/general_transparent.png";
+        
 
         public string Id { get; set; }
         public string Name { get; set; }    // Name
         public string ParentId { get; set; }
         public double Size { get; set; }   // file size
         public string Type { get; set; }    // whethere it is file or folder
-        public string TypeDetail { get; set; }  // file extension such as PDF, MP3
+        public string TypeDetail { get; set; }  // TODO file extension such as PDF, MP3
         public string ThumnailType { get; set; }    // Type for Thumnail
         public string CreateAt { get; set; }    // do not use this
         public string UpdateAt { get; set; }    // updated time & created time
         public List<FileObject> FileList { get; set; }  // child List
+
         private string selectCheckImage;
         public string SelectCheckImage
         {
@@ -58,7 +60,7 @@ namespace PintheCloud.Models
             if (this.Type.Equals(AppResources.Folder))
             {
                  this.ThumnailType = this.Type;
-                 this.SelectCheckImage = null;
+                 this.SelectCheckImage = TRANSPARENT_PATH;
             }
             else
             {
@@ -102,12 +104,12 @@ namespace PintheCloud.Models
                 FileObject.PrintFileObject(fo);
         }
 
-        public void SetSelectCheck(string selectCheckImage)
+        public void SetSelectCheckImage(bool isCheck)
         {
-            if (selectCheckImage.Equals(CHECK_IMAGE_PATH))
-                this.SelectCheckImage = CHECK_NOT_IMAGE_PATH;
-            else
+            if (isCheck)
                 this.SelectCheckImage = CHECK_IMAGE_PATH;
+            else
+                this.SelectCheckImage = CHECK_NOT_IMAGE_PATH;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

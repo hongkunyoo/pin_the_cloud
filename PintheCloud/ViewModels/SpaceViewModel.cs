@@ -18,9 +18,6 @@ namespace PintheCloud.ViewModels
 {
     public class SpaceViewModel : INotifyPropertyChanged
     {
-        public const string LIKE_NOT_PRESS_IMAGE_PATH = "/Assets/pajeon/png/general_like.png";
-        public const string LIKE_PRESS_IMAGE_PATH = "/Assets/pajeon/png/general_like_p.png";
-
         public ObservableCollection<SpaceViewItem> Items { get; set; }
 
         // Mutex
@@ -36,8 +33,7 @@ namespace PintheCloud.ViewModels
         public async void SetItems(JArray spaces, Geoposition currentGeoposition)
         {
             // If items have something, clear.
-            if (this.Items.Count > 0)
-                this.Items.Clear();
+            this.Items.Clear();
 
             // Get current coordinate
             double currentLatitude = currentGeoposition.Coordinate.Latitude;
@@ -64,8 +60,7 @@ namespace PintheCloud.ViewModels
         public async void SetItems(MobileServiceCollection<Space, Space> spaces)
         {
             // If items have something, clear.
-            if (this.Items.Count > 0)
-                this.Items.Clear();
+            this.Items.Clear();
 
             // Convert spaces to space view items and set to view model
             foreach (Space space in spaces)
@@ -95,16 +90,9 @@ namespace PintheCloud.ViewModels
             // If this account likes this space, set like image
             // Otherwise, set not like image
             if (isLike)
-            {
-                spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_COLOR;
-                spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_PRESS_IMAGE_PATH;
-            }
-
+                spaceViewItem.SetLikeButtonImage(true, 0);
             else
-            {
-                spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
-                spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH;
-            }
+                spaceViewItem.SetLikeButtonImage(false, 0);
             return spaceViewItem;
         }
 

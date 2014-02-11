@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PintheCloud.Utilities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -10,57 +11,16 @@ namespace PintheCloud.ViewModels
 {
     public class SpaceViewItem : INotifyPropertyChanged
     {
-        private string spaceName;
-        public string SpaceName
-        {
-            get
-            {
-                return spaceName;
-            }
-            set
-            {
-                if (spaceName != value)
-                {
-                    spaceName = value;
-                    NotifyPropertyChanged("SpaceName");
-                }
-            }
-        }
+        public static string LIKE_NOT_PRESS_IMAGE_PATH = "/Assets/pajeon/png/general_like.png";
+        public static string LIKE_PRESS_IMAGE_PATH = "/Assets/pajeon/png/general_like_p.png";
 
-        private string accountName;
-        public string AccountName
-        {
-            get
-            {
-                return accountName;
-            }
-            set
-            {
-                if (accountName != value)
-                {
-                    accountName = value;
-                    NotifyPropertyChanged("AccountName");
-                }
-            }
-        }
 
-        private double spaceDistance;
-        public double SpaceDistance
-        {
-            get
-            {
-                return spaceDistance;
-            }
-            set
-            {
-                if (spaceDistance != value)
-                {
-                    spaceDistance = value;
-                    NotifyPropertyChanged("SpaceDistance");
-                }
-            }
-        }
-
+        public string SpaceName { get; set; }
+        public string AccountId { get; set; }
+        public string AccountName { get; set; }
+        public double SpaceDistance { get; set; }
+        public string SpaceId { get; set; }
+        
         private int spaceLikeNumber;
         public int SpaceLikeNumber
         {
@@ -112,23 +72,22 @@ namespace PintheCloud.ViewModels
             }
         }
 
-        private string spaceId;
-        public string SpaceId
+
+        public void SetLikeButtonImage(bool isLike, int like)
         {
-            get
+            if (isLike)
             {
-                return spaceId;
+                this.SpaceLikeNumber += like;
+                this.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_COLOR;
+                this.SpaceLikeButtonImage = LIKE_PRESS_IMAGE_PATH;
             }
-            set
+            else
             {
-                if (spaceId != value)
-                {
-                    spaceId = value;
-                    NotifyPropertyChanged("SpaceId");
-                }
+                this.SpaceLikeNumber -= like;
+                this.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
+                this.SpaceLikeButtonImage = LIKE_NOT_PRESS_IMAGE_PATH;
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(String propertyName)
