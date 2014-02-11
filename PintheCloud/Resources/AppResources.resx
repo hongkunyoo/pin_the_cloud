@@ -191,7 +191,7 @@
   <data name="Likes" xml:space="preserve">
     <value> likes</value>
   </data>
-  <data name="Refresh" xml:space="preserve">
+  <data name="Refreshing" xml:space="preserve">
     <value>Refreshing...</value>
   </data>
   <data name="Meter" xml:space="preserve">
@@ -208,5 +208,11 @@
   </data>
   <data name="Pick" xml:space="preserve">
     <value>pick</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>confirm</value>
+  </data>
+  <data name="Path" xml:space="preserve">
+    <value>Path : </value>
   </data>
 </root>

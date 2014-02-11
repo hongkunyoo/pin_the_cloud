@@ -115,6 +115,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   confirm과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Confirm {
+            get {
+                return ResourceManager.GetString("Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Interent unavailable과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string InternetUnavailableCaption {
@@ -250,6 +259,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Path : 과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Path {
+            get {
+                return ResourceManager.GetString("Path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   pick과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Pick {
@@ -288,9 +306,9 @@ namespace PintheCloud.Resources {
         /// <summary>
         ///   Refreshing...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string Refresh {
+        public static string Refreshing {
             get {
-                return ResourceManager.GetString("Refresh", resourceCulture);
+                return ResourceManager.GetString("Refreshing", resourceCulture);
             }
         }
         

@@ -23,6 +23,7 @@
                 <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshButton" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
             </shell:ApplicationBar.MenuItems>
             <shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/pajeon/png/general_bar_setting.png" IsEnabled="True" Text="settings" Click="uiAppBarSettingsButton_Click"/>
+            <shell:ApplicationBarIconButton x:Name="uiAppBarConfirmButton" IsEnabled="True" Text="confirm" Click="uiAppBarConfirmButton_Click" IconUri="/Assets/AppBar/check.png"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
 
@@ -36,7 +37,7 @@
         <Grid Background="#FF00A4BF">
             <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
         </Grid>
-        <Grid Grid.Row="1">
+        <Grid x:Name="ContentPanel" Grid.Row="1">
             <Grid.Resources>
                 <DataTemplate x:Key="uiSpaceListItemTemplate">
                     <Grid x:Name="uiSpaceListItem">
@@ -68,16 +69,47 @@
                         <Grid Grid.Row="1" Background="#FFCED7DD"/>
                     </Grid>
                 </DataTemplate>
+                <DataTemplate x:Key="uiPinListItemTemplate">
+                    <Grid x:Name="uiPinListItem">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition Height="1"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal">
+                            <Image x:Name="uiPinFileThumnail" Source="/Assets/pajeon/png/general_like.png"/>
+                            <TextBlock x:Name="uiPinFileName" Text="{Binding Name}" TextWrapping="Wrap" FontSize="30.667" Foreground="Black" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <Grid Grid.Row="1" Background="#FFCED7DD"/>
+                    </Grid>
+                </DataTemplate>
             </Grid.Resources>
             <phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged" Style="{StaticResource CustomPivotStyle}" Foreground="Black">
                 <phone:PivotItem x:Name="uiPickPivot" Header="{Binding LocalizedResources.Pick, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
                     <Grid>
                         <phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpaceList_SelectionChanged" />
-                        <TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,0,18,0" Foreground="Black"/>
+                        <TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,0,18,0" Foreground="Black" Visibility="Collapsed"/>
                     </Grid>
                 </phone:PivotItem>
-                <phone:PivotItem x:Name="uiPinPivot" Header="{Binding LocalizedResources.Pin, Source={StaticResource LocalizedStrings}}">
-                    <Grid/>
+                <phone:PivotItem x:Name="uiPinPivot" Header="{Binding LocalizedResources.Pin, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="72"/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid Margin="22,0,18,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="80"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal">
+                            	<TextBlock Text="{Binding LocalizedResources.Path, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="26.667"/>
+                            	<TextBlock x:Name="uiCurrentPath" Foreground="Black" TextTrimming="WordEllipsis" VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <Button x:Name="uiTreeupBtn" Content="Up" Foreground="Black" BorderBrush="Black" Click="uiTreeupBtn_Click" Grid.Column="1"/>
+                        </Grid>
+                        <phone:LongListSelector x:Name="uiPinList" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiPinListItemTemplate}" Visibility="Collapsed" Grid.Row="1" SelectionChanged="uiPinList_SelectionChanged"/>
+                        <TextBlock x:Name="uiPinMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="22,0,18,0" Grid.Row="1" Visibility="Collapsed"/>
+                    </Grid>
                 </phone:PivotItem>
             </phone:Pivot>
         </Grid>
