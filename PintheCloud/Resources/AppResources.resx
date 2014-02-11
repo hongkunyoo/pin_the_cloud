@@ -189,7 +189,7 @@
     <value>This app requires consent to access location information. Please consent it.</value>
   </data>
   <data name="Likes" xml:space="preserve">
-    <value>likes</value>
+    <value> likes</value>
   </data>
   <data name="Refresh" xml:space="preserve">
     <value>Refreshing...</value>

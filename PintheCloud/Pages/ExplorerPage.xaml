@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ViewModels="clr-namespace:PintheCloud.ViewModels"
+    xmlns:Utilities="clr-namespace:PintheCloud.Utilities"
 	xmlns:MobileServices="clr-namespace:Microsoft.WindowsAzure.MobileServices;assembly=Microsoft.WindowsAzure.Mobile.UI"
 	x:Class="PintheCloud.Pages.ExplorerPage"
 	mc:Ignorable="d"
@@ -38,6 +39,7 @@
         </Grid>
         <Grid Grid.Row="1">
             <Grid.Resources>
+				<Utilities:FileObjectConverter x:Key="ColorHexStringToBrushConverter" />
                 <DataTemplate x:Key="uiSpaceListItemTemplate">
                     <Grid x:Name="uiSpaceListItem">
                         <Grid.RowDefinitions>
@@ -54,8 +56,8 @@
                                     <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
                                     <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="#FFA7B6BE" />
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22" Margin="0,0,10,0"/>
+                                        <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter }}" />
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter }}" FontSize="22" Margin="0,0,10,0"/>
                                         <TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22"/>
                                         <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Meter, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22"/>
                                     </StackPanel>

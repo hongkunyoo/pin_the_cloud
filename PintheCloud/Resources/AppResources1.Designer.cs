@@ -133,7 +133,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   likes과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///    likes과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Likes {
             get {

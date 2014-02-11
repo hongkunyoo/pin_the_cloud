@@ -84,31 +84,50 @@
             <phone:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
                 <Grid>
                     <RichTextBox Foreground="Black" HorizontalAlignment="Left" VerticalAlignment="Top" >
-                        <Paragraph>
-                            <Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run FontSize="1.5" Text=""/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run/>
-                            <Run Text="At Here helps you "/>
-                            <Run Text="direct "/>
-                            <Run Text="share information with people around you"/>
-                            <Run Text=". You can see spaces nearby you other made and it contains information you want."/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run Text="Version : 1.0"/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
-                        </Paragraph>
+                    	<Paragraph>
+                    		<Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run FontSize="1.5" Text=""/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run/>
+                    		<Run Text="At Here helps you "/>
+                    		<Run Text="direct "/>
+                    		<Run Text="share information with people around you"/>
+                    		<Run Text=". "/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run Text="Without any previous settings job, you"/>
+                    		<Run Text=" can see spaces "/>
+                    		<Run Text="nearby you where "/>
+                    		<Run Text="other who wants to share with you made"/>
+                    		<Run Text="."/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run Text="You don't need to mind state of others. Just access where you want, "/>
+                    		<Run Text="and "/>
+                    		<Run Text="give or get information"/>
+                    		<Run Text=" with simple UI."/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run Text="Version : 1.0"/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
+                    	</Paragraph>
                     </RichTextBox>
                 </Grid>
             </phone:PivotItem>

@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
+using Windows.UI;
 
 namespace PintheCloud.ViewModels
 {
@@ -131,9 +132,14 @@ namespace PintheCloud.ViewModels
             // If this account likes this space, set like image
             // Otherwise, set not like image
             if (isLike)
+            {
                 spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative);
+            }
+
             else
+            {
                 spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
+            }
             return spaceViewItem;
         }
 
