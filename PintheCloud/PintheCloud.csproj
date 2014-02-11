@@ -208,6 +208,9 @@
   <ItemGroup>
     <None Include="Fonts\LiveSymbol.ttf" />
     <None Include="packages.config" />
+    <None Include="PintheCloud_2014_02_10_19_34_02.sap" />
+    <None Include="PintheCloud_2014_02_10_19_37_47.sap" />
+    <None Include="PintheCloud_2014_02_10_19_44_38.sap" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>
