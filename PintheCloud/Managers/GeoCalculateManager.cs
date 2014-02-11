@@ -9,7 +9,6 @@ namespace PintheCloud.Managers
 {
     public interface GeoCalculateManager
     {
-        double GetDistanceBetweenTwoCoordiantes(double currentLatitude, double currentLongtitude, double destinationLatitude, double destinationLongtitude);
         Task<Geoposition> GetCurrentGeopositionAsync();
     }
 }

@@ -55,8 +55,8 @@
                                             <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
                                             <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="#FFA7B6BE"/>
-                                                <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22"/>
+                                                <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="#FFA7B6BE" />
+                                                <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22" />
                                             </StackPanel>
                                         </StackPanel>
                                         <Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiSpaceLikeButton_Click" >
@@ -84,32 +84,32 @@
             <phone:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
                 <Grid>
                     <RichTextBox Foreground="Black" HorizontalAlignment="Left" VerticalAlignment="Top" >
-                		<Paragraph>
-                			<Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
-                		</Paragraph>
-                		<Paragraph>
-                			<Run FontSize="1.5" Text=""/>
-                		</Paragraph>
-                		<Paragraph>
-                			<Run/>
-                			<Run Text="At Here helps you "/>
-                			<Run Text="direct "/>
-                			<Run Text="share information with people around you"/>
-                			<Run Text=". You can see spaces nearby you other made and it contains information you want."/>
-                		</Paragraph>
-                		<Paragraph>
-                			<Run/>
-                		</Paragraph>
-                		<Paragraph>
-                			<Run Text="Version : 1.0"/>
-                		</Paragraph>
-                		<Paragraph>
-                			<Run/>
-                		</Paragraph>
-                		<Paragraph>
-                			<Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
-                		</Paragraph>
-                	</RichTextBox>
+                        <Paragraph>
+                            <Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run FontSize="1.5" Text=""/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                            <Run Text="At Here helps you "/>
+                            <Run Text="direct "/>
+                            <Run Text="share information with people around you"/>
+                            <Run Text=". You can see spaces nearby you other made and it contains information you want."/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run Text="Version : 1.0"/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
+                        </Paragraph>
+                    </RichTextBox>
                 </Grid>
             </phone:PivotItem>
         </phone:Pivot>

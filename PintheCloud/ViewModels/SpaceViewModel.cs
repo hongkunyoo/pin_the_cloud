@@ -41,11 +41,12 @@ namespace PintheCloud.ViewModels
                 string account_id = (string)jSpace["account_id"];
                 string account_name = (string)jSpace["account_name"];
                 int space_like_number = (int)jSpace["space_like_number"];
+                double space_distance = (double)jSpace["space_distance"];
 
                 bool isLike = await App.AccountSpaceRelationManager.IsLikeAsync(space_id);
-                Space space = new Space(space_name, space_latitude, space_longtitude, account_id, account_name, space_like_number);
+                Space space = new Space(space_name, space_latitude, space_longtitude, account_id, account_name, space_like_number, space_distance);
                 space.id = space_id;
-                this.Items.Add(this.MakeSpaceViewItemFromSpace(space, isLike, currentLatitude, currentLongtitude));
+                this.Items.Add(this.MakeSpaceViewItemFromSpace(space, isLike));
             }
         }
         public async void SetItems(MobileServiceCollection<Space, Space> spaces)
@@ -116,7 +117,7 @@ namespace PintheCloud.ViewModels
         /*** Self Method ***/
 
         // Make new space view item from space model object.
-        private SpaceViewItem MakeSpaceViewItemFromSpace(Space space, bool isLike, double currentLatitude = -1, double currentLongtitude = -1)
+        private SpaceViewItem MakeSpaceViewItemFromSpace(Space space, bool isLike)
         {
             // Set new space view item
             SpaceViewItem spaceViewItem = new SpaceViewItem();
@@ -124,15 +125,8 @@ namespace PintheCloud.ViewModels
             spaceViewItem.AccountName = space.account_name;
             spaceViewItem.SpaceLikeNumber = space.space_like_number;
             spaceViewItem.SpaceId = space.id;
+            spaceViewItem.SpaceDistance = Math.Round(space.space_distance);
 
-            // If it requires distance, set distance description
-            // Otherwise, Set blank.
-            if (currentLatitude != -1)
-            {
-                double distance = App.GeoCalculateManager.GetDistanceBetweenTwoCoordiantes
-                    (currentLatitude, space.space_latitude, currentLongtitude, space.space_longtitude);
-                spaceViewItem.SpaceDistance = Math.Round(distance);
-            }
 
             // If this account likes this space, set like image
             // Otherwise, set not like image

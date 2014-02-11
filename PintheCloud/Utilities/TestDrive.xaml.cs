@@ -52,11 +52,10 @@ namespace PintheCloud.Utilities
             {
                 MyDebug.WriteLine(f.Name + " / ");
             }
-            Space space = App.SpaceManager.GetSpace("ee");
+            //Space space = App.SpaceManager.GetSpace("ee");
 
             foreach(FileObject f in select_files)
             {
-                
                 Uri temp = await App.LocalStorageManager.GetSkyDriveDownloadUriFromPath("temp/" + f.Name);
                 MyDebug.WriteLine("Start Download - size : " + f.Size/1000.0 + "MB");
 
@@ -67,7 +66,7 @@ namespace PintheCloud.Utilities
                 MyDebug.WriteLine("End Download : "+ downloadTime/1000.0 +"sec");
 
                 uploadTime = s.ElapsedMilliseconds;
-                string id = await App.BlobManager.UploadFileAsync(space.id, fromSkyToLocal);
+                //string id = await App.BlobManager.UploadFileAsync(space.id, fromSkyToLocal);
                 uploadTime = (s.ElapsedMilliseconds - uploadTime);
                 MyDebug.WriteLine("End Upload : " + uploadTime/1000.0+"sec");
                 MyDebug.WriteLine("down   byte per sec : " + (((long)f.Size)/downloadTime)/60.0);
