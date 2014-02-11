@@ -12,8 +12,7 @@ namespace PintheCloud.Utilities
         public static string[] Parse(string path, ParseHelper.Mode mode, out string name)
         {
             List<string> list = new List<string>();
-            if (path.StartsWith("/")) path = path.Substring(1, path.Length - 1);
-            if (path.EndsWith("/")) path = path.Substring(0, path.Length - 1);
+            path = ParseHelper.TrimSlash(path);
 
             while (path.Contains("/"))
             {
@@ -36,13 +35,21 @@ namespace PintheCloud.Utilities
             return name.Split(new char[] { '.' }, 2);
         }
 
-        private static string getToken(string path, out string slicedPath)
+        public static string TrimSlash(string path)
         {
-            slicedPath = path;
             if (path.StartsWith("/"))
                 path = path.Substring(1, path.Length - 1);
             if (path.EndsWith("/"))
                 path = path.Substring(0, path.Length - 1);
+
+            return path;
+        }
+
+        private static string getToken(string path, out string slicedPath)
+        {
+            slicedPath = path;
+            path = ParseHelper.TrimSlash(path);
+
             if (path.Contains("/"))
             {
                 string[] strlist = path.Split(new Char[] { '/' }, 2);

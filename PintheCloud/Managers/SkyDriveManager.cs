@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using Windows.Storage;
+using System.IO;
 
 namespace PintheCloud.Managers
 {
@@ -29,6 +30,18 @@ namespace PintheCloud.Managers
                                                 "wl.contacts_skydrive"};
 
             this.LiveClient = new LiveConnectClient(this.LiveSession);
+
+            /*
+            this.LiveClient.BackgroundDownloadProgressChanged +=
+                new EventHandler<LiveDownloadProgressChangedEventArgs>(OnBackgroundDownloadProgressChanged);
+            this.LiveClient.BackgroundDownloadCompleted +=
+                new EventHandler<LiveOperationCompletedEventArgs>(OnBackgroundDownloadCompleted);
+            this.LiveClient.BackgroundUploadProgressChanged +=
+                new EventHandler<LiveUploadProgressChangedEventArgs>(OnBackgroundUploadProgressChanged);
+            this.LiveClient.BackgroundUploadCompleted +=
+                new EventHandler<LiveOperationCompletedEventArgs>(OnBackgroundUploadCompleted);
+            this.LiveClient.AttachPendingTransfers();
+            */
         }
 
         private FileObject getData(IDictionary<string, object> dic)
@@ -114,23 +127,7 @@ namespace PintheCloud.Managers
             
             try
             {
-                /*
-                string name;
-                string[] path = ParseHelper.Parse(destinationUri.ToString(),ParseHelper.Mode.FULL_PATH,out name);
-                string[] _name = ParseHelper.SplitName(name);
-                string newUriString = "";
-                foreach (string s in path)
-                {
-                    newUriString += "/" + s;
-                }
-                newUriString += "/" + MyEncoder.Encode(_name[0]);
-                newUriString += "." + _name[1];
-                Uri newUri = new Uri(newUriString, UriKind.Relative);
-                */
-                string ss = destinationUri.ToString();
-                ss = System.Uri.EscapeUriString(ss).Replace("%", ";");
-
-                destinationUri = new Uri(ss, UriKind.Relative);
+                //destinationUri = new Uri(MyEncoder.Encode(destinationUri.ToString()), UriKind.Relative);
                 LiveOperationResult result = await this.LiveClient.BackgroundDownloadAsync(sourceFileId + "/content", destinationUri, ctsDownload.Token, progressHandler);
             }
             catch (Exception ex)
@@ -163,6 +160,64 @@ namespace PintheCloud.Managers
             }
 
             return folder;
+        }
+
+        public async Task UploadFileAsync(string folderIdToStore, StorageFile file)
+        {
+            System.Threading.CancellationTokenSource ctsUpload = new System.Threading.CancellationTokenSource();
+            try
+            {
+                ProgressBar progressBar = new ProgressBar();
+                progressBar.Value = 0;
+                var progressHandler = new Progress<LiveOperationProgress>(
+                    (progress) => { progressBar.Value = progress.ProgressPercentage; });
+
+                
+                
+                progressBar.Value = 0;
+
+                //folderIdToStore = "folder.b96a113f78eb1c6f.B96A113F78EB1C6F!1856";
+                //uploadFile = new Uri("",UriKind.Relative);
+                //await this.LiveClient.BackgroundUploadAsync("folder.8c8ce076ca27823f.8C8CE076CA27823F!134",
+                //    "MyUploadedPicture.jpg", file, true, ctsUpload.Token, progressHandler);
+                MyDebug.WriteLine("start");
+                //LiveOperationResult result = await this.LiveClient.BackgroundUploadAsync(folderIdToStore, uploadFile, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
+                Stream input = await file.OpenStreamForReadAsync();
+                LiveOperationResult result = await this.LiveClient.UploadAsync(folderIdToStore, "plzdo.pdf", input, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
+                MyDebug.WriteLine("Done");
+                IEnumerator<KeyValuePair<string,object>> e = result.Result.GetEnumerator();
+
+
+                //await this.LiveClient.UploadAsync("path", "fileName", input, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
+                
+
+                while (e.MoveNext())
+                {
+                    MyDebug.WriteLine(e.Current.Key);
+                    MyDebug.WriteLine(e.Current.Value);
+                }
+                
+            }
+            catch (System.Threading.Tasks.TaskCanceledException ex)
+            {
+                //this.infoTextBlock.Text = "Upload cancelled.";
+                ctsUpload.Cancel();
+                System.Diagnostics.Debug.WriteLine("taskcancel : "+ex.ToString());
+
+            }
+            catch (LiveConnectException exception)
+            {
+                //this.infoTextBlock.Text = "Error uploading file: " + exception.Message;
+                ctsUpload.Cancel();
+                System.Diagnostics.Debug.WriteLine("LiveConnection : "+exception.ToString());
+            }
+            catch (Exception e)
+            {
+                ctsUpload.Cancel();
+                System.Diagnostics.Debug.WriteLine("exception : " + e.ToString());
+            }
+
+
         }
     }
 }

@@ -65,7 +65,7 @@ namespace PintheCloud.Managers
                 folder = await folder.CreateFolderAsync(s, CreationCollisionOption.OpenIfExists);
             }
 
-            return new Uri("/" + LocalStorageManager.SKYDRIVE_DIRECTORY + LocalStorageManager.SKYDRIVE_FOLDER + (ori_path.StartsWith("/") ? ori_path : "/" + ori_path), UriKind.Relative);
+            return new Uri(MyEncoder.Encode("/" + LocalStorageManager.SKYDRIVE_DIRECTORY + LocalStorageManager.SKYDRIVE_FOLDER + (ori_path.StartsWith("/") ? ori_path : "/" + ori_path)), UriKind.Relative);
         }
         private async Task<StorageFile> CreateFileToLocalStorageAsync(string path, StorageFolder folder)
         {

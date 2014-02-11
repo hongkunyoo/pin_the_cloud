@@ -98,7 +98,8 @@
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Managers\AccountSpaceRelationManagerImplement.cs" />
     <Compile Include="Managers\AccountSpaceRelationManager.cs" />
-    <Compile Include="Managers\BlobManager.cs" />
+    <Compile Include="Managers\IStorageManager.cs" />
+    <Compile Include="Managers\BlobStorageManager.cs" />
     <Compile Include="Managers\LocalStorageManager.cs" />
     <Compile Include="Managers\SkyDriveManager.cs" />
     <Compile Include="Managers\GeoCalculateManager.cs" />
@@ -109,10 +110,6 @@
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Space.cs" />
     <Compile Include="Models\TestModel.cs" />
-    <Compile Include="Pages\PopupUserControl.xaml.cs">
-      <DependentUpon>PopupUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\FileObjectConverter.cs" />
     <Compile Include="Pages\FileListPage.xaml.cs">
       <DependentUpon>FileListPage.xaml</DependentUpon>
@@ -184,10 +181,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\PopupUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -208,9 +201,6 @@
   <ItemGroup>
     <None Include="Fonts\LiveSymbol.ttf" />
     <None Include="packages.config" />
-    <None Include="PintheCloud_2014_02_10_19_34_02.sap" />
-    <None Include="PintheCloud_2014_02_10_19_37_47.sap" />
-    <None Include="PintheCloud_2014_02_10_19_44_38.sap" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
       <SubType>Designer</SubType>

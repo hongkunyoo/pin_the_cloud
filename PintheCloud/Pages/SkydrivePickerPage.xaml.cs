@@ -95,7 +95,7 @@ namespace PintheCloud.Pages
                 GetTreeForFolder(folderTree.First());
             }
         }
-
+        /*
         public void Show()
         {
             //Application.Current.RootVisual
@@ -123,7 +123,7 @@ namespace PintheCloud.Pages
             }
 
             //uiRootPopup.IsOpen = true;
-        }
+        }*/
         /*
         void OnBackKeyPress(object sender, CancelEventArgs e)
         {
@@ -175,40 +175,16 @@ namespace PintheCloud.Pages
             if (file.Type.Equals("folder"))
             {
                 GetTreeForFolder(file);
+                MyDebug.WriteLine(file.Name);
             }
             // Do selection if file
             else
             {
                 this.selectedFile.Add(file);
+                MyDebug.WriteLine(file.Name);
             }
         }
-        private static int count = 0;
-        public static void GetItemsRecursive<T>(DependencyObject parents, ref List<T> objectList) where T : DependencyObject
-        {
-            count++;
-            var childrenCount = VisualTreeHelper.GetChildrenCount(parents);
-            for (int i = 0; i < childrenCount; i++)
-            {
-                var child = VisualTreeHelper.GetChild(parents, i);
-                ////////////////////////////////////////
-                string str="";
-                for (int k = 0; k < count; k++)
-                {
-                    str += " ";
-                }
-                MyDebug.WriteLine(str + child);
-                ////////////////////////////////////////
-                if (child is T)
-                {
-                    objectList.Add(child as T);
-                }
-
-                GetItemsRecursive<T>(child, ref objectList);
-            }
-            count--;
-            return;
-        }
-
+        
         private void uiTreeupBtn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
         	// TODO: Add event handler implementation here.
@@ -217,11 +193,8 @@ namespace PintheCloud.Pages
 
         private void uiAppBarConfirmButton_Click(object sender, System.EventArgs e)
         {
-        	// TODO: Add event handler implementation here.
-            foreach (FileObject f in this.selectedFile)
-            {
-                MyDebug.WriteLine(f.Name);
-            }
+            PhoneApplicationService.Current.State["SELECTED_FILE"] = selectedFile;
+            NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
         }
 
     }

@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 using Windows.Storage;
 using System.IO;
 using PintheCloud.Models;
+using PintheCloud.Utilities;
 
 namespace PintheCloud.Managers
 {
-    public class BlobManager
+    public class BlobStorageManager
     {
         public static string BLOB_CONNECTION = "DefaultEndpointsProtocol=http;AccountName=rfrost77;AccountKey=0GgFw4h4JiCklbD5avI2YBitfyuOj9GZQQpRaMEDZEhRtPohzlsUlAOie3SfZE3aMXFCcto1hi/Gu1Ppw4ZuRg==";
         
@@ -20,9 +21,9 @@ namespace PintheCloud.Managers
         private CloudBlobContainer container;
         private string account;
 
-        public BlobManager()
+        public BlobStorageManager()
         {
-            this.storageAccount = CloudStorageAccount.Parse(BlobManager.BLOB_CONNECTION);
+            this.storageAccount = CloudStorageAccount.Parse(BlobStorageManager.BLOB_CONNECTION);
             this.blobClient = this.storageAccount.CreateCloudBlobClient();
             this.account = App.AccountManager.GetCurrentAcccount().account_platform_id.Replace(" ", string.Empty);
             //this.account = "rfrost77@gmail.com";
@@ -34,14 +35,14 @@ namespace PintheCloud.Managers
             CloudBlobDirectory directory = container.GetDirectoryReference("" + this.account + "/" + spaceId);
             return await this.getFileObjectListFromDirectoryAsync(directory);
         }
-        public async Task<FileObject> GetFile(string id)
+        public async Task<FileObject> GetFileAsync(string id)
         {
             CloudBlockBlob blockBlob = (CloudBlockBlob)await container.GetBlobReferenceFromServerAsync(id);
             return this.getFileObjectFromBlob(blockBlob);
         }
-        public async Task<FileObject> GetFile(string spaceId, string sourcePath)
+        public async Task<FileObject> GetFileAsync(string spaceId, string sourcePath)
         {
-            return await this.GetFile(this.account + "/" + spaceId + "/" + sourcePath);
+            return await this.GetFileAsync(this.account + "/" + spaceId + "/" + sourcePath);
         }
         public Task<List<FileObject>> GetFilesFromFolderAsync(string id)
         {
@@ -65,7 +66,7 @@ namespace PintheCloud.Managers
         {
             return await this.DownloadFileAsync(this.account + "/" + spaceId + "/" + sourcePath,downloadFile);
         }
-        public async Task<bool> UploadFileAsync(string id, StorageFile uploadfile)
+        private async Task<string> _UploadFileAsync(string id, StorageFile uploadfile)
         {
             try
             {
@@ -77,13 +78,26 @@ namespace PintheCloud.Managers
             }
             catch
             {
-                return false;
+                return null;
             }
-            return true;
+            return id;
         }
-        public async Task<bool> UploadFileAsync(string spaceId, string sourcePath, StorageFile uploadfile)
+        public async Task<string> UploadFileAsync(string spaceId, StorageFile uploadfile)
         {
-            return await this.UploadFileAsync(this.account + "/" + spaceId + "/" + sourcePath, uploadfile);
+            return await this._UploadFileAsync(this.account + "/" + spaceId + "/" + MyEncoder.Decode(uploadfile.Name), uploadfile);
+        }
+        public async Task<string> UploadFileAsync(string spaceId, string sourcePath, StorageFile uploadfile)
+        {
+            if ("".Equals(sourcePath))
+            {
+                return await this.UploadFileAsync(spaceId, uploadfile);
+            }
+            else
+            {
+                sourcePath = ParseHelper.TrimSlash(sourcePath);
+                return await this._UploadFileAsync(this.account + "/" + spaceId + "/" + sourcePath + "/" + MyEncoder.Decode(uploadfile.Name), uploadfile);
+            }
+            
         }
         public async Task<bool> DeleteFileAsync(string id)
         {

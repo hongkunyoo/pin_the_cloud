@@ -14,6 +14,7 @@ using PintheCloud.Models;
 using PintheCloud.Pages;
 using Microsoft.Phone.Tasks;
 using System.Windows.Controls.Primitives;
+using System.Diagnostics;
 
 namespace PintheCloud.Utilities
 {
@@ -33,37 +34,53 @@ namespace PintheCloud.Utilities
 
         protected  async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            //App.HDebug.WriteLine("OnNavigatedTo");
-            await Test();
-            if (this.State.ContainsKey("key"))
-            {
-                System.Diagnostics.Debug.WriteLine("Page State "+((TestModel)this.State["key"]));
-                
-            }
-            if (PhoneApplicationService.Current.State.ContainsKey("mykey"))
-            {
-                System.Diagnostics.Debug.WriteLine("Service State " + (PhoneApplicationService.Current.State["mykey"]));
-
-            }
-
-            
+            List<FileObject> list = (List<FileObject>)PhoneApplicationService.Current.State["SELECTED_FILE"];
+            await doit(list);
         }
 
         protected  override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            //App.HDebug.WriteLine("OnNavigatedFrom");
-            //await Test();
-            //this.State["key"] = model;
-            //PhoneApplicationService.Current.State["mykey"] = "mykey-value";
-
-            // If this is a back navigation, the page will be discarded, so there
-            // is no need to save state.
-            if (e.NavigationMode != System.Windows.Navigation.NavigationMode.Back)
-            {
-                // Save the ViewModel variable in the page's State dictionary.
-                //State["ViewModel"] = _viewModel;
-            }
+            
         }
+
+        public async Task doit(List<FileObject> select_files)
+        {
+            Stopwatch s = new Stopwatch();
+            long downloadTime;
+            long uploadTime;
+            foreach (FileObject f in select_files)
+            {
+                MyDebug.WriteLine(f.Name + " / ");
+            }
+            Space space = App.SpaceManager.GetSpace("ee");
+
+            foreach(FileObject f in select_files)
+            {
+                
+                Uri temp = await App.LocalStorageManager.GetSkyDriveDownloadUriFromPath("temp/" + f.Name);
+                MyDebug.WriteLine("Start Download - size : " + f.Size/1000.0 + "MB");
+
+                s.Start();
+                downloadTime = s.ElapsedMilliseconds;
+                StorageFile fromSkyToLocal = await App.SkyDriveManager.DownloadFileAsync(f.Id, temp);
+                downloadTime = s.ElapsedMilliseconds - downloadTime;
+                MyDebug.WriteLine("End Download : "+ downloadTime/1000.0 +"sec");
+
+                uploadTime = s.ElapsedMilliseconds;
+                string id = await App.BlobManager.UploadFileAsync(space.id, fromSkyToLocal);
+                uploadTime = (s.ElapsedMilliseconds - uploadTime);
+                MyDebug.WriteLine("End Upload : " + uploadTime/1000.0+"sec");
+                MyDebug.WriteLine("down   byte per sec : " + (((long)f.Size)/downloadTime)/60.0);
+                MyDebug.WriteLine("upload byte per sec : " + (((long)f.Size) / uploadTime)/60.0);
+
+                s.Stop();
+
+            }
+            MyDebug.WriteLine("end do it");
+            
+        }
+
+
         public async Task Test()
         {
             try
@@ -103,9 +120,14 @@ namespace PintheCloud.Utilities
                 //await Launcher.LaunchFileAsync(await App.LocalStorageManager.GetSkyDriveStorageFileAsync("myfoldertest/pzl.docx"));
                 //await Launcher.LaunchFileAsync(await App.SkyDriveManager.DownloadFileAsync("file.b96a113f78eb1c6f.B96A113F78EB1C6F!390", new Uri(("/Shared/Transfers/skydrive/f ee e ee.zip"), UriKind.Relative)));
                 //await App.LocalStorageManager.PrintFolderAsync(folder);
-                Popup p = new Popup();
-                MyDebug.WriteLine("in TestDrive");
-                await p.showSkyDriveAsync();
+                //Popup p = new Popup();
+                //MyDebug.WriteLine("in TestDrive");
+                //await p.showSkyDriveAsync();
+                //MyDebug.WriteLine("start download");
+                //await App.SkyDriveManager.DownloadFileAsync("file.b96a113f78eb1c6f.B96A113F78EB1C6F!314", new Uri("/shared/transfers/mytest.pdf", UriKind.Relative));
+                //MyDebug.WriteLine("end download");
+                //StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/shared/transfers/mytest.pdf"));
+                //await App.SkyDriveManager.UploadFileAsync("folder.b96a113f78eb1c6f.B96A113F78EB1C6F!1856", file);
             }
             catch(Exception e)
             {
