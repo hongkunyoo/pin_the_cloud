@@ -2,6 +2,7 @@
 using Newtonsoft.Json.Linq;
 using PintheCloud.Models;
 using PintheCloud.Resources;
+using PintheCloud.Utilities;
 using PintheCloud.Workers;
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,6 @@ namespace PintheCloud.ViewModels
         public static string LIKE_NOT_PRESS_IMAGE_PATH = "/Assets/pajeon/png/general_like.png";
         public static string LIKE_PRESS_IMAGE_PATH = "/Assets/pajeon/png/general_like_p.png";
 
-        private const string LIKE_COLOR = "#3ABDBE";
-        private const string LIKE_NOT_COLOR = "#A7B6BE";
 
         public ObservableCollection<SpaceViewItem> Items { get; set; }
 
@@ -86,14 +85,14 @@ namespace PintheCloud.ViewModels
             if (spaceLikeButtonImageUri.Equals(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH))  // Do Like
             {
                 spaceViewItem.SpaceLikeNumber++;
-                spaceViewItem.SpaceLikeNumberColor = LIKE_COLOR;
+                spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_COLOR;
                 spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_PRESS_IMAGE_PATH;
 
                 // If like fail, set image and number back to original
                 if (!(await App.AccountSpaceRelationManager.LikeAysnc(spaceId, true)))
                 {
                     spaceViewItem.SpaceLikeNumber--;
-                    spaceViewItem.SpaceLikeNumberColor = LIKE_NOT_COLOR;
+                    spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
                     spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH;
                 }
             }
@@ -101,14 +100,14 @@ namespace PintheCloud.ViewModels
             else  // Do Not Like
             {
                 spaceViewItem.SpaceLikeNumber--;
-                spaceViewItem.SpaceLikeNumberColor = LIKE_NOT_COLOR;
+                spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
                 spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH;
 
                 // If not like fail, set image back to original
                 if (!(await App.AccountSpaceRelationManager.LikeAysnc(spaceId, false)))
                 {
                     spaceViewItem.SpaceLikeNumber++;
-                    spaceViewItem.SpaceLikeNumberColor = LIKE_COLOR;
+                    spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_COLOR;
                     spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_PRESS_IMAGE_PATH;
                 }
             }
@@ -140,13 +139,13 @@ namespace PintheCloud.ViewModels
             // Otherwise, set not like image
             if (isLike)
             {
-                spaceViewItem.SpaceLikeNumberColor = LIKE_COLOR;
+                spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_COLOR;
                 spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_PRESS_IMAGE_PATH;
             }
 
             else
             {
-                spaceViewItem.SpaceLikeNumberColor = LIKE_NOT_COLOR;
+                spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
                 spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH;
             }
             return spaceViewItem;

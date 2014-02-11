@@ -190,7 +190,6 @@ namespace PintheCloud.Pages
                         if (spaces != null)  // There are near spaces
                         {
                             this.NearSpaceViewModel.SetItems(spaces, currentGeoposition);
-                            //uiNearSpaceList.DataContext = null;
                             uiNearSpaceList.DataContext = this.NearSpaceViewModel;
                             uiNearSpaceList.Visibility = Visibility.Visible;
                             uiNearSpaceMessage.Visibility = Visibility.Collapsed;

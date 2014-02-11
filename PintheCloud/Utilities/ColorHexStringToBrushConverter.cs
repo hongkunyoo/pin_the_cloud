@@ -12,6 +12,10 @@ namespace PintheCloud.Utilities
 {
     public  class ColorHexStringToBrushConverter : IValueConverter
     {
+        public static string LIKE_COLOR = "3ABDBE";
+        public static string LIKE_NOT_COLOR = "A7B6BE";
+
+
         // Implement Convert
         public Dictionary<string, Brush> _brushCache = new Dictionary<string, Brush>();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -21,7 +25,7 @@ namespace PintheCloud.Utilities
             lock (_brushCache)
             {
                 if (!_brushCache.ContainsKey(colorStr))
-                    _brushCache.Add(colorStr, new SolidColorBrush(this.GetColorFromHex(colorStr)));
+                    _brushCache.Add(colorStr, new SolidColorBrush(GetColorFromHex(colorStr)));
 
                 return _brushCache[colorStr];
             }
@@ -34,13 +38,14 @@ namespace PintheCloud.Utilities
 
 
         // Get color from hex
-        private Regex _hexColorMatchRegex = new Regex("^#?(?<a>[a-z0-9][a-z0-9])?(?<r>[a-z0-9][a-z0-9])(?<g>[a-z0-9][a-z0-9])(?<b>[a-z0-9][a-z0-9])$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-        public Color GetColorFromHex(string hexColorString)
+        private static Regex _hexColorMatchRegex = new Regex("^#?(?<a>[a-z0-9][a-z0-9])?(?<r>[a-z0-9][a-z0-9])(?<g>[a-z0-9][a-z0-9])(?<b>[a-z0-9][a-z0-9])$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        public static Color GetColorFromHex(string hexColorString)
         {
             if (hexColorString == null)
                 throw new NullReferenceException("Hex string can't be null.");
 
             // Regex match the string
+            hexColorString = "#" + hexColorString;
             var match = _hexColorMatchRegex.Match(hexColorString);
 
             if (!match.Success)

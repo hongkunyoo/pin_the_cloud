@@ -26,15 +26,13 @@
 
         <!--ContentPanel - 여기에 추가 내용을 배치합니다.-->
 		<Grid x:Name="ContentPanel" Grid.Row="1">
-			<StackPanel Margin="22,28,18,0">
-				<TextBlock x:Name="uiSpaceName" Foreground="Black" FontSize="45" LineHeight="53" FontWeight="Medium" Padding="0,0,0,10.5" Margin="0,0,0,10.5" TextTrimming="WordEllipsis" />
-				<StackPanel Orientation="Horizontal" Margin="0,0,0,10.5">
-					<TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" Padding="0,0,10,0" Margin="0,0,10,0" />
-					<TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Foreground="#FFA7B6BE" FontSize="32" />
+			<StackPanel Margin="22,25,18,0">
+				<TextBlock x:Name="uiSpaceName" Foreground="Black" FontSize="50" LineHeight="58" Margin="0,0,0,20" TextTrimming="WordEllipsis" />
+				<StackPanel Orientation="Horizontal" Margin="0,0,0,25">
+					<TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" Margin="0,0,10,0" FontWeight="Light" />
+					<TextBlock x:Name="uiSpaceLikeNumber" TextWrapping="Wrap" FontSize="32" FontWeight="Light" />
+					<TextBlock x:Name="uiSpaceLikeText" TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" FontSize="32" FontWeight="Light" />
 				</StackPanel>
-				<Button x:Name="uiSpaceLikeButton" BorderBrush="Black" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Margin="0,0,0,10.5">
-					<Image x:Name="uiSpaceLikeButtonImage" Stretch="None"/>
-				</Button>
 				<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged"/>
 			</StackPanel>
 		</Grid>

@@ -57,10 +57,11 @@ namespace PintheCloud.Managers
             string spaceId = spaceViewItem.SpaceId;
             string spaceName = spaceViewItem.SpaceName;
             string accountName = spaceViewItem.AccountName;
-            int spaceLike = spaceViewItem.SpaceLikeNumber;
-            string spaceLikeButtonImage = spaceViewItem.SpaceLikeButtonImage;
+            int spaceLikeNumber = spaceViewItem.SpaceLikeNumber;
+            string spaceLikeNumberColor = spaceViewItem.SpaceLikeNumberColor;
+
             string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountName=" + accountName
-                + "&spaceLike=" + spaceLike + "&spaceLikeButtonImage=" + spaceLikeButtonImage;
+                + "&spaceLikeNumber=" + spaceLikeNumber + "&spaceLikeNumberColor=" + spaceLikeNumberColor;
 
             return parameters;
         }
