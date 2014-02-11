@@ -286,7 +286,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   pin과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   pin info.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Pin {
             get {

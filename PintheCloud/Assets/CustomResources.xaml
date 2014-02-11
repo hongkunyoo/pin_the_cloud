@@ -329,6 +329,7 @@
     </Style>
     <Utilities:ColorHexStringToBrushConverter x:Key="ColorHexStringToBrushConverter"/>
     <Utilities:StringToUriConverter x:Key="StringToUriConverter"/>
-    <Utilities:FileObjectConverter x:Key="FileObjectConverter"/>
+    <Utilities:StringToThumnailUriConverter x:Key="FileObjectConverter"/>
+    <Utilities:StringToFontWeightConverter x:Key="StringToFontWeightConverter"/>
     <!-- 리소스 사전 항목은 여기에서 정의해야 합니다. -->
 </ResourceDictionary>

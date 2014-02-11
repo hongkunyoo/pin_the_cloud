@@ -141,7 +141,7 @@
     <value>Login process stopped. Please try it again</value>
   </data>
   <data name="Pin" xml:space="preserve">
-    <value>pin</value>
+    <value>pin info.</value>
   </data>
   <data name="Logout" xml:space="preserve">
     <value>Logout</value>

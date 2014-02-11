@@ -19,6 +19,8 @@ namespace PintheCloud.Pages
     {
         private string SpaceId;
         private string SpaceName;
+        private string AccountId;
+        private string AccountIdFontWeight;
         private string AccountName;
         private string SpaceLikeNumber;
         private string SpaceLikeNumberColor;
@@ -36,6 +38,8 @@ namespace PintheCloud.Pages
             // Get parameters
             this.SpaceId = NavigationContext.QueryString["spaceId"];
             this.SpaceName = NavigationContext.QueryString["spaceName"];
+            this.AccountId = NavigationContext.QueryString["accountId"];
+            this.AccountIdFontWeight = NavigationContext.QueryString["accountIdFontWeight"];
             this.AccountName = NavigationContext.QueryString["accountName"];
             this.SpaceLikeNumber = NavigationContext.QueryString["spaceLikeNumber"];
             this.SpaceLikeNumberColor = NavigationContext.QueryString["spaceLikeNumberColor"];
@@ -45,6 +49,7 @@ namespace PintheCloud.Pages
             uiAccountName.Text = this.AccountName;
             uiSpaceLikeNumber.Text = this.SpaceLikeNumber;
 
+            uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(this.AccountIdFontWeight);
             Brush likeColor = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(this.SpaceLikeNumberColor));
             uiSpaceLikeNumber.Foreground = likeColor;
             uiSpaceLikeText.Foreground = likeColor;

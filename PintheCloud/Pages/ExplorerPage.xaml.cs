@@ -40,7 +40,6 @@ namespace PintheCloud.Pages
         private Stack<FileObject> FolderTree = new Stack<FileObject>();
         private List<FileObject> SelectedFile = new List<FileObject>();
 
-        private bool IsFirstEnter = true;
         private bool IsLikeButtonClicked = false;
 
 
@@ -58,37 +57,37 @@ namespace PintheCloud.Pages
                 NavigationService.RemoveBackEntry();
 
             // If it doesn't first enter, but still loading, do it once again.
-            if (!IsFirstEnter)
+            if (uiNearSpaceMessage.Visibility == Visibility.Visible)
             {
-                if (uiNearSpaceMessage.Visibility == Visibility.Visible)
+                if (uiNearSpaceMessage.Text.Equals(AppResources.Loading) || uiNearSpaceMessage.Text.Equals(AppResources.Refreshing))
                 {
-                    if (uiNearSpaceMessage.Text.Equals(AppResources.Loading) || uiNearSpaceMessage.Text.Equals(AppResources.Refreshing))
-                    {
-                        // If Internet available, Set space list
-                        // Otherwise, show internet bad message
-                        if (NetworkInterface.GetIsNetworkAvailable())
-                            await this.SetExplorerPivotAsync(uiNearSpaceMessage.Text);
-                        else
-                            this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
-                    }
-                }
-
-                if (uiPinFileMessage.Visibility == Visibility.Visible)
-                {
-                    if (uiPinFileMessage.Text.Equals(AppResources.Loading) || uiPinFileMessage.Text.Equals(AppResources.Refreshing))
-                    {
-                        // If Internet available, Set pin list with root folder file list.
-                        // Otherwise, show internet bad message
-                        if (NetworkInterface.GetIsNetworkAvailable())
-                            await this.SetTreeForFolder(await App.SkyDriveManager.GetRootFolderAsync(), uiPinFileMessage.Text);
-                        else
-                            this.SetListUnableAndShowMessage(uiPinFileList, AppResources.InternetUnavailableMessage, uiPinFileMessage);
-                    }
+                    // If Internet available, Set space list
+                    // Otherwise, show internet bad message
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                        await this.SetExplorerPivotAsync(uiNearSpaceMessage.Text);
+                    else
+                        this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
                 }
             }
 
-            // Set is first enter false for next enter
-            IsFirstEnter = false;
+            if (uiPinInfoMessage.Visibility == Visibility.Visible)
+            {
+                if (uiPinInfoMessage.Text.Equals(AppResources.Loading) || uiPinInfoMessage.Text.Equals(AppResources.Refreshing))
+                {
+                    // If Internet available, Set pin list with root folder file list.
+                    // Otherwise, show internet bad message
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                    {
+                        this.FolderTree.Clear();
+                        this.SelectedFile.Clear();
+                        await this.SetTreeForFolder(null, AppResources.Refreshing);
+                    }
+                    else
+                    {
+                        this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
+                    }
+                }
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -134,11 +133,15 @@ namespace PintheCloud.Pages
                     if (NetworkInterface.GetIsNetworkAvailable())
                     {
                         if (!this.FileObjectIsDataLoading)  // Mutex check
-                            await this.SetTreeForFolder(await App.SkyDriveManager.GetRootFolderAsync(), AppResources.Loading);
+                        {
+                            this.FolderTree.Clear();
+                            this.SelectedFile.Clear();
+                            await this.SetTreeForFolder(null, AppResources.Refreshing);
+                        }
                     }
                     else
                     {
-                        this.SetListUnableAndShowMessage(uiPinFileList, AppResources.InternetUnavailableMessage, uiPinFileMessage);
+                        this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
                     }
                     break;
             }
@@ -156,7 +159,7 @@ namespace PintheCloud.Pages
                 case PIN_PIVOT:
                     this.FolderTree.Clear();
                     this.SelectedFile.Clear();
-                    await this.SetTreeForFolder(await App.SkyDriveManager.GetRootFolderAsync(), AppResources.Loading);
+                    await this.SetTreeForFolder(null, AppResources.Refreshing);
                     break;
             }
         }
@@ -325,7 +328,7 @@ namespace PintheCloud.Pages
             switch (uiExplorerPivot.SelectedIndex)
             {
                 case PIN_PIVOT:
-                    if (this.FolderTree.Count == 1)
+                    if (this.FolderTree.Count <= 1)
                     {
                         e.Cancel = false;
                         NavigationService.GoBack();
@@ -342,14 +345,14 @@ namespace PintheCloud.Pages
 
 
         // Pin file selection event.
-        private async void uiPinFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private async void uiPinInfoList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected File Object
-            FileObject fileObject = uiPinFileList.SelectedItem as FileObject;
+            FileObject fileObject = uiPinInfoList.SelectedItem as FileObject;
 
             // Set selected item to null for next selection of list item. 
-            uiPinFileList.SelectedItem = null;
-            
+            uiPinInfoList.SelectedItem = null;
+
             // If selected item isn't null, Do something
             if (fileObject != null)
             {
@@ -390,11 +393,15 @@ namespace PintheCloud.Pages
         private async Task SetTreeForFolder(FileObject folder, string message)
         {
             // Show progress indicator 
-            this.SetListUnableAndShowMessage(uiPinFileList, message, uiPinFileMessage);
+            this.SetListUnableAndShowMessage(uiPinInfoList, message, uiPinInfoMessage);
             base.SetProgressIndicator(true);
 
             // Before go load, set mutex to true.
             this.FileObjectIsDataLoading = true;
+
+            // If folder null, set root.
+            if (folder == null)
+                folder = await App.SkyDriveManager.GetRootFolderAsync();
 
             // TODO If there are not any files?
             if (!this.FolderTree.Contains(folder))
@@ -403,9 +410,9 @@ namespace PintheCloud.Pages
             uiCurrentPath.Text = this.GetCurrentPath();
 
             // Set file tree to list.
-            uiPinFileList.DataContext = new ObservableCollection<FileObject>(files);
-            uiPinFileList.Visibility = Visibility.Visible;
-            uiPinFileMessage.Visibility = Visibility.Collapsed;
+            uiPinInfoList.DataContext = new ObservableCollection<FileObject>(files);
+            uiPinInfoList.Visibility = Visibility.Visible;
+            uiPinInfoMessage.Visibility = Visibility.Collapsed;
 
             // Hide progress indicator
             base.SetProgressIndicator(false);

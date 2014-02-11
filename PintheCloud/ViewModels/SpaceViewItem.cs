@@ -17,10 +17,11 @@ namespace PintheCloud.ViewModels
 
         public string SpaceName { get; set; }
         public string AccountId { get; set; }
+        public string AccountIdFontWeight { get; set; }
         public string AccountName { get; set; }
         public double SpaceDistance { get; set; }
         public string SpaceId { get; set; }
-        
+
         private int spaceLikeNumber;
         public int SpaceLikeNumber
         {

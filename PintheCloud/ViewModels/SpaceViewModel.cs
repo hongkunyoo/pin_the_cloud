@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Windows.Devices.Geolocation;
 using Windows.UI;
 
@@ -81,6 +82,7 @@ namespace PintheCloud.ViewModels
             // Set new space view item
             SpaceViewItem spaceViewItem = new SpaceViewItem();
             spaceViewItem.SpaceName = space.space_name;
+            spaceViewItem.AccountId = space.account_id;
             spaceViewItem.AccountName = space.account_name;
             spaceViewItem.SpaceLikeNumber = space.space_like_number;
             spaceViewItem.SpaceId = space.id;
@@ -93,6 +95,14 @@ namespace PintheCloud.ViewModels
                 spaceViewItem.SetLikeButtonImage(true, 0);
             else
                 spaceViewItem.SetLikeButtonImage(false, 0);
+
+            // If this space is this account's, set id bold font.
+            // Otherwise, set light font.
+            if (App.AccountManager.GetCurrentAcccount().account_platform_id.Equals(space.account_id))
+                spaceViewItem.AccountIdFontWeight = StringToFontWeightConverter.BOLD;
+            else
+                spaceViewItem.AccountIdFontWeight = StringToFontWeightConverter.LIGHT;
+
             return spaceViewItem;
         }
 

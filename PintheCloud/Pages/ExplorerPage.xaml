@@ -53,7 +53,7 @@
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Margin="0">
                                     <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,8" UseLayoutRounding="True" Foreground="Black"/>
-                                    <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,8" FontWeight="Light"/>
+                                    <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,8" FontWeight="{Binding AccountIdFontWeight, Converter={StaticResource StringToFontWeightConverter}}"/>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontWeight="Light" />
                                         <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontSize="22" Margin="0,0,10,0" FontWeight="Light"/>
@@ -69,8 +69,8 @@
                         <Grid Grid.Row="1" Background="#FFCED7DD"/>
                     </Grid>
                 </DataTemplate>
-                <DataTemplate x:Key="uiPinFileListItemTemplate">
-                    <Grid x:Name="uiPinFileListItem">
+                <DataTemplate x:Key="uiPinInfoListItemTemplate">
+                    <Grid x:Name="uiPinInfoListItem">
                         <Grid.RowDefinitions>
                             <RowDefinition/>
                             <RowDefinition Height="1"/>
@@ -82,9 +82,9 @@
                         			<ColumnDefinition/>
                         			<ColumnDefinition Width="49"/>
                         		</Grid.ColumnDefinitions>
-                        		<Image x:Name="uiFileThumnail" Source="{Binding ThumnailType, Converter={StaticResource FileObjectConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="94" Height="94" Stretch="None"/>
-                        		<TextBlock x:Name="uiFileName" Text="{Binding Name}" TextWrapping="Wrap" FontSize="22" Foreground="Black" VerticalAlignment="Center" Grid.Column="1"/>
-                        		<Image x:Name="uiFileSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Stretch="None"/>
+                        		<Image x:Name="uiInfoThumnail" Source="{Binding ThumnailType, Converter={StaticResource FileObjectConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="94" Height="94" Stretch="None"/>
+                        		<TextBlock x:Name="uiInfoName" Text="{Binding Name}" TextWrapping="Wrap" FontSize="22" Foreground="Black" VerticalAlignment="Center" Grid.Column="1"/>
+                        		<Image x:Name="uiInfoSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Stretch="None"/>
                         	</Grid>
                         </Button>
                     	<Grid Grid.Row="1" Background="#FFCED7DD"/>
@@ -95,10 +95,10 @@
                 <phone:PivotItem x:Name="uiPickPivot" Header="{Binding LocalizedResources.Pick, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
                     <Grid>
                         <phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpaceList_SelectionChanged" />
-                        <TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,0,18,0" Foreground="Black" />
+                        <TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,0,18,0" Foreground="Black" Visibility="Collapsed" />
                     </Grid>
                 </phone:PivotItem>
-                <phone:PivotItem x:Name="uiPinFilePivot" Header="{Binding LocalizedResources.Pin, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
+                <phone:PivotItem x:Name="uiPinInfoPivot" Header="{Binding LocalizedResources.Pin, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="82.5"/>
@@ -107,8 +107,8 @@
                         <Grid Background="#FFEFF2F6" Width="426" Height="62.5" VerticalAlignment="Top">
                         	<TextBlock x:Name="uiCurrentPath" Foreground="Black" TextTrimming="WordEllipsis" VerticalAlignment="Center" FontSize="32" FontWeight="Medium" FontStyle="Italic" Margin="10,0,0,0"/>
                         </Grid>
-                        <phone:LongListSelector x:Name="uiPinFileList" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiPinFileListItemTemplate}" Visibility="Collapsed" Grid.Row="1" SelectionChanged="uiPinFileList_SelectionChanged"/>
-                        <TextBlock x:Name="uiPinFileMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="22,0,18,0" Grid.Row="1" />
+                        <phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" Visibility="Collapsed" Grid.Row="1" SelectionChanged="uiPinInfoList_SelectionChanged"/>
+                        <TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="22,0,18,0" Grid.Row="1" Visibility="Collapsed" />
                     </Grid>
                 </phone:PivotItem>
             </phone:Pivot>

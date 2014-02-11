@@ -8,7 +8,7 @@ using System.Windows.Data;
 
 namespace PintheCloud.Utilities
 {
-    public class FileObjectConverter : IValueConverter
+    public class StringToThumnailUriConverter : IValueConverter
     {
         // Instances
         private const string FOLDER_IMAGE_PATH = "/Assets/pajeon/png/icon_file_folder.png";
