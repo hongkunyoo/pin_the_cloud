@@ -10,6 +10,9 @@ namespace PintheCloud.ViewModels
 {
     public class FileObjectViewModel : INotifyPropertyChanged
     {
+        public static string LIKE_NOT_PRESS_IMAGE_PATH = "/Assets/pajeon/png/filelist_like.png";
+        public static string LIKE_PRESS_IMAGE_PATH = "/Assets/pajeon/png/filelist_like_p.png";
+
         public ObservableCollection<FileObjectViewItem> Items { get; set; }
 
         // Mutex

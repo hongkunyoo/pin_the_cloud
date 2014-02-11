@@ -114,6 +114,9 @@
     </Compile>
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\FileObjectConverter.cs" />
+    <Compile Include="Pages\FileListPage.xaml.cs">
+      <DependentUpon>FileListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\MyEncoder.cs" />
     <Compile Include="Utilities\MyDebug.cs" />
     <Compile Include="Utilities\ParseHelper.cs" />
@@ -170,6 +173,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\ExplorerPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\FileListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

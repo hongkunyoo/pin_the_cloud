@@ -15,7 +15,7 @@ namespace PintheCloud
         public static string MICROSOFT = "Microsoft";
          
         // Current Usrer
-        public static string USER = "hongkun";
+        public static string USER = "";
 
         // Debug Mode
         public static bool DEBUG = true;
