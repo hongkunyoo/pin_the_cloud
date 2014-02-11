@@ -18,17 +18,22 @@ namespace PintheCloud.ViewModels
 {
     public class SpaceViewModel : INotifyPropertyChanged
     {
-        public static string LIKE_NOT_PRESS_IMAGE_PATH = "/Assets/pajeon/png/general_like.png";
-        public static string LIKE_PRESS_IMAGE_PATH = "/Assets/pajeon/png/general_like_p.png";
-
-
         public ObservableCollection<SpaceViewItem> Items { get; set; }
+
+        // Mutex
+        public bool IsDataLoading { get; set; }
+
+
+        public SpaceViewModel()
+        {
+            this.Items = new ObservableCollection<SpaceViewItem>();
+        }
+
 
         public async void SetItems(JArray spaces, Geoposition currentGeoposition)
         {
             // If items have something, clear.
-            if (this.Items.Count > 0)
-                this.Items.Clear();
+            this.Items.Clear();
 
             // Get current coordinate
             double currentLatitude = currentGeoposition.Coordinate.Latitude;
@@ -55,8 +60,7 @@ namespace PintheCloud.ViewModels
         public async void SetItems(MobileServiceCollection<Space, Space> spaces)
         {
             // If items have something, clear.
-            if (this.Items.Count > 0)
-                this.Items.Clear();
+            this.Items.Clear();
 
             // Convert spaces to space view items and set to view model
             foreach (Space space in spaces)
@@ -65,58 +69,6 @@ namespace PintheCloud.ViewModels
                 bool isLike = await App.AccountSpaceRelationManager.IsLikeAsync(space.id);
                 this.Items.Add(this.MakeSpaceViewItemFromSpace(space, isLike));
             }
-        }
-
-
-        // Mutex
-        public bool IsDataLoading { get; set; }
-
-
-        // Do selection changed event job.
-        public async Task LikeAsync(SpaceViewItem spaceViewItem)
-        {
-            // Get information about image
-            string spaceId = spaceViewItem.SpaceId;
-            string spaceLikeButtonImageUri = spaceViewItem.SpaceLikeButtonImage.ToString();
-
-
-            // Set Image and number first for good user experience.
-            // Like or Note LIke by current state
-            if (spaceLikeButtonImageUri.Equals(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH))  // Do Like
-            {
-                spaceViewItem.SpaceLikeNumber++;
-                spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_COLOR;
-                spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_PRESS_IMAGE_PATH;
-
-                // If like fail, set image and number back to original
-                if (!(await App.AccountSpaceRelationManager.LikeAysnc(spaceId, true)))
-                {
-                    spaceViewItem.SpaceLikeNumber--;
-                    spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
-                    spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH;
-                }
-            }
-
-            else  // Do Not Like
-            {
-                spaceViewItem.SpaceLikeNumber--;
-                spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
-                spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH;
-
-                // If not like fail, set image back to original
-                if (!(await App.AccountSpaceRelationManager.LikeAysnc(spaceId, false)))
-                {
-                    spaceViewItem.SpaceLikeNumber++;
-                    spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_COLOR;
-                    spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_PRESS_IMAGE_PATH;
-                }
-            }
-        }
-
-
-        public SpaceViewModel()
-        {
-            this.Items = new ObservableCollection<SpaceViewItem>();
         }
 
 
@@ -138,16 +90,9 @@ namespace PintheCloud.ViewModels
             // If this account likes this space, set like image
             // Otherwise, set not like image
             if (isLike)
-            {
-                spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_COLOR;
-                spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_PRESS_IMAGE_PATH;
-            }
-
+                spaceViewItem.SetLikeButtonImage(true, 0);
             else
-            {
-                spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
-                spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH;
-            }
+                spaceViewItem.SetLikeButtonImage(false, 0);
             return spaceViewItem;
         }
 

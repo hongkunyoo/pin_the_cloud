@@ -124,6 +124,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   folder과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Folder {
+            get {
+                return ResourceManager.GetString("Folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Interent unavailable과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string InternetUnavailableCaption {
@@ -327,6 +336,15 @@ namespace PintheCloud.Resources {
         public static string ResourceLanguage {
             get {
                 return ResourceManager.GetString("ResourceLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string RootPath {
+            get {
+                return ResourceManager.GetString("RootPath", resourceCulture);
             }
         }
         
