@@ -66,13 +66,6 @@ namespace PintheCloud.Managers
         }
 
 
-        public Space GetSpace(string id)
-        {
-            Space s = new Space("space_name", 10.01, 11.02, "account_id", "account_name", 0);
-            s.id = Guid.NewGuid().ToString();
-            return s;
-        }
-
         // TODO Sort space list
     }
 }

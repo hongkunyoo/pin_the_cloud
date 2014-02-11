@@ -42,6 +42,34 @@ namespace PintheCloud.Workers
             MobileServiceCollection<Space, Space> spaces = null;
             try
             {
+                ///*** DEBUG CODE ***/
+                //Random random = new Random();
+                //for (int i = 0; i < 2; i++)
+                //{
+                //    double random1 = ((double)random.Next(10)) / ((double)100);
+                //    double random2 = ((double)random.Next(10)) / ((double)100);
+                //    await App.MobileService.GetTable<Space>().InsertAsync(new Space("Seungmin" + i, 37.6 + random1, 126.9 + random2, account_id, "Seungmin", 0, 0));
+                //}
+                //for (int i = 0; i < 2; i++)
+                //{
+                //    double random1 = ((double)random.Next(10)) / ((double)100);
+                //    double random2 = ((double)random.Next(10)) / ((double)100);
+                //    await App.MobileService.GetTable<Space>().InsertAsync(new Space("Seungmin" + i, 37.6 + random1, 126.9 - random2, account_id, "Seungmin", 0, 0));
+                //}
+                //for (int i = 0; i < 2; i++)
+                //{
+                //    double random1 = ((double)random.Next(10)) / ((double)100);
+                //    double random2 = ((double)random.Next(10)) / ((double)100);
+                //    await App.MobileService.GetTable<Space>().InsertAsync(new Space("Seungmin" + i, 37.6 - random1, 126.9 + random2, account_id, "Seungmin", 0, 0));
+                //}
+                //for (int i = 0; i < 2; i++)
+                //{
+                //    double random1 = ((double)random.Next(10)) / ((double)100);
+                //    double random2 = ((double)random.Next(10)) / ((double)100);
+                //    await App.MobileService.GetTable<Space>().InsertAsync(new Space("Seungmin" + i, 37.6 - random1, 126.9 - random2, account_id, "Seungmin", 0, 0));
+                //}
+                ///*** DEBUG CODE ***/
+
                 // Load current account's spaces
                 spaces = await App.MobileService.GetTable<Space>()
                     .Where(s => s.account_id == account_id)
