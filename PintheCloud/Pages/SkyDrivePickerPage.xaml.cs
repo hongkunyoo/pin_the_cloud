@@ -26,7 +26,7 @@ namespace PintheCloud.Pages
     {
 
         // Instances
-        public FileObjectViewModel SkyDriveFileObjectViewModel = new FileObjectViewModel();
+        //public FileObjectViewModel SkyDriveFileObjectViewModel = new FileObjectViewModel();
 
         PhoneApplicationPage currentPage;
         PhoneApplicationFrame currentFrame;

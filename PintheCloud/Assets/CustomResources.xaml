@@ -328,7 +328,7 @@
         </Setter>
     </Style>
     <Utilities:ColorHexStringToBrushConverter x:Key="ColorHexStringToBrushConverter"/>
-    <Utilities:StringtoUriConverter x:Key="StringtoUriConverter"/>
+    <Utilities:StringToUriConverter x:Key="StringToUriConverter"/>
     <Utilities:FileObjectConverter x:Key="FileObjectConverter"/>
     <!-- 리소스 사전 항목은 여기에서 정의해야 합니다. -->
 </ResourceDictionary>

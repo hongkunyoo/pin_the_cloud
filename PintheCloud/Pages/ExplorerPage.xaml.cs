@@ -37,12 +37,10 @@ namespace PintheCloud.Pages
 
 
         // Instances
-        public SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
-        public FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
-
-        private FileObject skydriveRootFolder;
-        private Stack<FileObject> folderTree;
-        private List<FileObject> selectedFile;
+        private SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
+        private bool FileObjectIsDataLoading = false;
+        private Stack<FileObject> FolderTree = new Stack<FileObject>();
+        private List<FileObject> SelectedFile = new List<FileObject>();
 
 
         public ExplorerPage()
@@ -99,25 +97,23 @@ namespace PintheCloud.Pages
                     confirmAppBarButton.Click += uiAppBarConfirmButton_Click;
                     ApplicationBar.Buttons.Add(confirmAppBarButton);
 
-                    // If Internet available, Set pin list
+                    // If Internet available, Set pin list with root folder file list.
                     // Otherwise, show internet bad message
                     if (NetworkInterface.GetIsNetworkAvailable())
                     {
-                        // Get skydrive files.
-                        this.skydriveRootFolder = await App.SkyDriveManager.GetRootFolderAsync();
-                        this.folderTree = new Stack<FileObject>();
-                        this.selectedFile = new List<FileObject>();
-                        this.GetTreeForFolder(this.skydriveRootFolder, AppResources.Loading);
+                        if (!this.FileObjectIsDataLoading)  // Mutex check
+                            await this.SetTreeForFolder(await App.SkyDriveManager.GetRootFolderAsync(), AppResources.Loading);
                     }
                     else
                     {
-                        uiPinList.Visibility = Visibility.Collapsed;
-                        uiPinMessage.Text = AppResources.InternetUnavailableMessage;
-                        uiPinMessage.Visibility = Visibility.Visible;
+                        uiPinFileList.Visibility = Visibility.Collapsed;
+                        uiPinFileMessage.Text = AppResources.InternetUnavailableMessage;
+                        uiPinFileMessage.Visibility = Visibility.Visible;
                     }
                     break;
             }
         }
+
 
 
         /*** Pick Pivot ***/
@@ -148,7 +144,7 @@ namespace PintheCloud.Pages
                 if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
                 {
                     App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
-                    await this.NearSpaceViewModel.LikeAsync(spaceViewItem);
+                    await this.LikeAsync(spaceViewItem);
                 }
                 else  // Internet bad
                 {
@@ -177,13 +173,14 @@ namespace PintheCloud.Pages
         // Refresh space list.
         private async void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
         {
-            // Refresh only if pivot is in pin pivot.
             switch (uiExplorerPivot.SelectedIndex)
             {
                 case PICK_PIVOT:
-                    // Set View model for dispaly,
-                    NearSpaceViewModel.IsDataLoading = false;  // Mutex
                     await this.SetExplorerPivotAsync(AppResources.Refreshing);
+                    break;
+                case PIN_PIVOT:
+                    this.FolderTree.Clear();
+                    await this.SetTreeForFolder(await App.SkyDriveManager.GetRootFolderAsync(), AppResources.Loading);
                     break;
             }
         }
@@ -192,19 +189,12 @@ namespace PintheCloud.Pages
 
         /*** Pin Pivot ***/
 
-        // Go up to previous folder.
-        private void uiTreeupBtn_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            this.TreeUp();
-        }
-
-
         protected override void OnBackKeyPress(CancelEventArgs e)
         {
             switch (uiExplorerPivot.SelectedIndex)
             {
                 case PIN_PIVOT:
-                    if (this.folderTree.Count == 1)
+                    if (this.FolderTree.Count == 1)
                     {
                         e.Cancel = false;
                         NavigationService.GoBack();
@@ -220,20 +210,25 @@ namespace PintheCloud.Pages
         }
 
 
-        private void uiPinList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        // Pin file selection event.
+        private async void uiPinFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count <= 1)
             {
-                FileObject file = (FileObject)e.AddedItems[0];
-                if (file.Type.Equals("folder"))
+                FileObject fileObject = (FileObject)e.AddedItems[0];
+
+                // If user select folder, go in.
+                // Otherwise, add it to list.
+                if (fileObject.ThumnailType.Equals(AppResources.Folder))
                 {
-                    this.GetTreeForFolder(file, AppResources.Loading);
-                    MyDebug.WriteLine(file.Name);
+                    await this.SetTreeForFolder(fileObject, AppResources.Loading);
+                    MyDebug.WriteLine(fileObject.Name);
                 }
                 else  // Do selection if file
                 {
-                    this.selectedFile.Add(file);
-                    MyDebug.WriteLine(file.Name);
+                    this.SelectedFile.Add(fileObject);
+                    fileObject.SetSelectCheck(fileObject.SelectCheckImage);
+                    MyDebug.WriteLine(fileObject.Name);
                 }
             }
         }
@@ -241,7 +236,7 @@ namespace PintheCloud.Pages
 
         private void uiAppBarConfirmButton_Click(object sender, System.EventArgs e)
         {
-            PhoneApplicationService.Current.State["SELECTED_FILE"] = this.selectedFile;
+            PhoneApplicationService.Current.State["SELECTED_FILE"] = this.SelectedFile;
             NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
         }
 
@@ -328,25 +323,70 @@ namespace PintheCloud.Pages
         }
 
 
-        private async void GetTreeForFolder(FileObject folder, string message)
+        // Do selection changed event job.
+        private async Task LikeAsync(SpaceViewItem spaceViewItem)
+        {
+            // Get information about image
+            string spaceId = spaceViewItem.SpaceId;
+            string spaceLikeButtonImageUri = spaceViewItem.SpaceLikeButtonImage.ToString();
+
+
+            // Set Image and number first for good user experience.
+            // Like or Note LIke by current state
+            if (spaceLikeButtonImageUri.Equals(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH))  // Do Like
+            {
+                spaceViewItem.SpaceLikeNumber++;
+                spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_COLOR;
+                spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_PRESS_IMAGE_PATH;
+
+                // If like fail, set image and number back to original
+                if (!(await App.AccountSpaceRelationManager.LikeAysnc(spaceId, true)))
+                {
+                    spaceViewItem.SpaceLikeNumber--;
+                    spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
+                    spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH;
+                }
+            }
+
+            else  // Do Not Like
+            {
+                spaceViewItem.SpaceLikeNumber--;
+                spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
+                spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH;
+
+                // If not like fail, set image back to original
+                if (!(await App.AccountSpaceRelationManager.LikeAysnc(spaceId, false)))
+                {
+                    spaceViewItem.SpaceLikeNumber++;
+                    spaceViewItem.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_COLOR;
+                    spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_PRESS_IMAGE_PATH;
+                }
+            }
+        }
+
+
+        // Get file tree from cloud
+        private async Task SetTreeForFolder(FileObject folder, string message)
         {
             // Show progress indicator 
-            uiPinList.Visibility = Visibility.Collapsed;
-            uiPinMessage.Text = message;
-            uiPinMessage.Visibility = Visibility.Visible;
+            uiPinFileList.Visibility = Visibility.Collapsed;
+            uiPinFileMessage.Text = message;
+            uiPinFileMessage.Visibility = Visibility.Visible;
             base.SetProgressIndicator(true);
 
-            // Get file tree from cloud
+            // Before go load, set mutex to true.
+            this.FileObjectIsDataLoading = true;
+
+            // TODO If there are not any files?
+            if (!this.FolderTree.Contains(folder))
+                this.FolderTree.Push(folder);
             List<FileObject> files = await App.SkyDriveManager.GetFilesFromFolderAsync(folder.Id);
-            if (!this.folderTree.Contains(folder))
-                this.folderTree.Push(folder);
             uiCurrentPath.Text = this.GetCurrentPath();
 
             // Set file tree to list.
-            uiPinList.DataContext = new ObservableCollection<FileObject>(files);
-            uiPinList.Visibility = Visibility.Visible;
-            uiPinMessage.Visibility = Visibility.Collapsed;
-
+            uiPinFileList.DataContext = new ObservableCollection<FileObject>(files);
+            uiPinFileList.Visibility = Visibility.Visible;
+            uiPinFileMessage.Visibility = Visibility.Collapsed;
 
             // Hide progress indicator
             base.SetProgressIndicator(false);
@@ -355,23 +395,20 @@ namespace PintheCloud.Pages
 
         private string GetCurrentPath()
         {
-            FileObject[] array = folderTree.Reverse<FileObject>().ToArray<FileObject>();
-
+            FileObject[] array = this.FolderTree.Reverse<FileObject>().ToArray<FileObject>();
             string str = "";
             foreach (FileObject f in array)
-            {
-                str += f.Name + "/";
-            }
+                str += f.Name + AppResources.RootPath;
             return str;
         }
 
 
-        private void TreeUp()
+        private async void TreeUp()
         {
-            if (folderTree.Count > 1)
+            if (this.FolderTree.Count > 1)
             {
-                folderTree.Pop();
-                this.GetTreeForFolder(folderTree.First(), AppResources.Loading);
+                this.FolderTree.Pop();
+                await this.SetTreeForFolder(this.FolderTree.First(), AppResources.Loading);
             }
         }
     }

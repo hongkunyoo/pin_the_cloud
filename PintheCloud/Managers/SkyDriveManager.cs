@@ -16,9 +16,9 @@ namespace PintheCloud.Managers
 {
     public class SkyDriveManager
     {
-        private LiveConnectClient LiveClient;
         //private LiveAuthClient LiveAuth;
         //private LiveLoginResult LiveResult;
+        private LiveConnectClient LiveClient;
         private LiveConnectSession LiveSession;
         private string ClientId;
         private string[] Scopes;
@@ -45,70 +45,31 @@ namespace PintheCloud.Managers
             */
         }
 
-        private FileObject getData(IDictionary<string, object> dic)
-        {
-            string id = (string)(dic["id"] ?? "");   
-            string name = (string)(dic["name"] ?? "");
-            string parent_id = (string)(dic["parent_id"] ?? "/");
-            int size = (int)dic["size"];
-            string type = (string)dic["type"] ?? "";
-            string createAt = (string)dic["created_time"] ?? DateTime.Now.ToString();
-            string updateAt = (string)dic["updated_time"] ?? DateTime.Now.ToString();
-
-            return new FileObject(id, name, parent_id, size, id.Substring(0,id.IndexOf(".")),type, createAt, updateAt);
-            
-        }
-
-        private List<FileObject> getDataList(IDictionary<string, object> dic)
-        {
-            List<object> data = (List<object>)dic["data"];
-            List<FileObject> list = new List<FileObject>();
-            foreach (IDictionary<string, object> content in data)
-            {
-                list.Add(this.getData(content));
-            }
-            return list;
-        }
 
         public async Task<FileObject> GetRootFolderAsync(){
-            FileObject root = getData((await this.LiveClient.GetAsync("me/skydrive")).Result);
+            FileObject root = this.GetData((await this.LiveClient.GetAsync("me/skydrive")).Result);
             root.Name = "";
             return root;
         }
 
+
         public async Task<List<FileObject>> GetRootFilesAsync()
         {
-            return getDataList((await this.LiveClient.GetAsync("me/skydrive/files")).Result);
+            return this.GetDataList((await this.LiveClient.GetAsync("me/skydrive/files")).Result);
         }
+
 
         public async Task<FileObject> GetFileAsync(string fileId)
         {
-            return getData((await this.LiveClient.GetAsync(fileId)).Result);
+            return this.GetData((await this.LiveClient.GetAsync(fileId)).Result);
         }
+
 
         public async Task<List<FileObject>> GetFilesFromFolderAsync(string folderId)
         {
-            return getDataList((await this.LiveClient.GetAsync(folderId + "/files")).Result);
+            return this.GetDataList((await this.LiveClient.GetAsync(folderId + "/files")).Result);
         }
 
-        private async Task<List<FileObject>> GetChildAsync(FileObject fo)
-        {
-            if ("folder".Equals(fo.Type))
-            {
-                List<FileObject> list = await this.GetFilesFromFolderAsync(fo.Id);
-                
-                foreach (FileObject file in list)
-                {
-                    file.FileList = await GetChildAsync(file);
-                }
-                return list;
-            }
-            else
-            {
-                return null;
-            }
-            
-        }
 
         public async Task<FileObject> Synchronize()
         {
@@ -120,7 +81,6 @@ namespace PintheCloud.Managers
 
         public async Task<StorageFile> DownloadFileAsync(string sourceFileId, Uri destinationUri)
         {
-            
             ProgressBar progressBar = new ProgressBar();
             progressBar.Value = 0; 
             var progressHandler = new Progress<LiveOperationProgress>(
@@ -140,9 +100,9 @@ namespace PintheCloud.Managers
             return await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/"+destinationUri));
         }
 
+
         public async Task<Stream> DownloadFileThroughStreamAsync(string sourceFileId)
         {
-
             ProgressBar progressBar = new ProgressBar();
             progressBar.Value = 0;
             var progressHandler = new Progress<LiveOperationProgress>(
@@ -163,6 +123,7 @@ namespace PintheCloud.Managers
             }
         }
        
+
         public async Task<StorageFolder> DownloadFolderAsync(string sourceFolder, StorageFolder folder)
         {
             FileObject file = await this.GetFileAsync(sourceFolder);
@@ -221,6 +182,7 @@ namespace PintheCloud.Managers
             }
         }
 
+
         public async Task UploadFileThroughStreamAsync(string folderIdToStore, string fileName, Stream outstream)
         {
             System.Threading.CancellationTokenSource ctsUpload = new System.Threading.CancellationTokenSource();
@@ -250,6 +212,49 @@ namespace PintheCloud.Managers
             {
                 ctsUpload.Cancel();
                 System.Diagnostics.Debug.WriteLine("exception : " + e.ToString());
+            }
+        }
+
+
+
+        /*** Private Method ***/
+
+        private FileObject GetData(IDictionary<string, object> dic)
+        {
+            string id = (string)(dic["id"] ?? "");
+            string name = (string)(dic["name"] ?? "");
+            string parent_id = (string)(dic["parent_id"] ?? "/");
+            int size = (int)dic["size"];
+            string type = (string)dic["type"] ?? "";
+            string createAt = (string)dic["created_time"] ?? DateTime.Now.ToString();
+            string updateAt = (string)dic["updated_time"] ?? DateTime.Now.ToString();
+
+            return new FileObject(id, name, parent_id, size, id.Substring(0, id.IndexOf(".")), type, createAt, updateAt);
+        }
+
+
+        private List<FileObject> GetDataList(IDictionary<string, object> dic)
+        {
+            List<object> data = (List<object>)dic["data"];
+            List<FileObject> list = new List<FileObject>();
+            foreach (IDictionary<string, object> content in data)
+                list.Add(this.GetData(content));
+            return list;
+        }
+
+
+        private async Task<List<FileObject>> GetChildAsync(FileObject fo)
+        {
+            if ("folder".Equals(fo.Type))
+            {
+                List<FileObject> list = await this.GetFilesFromFolderAsync(fo.Id);
+                foreach (FileObject file in list)
+                    file.FileList = await GetChildAsync(file);
+                return list;
+            }
+            else
+            {
+                return null;
             }
         }
     }
