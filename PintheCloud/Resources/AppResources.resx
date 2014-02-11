@@ -188,7 +188,7 @@
   <data name="NoLocationAcessConsentMessage" xml:space="preserve">
     <value>This app requires consent to access location information. Please consent it.</value>
   </data>
-  <data name="LikeDescription" xml:space="preserve">
+  <data name="Likes" xml:space="preserve">
     <value>likes</value>
   </data>
   <data name="Refresh" xml:space="preserve">

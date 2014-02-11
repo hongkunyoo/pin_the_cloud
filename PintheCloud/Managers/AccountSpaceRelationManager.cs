@@ -11,5 +11,6 @@ namespace PintheCloud.Managers
     {
         void SetAccountSpaceRelationWorker(AccountSpaceRelationWorker CurrentAccountSpaceRelationWorker);
         Task<bool> LikeAysnc(string spaceId, bool whether);
+        Task<bool> IsLikeAsync(string space_id);
     }
 }

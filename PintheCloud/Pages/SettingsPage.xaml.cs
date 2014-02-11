@@ -15,6 +15,8 @@ using System.Net.NetworkInformation;
 using PintheCloud.ViewModels;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
+using Microsoft.WindowsAzure.MobileServices;
+using PintheCloud.Models;
 
 namespace PintheCloud.Pages
 {
@@ -71,8 +73,8 @@ namespace PintheCloud.Pages
             }
         }
 
-        
-        
+
+
         /*** My Space ***/
 
         // Process of editing spaces, especially deleting or not.
@@ -104,10 +106,35 @@ namespace PintheCloud.Pages
         private async void uiMySpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected Space View Item
-            // Do selection changed event job.
-            // Set selected item to null for next selection of list item. 
             SpaceViewItem spaceViewItem = uiMySpaceList.SelectedItem as SpaceViewItem;
-            await this.uiSpaceList_SelectionChanged(spaceViewItem);
+
+
+            // If selected item isn't null and it doesn't come from like button, goto File list page.
+            // Otherwise, Process Like or Not Like by current state
+            if (spaceViewItem != null && !this.IsLikeButtonClicked)  // Go to FIle List Page
+            {
+                string parameters = App.SpaceManager.GetParameterStringFromSpaceViewItem(spaceViewItem);
+                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
+            }
+
+            else if (this.IsLikeButtonClicked)  // Do like
+            {
+                // Get different Account Space Relation Worker by internet state.
+                if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+                {
+                    App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
+                    await this.MySpaceViewModel.LikeAsync(spaceViewItem);
+                }
+                else  // Internet bad
+                {
+                    MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+                }
+
+                // Set is like button clicked false for next click.
+                this.IsLikeButtonClicked = false;
+            }
+
+            // Set selected item to null for next selection of list item. 
             uiMySpaceList.SelectedItem = null;
         }
 
@@ -126,118 +153,44 @@ namespace PintheCloud.Pages
 
         private async Task SetMySpacePivotAsync(string message)
         {
-            // Get different Space Worker by internet state.
-            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
-            {
-                // Set worker and show loading message
-                App.SpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
-                App.SpaceManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
+            // Set worker and show loading message
+            App.SpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+            App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
 
-                // Show progress indicator 
+            // Show progress indicator 
+            uiMySpaceList.Visibility = Visibility.Collapsed;
+            uiMySpaceMessage.Text = message;
+            uiMySpaceMessage.Visibility = Visibility.Visible;
+            base.SetProgressIndicator(true);
+
+            // Before go load, set mutex to true.
+            MySpaceViewModel.IsDataLoading = true;
+
+
+            // If there is my spaces, Clear and Add spaces to list
+            // Otherwise, Show none message.
+            MobileServiceCollection<Space, Space> spaces =
+                            await App.SpaceManager.GetMySpaceViewItemsAsync();
+
+            if (spaces != null)  // There are my spaces
+            {
+                this.MySpaceViewModel.SetItems(spaces);
+                uiMySpaceList.DataContext = null;
+                uiMySpaceList.DataContext = this.MySpaceViewModel;
+                uiMySpaceList.Visibility = Visibility.Visible;
+                uiMySpaceMessage.Visibility = Visibility.Collapsed;
+            }
+            else  // No my spaces
+            {
                 uiMySpaceList.Visibility = Visibility.Collapsed;
-                uiMySpaceMessage.Text = message;
+                uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
                 uiMySpaceMessage.Visibility = Visibility.Visible;
-                base.SetProgressIndicator(true);
-
-                // Before go load, set mutex to true.
-                MySpaceViewModel.IsDataLoading = true;
-
-
-                // If there is my spaces, Clear and Add spaces to list
-                // Otherwise, Show none message.
-                ObservableCollection<SpaceViewItem> items =
-                                await App.SpaceManager.GetMySpaceViewItemsAsync();
-
-                if (items != null)  // There are my spaces
-                {
-                    this.MySpaceViewModel.Items = items;
-                    uiMySpaceList.DataContext = null;
-                    uiMySpaceList.DataContext = this.MySpaceViewModel;
-                    uiMySpaceList.Visibility = Visibility.Visible;
-                    uiMySpaceMessage.Visibility = Visibility.Collapsed;
-                }
-                else  // No my spaces
-                {
-                    uiMySpaceList.Visibility = Visibility.Collapsed;
-                    uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
-                    uiMySpaceMessage.Visibility = Visibility.Visible;
-                    MySpaceViewModel.IsDataLoading = false;  // Mutex
-                }
-
-
-                // Hide progress indicator
-                base.SetProgressIndicator(false);
-            }
-        }
-
-
-        // Do selection changed event job.
-        private async Task uiSpaceList_SelectionChanged(SpaceViewItem spaceViewItem)
-        {
-            // If selected item isn't null and it doesn't come from like button, goto File list page.
-            // Otherwise, Process Like or Not Like by current state
-            if (spaceViewItem != null && !this.IsLikeButtonClicked)  // Go to FIle List Page
-            {
-                string parameters = App.SpaceManager.GetParameterStringFromSpaceViewItem(spaceViewItem);
-                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
+                MySpaceViewModel.IsDataLoading = false;  // Mutex
             }
 
-            else if (this.IsLikeButtonClicked)  // Do like
-            {
-                // Get different Account Space Relation Worker by internet state.
-                if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
-                {
-                    App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
 
-
-                    // Get information about image
-                    string spaceId = spaceViewItem.SpaceId;
-                    string spaceLikeButtonImageUri = spaceViewItem.SpaceLikeButtonImage.ToString();
-
-
-                    // Set Image first for good user experience.
-                    // Like or Note LIke by current state
-                    if (spaceLikeButtonImageUri.Equals(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH))  // Do Like
-                    {
-                        spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative);
-
-                        // If like success, set like number ++
-                        // If like fail, set image back to original
-                        if (await App.AccountSpaceRelationManager.LikeAysnc(spaceId, true))
-                        {
-                            // TODO ++ like number
-                        }
-                        else
-                        {
-                            spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
-                        }
-                    }
-
-                    else  // Do Not Like
-                    {
-                        spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
-
-                        // If not like success, set like number --
-                        // If not like fail, set image back to original
-                        if (await App.AccountSpaceRelationManager.LikeAysnc(spaceId, false))
-                        {
-                            // TODO -- like number
-                        }
-                        else
-                        {
-                            spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative);
-                        }
-                    }
-
-                }
-                else  // Internet bad.
-                {
-                    MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
-                }
-
-                // Set like button clicked false for next like button click.
-                this.IsLikeButtonClicked = false;
-            }
+            // Hide progress indicator
+            base.SetProgressIndicator(false);
         }
     }
 }

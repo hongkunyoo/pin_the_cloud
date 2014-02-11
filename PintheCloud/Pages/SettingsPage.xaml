@@ -14,36 +14,6 @@
     SupportedOrientations="Portrait"  
 	Orientation="Portrait"
     shell:SystemTray.IsVisible="True" >
-    <local:PtcPage.Resources>
-        <DataTemplate x:Key="uiSpaceListItemTemplate">
-            <Grid x:Name="uiSpaceListItem">
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                    <RowDefinition Height="1"/>
-                </Grid.RowDefinitions>
-                <Button x:Name="uiSpaceButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Center">
-                    <Grid Margin="22,17.5,0,14">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition MinWidth="350" MaxWidth="350"/>
-                            <ColumnDefinition Width="93"/>
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Margin="0">
-                            <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
-                            <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLike}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,10,0"/>
-                                <TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22"/>
-                            </StackPanel>
-                        </StackPanel>
-                        <Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiSpaceLikeButton_Click" >
-                            <Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage}" Tag="{Binding SpaceId}" />
-                        </Button>
-                    </Grid>
-                </Button>
-                <Grid Grid.Row="1" Background="#FFCED7DD"/>
-            </Grid>
-        </DataTemplate>
-    </local:PtcPage.Resources>
 
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
     <Grid x:Name="LayoutRoot" Background="White">
@@ -85,8 +55,8 @@
                                             <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
                                             <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLike}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,10,0"/>
-                                                <TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22"/>
+                                                <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="#FFA7B6BE"/>
+                                                <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22"/>
                                             </StackPanel>
                                         </StackPanel>
                                         <Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiSpaceLikeButton_Click" >

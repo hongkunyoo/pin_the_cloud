@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using Windows.Devices.Geolocation;
 using PintheCloud.Resources;
 using System.Windows.Media.Imaging;
+using Newtonsoft.Json.Linq;
 
 namespace PintheCloud.Pages
 {
@@ -78,13 +79,40 @@ namespace PintheCloud.Pages
         private async void uiNearSpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected Space View Item
-            // Do selection changed event job.
-            // Set selected item to null for next selection of list item. 
             SpaceViewItem spaceViewItem = uiNearSpaceList.SelectedItem as SpaceViewItem;
-            await this.uiSpaceList_SelectionChanged(spaceViewItem);
+
+            // Set selected item to null for next selection of list item. 
             uiNearSpaceList.SelectedItem = null;
+
+            // If selected item isn't null and it doesn't come from like button, goto File list page.
+            // Otherwise, Process Like or Not Like by current state
+            if (spaceViewItem != null && !this.IsLikeButtonClicked)  // Go to FIle List Page
+            {
+                string parameters = App.SpaceManager.GetParameterStringFromSpaceViewItem(spaceViewItem);
+                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
+            }
+
+            else if (spaceViewItem != null && this.IsLikeButtonClicked)  // Do like
+            {
+                // Set is like button clicked false for next click.
+                this.IsLikeButtonClicked = false;
+
+                // Get different Account Space Relation Worker by internet state.
+                if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+                {
+                    App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
+                    await this.NearSpaceViewModel.LikeAsync(spaceViewItem);
+                }
+                else  // Internet bad
+                {
+                    MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+                }
+            }
+
+            //// Set selected item to null for next selection of list item. 
+            //uiNearSpaceList.SelectedItem = null;
         }
-        
+
 
         // Process Like or Not Like by current state
         private void uiSpaceLikeButton_Click(object sender, System.Windows.RoutedEventArgs e)
@@ -108,7 +136,7 @@ namespace PintheCloud.Pages
             // Refresh only if pivot is in pin pivot.
             switch (uiExplorerPivot.SelectedIndex)
             {
-                case PIN_PIVOT:
+                case PICK_PIVOT:
                     // Set View model for dispaly,
                     NearSpaceViewModel.IsDataLoading = false;  // Mutex
                     await this.SetExplorerPivotAsync(AppResources.Refresh);
@@ -122,156 +150,81 @@ namespace PintheCloud.Pages
 
         private async Task SetExplorerPivotAsync(string message)
         {
-            // Get different Space Worker by internet state.
-            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+            // Set worker and show loading message
+            App.SpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+            App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
+
+            // Show progress indicator 
+            uiNearSpaceList.Visibility = Visibility.Collapsed;
+            uiNearSpaceMessage.Text = message;
+            uiNearSpaceMessage.Visibility = Visibility.Visible;
+            base.SetProgressIndicator(true);
+
+            // Before go load, set mutex to true.
+            NearSpaceViewModel.IsDataLoading = true;
+
+
+            // Check whether user consented for location access.
+            if (base.GetLocationAccessConsent())  // Got consent of location access.
             {
-                // Set worker and show loading message
-                App.SpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
-                App.SpaceManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
-
-                // Show progress indicator 
-                uiNearSpaceList.Visibility = Visibility.Collapsed;
-                uiNearSpaceMessage.Text = message;
-                uiNearSpaceMessage.Visibility = Visibility.Visible;
-                base.SetProgressIndicator(true);
-
-                // Before go load, set mutex to true.
-                NearSpaceViewModel.IsDataLoading = true;
-
-
-                // Check whether user consented for location access.
-                if (base.GetLocationAccessConsent())  // Got consent of location access.
+                // Check whether GPS is on or not
+                if (base.GetGeolocatorPositionStatus())  // GPS is on
                 {
-                    // Check whether GPS is on or not
-                    if (base.GetGeolocatorPositionStatus())  // GPS is on
+                    Geoposition currentGeoposition = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
+
+                    // Check whether GPS works well or not
+                    if (currentGeoposition != null)  // works well
                     {
-                        Geoposition currentGeoposition = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
+                        // If there is near spaces, Clear and Add spaces to list
+                        // Otherwise, Show none message.
+                        JArray spaces = await App.SpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);
 
-                        // Check whether GPS works well or not
-                        if (currentGeoposition != null)  // works well
+                        if (spaces != null)  // There are near spaces
                         {
-                            // If there is near spaces, Clear and Add spaces to list
-                            // Otherwise, Show none message.
-                            ObservableCollection<SpaceViewItem> items =
-                                await App.SpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);
-
-                            if (items != null)  // There are near spaces
-                            {
-                                this.NearSpaceViewModel.Items = items;
-                                uiNearSpaceList.DataContext = null;
-                                uiNearSpaceList.DataContext = this.NearSpaceViewModel;
-                                uiNearSpaceList.Visibility = Visibility.Visible;
-                                uiNearSpaceMessage.Visibility = Visibility.Collapsed;
-                            }
-                            else  // No near spaces
-                            {
-                                uiNearSpaceList.Visibility = Visibility.Collapsed;
-                                uiNearSpaceMessage.Text = AppResources.NoNearSpaceMessage;
-                                uiNearSpaceMessage.Visibility = Visibility.Visible;
-                                NearSpaceViewModel.IsDataLoading = false;  // Mutex
-                            }
+                            this.NearSpaceViewModel.SetItems(spaces, currentGeoposition);
+                            uiNearSpaceList.DataContext = null;
+                            uiNearSpaceList.DataContext = this.NearSpaceViewModel;
+                            uiNearSpaceList.Visibility = Visibility.Visible;
+                            uiNearSpaceMessage.Visibility = Visibility.Collapsed;
                         }
-                        else  // works bad
+                        else  // No near spaces
                         {
-                            // Show GPS off message box.
                             uiNearSpaceList.Visibility = Visibility.Collapsed;
-                            uiNearSpaceMessage.Text = AppResources.BadGpsMessage;
+                            uiNearSpaceMessage.Text = AppResources.NoNearSpaceMessage;
                             uiNearSpaceMessage.Visibility = Visibility.Visible;
                             NearSpaceViewModel.IsDataLoading = false;  // Mutex
                         }
                     }
-                    else  // GPS is off
+                    else  // works bad
                     {
                         // Show GPS off message box.
                         uiNearSpaceList.Visibility = Visibility.Collapsed;
-                        uiNearSpaceMessage.Text = AppResources.NoGpsOnMessage;
+                        uiNearSpaceMessage.Text = AppResources.BadGpsMessage;
                         uiNearSpaceMessage.Visibility = Visibility.Visible;
                         NearSpaceViewModel.IsDataLoading = false;  // Mutex
                     }
                 }
-                else  // First or not consented of access in location information.
+                else  // GPS is off
                 {
-                    // Show no consent message box.
+                    // Show GPS off message box.
                     uiNearSpaceList.Visibility = Visibility.Collapsed;
-                    uiNearSpaceMessage.Text = AppResources.NoLocationAcessConsentMessage;
+                    uiNearSpaceMessage.Text = AppResources.NoGpsOnMessage;
                     uiNearSpaceMessage.Visibility = Visibility.Visible;
                     NearSpaceViewModel.IsDataLoading = false;  // Mutex
                 }
-
-
-                // Hide progress indicator
-                base.SetProgressIndicator(false);
             }
-        }
-
-
-        // Do selection changed event job.
-        private async Task uiSpaceList_SelectionChanged(SpaceViewItem spaceViewItem)
-        {
-            // If selected item isn't null and it doesn't come from like button, goto File list page.
-            // Otherwise, Process Like or Not Like by current state
-            if (spaceViewItem != null && !this.IsLikeButtonClicked)  // Go to FIle List Page
+            else  // First or not consented of access in location information.
             {
-                string parameters = App.SpaceManager.GetParameterStringFromSpaceViewItem(spaceViewItem);
-                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
+                // Show no consent message box.
+                uiNearSpaceList.Visibility = Visibility.Collapsed;
+                uiNearSpaceMessage.Text = AppResources.NoLocationAcessConsentMessage;
+                uiNearSpaceMessage.Visibility = Visibility.Visible;
+                NearSpaceViewModel.IsDataLoading = false;  // Mutex
             }
 
-            else if (this.IsLikeButtonClicked)  // Do like
-            {
-                // Get different Account Space Relation Worker by internet state.
-                if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
-                {
-                    App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
 
-
-                    // Get information about image
-                    string spaceId = spaceViewItem.SpaceId;
-                    string spaceLikeButtonImageUri = spaceViewItem.SpaceLikeButtonImage.ToString();
-
-
-                    // Set Image first for good user experience.
-                    // Like or Note LIke by current state
-                    if (spaceLikeButtonImageUri.Equals(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH))  // Do Like
-                    {
-                        spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative);
-
-                        // If like success, set like number ++
-                        // If like fail, set image back to original
-                        if (await App.AccountSpaceRelationManager.LikeAysnc(spaceId, true))
-                        {
-                            // TODO ++ like number
-                        }
-                        else
-                        {
-                            spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
-                        }
-                    }
-
-                    else  // Do Not Like
-                    {
-                        spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
-
-                        // If not like success, set like number --
-                        // If not like fail, set image back to original
-                        if (await App.AccountSpaceRelationManager.LikeAysnc(spaceId, false))
-                        {
-                            // TODO -- like number
-                        }
-                        else
-                        {
-                            spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative);
-                        }
-                    }
-
-                }
-                else  // Internet bad.
-                {
-                    MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
-                }
-
-                // Set like button clicked false for next like button click.
-                this.IsLikeButtonClicked = false;
-            }
+            // Hide progress indicator
+            base.SetProgressIndicator(false);
         }
     }
 }
