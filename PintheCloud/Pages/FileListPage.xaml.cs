@@ -11,10 +11,11 @@ using PintheCloud.ViewModels;
 using System.Windows.Media.Imaging;
 using PintheCloud.Utilities;
 using System.Windows.Media;
+using PintheCloud.Models;
 
 namespace PintheCloud.Pages
 {
-    public partial class FileListPage : PhoneApplicationPage
+    public partial class FileListPage : PtcPage
     {
         private string SpaceId;
         private string SpaceName;
@@ -43,7 +44,7 @@ namespace PintheCloud.Pages
             uiSpaceName.Text = this.SpaceName;
             uiAccountName.Text = this.AccountName;
             uiSpaceLikeNumber.Text = this.SpaceLikeNumber;
-            
+
             Brush likeColor = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(this.SpaceLikeNumberColor));
             uiSpaceLikeNumber.Foreground = likeColor;
             uiSpaceLikeText.Foreground = likeColor;
@@ -58,7 +59,17 @@ namespace PintheCloud.Pages
 
         private void uiFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-        	// TODO: 여기에 구현된 이벤트 처리기를 추가하십시오.
+            // Get Selected File Obejct
+            FileObject fileObject = uiFileList.SelectedItem as FileObject;
+
+            // Set selected item to null for next selection of list item. 
+            uiFileList.SelectedItem = null;
+
+            // If selected item isn't null, Do something
+            if (fileObject != null) 
+            {
+                // Do Something
+            }
         }
     }
 }
