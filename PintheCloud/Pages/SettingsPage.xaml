@@ -14,58 +14,135 @@
     SupportedOrientations="Portrait"  
 	Orientation="Portrait"
     shell:SystemTray.IsVisible="True" >
+    <local:PtcPage.Resources>
+        <DataTemplate x:Key="uiSpaceListItemTemplate">
+            <Grid x:Name="uiSpaceListItem">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="1"/>
+                </Grid.RowDefinitions>
+                <Button x:Name="uiSpaceButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <Grid Margin="22,17.5,0,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MinWidth="350" MaxWidth="350"/>
+                            <ColumnDefinition Width="93"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Margin="0">
+                            <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
+                            <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLike}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,10,0"/>
+                                <TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiSpaceLikeButton_Click" >
+                            <Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage}" Tag="{Binding SpaceId}" />
+                        </Button>
+                    </Grid>
+                </Button>
+                <Grid Grid.Row="1" Background="#FFCED7DD"/>
+            </Grid>
+        </DataTemplate>
+    </local:PtcPage.Resources>
 
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
     <Grid x:Name="LayoutRoot" Background="White">
-    	<Grid.RowDefinitions>
-    		<RowDefinition Height="72"/>
-    		<RowDefinition/>
-    	</Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="72"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         <!--피벗 컨트롤-->
         <Grid Background="#FF00A4BF">
-        	<Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Button x:Name="uiSpaceEditButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Visibility="Collapsed" Click="uiSpaceEditButton_Click">
+                <Image x:Name="uiSpaceEditButtonImage" Source="/Assets/pajeon/png/general_edit.png" Stretch="None" Height="72" Width="72"/>
+            </Button>
         </Grid>
         <!--피벗 컨트롤-->
-        <phone:Pivot Title="{Binding LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Foreground="Black" Style="{StaticResource CustomPivotStyle}">
+        <phone:Pivot x:Name="uiSettingPivot" Title="{Binding LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Foreground="Black" Style="{StaticResource CustomPivotStyle}" SelectionChanged="uiSettingPivot_SelectionChanged">
             <!--피벗 항목 1-->
             <phone:PivotItem Header="{Binding LocalizedResources.Profile, Source={StaticResource LocalizedStrings}}">
                 <Grid>
-                	<Button x:Name="uiLogoutButton" Content="{Binding LocalizedResources.Logout, Source={StaticResource LocalizedStrings}}" Click="uiLogoutButton_Click" FontSize="33.333" HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" BorderBrush="Black" Foreground="Black"/>
+                    <Button x:Name="uiLogoutButton" Content="{Binding LocalizedResources.Logout, Source={StaticResource LocalizedStrings}}" Click="uiLogoutButton_Click" FontSize="33.333" HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" BorderBrush="Black" Foreground="Black"/>
                 </Grid>
             </phone:PivotItem>
-			<phone:PivotItem Header="{Binding LocalizedResources.Application, Source={StaticResource LocalizedStrings}}">
+            <phone:PivotItem Header="{Binding LocalizedResources.MySpace, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
                 <Grid>
-                	<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                		<CheckBox x:Name="uiLocationServiceConsentCheckBox" Content="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Foreground="Black" BorderBrush="Black" Style="{StaticResource CustomCheckBoxStyle}"/>
-                		<HyperlinkButton Content="{Binding LocalizedResources.TermsOfService, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
-                		<HyperlinkButton Content="{Binding LocalizedResources.PrivatePolicy, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
-                	</StackPanel>
+                    <Grid.Resources>
+                        <DataTemplate x:Key="uiSpaceListItemTemplate">
+                            <Grid x:Name="uiSpaceListItem">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="1"/>
+                                </Grid.RowDefinitions>
+                                <Button x:Name="uiSpaceButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                    <Grid Margin="22,17.5,18,14">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="93"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Margin="0">
+                                            <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
+                                            <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLike}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,10,0"/>
+                                                <TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        <Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiSpaceLikeButton_Click" >
+                                            <Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage}" Tag="{Binding SpaceId}" />
+                                        </Button>
+                                    </Grid>
+                                </Button>
+                                <Grid Grid.Row="1" Background="#FFCED7DD"/>
+                            </Grid>
+                        </DataTemplate>
+                    </Grid.Resources>
+                    <phone:LongListSelector x:Name="uiMySpaceList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpaceList_SelectionChanged" />
+                    <TextBlock x:Name="uiMySpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,0,18,0"/>
                 </Grid>
             </phone:PivotItem>
-			<phone:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
+            <phone:PivotItem Header="{Binding LocalizedResources.Application, Source={StaticResource LocalizedStrings}}">
                 <Grid>
-                	<StackPanel>
-                		<RichTextBox Foreground="Black" Margin="0,0,0,18" >
-                			<Paragraph>
-                				<Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
-                			</Paragraph>
-                			<Paragraph>
-                				<Run FontSize="1.5" Text=""/>
-                			</Paragraph>
-                			<Paragraph>
-                				<Run/>
-                				<Run Text="At Here helps you share information with people around you through space."/>
-                			</Paragraph>
-                		</RichTextBox>
-                		<StackPanel Orientation="Horizontal" Margin="22,0,0,18" HorizontalAlignment="Left">
-                			<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Version, Source={StaticResource LocalizedStrings}}" FontSize="21.333"/>
-                			<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.VersionInfo, Source={StaticResource LocalizedStrings}}" FontSize="21.333"/>
-                		</StackPanel>
-                		<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Copyright, Source={StaticResource LocalizedStrings}}" FontSize="21.333" Padding="22,0,0,0"/>
-                	</StackPanel>
+                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
+                        <CheckBox x:Name="uiLocationServiceConsentCheckBox" Content="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Foreground="Black" BorderBrush="Black" Style="{StaticResource CustomCheckBoxStyle}"/>
+                        <HyperlinkButton Content="{Binding LocalizedResources.TermsOfService, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
+                        <HyperlinkButton Content="{Binding LocalizedResources.PrivatePolicy, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
+                    </StackPanel>
+                </Grid>
+            </phone:PivotItem>
+            <phone:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
+                <Grid>
+                    <RichTextBox Foreground="Black" HorizontalAlignment="Left" VerticalAlignment="Top" >
+                		<Paragraph>
+                			<Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
+                		</Paragraph>
+                		<Paragraph>
+                			<Run FontSize="1.5" Text=""/>
+                		</Paragraph>
+                		<Paragraph>
+                			<Run/>
+                			<Run Text="At Here helps you "/>
+                			<Run Text="direct "/>
+                			<Run Text="share information with people around you"/>
+                			<Run Text=". You can see spaces nearby you other made and it contains information you want."/>
+                		</Paragraph>
+                		<Paragraph>
+                			<Run/>
+                		</Paragraph>
+                		<Paragraph>
+                			<Run Text="Version : 1.0"/>
+                		</Paragraph>
+                		<Paragraph>
+                			<Run/>
+                		</Paragraph>
+                		<Paragraph>
+                			<Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
+                		</Paragraph>
+                	</RichTextBox>
                 </Grid>
             </phone:PivotItem>
         </phone:Pivot>
     </Grid>
-    
+
 </local:PtcPage>

@@ -24,13 +24,16 @@ namespace PintheCloud.Pages
     public partial class ExplorerPage : PtcPage
     {
         // Instances
-        private const int PICK_PIVOT = 0;
-        private const int PIN_PIVOT = 1;
+        private const int EXPLORER_PIVOT = 0;
+        private const int MY_SPACES_PIVOT = 1;
 
-        private bool IsLikeButtonClicked = false;
+        private const string EDIT_IMAGE_PATH = "/Assets/pajeon/png/general_edit.png";
+        private const string VIEW_IMAGE_PATH = "/Assets/pajeon/png/general_view.png";
 
         public SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
-        public FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
+        public SpaceViewModel MySpaceViewModel = new SpaceViewModel();
+
+        private bool IsLikeButtonClicked = false;
 
 
         public ExplorerPage()
@@ -45,6 +48,13 @@ namespace PintheCloud.Pages
             // Check if it is on the backstack from SplashPage and remove that.
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
+
+            uiSpaceEditButton.Visibility = Visibility.Collapsed;
+
+                    // If Internet available, Set space list
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                        if (!NearSpaceViewModel.IsDataLoading)  // Mutex check
+                            await this.SetExplorerPivotAsync(AppResources.Loading);
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -60,16 +70,49 @@ namespace PintheCloud.Pages
             // One time loading.
             switch (uiExplorerPivot.SelectedIndex)
             {
-                case PICK_PIVOT:
+                case EXPLORER_PIVOT:
+                    uiSpaceEditButton.Visibility = Visibility.Collapsed;
+
                     // If Internet available, Set space list
                     if (NetworkInterface.GetIsNetworkAvailable())
                         if (!NearSpaceViewModel.IsDataLoading)  // Mutex check
                             await this.SetExplorerPivotAsync(AppResources.Loading);
                     break;
 
-                case PIN_PIVOT:
-                    // TODO
+                case MY_SPACES_PIVOT:
+                    uiSpaceEditButton.Visibility = Visibility.Visible;
+
+                    // If Internet available, Set space list
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                        if (!MySpaceViewModel.IsDataLoading)  // Mutex check
+                            await this.SetMySpacePivotAsync(AppResources.Loading);
                     break;
+            }
+        }
+
+
+        // Process of editing spaces, especially deleting or not.
+        private void uiSpaceEditButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // Get information about image
+            Button editButton = (Button)sender;
+            Image editButtonImage = (Image)editButton.Content;
+            BitmapImage editButtonImageBitmap = (BitmapImage)editButtonImage.Source;
+            string editButtonImageUriSource = editButtonImageBitmap.UriSource.ToString();
+
+            // If it is not view mode, go edit
+            // Otherwise, go view mode
+            if (editButtonImageUriSource.Equals(EDIT_IMAGE_PATH))  // It is View mode
+            {
+                editButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_PATH, UriKind.Relative));
+
+                // TODO Chande mode to edit mode
+            }
+            else  // It is Edit mode
+            {
+                editButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_PATH, UriKind.Relative));
+
+                // TODO Chande mode to view mode
             }
         }
 
@@ -83,6 +126,18 @@ namespace PintheCloud.Pages
             SpaceViewItem spaceViewItem = uiNearSpaceList.SelectedItem as SpaceViewItem;
             await this.uiSpaceList_SelectionChanged(spaceViewItem);
             uiNearSpaceList.SelectedItem = null;
+        }
+
+
+        // List select event
+        private async void uiMySpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            // Get Selected Space View Item
+            // Do selection changed event job.
+            // Set selected item to null for next selection of list item. 
+            SpaceViewItem spaceViewItem = uiMySpaceList.SelectedItem as SpaceViewItem;
+            await this.uiSpaceList_SelectionChanged(spaceViewItem);
+            uiMySpaceList.SelectedItem = null;
         }
         
 
@@ -102,16 +157,34 @@ namespace PintheCloud.Pages
         }
 
 
+        // Move to Make Space Page
+        private void uiAppBarMakeSpaceButton_Click(object sender, System.EventArgs e)
+        {
+            NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
+        }
+
+
+        // Move to Map Page
+        private void uiAppBarMapButton_Click(object sender, System.EventArgs e)
+        {
+            NavigationService.Navigate(new Uri(PtcPage.MAP_VIEW_PAGE, UriKind.Relative));
+        }
+
+
         // Refresh space list.
         private async void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
         {
-            // Refresh only if pivot is in pin pivot.
+            // Set View model for dispaly,
             switch (uiExplorerPivot.SelectedIndex)
             {
-                case PIN_PIVOT:
-                    // Set View model for dispaly,
+                case EXPLORER_PIVOT:
                     NearSpaceViewModel.IsDataLoading = false;  // Mutex
                     await this.SetExplorerPivotAsync(AppResources.Refresh);
+                    break;
+
+                case MY_SPACES_PIVOT:
+                    MySpaceViewModel.IsDataLoading = false;  // Mutex
+                    await this.SetMySpacePivotAsync(AppResources.Refresh);
                     break;
             }
         }
@@ -201,6 +274,61 @@ namespace PintheCloud.Pages
 
                 // Hide progress indicator
                 base.SetProgressIndicator(false);
+
+                // If it works bad but no error resluts, repeat.
+                if (uiMySpaceMessage.Visibility == Visibility.Visible && uiMySpaceMessage.Text.Equals(AppResources.Loading))
+                    await this.SetMySpacePivotAsync(message);
+            }
+        }
+
+
+        private async Task SetMySpacePivotAsync(string message)
+        {
+            // Get different Space Worker by internet state.
+            if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+            {
+                // Set worker and show loading message
+                App.SpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
+                App.SpaceManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
+
+                // Show progress indicator 
+                uiMySpaceList.Visibility = Visibility.Collapsed;
+                uiMySpaceMessage.Text = message;
+                uiMySpaceMessage.Visibility = Visibility.Visible;
+                base.SetProgressIndicator(true);
+
+                // Before go load, set mutex to true.
+                MySpaceViewModel.IsDataLoading = true;
+
+
+                // If there is my spaces, Clear and Add spaces to list
+                // Otherwise, Show none message.
+                ObservableCollection<SpaceViewItem> items =
+                                await App.SpaceManager.GetMySpaceViewItemsAsync();
+
+                if (items != null)  // There are my spaces
+                {
+                    this.MySpaceViewModel.Items = items;
+                    uiMySpaceList.DataContext = null;
+                    uiMySpaceList.DataContext = this.MySpaceViewModel;
+                    uiMySpaceList.Visibility = Visibility.Visible;
+                    uiMySpaceMessage.Visibility = Visibility.Collapsed;
+                }
+                else  // No my spaces
+                {
+                    uiMySpaceList.Visibility = Visibility.Collapsed;
+                    uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
+                    uiMySpaceMessage.Visibility = Visibility.Visible;
+                    MySpaceViewModel.IsDataLoading = false;  // Mutex
+                }
+
+
+                // Hide progress indicator
+                base.SetProgressIndicator(false);
+
+                // If it works bad but no error resluts, repeat.
+                if (uiNearSpaceMessage.Visibility == Visibility.Visible && uiNearSpaceMessage.Text.Equals(AppResources.Loading))
+                    await this.SetExplorerPivotAsync(message);
             }
         }
 
@@ -212,7 +340,15 @@ namespace PintheCloud.Pages
             // Otherwise, Process Like or Not Like by current state
             if (spaceViewItem != null && !this.IsLikeButtonClicked)  // Go to FIle List Page
             {
-                string parameters = App.SpaceManager.GetParameterStringFromSpaceViewItem(spaceViewItem);
+                // Go to File List Page with parameters.
+                string spaceId = spaceViewItem.SpaceId;
+                string spaceName = spaceViewItem.SpaceName;
+                string accountName = spaceViewItem.AccountName;
+                string spaceLike = spaceViewItem.SpaceLike;
+                Uri spaceLikeButtonImage = spaceViewItem.SpaceLikeButtonImage;
+                string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountName=" + accountName
+                    + "&spaceLike=" + spaceLike + "&spaceLikeButtonImage=" + spaceLikeButtonImage;
+
                 NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
             }
 

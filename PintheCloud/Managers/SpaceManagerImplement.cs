@@ -101,6 +101,30 @@ namespace PintheCloud.Managers
         }
 
 
+        // Get parameters from given space view item
+        public string GetParameterStringFromSpaceViewItem(SpaceViewItem spaceViewItem)
+        {
+            // Go to File List Page with parameters.
+            string spaceId = spaceViewItem.SpaceId;
+            string spaceName = spaceViewItem.SpaceName;
+            string accountName = spaceViewItem.AccountName;
+            string spaceLike = spaceViewItem.SpaceLike;
+            Uri spaceLikeButtonImage = spaceViewItem.SpaceLikeButtonImage;
+            string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountName=" + accountName
+                + "&spaceLike=" + spaceLike + "&spaceLikeButtonImage=" + spaceLikeButtonImage;
+
+            return parameters;
+        }
+
+
+        public Space GetSpace(string id)
+        {
+            Space s = new Space("space_name", 10.01, 11.02, "account_id", "account_name", 0);
+            s.id = Guid.NewGuid().ToString();
+            return s;
+        }
+
+
 
         /*** Self Method ***/
 
@@ -135,12 +159,7 @@ namespace PintheCloud.Managers
                 spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
             return spaceViewItem;
         }
-        public Space GetSpace(string id)
-        {
-            Space s = new Space("space_name", 10.01, 11.02, "account_id", "account_name", 0);
-            s.id = Guid.NewGuid().ToString();
-            return s;
-        }
+
         // TODO Sort space list
     }
 }
