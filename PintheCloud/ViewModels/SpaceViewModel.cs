@@ -20,6 +20,9 @@ namespace PintheCloud.ViewModels
         public static string LIKE_NOT_PRESS_IMAGE_PATH = "/Assets/pajeon/png/general_like.png";
         public static string LIKE_PRESS_IMAGE_PATH = "/Assets/pajeon/png/general_like_p.png";
 
+        private const string LIKE_COLOR = "#3ABDBE";
+        private const string LIKE_NOT_COLOR = "#A7B6BE";
+
         public ObservableCollection<SpaceViewItem> Items { get; set; }
 
         public async void SetItems(JArray spaces, Geoposition currentGeoposition)
@@ -83,26 +86,30 @@ namespace PintheCloud.ViewModels
             if (spaceLikeButtonImageUri.Equals(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH))  // Do Like
             {
                 spaceViewItem.SpaceLikeNumber++;
-                spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative);
+                spaceViewItem.SpaceLikeNumberColor = LIKE_COLOR;
+                spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_PRESS_IMAGE_PATH;
 
                 // If like fail, set image and number back to original
                 if (!(await App.AccountSpaceRelationManager.LikeAysnc(spaceId, true)))
                 {
                     spaceViewItem.SpaceLikeNumber--;
-                    spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
+                    spaceViewItem.SpaceLikeNumberColor = LIKE_NOT_COLOR;
+                    spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH;
                 }
             }
 
             else  // Do Not Like
             {
                 spaceViewItem.SpaceLikeNumber--;
-                spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
+                spaceViewItem.SpaceLikeNumberColor = LIKE_NOT_COLOR;
+                spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH;
 
                 // If not like fail, set image back to original
                 if (!(await App.AccountSpaceRelationManager.LikeAysnc(spaceId, false)))
                 {
                     spaceViewItem.SpaceLikeNumber++;
-                    spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative);
+                    spaceViewItem.SpaceLikeNumberColor = LIKE_COLOR;
+                    spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_PRESS_IMAGE_PATH;
                 }
             }
         }
@@ -133,12 +140,14 @@ namespace PintheCloud.ViewModels
             // Otherwise, set not like image
             if (isLike)
             {
-                spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative);
+                spaceViewItem.SpaceLikeNumberColor = LIKE_COLOR;
+                spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_PRESS_IMAGE_PATH;
             }
 
             else
             {
-                spaceViewItem.SpaceLikeButtonImage = new Uri(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
+                spaceViewItem.SpaceLikeNumberColor = LIKE_NOT_COLOR;
+                spaceViewItem.SpaceLikeButtonImage = SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH;
             }
             return spaceViewItem;
         }

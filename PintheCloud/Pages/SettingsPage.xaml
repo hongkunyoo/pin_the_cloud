@@ -55,12 +55,12 @@
                                             <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
                                             <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="#FFA7B6BE" />
-                                                <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22" />
+                                                <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" />
+                                                <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontSize="22" />
                                             </StackPanel>
                                         </StackPanel>
                                         <Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiSpaceLikeButton_Click" >
-                                            <Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage}" Tag="{Binding SpaceId}" />
+                                            <Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage, Converter={StaticResource StringtoUriConverter}}" Tag="{Binding SpaceId}" />
                                         </Button>
                                     </Grid>
                                 </Button>

@@ -117,6 +117,7 @@
     <Compile Include="Utilities\MyEncoder.cs" />
     <Compile Include="Utilities\MyDebug.cs" />
     <Compile Include="Utilities\ParseHelper.cs" />
+    <Compile Include="Utilities\StringtoUriConverter.cs" />
     <Compile Include="Utilities\TestDrive.xaml.cs">
       <DependentUpon>TestDrive.xaml</DependentUpon>
     </Compile>

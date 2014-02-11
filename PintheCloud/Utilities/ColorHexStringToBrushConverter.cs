@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace PintheCloud.ViewModels
+namespace PintheCloud.Utilities
 {
     public  class ColorHexStringToBrushConverter : IValueConverter
     {
-        public static Dictionary<string, Brush> _brushCache = new Dictionary<string, Brush>();
+        // Implement Convert
+        public Dictionary<string, Brush> _brushCache = new Dictionary<string, Brush>();
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var colorStr = ((string)value).ToLower();
@@ -28,8 +29,9 @@ namespace PintheCloud.ViewModels
         
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotSupportedException("Converting back from image not supported.");
+            throw new NotSupportedException();
         }
+
 
         // Get color from hex
         private Regex _hexColorMatchRegex = new Regex("^#?(?<a>[a-z0-9][a-z0-9])?(?<r>[a-z0-9][a-z0-9])(?<g>[a-z0-9][a-z0-9])(?<b>[a-z0-9][a-z0-9])$", RegexOptions.IgnoreCase | RegexOptions.Compiled);

@@ -95,8 +95,8 @@ namespace PintheCloud.ViewModels
             }
         }
 
-        private Uri spaceLikeButtonImage;
-        public Uri SpaceLikeButtonImage
+        private string spaceLikeButtonImage;
+        public string SpaceLikeButtonImage
         {
             get
             {
