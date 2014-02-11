@@ -17,6 +17,14 @@
     shell:SystemTray.IsVisible="True"
 	shell:SystemTray.Opacity="0" >
 
+
+    <local:PtcPage.ApplicationBar>
+        <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
+            
+            <shell:ApplicationBarIconButton x:Name="uiAppBarMapButton" IsEnabled="True" Text="confirm" Click="uiAppBarConfirmButton_Click" IconUri="/Assets/AppBar/check.png"/>
+            
+        </shell:ApplicationBar>
+    </local:PtcPage.ApplicationBar>
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
@@ -30,10 +38,6 @@
 
         <!--ContentPanel - 여기에 추가 내용을 배치합니다.-->
         <Grid x:Name="ContentPanel" Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="72"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
             <Grid.Resources>
                 <DataTemplate x:Key="uiSkyDriveFileListItemTemplate">
                     <Grid x:Name="uiSkyDriveFileListItem">
@@ -42,16 +46,22 @@
                     		<RowDefinition Height="1"/>
                     	</Grid.RowDefinitions>
                     	<StackPanel Orientation="Horizontal">
-                    		<CheckBox x:Name="uiSkyDriveFileSelectCheckBox" Style="{StaticResource CustomCheckBoxStyle}"/>
-                    		<Image x:Name="uiSkyDriveFileThumnail"/>
-                    		<TextBlock x:Name="uiSkyDriveFileName" TextWrapping="Wrap"/>
+                            <Image x:Name="uiSkyDriveFileThumnail" Source="/Assets/pajeon/png/general_like.png"/>
+                    		<TextBlock x:Name="uiSkyDriveFileName" Text="{Binding Name}" TextWrapping="Wrap" FontSize="53.333" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FFA80000"/>
                     	</StackPanel>
                     	<Grid Grid.Row="1" Background="#FFCED7DD"/>
                     </Grid>
                 </DataTemplate>
             </Grid.Resources>
-            <Grid/>
-            <toolkit:LongListMultiSelector x:Name="uiSkyDriveFileList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSkyDriveFileListItemTemplate}" Grid.Row="1" />
+            <Grid.RowDefinitions>
+                <RowDefinition Height="72"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid>
+            	<Button x:Name="uiTreeupBtn" Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Black" BorderBrush="Black" Click="uiTreeupBtn_Click"/>
+            	<TextBlock x:Name="uiCurrentPath" HorizontalAlignment="Left" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Foreground="Black" Margin="158,23,0,0" Width="312"/>
+            </Grid>
+            <phone:LongListSelector x:Name="uiSkyDriveFileList" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiSkyDriveFileListItemTemplate}" Grid.Row="1" SelectionChanged="uiSkyDriveFileList_SelectionChanged" />
         </Grid>
     </Grid>
 

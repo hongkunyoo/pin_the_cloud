@@ -15,6 +15,8 @@ using PintheCloud.Models;
 using System.Collections.ObjectModel;
 using System.Windows.Controls.Primitives;
 using System.ComponentModel;
+using PintheCloud.Utilities;
+using System.Windows.Media;
 
 
 
@@ -24,16 +26,14 @@ namespace PintheCloud.Pages
     {
 
         // Instances
-        //public FileObjectViewModel SkyDriveFileObjectViewModel = new FileObjectViewModel();
-
-
+        public FileObjectViewModel SkyDriveFileObjectViewModel = new FileObjectViewModel();
 
         PhoneApplicationPage currentPage;
         PhoneApplicationFrame currentFrame;
 
         private FileObject skydriveRootFolder;
         private Stack<FileObject> folderTree { get; set; }
-        public ObservableCollection<FileObject> fileList { get; set; }
+        public List<FileObject> selectedFile { get; set; }
 
         bool mustRestoreApplicationBar = false;
         bool mustRestoreSystemTray = false;
@@ -41,20 +41,16 @@ namespace PintheCloud.Pages
         public event OnSkyDriveCompleted OnDismiss;
         public delegate void OnSkyDriveCompleted(List<FileObject> files);
 
-
-        public string uiCurrentPath;
-        public Popup uiRootPopup;
+        //private ApplicationBar 
+        //public string uiCurrentPath;
+        //public Popup uiRootPopup;
 
 
         public SkyDrivePickerPage()
         {
             InitializeComponent();
 
-            // TODO
-            // Get file list using API
-            //SkyDriveFileObjectViewModel.Items = null; // this is the ObservableCollection List input
-            this.DataContext = null;
-            //this.DataContext = SkyDriveFileObjectViewModel;
+            Initialize();
         }
 
         public async void Initialize()
@@ -62,31 +58,36 @@ namespace PintheCloud.Pages
             //this.localRootFolder = await App.LocalStorageManager.GetSkyDriveStorageFolderAsync();
             this.skydriveRootFolder = await App.SkyDriveManager.GetRootFolderAsync();
 
-
             this.folderTree = new Stack<FileObject>();
-            this.fileList = new ObservableCollection<FileObject>();
+            this.selectedFile = new List<FileObject>();
+            currentFrame = Application.Current.RootVisual as PhoneApplicationFrame;
+            currentPage = currentFrame.Content as PhoneApplicationPage;
 
             GetTreeForFolder(this.skydriveRootFolder);
         }
 
         async void GetTreeForFolder(FileObject folder)
         {
-            fileList.Clear();
-
             List<FileObject> files = await App.SkyDriveManager.GetFilesFromFolderAsync(folder.Id);
+            uiSkyDriveFileList.DataContext = new ObservableCollection<FileObject>(files);
 
-            foreach (FileObject file in files)
-            {
-                fileList.Add(file);
-            }
+            if (!this.folderTree.Contains(folder))
+                this.folderTree.Push(folder);
 
-            if (!folderTree.Contains(folder))
-                folderTree.Push(folder);
-
-            uiCurrentPath = folderTree.First().ParentId;
+            uiCurrentPath.Text = GetCurrentPath();
         }
-
-        public void TreeUp(object sender, RoutedEventArgs e)
+        private string GetCurrentPath()
+        {
+            FileObject[] array = folderTree.Reverse<FileObject>().ToArray<FileObject>();
+            
+            string str = "";
+            foreach(FileObject f in array)
+            {
+                str += f.Name + "/";
+            }
+            return str;
+        }
+        private void TreeUp()
         {
             if (folderTree.Count > 1)
             {
@@ -118,18 +119,34 @@ namespace PintheCloud.Pages
 
             if (currentPage != null)
             {
-                currentPage.BackKeyPress += OnBackKeyPress;
+                //currentPage.BackKeyPress += OnBackKeyPress;
             }
 
-            uiRootPopup.IsOpen = true;
+            //uiRootPopup.IsOpen = true;
         }
-
+        /*
         void OnBackKeyPress(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
             Dismiss(null);
         }
-
+        */
+        protected override void OnBackKeyPress(CancelEventArgs e)
+        {
+            if (this.folderTree.Count == 1)
+            {
+                e.Cancel = false;
+                NavigationService.GoBack();                
+            }
+            else
+            {
+                TreeUp();
+                e.Cancel = true; 
+            }
+            base.OnBackKeyPress(e);
+        }
+    
+        /*
         private void Dismiss(FileObject file)
         {
             if (currentPage != null)
@@ -137,7 +154,7 @@ namespace PintheCloud.Pages
                 currentPage.BackKeyPress -= OnBackKeyPress;
             }
 
-            uiRootPopup.IsOpen = false;
+            //uiRootPopup.IsOpen = false;
 
             if (mustRestoreApplicationBar)
                 currentPage.ApplicationBar.IsVisible = true;
@@ -148,5 +165,64 @@ namespace PintheCloud.Pages
             if (OnDismiss != null)
                 OnDismiss(null);
         }
+        */
+        private void uiSkyDriveFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+            if (e.AddedItems.Count > 1) return;
+
+            FileObject file = (FileObject)e.AddedItems[0];
+            if (file.Type.Equals("folder"))
+            {
+                GetTreeForFolder(file);
+            }
+            // Do selection if file
+            else
+            {
+                this.selectedFile.Add(file);
+            }
+        }
+        private static int count = 0;
+        public static void GetItemsRecursive<T>(DependencyObject parents, ref List<T> objectList) where T : DependencyObject
+        {
+            count++;
+            var childrenCount = VisualTreeHelper.GetChildrenCount(parents);
+            for (int i = 0; i < childrenCount; i++)
+            {
+                var child = VisualTreeHelper.GetChild(parents, i);
+                ////////////////////////////////////////
+                string str="";
+                for (int k = 0; k < count; k++)
+                {
+                    str += " ";
+                }
+                MyDebug.WriteLine(str + child);
+                ////////////////////////////////////////
+                if (child is T)
+                {
+                    objectList.Add(child as T);
+                }
+
+                GetItemsRecursive<T>(child, ref objectList);
+            }
+            count--;
+            return;
+        }
+
+        private void uiTreeupBtn_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+            TreeUp();
+        }
+
+        private void uiAppBarConfirmButton_Click(object sender, System.EventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+            foreach (FileObject f in this.selectedFile)
+            {
+                MyDebug.WriteLine(f.Name);
+            }
+        }
+
     }
 }

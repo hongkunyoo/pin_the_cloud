@@ -35,7 +35,7 @@ namespace PintheCloud.Managers
         {
             string id = (string)(dic["id"] ?? "");   
             string name = (string)(dic["name"] ?? "");
-            string parent_id = (string)(dic["parent_id"] ?? "");
+            string parent_id = (string)(dic["parent_id"] ?? "/");
             int size = (int)dic["size"];
             string type = (string)dic["type"] ?? "";
             string createAt = (string)dic["created_time"] ?? DateTime.Now.ToString();
@@ -57,7 +57,9 @@ namespace PintheCloud.Managers
         }
 
         public async Task<FileObject> GetRootFolderAsync(){
-            return getData((await this.LiveClient.GetAsync("me/skydrive")).Result);
+            FileObject root = getData((await this.LiveClient.GetAsync("me/skydrive")).Result);
+            root.Name = "";
+            return root;
         }
 
         public async Task<List<FileObject>> GetRootFilesAsync()

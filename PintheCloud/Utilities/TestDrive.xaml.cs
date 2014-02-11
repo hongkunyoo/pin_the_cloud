@@ -13,6 +13,7 @@ using Windows.System;
 using PintheCloud.Models;
 using PintheCloud.Pages;
 using Microsoft.Phone.Tasks;
+using System.Windows.Controls.Primitives;
 
 namespace PintheCloud.Utilities
 {
@@ -97,11 +98,14 @@ namespace PintheCloud.Utilities
                 //Uri uri = new Uri("/shared/transfers/mytest.pdf", UriKind.Relative);
                 //await Launcher.LaunchFileAsync(await App.SkyDriveManager.DownloadFile("file.b96a113f78eb1c6f.B96A113F78EB1C6F!314", uri));
                 
-                StorageFolder myfolder = await App.LocalStorageManager.CreateFolderToSkyDriveStorage("myfoldertest");
-                StorageFolder folder = await App.SkyDriveManager.DownloadFolderAsync("folder.b96a113f78eb1c6f.B96A113F78EB1C6F!1856", myfolder);
-                await Launcher.LaunchFileAsync(await App.LocalStorageManager.GetSkyDriveStorageFileAsync("myfoldertest/pzl.docx"));
+                //StorageFolder myfolder = await App.LocalStorageManager.CreateFolderToSkyDriveStorage("myfoldertest");
+                //StorageFolder folder = await App.SkyDriveManager.DownloadFolderAsync("folder.b96a113f78eb1c6f.B96A113F78EB1C6F!1856", myfolder);
+                //await Launcher.LaunchFileAsync(await App.LocalStorageManager.GetSkyDriveStorageFileAsync("myfoldertest/pzl.docx"));
                 //await Launcher.LaunchFileAsync(await App.SkyDriveManager.DownloadFileAsync("file.b96a113f78eb1c6f.B96A113F78EB1C6F!390", new Uri(("/Shared/Transfers/skydrive/f ee e ee.zip"), UriKind.Relative)));
                 //await App.LocalStorageManager.PrintFolderAsync(folder);
+                Popup p = new Popup();
+                MyDebug.WriteLine("in TestDrive");
+                await p.showSkyDriveAsync();
             }
             catch(Exception e)
             {
