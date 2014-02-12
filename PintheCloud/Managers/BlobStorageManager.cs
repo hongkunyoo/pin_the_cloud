@@ -66,6 +66,15 @@ namespace PintheCloud.Managers
         {
             return await this.DownloadFileAsync(this.account + "/" + spaceId + "/" + sourcePath,downloadFile);
         }
+
+        public async Task<Stream> DownloadFileThroughStreamAsync(string id)
+        {
+            CloudBlockBlob blockBlob = container.GetBlockBlobReference(id);
+            return await blockBlob.OpenReadAsync();
+        }
+
+
+
         private async Task<string> _UploadFileAsync(string id, StorageFile uploadfile)
         {
             try
@@ -82,6 +91,25 @@ namespace PintheCloud.Managers
             }
             return id;
         }
+
+        public async Task<string> UploadFileThroughStreamAsync(string id, Stream stream)
+        {
+            try
+            {
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(this.account+"/"+id);
+                using (Stream s = stream)
+                {
+                    await blockBlob.UploadFromStreamAsync(s);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            return id;
+        }
+
+
         public async Task<string> UploadFileAsync(string spaceId, StorageFile uploadfile)
         {
             return await this._UploadFileAsync(this.account + "/" + spaceId + "/" + MyEncoder.Decode(uploadfile.Name), uploadfile);

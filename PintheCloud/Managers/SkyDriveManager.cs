@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using Windows.Storage;
 using System.IO;
+using Windows.System;
 
 namespace PintheCloud.Managers
 {
@@ -115,6 +116,8 @@ namespace PintheCloud.Managers
             fo.FileList = await GetChildAsync(fo);
             return fo;
         }
+
+
         public async Task<StorageFile> DownloadFileAsync(string sourceFileId, Uri destinationUri)
         {
             
@@ -127,7 +130,6 @@ namespace PintheCloud.Managers
             
             try
             {
-                //destinationUri = new Uri(MyEncoder.Encode(destinationUri.ToString()), UriKind.Relative);
                 LiveOperationResult result = await this.LiveClient.BackgroundDownloadAsync(sourceFileId + "/content", destinationUri, ctsDownload.Token, progressHandler);
             }
             catch (Exception ex)
@@ -136,6 +138,29 @@ namespace PintheCloud.Managers
                 return null;
             }
             return await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/"+destinationUri));
+        }
+
+        public async Task<Stream> DownloadFileThroughStreamAsync(string sourceFileId)
+        {
+
+            ProgressBar progressBar = new ProgressBar();
+            progressBar.Value = 0;
+            var progressHandler = new Progress<LiveOperationProgress>(
+                (progress) => { progressBar.Value = progress.ProgressPercentage; });
+
+            System.Threading.CancellationTokenSource ctsDownload = new System.Threading.CancellationTokenSource();
+
+            try
+            {
+                LiveDownloadOperationResult result = await this.LiveClient.DownloadAsync(sourceFileId + "/content");
+             
+                return result.Stream;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                return null;
+            }
         }
        
         public async Task<StorageFolder> DownloadFolderAsync(string sourceFolder, StorageFolder folder)
@@ -171,43 +196,21 @@ namespace PintheCloud.Managers
                 progressBar.Value = 0;
                 var progressHandler = new Progress<LiveOperationProgress>(
                     (progress) => { progressBar.Value = progress.ProgressPercentage; });
-
-                
                 
                 progressBar.Value = 0;
 
-                //folderIdToStore = "folder.b96a113f78eb1c6f.B96A113F78EB1C6F!1856";
-                //uploadFile = new Uri("",UriKind.Relative);
-                //await this.LiveClient.BackgroundUploadAsync("folder.8c8ce076ca27823f.8C8CE076CA27823F!134",
-                //    "MyUploadedPicture.jpg", file, true, ctsUpload.Token, progressHandler);
-                MyDebug.WriteLine("start");
-                //LiveOperationResult result = await this.LiveClient.BackgroundUploadAsync(folderIdToStore, uploadFile, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
                 Stream input = await file.OpenStreamForReadAsync();
                 LiveOperationResult result = await this.LiveClient.UploadAsync(folderIdToStore, "plzdo.pdf", input, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
-                MyDebug.WriteLine("Done");
-                IEnumerator<KeyValuePair<string,object>> e = result.Result.GetEnumerator();
-
-
-                //await this.LiveClient.UploadAsync("path", "fileName", input, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
-                
-
-                while (e.MoveNext())
-                {
-                    MyDebug.WriteLine(e.Current.Key);
-                    MyDebug.WriteLine(e.Current.Value);
-                }
                 
             }
             catch (System.Threading.Tasks.TaskCanceledException ex)
             {
-                //this.infoTextBlock.Text = "Upload cancelled.";
                 ctsUpload.Cancel();
                 System.Diagnostics.Debug.WriteLine("taskcancel : "+ex.ToString());
 
             }
             catch (LiveConnectException exception)
             {
-                //this.infoTextBlock.Text = "Error uploading file: " + exception.Message;
                 ctsUpload.Cancel();
                 System.Diagnostics.Debug.WriteLine("LiveConnection : "+exception.ToString());
             }
@@ -216,8 +219,38 @@ namespace PintheCloud.Managers
                 ctsUpload.Cancel();
                 System.Diagnostics.Debug.WriteLine("exception : " + e.ToString());
             }
+        }
 
+        public async Task UploadFileThroughStreamAsync(string folderIdToStore, string fileName, Stream outstream)
+        {
+            System.Threading.CancellationTokenSource ctsUpload = new System.Threading.CancellationTokenSource();
+            try
+            {
+                ProgressBar progressBar = new ProgressBar();
+                progressBar.Value = 0;
+                var progressHandler = new Progress<LiveOperationProgress>(
+                    (progress) => { progressBar.Value = progress.ProgressPercentage; });
+                progressBar.Value = 0;
 
+                LiveOperationResult result = await this.LiveClient.UploadAsync(folderIdToStore, fileName, outstream, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
+
+            }
+            catch (System.Threading.Tasks.TaskCanceledException ex)
+            {
+                ctsUpload.Cancel();
+                System.Diagnostics.Debug.WriteLine("taskcancel : " + ex.ToString());
+
+            }
+            catch (LiveConnectException exception)
+            {
+                ctsUpload.Cancel();
+                System.Diagnostics.Debug.WriteLine("LiveConnection : " + exception.ToString());
+            }
+            catch (Exception e)
+            {
+                ctsUpload.Cancel();
+                System.Diagnostics.Debug.WriteLine("exception : " + e.ToString());
+            }
         }
     }
 }
