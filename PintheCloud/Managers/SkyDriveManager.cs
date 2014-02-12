@@ -225,11 +225,13 @@ namespace PintheCloud.Managers
             string name = (string)(dic["name"] ?? "");
             string parent_id = (string)(dic["parent_id"] ?? "/");
             int size = (int)dic["size"];
-            string type = (string)dic["type"] ?? "";
+            //string type = (string)dic["type"] ?? "";
+            string type = id.Substring(0, id.IndexOf("."));
+            string typeDetail = name.Substring(name.LastIndexOf(".") + 1, name.Length - name.LastIndexOf(".") - 1);
             string createAt = (string)dic["created_time"] ?? DateTime.Now.ToString();
             string updateAt = (string)dic["updated_time"] ?? DateTime.Now.ToString();
 
-            return new FileObject(id, name, parent_id, size, id.Substring(0, id.IndexOf(".")), type, createAt, updateAt);
+            return new FileObject(id, name, parent_id, size, type, typeDetail, createAt, updateAt);
         }
 
 

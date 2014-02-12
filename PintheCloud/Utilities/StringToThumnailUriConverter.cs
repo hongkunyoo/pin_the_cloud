@@ -32,20 +32,24 @@ namespace PintheCloud.Utilities
         private const string MPEG = "mpeg";
         private const string WMV = "wmv";
         private const string AVI = "avi";
+        private const string MKV = "mkv";
+        private const string FLV = "flv";
 
         // Image
         private const string JPG = "jpg";
         private const string JPEG = "jpeg";
         private const string PNG = "png";
+        private const string GIF = "gif";
 
         // Document
         private const string PPT = "ppt";
+        private const string PPTX = "pptx";
         private const string PDF = "pdf";
         private const string DOC = "doc";
         private const string DOCX = "docx";
         private const string XLS = "xls";
         private const string HWP = "hwp";
-
+        
         // ETC
         private const string ZIP = "zip";
 
@@ -60,13 +64,13 @@ namespace PintheCloud.Utilities
             else if (type.Equals(MP3) || type.Equals(WMA))  // Sound
                 return new Uri(SOUND_IMAGE_PATH, UriKind.Relative);
 
-            else if (type.Equals(MP4) || type.Equals(WMV) || type.Equals(MPEG) || type.Equals(AVI))  // video
+            else if (type.Equals(MP4) || type.Equals(WMV) || type.Equals(MPEG) || type.Equals(AVI) || type.Equals(MKV) || type.Equals(FLV))  // video
                 return new Uri(VIDEO_IMAGE_PATH, UriKind.Relative);
 
-            else if (type.Equals(JPG) || type.Equals(JPEG) || type.Equals(PNG))  // Image
+            else if (type.Equals(JPG) || type.Equals(JPEG) || type.Equals(PNG) || type.Equals(GIF))  // Image
                 return new Uri(IMG_IMAGE_PATH, UriKind.Relative);
 
-            else if (type.Equals(PPT))  // PPT
+            else if (type.Equals(PPT) || type.Equals(PPTX))  // PPT
                 return new Uri(PPT_IMAGE_PATH, UriKind.Relative);
 
             else if (type.Equals(DOC) || type.Equals(DOCX))  // Word
