@@ -14,6 +14,8 @@ using Microsoft.Phone.Shell;
 using PintheCloud.Resources;
 using PintheCloud.Models;
 using Windows.Devices.Geolocation;
+using System.Text.RegularExpressions;
+using Windows.UI;
 //using System.Threading.Tasks;
 
 namespace PintheCloud.Pages
@@ -72,7 +74,5 @@ namespace PintheCloud.Pages
             else
                 return false;
         }
-
-        public static Uri Ex { get; set; }
     }
 }

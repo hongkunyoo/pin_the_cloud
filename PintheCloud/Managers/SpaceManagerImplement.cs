@@ -57,21 +57,15 @@ namespace PintheCloud.Managers
             string spaceId = spaceViewItem.SpaceId;
             string spaceName = spaceViewItem.SpaceName;
             string accountName = spaceViewItem.AccountName;
-            int spaceLike = spaceViewItem.SpaceLikeNumber;
-            Uri spaceLikeButtonImage = spaceViewItem.SpaceLikeButtonImage;
+            int spaceLikeNumber = spaceViewItem.SpaceLikeNumber;
+            string spaceLikeNumberColor = spaceViewItem.SpaceLikeNumberColor;
+
             string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountName=" + accountName
-                + "&spaceLike=" + spaceLike + "&spaceLikeButtonImage=" + spaceLikeButtonImage;
+                + "&spaceLikeNumber=" + spaceLikeNumber + "&spaceLikeNumberColor=" + spaceLikeNumberColor;
 
             return parameters;
         }
 
-
-        public Space GetSpace(string id)
-        {
-            Space s = new Space("space_name", 10.01, 11.02, "account_id", "account_name", 0);
-            s.id = Guid.NewGuid().ToString();
-            return s;
-        }
 
         // TODO Sort space list
     }

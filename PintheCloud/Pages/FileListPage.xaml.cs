@@ -9,16 +9,20 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using PintheCloud.ViewModels;
 using System.Windows.Media.Imaging;
+using PintheCloud.Utilities;
+using System.Windows.Media;
+using PintheCloud.Models;
 
 namespace PintheCloud.Pages
 {
-    public partial class FileListPage : PhoneApplicationPage
+    public partial class FileListPage : PtcPage
     {
         private string SpaceId;
         private string SpaceName;
         private string AccountName;
-        private string SpaceLike;
-        private Uri SpaceLikeButtonImage;
+        private string SpaceLikeNumber;
+        private string SpaceLikeNumberColor;
+
 
         public FileListPage()
         {
@@ -33,20 +37,19 @@ namespace PintheCloud.Pages
             this.SpaceId = NavigationContext.QueryString["spaceId"];
             this.SpaceName = NavigationContext.QueryString["spaceName"];
             this.AccountName = NavigationContext.QueryString["accountName"];
-            this.SpaceLike = NavigationContext.QueryString["spaceLike"];
-            string spaceLikeButtonImage = NavigationContext.QueryString["spaceLikeButtonImage"];
-            if(spaceLikeButtonImage.Equals(SpaceViewModel.LIKE_NOT_PRESS_IMAGE_PATH))  // Not Like
-                this.SpaceLikeButtonImage = new Uri(FileObjectViewModel.LIKE_NOT_PRESS_IMAGE_PATH, UriKind.Relative);
-            else  // Like
-                this.SpaceLikeButtonImage = new Uri(FileObjectViewModel.LIKE_PRESS_IMAGE_PATH, UriKind.Relative);
+            this.SpaceLikeNumber = NavigationContext.QueryString["spaceLikeNumber"];
+            this.SpaceLikeNumberColor = NavigationContext.QueryString["spaceLikeNumberColor"];
 
-
-            // Set Instances to UI
+            // Set Binding Instances to UI
             uiSpaceName.Text = this.SpaceName;
             uiAccountName.Text = this.AccountName;
-            uiSpaceLike.Text = this.SpaceLike;
-            uiSpaceLikeButtonImage.Source = new BitmapImage(this.SpaceLikeButtonImage);
+            uiSpaceLikeNumber.Text = this.SpaceLikeNumber;
+
+            Brush likeColor = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(this.SpaceLikeNumberColor));
+            uiSpaceLikeNumber.Foreground = likeColor;
+            uiSpaceLikeText.Foreground = likeColor;
         }
+
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
@@ -56,7 +59,17 @@ namespace PintheCloud.Pages
 
         private void uiFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-        	// TODO: 여기에 구현된 이벤트 처리기를 추가하십시오.
+            // Get Selected File Obejct
+            FileObject fileObject = uiFileList.SelectedItem as FileObject;
+
+            // Set selected item to null for next selection of list item. 
+            uiFileList.SelectedItem = null;
+
+            // If selected item isn't null, Do something
+            if (fileObject != null) 
+            {
+                // Do Something
+            }
         }
     }
 }

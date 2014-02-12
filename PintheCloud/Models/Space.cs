@@ -30,8 +30,11 @@ namespace PintheCloud.Models
         [JsonProperty(PropertyName = "space_like_number")]
         public int space_like_number { get; set; }
 
+        [JsonProperty(PropertyName = "space_distance")]
+        public double space_distance { get; set; }
 
-        public Space(string space_name, double space_latitude, double space_longtitude, string account_id, string account_name, int space_like_number)
+
+        public Space(string space_name, double space_latitude, double space_longtitude, string account_id, string account_name, int space_like_number, double space_distance)
         {
             this.space_name = space_name;
             this.space_latitude = space_latitude;
@@ -39,6 +42,7 @@ namespace PintheCloud.Models
             this.account_id = account_id;
             this.account_name = account_name;
             this.space_like_number = space_like_number;
+            this.space_distance = space_distance;
         }
     }
 }

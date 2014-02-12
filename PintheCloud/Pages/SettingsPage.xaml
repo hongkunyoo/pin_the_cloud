@@ -47,21 +47,14 @@
                                 </Grid.RowDefinitions>
                                 <Button x:Name="uiSpaceButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                                     <Grid Margin="22,17.5,18,14">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition Width="93"/>
-                                        </Grid.ColumnDefinitions>
                                         <StackPanel Margin="0">
                                             <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
-                                            <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
+                                            <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5" FontWeight="Light"/>
                                             <StackPanel Orientation="Horizontal">
-                                                <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="#FFA7B6BE"/>
-                                                <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22"/>
+                                                <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontWeight="Light"/>
+                                                <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontSize="22" FontWeight="Light"/>
                                             </StackPanel>
                                         </StackPanel>
-                                        <Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiSpaceLikeButton_Click" >
-                                            <Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage}" Tag="{Binding SpaceId}" />
-                                        </Button>
                                     </Grid>
                                 </Button>
                                 <Grid Grid.Row="1" Background="#FFCED7DD"/>
@@ -84,32 +77,51 @@
             <phone:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
                 <Grid>
                     <RichTextBox Foreground="Black" HorizontalAlignment="Left" VerticalAlignment="Top" >
-                		<Paragraph>
-                			<Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
-                		</Paragraph>
-                		<Paragraph>
-                			<Run FontSize="1.5" Text=""/>
-                		</Paragraph>
-                		<Paragraph>
-                			<Run/>
-                			<Run Text="At Here helps you "/>
-                			<Run Text="direct "/>
-                			<Run Text="share information with people around you"/>
-                			<Run Text=". You can see spaces nearby you other made and it contains information you want."/>
-                		</Paragraph>
-                		<Paragraph>
-                			<Run/>
-                		</Paragraph>
-                		<Paragraph>
-                			<Run Text="Version : 1.0"/>
-                		</Paragraph>
-                		<Paragraph>
-                			<Run/>
-                		</Paragraph>
-                		<Paragraph>
-                			<Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
-                		</Paragraph>
-                	</RichTextBox>
+                    	<Paragraph>
+                    		<Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run FontSize="1.5" Text=""/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run/>
+                    		<Run Text="At Here helps you "/>
+                    		<Run Text="direct "/>
+                    		<Run Text="share information with people around you"/>
+                    		<Run Text=". "/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run Text="Without any previous settings job, you"/>
+                    		<Run Text=" can see spaces "/>
+                    		<Run Text="nearby you where "/>
+                    		<Run Text="other who wants to share with you made"/>
+                    		<Run Text="."/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run Text="You don't need to mind state of others. Just access where you want, "/>
+                    		<Run Text="and "/>
+                    		<Run Text="give or get information"/>
+                    		<Run Text=" with simple UI."/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run Text="Version : 1.0"/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run/>
+                    	</Paragraph>
+                    	<Paragraph>
+                    		<Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
+                    	</Paragraph>
+                    </RichTextBox>
                 </Grid>
             </phone:PivotItem>
         </phone:Pivot>

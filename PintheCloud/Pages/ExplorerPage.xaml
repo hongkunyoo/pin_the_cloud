@@ -51,17 +51,17 @@
                                     <ColumnDefinition Width="93"/>
                                 </Grid.ColumnDefinitions>
                                 <StackPanel Margin="0">
-                                    <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
-                                    <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5"/>
+                                    <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,8" UseLayoutRounding="True" Foreground="Black"/>
+                                    <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,8" FontWeight="Light"/>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="#FFA7B6BE" />
-										<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22" Margin="0,0,10,0"/>
-                                        <TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22"/>
-										<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Meter, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22"/>
+                                        <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontWeight="Light" />
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontSize="22" Margin="0,0,10,0" FontWeight="Light"/>
+                                        <TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22" FontWeight="Light"/>
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Meter, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22" FontWeight="Light"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiSpaceLikeButton_Click" >
-                                    <Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage}" Tag="{Binding SpaceId}" />
+                                    <Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage, Converter={StaticResource StringtoUriConverter}}" Tag="{Binding SpaceId}" />
                                 </Button>
                             </Grid>
                         </Button>
@@ -70,16 +70,16 @@
                 </DataTemplate>
             </Grid.Resources>
             <phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged" Style="{StaticResource CustomPivotStyle}" Foreground="Black">
-        		<phone:PivotItem x:Name="uiPickPivot" Header="{Binding LocalizedResources.Pick, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
-        			<Grid>
-        				<phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpaceList_SelectionChanged" />
-        				<TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,0,18,0" Foreground="Black"/>
-        			</Grid>
-        		</phone:PivotItem>
-        		<phone:PivotItem x:Name="uiPinPivot" Header="{Binding LocalizedResources.Pin, Source={StaticResource LocalizedStrings}}">
-        			<Grid/>
-        		</phone:PivotItem>
-        	</phone:Pivot>
+                <phone:PivotItem x:Name="uiPickPivot" Header="{Binding LocalizedResources.Pick, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
+                    <Grid>
+                        <phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpaceList_SelectionChanged" />
+                        <TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,0,18,0" Foreground="Black"/>
+                    </Grid>
+                </phone:PivotItem>
+                <phone:PivotItem x:Name="uiPinPivot" Header="{Binding LocalizedResources.Pin, Source={StaticResource LocalizedStrings}}">
+                    <Grid/>
+                </phone:PivotItem>
+            </phone:Pivot>
         </Grid>
         <!--피벗 컨트롤-->
     </Grid>

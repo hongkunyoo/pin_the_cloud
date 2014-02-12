@@ -67,7 +67,8 @@ namespace PintheCloud.Utilities
             {
                 MyDebug.WriteLine(f.Name + " / ");
             }
-            Space space = App.SpaceManager.GetSpace("ee");
+            //Space space = App.SpaceManager.GetSpace("ee");
+            Space space = new Space("", 0, 0, "", "", 0, 0);
 
             foreach (FileObject f in select_files)
             {

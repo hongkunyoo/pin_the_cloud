@@ -39,13 +39,24 @@ namespace PintheCloud.Pages
             InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
             // Check if it is on the backstack from SplashPage and remove that.
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
+
+            // Refresh if it didn't load list.
+            if (uiNearSpaceMessage.Visibility == Visibility.Visible)
+                if (uiNearSpaceMessage.Text.Equals(AppResources.Loading))
+                {
+                    await this.SetExplorerPivotAsync(AppResources.Loading);
+                }
+                else if (uiNearSpaceMessage.Text.Equals(AppResources.Refresh))
+                {
+                    await this.SetExplorerPivotAsync(AppResources.Refresh);
+                }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -108,9 +119,6 @@ namespace PintheCloud.Pages
                     MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
                 }
             }
-
-            //// Set selected item to null for next selection of list item. 
-            //uiNearSpaceList.SelectedItem = null;
         }
 
 
@@ -182,7 +190,6 @@ namespace PintheCloud.Pages
                         if (spaces != null)  // There are near spaces
                         {
                             this.NearSpaceViewModel.SetItems(spaces, currentGeoposition);
-                            uiNearSpaceList.DataContext = null;
                             uiNearSpaceList.DataContext = this.NearSpaceViewModel;
                             uiNearSpaceList.Visibility = Visibility.Visible;
                             uiNearSpaceMessage.Visibility = Visibility.Collapsed;

@@ -117,6 +117,7 @@
     <Compile Include="Utilities\MyEncoder.cs" />
     <Compile Include="Utilities\MyDebug.cs" />
     <Compile Include="Utilities\ParseHelper.cs" />
+    <Compile Include="Utilities\StringtoUriConverter.cs" />
     <Compile Include="Utilities\TestDrive.xaml.cs">
       <DependentUpon>TestDrive.xaml</DependentUpon>
     </Compile>
@@ -131,6 +132,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\ColorHexStringToBrushConverter.cs" />
     <Compile Include="ViewModels\FileObjectViewItem.cs" />
     <Compile Include="ViewModels\FileObjectViewModel.cs" />
     <Compile Include="ViewModels\SpaceViewItem.cs" />
@@ -211,7 +213,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\AppBar\general_bar_me.png" />
-    <Content Include="Assets\pajeon\png\app_icon.png" />
     <Content Include="Assets\pajeon\png%402x\filelist_edit.png" />
     <Content Include="Assets\pajeon\png%402x\filelist_like.png" />
     <Content Include="Assets\pajeon\png%402x\filelist_like_p.png" />
@@ -248,6 +249,12 @@
     <Content Include="Assets\pajeon\png%402x\map_pin.png" />
     <Content Include="Assets\pajeon\png%402x\map_point.png" />
     <Content Include="Assets\pajeon\png%402x\splash_logo.png" />
+    <Content Include="Assets\pajeon\png\app_ApplicationIcon.png" />
+    <Content Include="Assets\pajeon\png\app_MediumFlipCycleTile.png" />
+    <Content Include="Assets\pajeon\png\app_MediumIconicTile.png" />
+    <Content Include="Assets\pajeon\png\app_SmallFlipCycleTile.png" />
+    <Content Include="Assets\pajeon\png\app_SmallIconicTile.png" />
+    <Content Include="Assets\pajeon\png\app_WideFlipCycleTile.png" />
     <Content Include="Assets\pajeon\png\filelist_edit.png" />
     <Content Include="Assets\pajeon\png\filelist_like.png" />
     <Content Include="Assets\pajeon\png\filelist_like_p.png" />
@@ -312,11 +319,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="README_FIRST.txt" />
-    <Content Include="Toolkit.Content\ApplicationBar.Add.png" />
-    <Content Include="Toolkit.Content\ApplicationBar.Cancel.png" />
-    <Content Include="Toolkit.Content\ApplicationBar.Check.png" />
-    <Content Include="Toolkit.Content\ApplicationBar.Delete.png" />
-    <Content Include="Toolkit.Content\ApplicationBar.Select.png" />
+    <Content Include="Assets\Toolkit.Content\ApplicationBar.Add.png" />
+    <Content Include="Assets\Toolkit.Content\ApplicationBar.Cancel.png" />
+    <Content Include="Assets\Toolkit.Content\ApplicationBar.Check.png" />
+    <Content Include="Assets\Toolkit.Content\ApplicationBar.Delete.png" />
+    <Content Include="Assets\Toolkit.Content\ApplicationBar.Select.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AppResources.resx">

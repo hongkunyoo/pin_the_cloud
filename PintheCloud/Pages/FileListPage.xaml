@@ -1,19 +1,21 @@
-﻿<phone:PhoneApplicationPage
+﻿<local:PtcPage
+	x:Class="PintheCloud.Pages.FileListPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:PintheCloud.Pages"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    x:Class="PintheCloud.Pages.FileListPage"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait" Orientation="Portrait"
+    SupportedOrientations="Portrait" 
+	Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
-
+        
 	<Grid x:Name="LayoutRoot" Background="White">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="72" />
@@ -26,18 +28,37 @@
 
         <!--ContentPanel - 여기에 추가 내용을 배치합니다.-->
 		<Grid x:Name="ContentPanel" Grid.Row="1">
-			<StackPanel Margin="22,28,18,0">
-				<TextBlock x:Name="uiSpaceName" Foreground="Black" FontSize="45" LineHeight="53" FontWeight="Medium" Padding="0,0,0,10.5" Margin="0,0,0,10.5" TextTrimming="WordEllipsis" />
-				<StackPanel Orientation="Horizontal" Margin="0,0,0,10.5">
-					<TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" Padding="0,0,10,0" Margin="0,0,10,0" />
-					<TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Foreground="#FFA7B6BE" FontSize="32" />
+			<Grid.Resources>
+                <DataTemplate x:Key="uiFileListItemTemplate">
+                    <Grid x:Name="uiFileListItem">
+                    	<Button Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                    		<Grid Margin="22,0,18,0">
+                    			<Grid.ColumnDefinitions>
+                    				<ColumnDefinition Width="114"/>
+                    				<ColumnDefinition/>
+                    			</Grid.ColumnDefinitions>
+                    			<Image x:Name="uiFileThumnail" Source="{Binding Type, Converter={StaticResource FileObjectConverter}}" HorizontalAlignment="Left" Height="94" VerticalAlignment="Center" Width="94" Stretch="None"/>
+                    			<StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,20,0,0">
+                    				<TextBlock x:Name="uiFileName" Text="{Binding Name}" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="Black" FontSize="22"/>
+                    				<TextBlock x:Name="uiFileSize" Text="{Binding Size}" TextWrapping="Wrap" Foreground="#FF3ABDBE" FontSize="22" FontWeight="Light"/>
+                    			</StackPanel>
+                    		</Grid>
+                    	</Button>
+                    </Grid>
+                </DataTemplate>
+            </Grid.Resources>
+			<StackPanel Margin="0,25,0,0">
+				<StackPanel Margin="22,0,18,0">
+					<TextBlock x:Name="uiSpaceName" Foreground="Black" FontSize="50" LineHeight="58" TextTrimming="WordEllipsis" Height="67" Margin="0,0,0,20" />
+					<StackPanel Orientation="Horizontal">
+						<TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" Margin="0,0,10,0" FontWeight="Light" />
+						<TextBlock x:Name="uiSpaceLikeNumber" TextWrapping="Wrap" FontSize="32" FontWeight="Light" />
+						<TextBlock x:Name="uiSpaceLikeText" TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" FontSize="32" FontWeight="Light" />
+					</StackPanel>
 				</StackPanel>
-				<Button x:Name="uiSpaceLikeButton" BorderBrush="Black" HorizontalAlignment="Left" VerticalAlignment="Top" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Margin="0,0,0,10.5">
-					<Image x:Name="uiSpaceLikeButtonImage" Stretch="None"/>
-				</Button>
-				<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged"/>
+				<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiFileListItemTemplate}"/>
 			</StackPanel>
 		</Grid>
 	</Grid>
 
-</phone:PhoneApplicationPage>
+</local:PtcPage>

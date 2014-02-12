@@ -52,6 +52,7 @@ namespace PintheCloud.Pages
                 //await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.SKYDRIVE_FOLDER, CreationCollisionOption.FailIfExists);
                 //await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.BLOBSTORAGE_FOLDER, CreationCollisionOption.FailIfExists);
             }
+
             else  // Second or more Login, Goto Explorer Page after some secconds.
             {
                 await Task.Delay(TimeSpan.FromSeconds(1));
@@ -83,11 +84,10 @@ namespace PintheCloud.Pages
                                 App.BlobManager = new BlobStorageManager();
                                 await App.LocalStorageManager.SetupAsync();
 
-                                if (GlobalKeys.USER.Equals("hongkun"))
-                                {
-                                    NavigationService.Navigate(new Uri("/Pages/SkyDrivePickerPage.xaml", UriKind.Relative));
-                                    //NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
-                                }
+                                //if (GlobalKeys.USER.Equals("hongkun"))
+                                //{
+                                //    NavigationService.Navigate(new Uri("/Pages/SkyDrivePickerPage.xaml", UriKind.Relative));
+                                //}
 
                                 NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
                             }

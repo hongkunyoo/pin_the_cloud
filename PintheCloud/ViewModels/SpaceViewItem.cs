@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
 
 namespace PintheCloud.ViewModels
 {
@@ -77,8 +78,25 @@ namespace PintheCloud.ViewModels
             }
         }
 
-        private Uri spaceLikeButtonImage;
-        public Uri SpaceLikeButtonImage
+        private string spaceLikeNumberColor;
+        public string SpaceLikeNumberColor
+        {
+            get
+            {
+                return spaceLikeNumberColor;
+            }
+            set
+            {
+                if (spaceLikeNumberColor != value)
+                {
+                    spaceLikeNumberColor = value;
+                    NotifyPropertyChanged("SpaceLikeNumberColor");
+                }
+            }
+        }
+
+        private string spaceLikeButtonImage;
+        public string SpaceLikeButtonImage
         {
             get
             {

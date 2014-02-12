@@ -29,7 +29,7 @@ namespace PintheCloud.Pages
         private const string VIEW_IMAGE_PATH = "/Assets/pajeon/png/general_view.png";
 
         public SpaceViewModel MySpaceViewModel = new SpaceViewModel();
-        private bool IsLikeButtonClicked = false;
+
 
         public SettingsPage()
         {
@@ -103,48 +103,20 @@ namespace PintheCloud.Pages
         }
 
         // List select event
-        private async void uiMySpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void uiMySpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected Space View Item
             SpaceViewItem spaceViewItem = uiMySpaceList.SelectedItem as SpaceViewItem;
 
-
-            // If selected item isn't null and it doesn't come from like button, goto File list page.
-            // Otherwise, Process Like or Not Like by current state
-            if (spaceViewItem != null && !this.IsLikeButtonClicked)  // Go to FIle List Page
+            // If selected item isn't null, goto File list page.
+            if (spaceViewItem != null)
             {
                 string parameters = App.SpaceManager.GetParameterStringFromSpaceViewItem(spaceViewItem);
                 NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
             }
 
-            else if (this.IsLikeButtonClicked)  // Do like
-            {
-                // Get different Account Space Relation Worker by internet state.
-                if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
-                {
-                    App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
-                    await this.MySpaceViewModel.LikeAsync(spaceViewItem);
-                }
-                else  // Internet bad
-                {
-                    MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
-                }
-
-                // Set is like button clicked false for next click.
-                this.IsLikeButtonClicked = false;
-            }
-
             // Set selected item to null for next selection of list item. 
             uiMySpaceList.SelectedItem = null;
-        }
-
-
-        // Process Like or Not Like by current state
-        private void uiSpaceLikeButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            // Set this is like button click
-            // It is required to seperate between space button and like button
-            this.IsLikeButtonClicked = true;
         }
 
 
@@ -169,13 +141,11 @@ namespace PintheCloud.Pages
 
             // If there is my spaces, Clear and Add spaces to list
             // Otherwise, Show none message.
-            MobileServiceCollection<Space, Space> spaces =
-                            await App.SpaceManager.GetMySpaceViewItemsAsync();
+            MobileServiceCollection<Space, Space> spaces = await App.SpaceManager.GetMySpaceViewItemsAsync();
 
             if (spaces != null)  // There are my spaces
             {
                 this.MySpaceViewModel.SetItems(spaces);
-                uiMySpaceList.DataContext = null;
                 uiMySpaceList.DataContext = this.MySpaceViewModel;
                 uiMySpaceList.Visibility = Visibility.Visible;
                 uiMySpaceMessage.Visibility = Visibility.Collapsed;
