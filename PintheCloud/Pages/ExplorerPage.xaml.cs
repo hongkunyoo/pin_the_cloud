@@ -114,7 +114,7 @@ namespace PintheCloud.Pages
                     ApplicationBar.MenuItems.RemoveAt(SKY_DRIVE_APP_BAR_MENUITEMS);
 
                     // Remove Cloud Kind Image
-                    uiCurrentCloudKindImage.Visibility = Visibility.Collapsed;
+                    uiCurrentCloudKindText.Visibility = Visibility.Collapsed;
 
                     // If Internet available, Set space list
                     // Otherwise, show internet bad message
@@ -149,8 +149,8 @@ namespace PintheCloud.Pages
                     ApplicationBar.MenuItems.Add(googleDriveAppBarButton);
 
                     // Set Cloud Kind Image
-                    uiCurrentCloudKindImage.Visibility = Visibility.Visible;
-                    this.SetCloudKindImage(AppResources.SkyDrive);
+                    uiCurrentCloudKindText.Visibility = Visibility.Visible;
+                    this.SetCloudKindText(AppResources.SkyDrive);
 
                     // If Internet available, Set pin list with root folder file list.
                     // Otherwise, show internet bad message
@@ -344,9 +344,9 @@ namespace PintheCloud.Pages
         }
 
 
-        private void SetCloudKindImage(string kind)
+        private void SetCloudKindText(string kind)
         {
-            uiCurrentCloudKindImage.Text = kind;
+            uiCurrentCloudKindText.Text = kind;
         }
 
 
@@ -376,13 +376,13 @@ namespace PintheCloud.Pages
 
         private void skyDriveAppBarButton_Click(object sender, EventArgs e)
         {
-            this.SetCloudKindImage(AppResources.SkyDrive);
+            this.SetCloudKindText(AppResources.SkyDrive);
         }
 
 
         private void googleDriveAppBarButton_Click(object sender, EventArgs e)
         {
-            this.SetCloudKindImage(AppResources.GoogleDrive);
+            this.SetCloudKindText(AppResources.GoogleDrive);
         }
 
 

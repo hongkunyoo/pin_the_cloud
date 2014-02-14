@@ -39,7 +39,7 @@
         <!--피벗 컨트롤-->
         <Grid Background="#FF00A4BF">
             <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <TextBlock x:Name="uiCurrentCloudKindImage" HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="Collapsed"/>
+            <TextBlock x:Name="uiCurrentCloudKindText" HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,18,0"/>
         </Grid>
         <Grid x:Name="ContentPanel" Grid.Row="1">
             <Grid.Resources>
@@ -112,16 +112,12 @@
                     <Grid>
                 		<Grid x:Name="uiPinInfoListGrid">
                 			<Grid.RowDefinitions>
-                				<RowDefinition Height="82.5"/>
+                				<RowDefinition Height="72"/>
                 				<RowDefinition Height="73"/>
                 				<RowDefinition/>
                 			</Grid.RowDefinitions>
-                			<Grid x:Name="uiPinInfoCurrentGrid" Background="#FFEFF2F6" Width="426" Height="62.5" VerticalAlignment="Top">
-                				<Grid.ColumnDefinitions>
-                					<ColumnDefinition/>
-                					<ColumnDefinition Width="72"/>
-                				</Grid.ColumnDefinitions>
-                				<TextBlock x:Name="uiPinInfoCurrentPath" Foreground="Black" TextTrimming="WordEllipsis" VerticalAlignment="Center" FontSize="32" FontWeight="Medium" FontStyle="Italic" Margin="10,0"/>
+                			<Grid x:Name="uiPinInfoCurrentGrid" Background="#FFEFF2F6" Width="426" Height="52" VerticalAlignment="Top">
+                				<TextBlock x:Name="uiPinInfoCurrentPath" Foreground="Black" TextTrimming="WordEllipsis" VerticalAlignment="Center" FontSize="22" FontWeight="Medium" FontStyle="Italic" Margin="10,0"/>
                 			</Grid>
                 			<Grid x:Name="uiPinInfoListUpButtonGrid" Grid.Row="1">
                 				<Grid.RowDefinitions>
