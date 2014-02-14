@@ -11,9 +11,9 @@ namespace PintheCloud.Utilities
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            bool isFolder = (bool)value;
+            string isFolder = (string)value;
 
-            if (isFolder)
+            if ("folder".Equals(isFolder))
                 return new Uri("/Assets/Icons/folder.png", UriKind.Relative);
             else
                 return new Uri("/Assets/Icons/file.png", UriKind.Relative);

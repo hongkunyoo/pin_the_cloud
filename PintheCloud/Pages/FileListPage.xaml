@@ -56,7 +56,7 @@
 						<TextBlock x:Name="uiSpaceLikeText" TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" FontSize="32" FontWeight="Light" />
 					</StackPanel>
 				</StackPanel>
-				<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiFileListItemTemplate}"/>
+				<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiFileListItemTemplate}"/>
 			</StackPanel>
 		</Grid>
 	</Grid>

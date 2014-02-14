@@ -29,95 +29,33 @@ namespace PintheCloud.Managers
             this.LiveSession = Session;
             this.Scopes = new string[] { "wl.basic", "wl.skydrive", "wl.offline_access", "wl.signin", "wl.skydrive_update",
                                                 "wl.contacts_skydrive"};
-
             this.LiveClient = new LiveConnectClient(this.LiveSession);
 
-            /*
-            this.LiveClient.BackgroundDownloadProgressChanged +=
-                new EventHandler<LiveDownloadProgressChangedEventArgs>(OnBackgroundDownloadProgressChanged);
-            this.LiveClient.BackgroundDownloadCompleted +=
-                new EventHandler<LiveOperationCompletedEventArgs>(OnBackgroundDownloadCompleted);
-            this.LiveClient.BackgroundUploadProgressChanged +=
-                new EventHandler<LiveUploadProgressChangedEventArgs>(OnBackgroundUploadProgressChanged);
-            this.LiveClient.BackgroundUploadCompleted +=
-                new EventHandler<LiveOperationCompletedEventArgs>(OnBackgroundUploadCompleted);
-            this.LiveClient.AttachPendingTransfers();
-            */
         }
-
-        private FileObject getData(IDictionary<string, object> dic)
-        {
-            string id = (string)(dic["id"] ?? "");   
-            string name = (string)(dic["name"] ?? "");
-            string parent_id = (string)(dic["parent_id"] ?? "/");
-            int size = (int)dic["size"];
-            string type = (string)dic["type"] ?? "";
-            string createAt = (string)dic["created_time"] ?? DateTime.Now.ToString();
-            string updateAt = (string)dic["updated_time"] ?? DateTime.Now.ToString();
-
-            return new FileObject(id, name, parent_id, size, id.Substring(0,id.IndexOf(".")),type, createAt, updateAt);
-            
-        }
-
-        private List<FileObject> getDataList(IDictionary<string, object> dic)
-        {
-            List<object> data = (List<object>)dic["data"];
-            List<FileObject> list = new List<FileObject>();
-            foreach (IDictionary<string, object> content in data)
-            {
-                list.Add(this.getData(content));
-            }
-            return list;
-        }
-
         public async Task<FileObject> GetRootFolderAsync(){
-            FileObject root = getData((await this.LiveClient.GetAsync("me/skydrive")).Result);
+            FileObject root = _GetData((await this.LiveClient.GetAsync("me/skydrive")).Result);
             root.Name = "";
             return root;
         }
-
         public async Task<List<FileObject>> GetRootFilesAsync()
         {
-            return getDataList((await this.LiveClient.GetAsync("me/skydrive/files")).Result);
+            return _GetDataList((await this.LiveClient.GetAsync("me/skydrive/files")).Result);
         }
-
         public async Task<FileObject> GetFileAsync(string fileId)
         {
-            return getData((await this.LiveClient.GetAsync(fileId)).Result);
+            return _GetData((await this.LiveClient.GetAsync(fileId)).Result);
         }
-
         public async Task<List<FileObject>> GetFilesFromFolderAsync(string folderId)
         {
-            return getDataList((await this.LiveClient.GetAsync(folderId + "/files")).Result);
+            return _GetDataList((await this.LiveClient.GetAsync(folderId + "/files")).Result);
         }
-
-        private async Task<List<FileObject>> GetChildAsync(FileObject fo)
-        {
-            if ("folder".Equals(fo.Type))
-            {
-                List<FileObject> list = await this.GetFilesFromFolderAsync(fo.Id);
-                
-                foreach (FileObject file in list)
-                {
-                    file.FileList = await GetChildAsync(file);
-                }
-                return list;
-            }
-            else
-            {
-                return null;
-            }
-            
-        }
-
         public async Task<FileObject> Synchronize()
         {
             FileObject fo = await GetRootFolderAsync();
-            fo.FileList = await GetChildAsync(fo);
+            fo.FileList = await _GetChildAsync(fo);
             return fo;
         }
-
-
+        
         public async Task<StorageFile> DownloadFileAsync(string sourceFileId, Uri destinationUri)
         {
             
@@ -166,7 +104,7 @@ namespace PintheCloud.Managers
         public async Task<StorageFolder> DownloadFolderAsync(string sourceFolder, StorageFolder folder)
         {
             FileObject file = await this.GetFileAsync(sourceFolder);
-            file.FileList = await this.GetChildAsync(file);
+            file.FileList = await this._GetChildAsync(file);
 
             int index = folder.Path.IndexOf("Local");
             string folderUriString = ((folder.Path.Substring(index + "Local".Length, folder.Path.Length - (index + "Local".Length))));
@@ -251,6 +189,49 @@ namespace PintheCloud.Managers
                 ctsUpload.Cancel();
                 System.Diagnostics.Debug.WriteLine("exception : " + e.ToString());
             }
+        }
+
+        private FileObject _GetData(IDictionary<string, object> dic)
+        {
+            string id = (string)(dic["id"] ?? "");
+            string name = (string)(dic["name"] ?? "");
+            string parent_id = (string)(dic["parent_id"] ?? "/");
+            int size = (int)dic["size"];
+            string type = (string)dic["type"] ?? "";
+            string createAt = (string)dic["created_time"] ?? DateTime.Now.ToString();
+            string updateAt = (string)dic["updated_time"] ?? DateTime.Now.ToString();
+
+            return new FileObject(id, name, parent_id, size, id.Substring(0, id.IndexOf(".")), type, createAt, updateAt);
+
+        }
+
+        private List<FileObject> _GetDataList(IDictionary<string, object> dic)
+        {
+            List<object> data = (List<object>)dic["data"];
+            List<FileObject> list = new List<FileObject>();
+            foreach (IDictionary<string, object> content in data)
+            {
+                list.Add(this._GetData(content));
+            }
+            return list;
+        }
+        private async Task<List<FileObject>> _GetChildAsync(FileObject fo)
+        {
+            if ("folder".Equals(fo.Type))
+            {
+                List<FileObject> list = await this.GetFilesFromFolderAsync(fo.Id);
+
+                foreach (FileObject file in list)
+                {
+                    file.FileList = await _GetChildAsync(file);
+                }
+                return list;
+            }
+            else
+            {
+                return null;
+            }
+
         }
     }
 }

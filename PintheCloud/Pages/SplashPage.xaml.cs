@@ -81,7 +81,7 @@ namespace PintheCloud.Pages
                             {
                                 // Other manager allocation
                                 App.SkyDriveManager = new SkyDriveManager(App.AccountManager.GetLiveConnectSession());
-                                App.BlobManager = new BlobStorageManager();
+                                App.BlobStorageManager = new BlobStorageManager();
                                 await App.LocalStorageManager.SetupAsync();
 
                                 //if (GlobalKeys.USER.Equals("hongkun"))

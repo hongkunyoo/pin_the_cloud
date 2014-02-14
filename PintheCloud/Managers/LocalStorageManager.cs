@@ -70,7 +70,7 @@ namespace PintheCloud.Managers
         private async Task<StorageFile> CreateFileToLocalStorageAsync(string path, StorageFolder folder)
         {
             string name;
-            string[] list = ParseHelper.Parse(path, ParseHelper.Mode.DIRECTORY, out name);
+            string[] list = ParseHelper.Parse(path, ParseHelper.Mode.FULL_PATH, out name); // changed DIRECTORY to FULL_PATH
 
             foreach (string s in list)
             {

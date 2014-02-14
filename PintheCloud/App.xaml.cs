@@ -38,7 +38,7 @@ namespace PintheCloud
         public static AccountSpaceRelationManager AccountSpaceRelationManager = null;
         public static GeoCalculateManager GeoCalculateManager = null;
         public static SkyDriveManager SkyDriveManager = null;
-        public static BlobStorageManager BlobManager = null;
+        public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
 
         /// <summary>

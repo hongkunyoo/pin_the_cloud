@@ -16,6 +16,7 @@ using PintheCloud.Models;
 using Windows.Devices.Geolocation;
 using System.Text.RegularExpressions;
 using Windows.UI;
+using PintheCloud.Utilities;
 //using System.Threading.Tasks;
 
 namespace PintheCloud.Pages
@@ -29,6 +30,7 @@ namespace PintheCloud.Pages
         public static string SKY_DRIVE_PICKER_PAGE = "/Pages/SkyDrivePickerPage.xaml";
         public static string FILE_LIST_PAGE = "/Pages/FileListPage.xaml";
 
+        protected string PREVIOUS_PAGE;
 
         public PtcPage()
         {
@@ -73,6 +75,19 @@ namespace PintheCloud.Pages
                 return true;
             else
                 return false;
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            if (PhoneApplicationService.Current.State.ContainsKey("PREV_PAGE"))
+                this.PREVIOUS_PAGE = (string)PhoneApplicationService.Current.State["PREV_PAGE"];
+            PhoneApplicationService.Current.State["PREV_PAGE"] = this.NavigationService.CurrentSource.ToString();
+        }
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
         }
     }
 }

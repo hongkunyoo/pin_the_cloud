@@ -50,7 +50,7 @@ namespace PintheCloud.Utilities
             string fileName = "myfileName.pdf";
             string downId = "https://rfrost77.blob.core.windows.net/images/MicrosoftAccount:2914cb486d0f9106050de9ad70564d53/6c9bb150-d1c1-44be-a687-21607cb5b523/1204241122_BH6520TW_OM_KOR.pdf";
             MyDebug.WriteLine("start down");
-            Stream strem = await App.BlobManager.DownloadFileThroughStreamAsync(downId);
+            Stream strem = await App.BlobStorageManager.DownloadFileThroughStreamAsync(downId);
             MyDebug.WriteLine("end down / start upload");
             await App.SkyDriveManager.UploadFileThroughStreamAsync(folderIdToStore, fileName, strem);
             MyDebug.WriteLine("end upload");
@@ -84,7 +84,7 @@ namespace PintheCloud.Utilities
                     MyDebug.WriteLine("End Download : " + downloadTime / 1000.0 + "sec");
 
                     uploadTime = s.ElapsedMilliseconds;
-                    string id = await App.BlobManager.UploadFileAsync(space.id, fromSkyToLocal);
+                    //string id = await App.BlobStorageManager.UploadFileAsync(space.id, fromSkyToLocal);
                     uploadTime = (s.ElapsedMilliseconds - uploadTime);
                     MyDebug.WriteLine("End Upload : " + uploadTime / 1000.0 + "sec");
                     MyDebug.WriteLine("down   byte per sec : " + (((long)f.Size) / downloadTime) / 60.0);
@@ -102,7 +102,7 @@ namespace PintheCloud.Utilities
                     downloadTime = s.ElapsedMilliseconds - downloadTime;
                     MyDebug.WriteLine("End Download : " + downloadTime / 1000.0 + "sec");
                     uploadTime = s.ElapsedMilliseconds;
-                    await App.BlobManager.UploadFileThroughStreamAsync(space.id + "/" + f.Name, isr);
+                    //await App.BlobStorageManager.UploadFileThroughStreamAsync(space.id + "/" + f.Name, isr);
                     uploadTime = (s.ElapsedMilliseconds - uploadTime);
 
                     MyDebug.WriteLine("End Upload : " + uploadTime / 1000.0 + "sec");

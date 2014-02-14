@@ -27,8 +27,8 @@ namespace PintheCloud.Pages
     public partial class ExplorerPage : PtcPage
     {
         // Const Instances
-        private const int PICK_PIVOT = 0;
-        private const int PIN_PIVOT = 1;
+        public const int PICK_PIVOT = 0;
+        public const int PIN_PIVOT = 1;
         private const int CONFIRM_APP_BAR_BUTTON = 1;
 
         private bool IsLikeButtonClicked = false;
@@ -53,7 +53,6 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
             // Check if it is on the backstack from SplashPage and remove that.
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
@@ -62,6 +61,8 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+
+            PhoneApplicationService.Current.State["PIVOT"] = uiExplorerPivot.SelectedIndex;
         }
 
 
@@ -242,7 +243,7 @@ namespace PintheCloud.Pages
         private void uiAppBarConfirmButton_Click(object sender, System.EventArgs e)
         {
             PhoneApplicationService.Current.State["SELECTED_FILE"] = this.selectedFile;
-            NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
+            NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE, UriKind.Relative));
         }
 
 
