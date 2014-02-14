@@ -80,7 +80,8 @@ namespace PintheCloud.Workers
         public override async Task<LiveConnectSession> GetLiveConnectSessionAsync()
         {
             LiveAuthClient liveAuthClient = new LiveAuthClient(GlobalKeys.AZURE_CLIENT_ID);
-            string[] scopes = new[] { "wl.basic, wl.offline_access, wl.skydrive, wl.skydrive_update" };
+            //string[] scopes = new[] { "wl.basic, wl.offline_access, wl.skydrive, wl.skydrive_update" };
+            string[] scopes = new[] { "wl.basic", "wl.offline_access", "wl.skydrive", "wl.skydrive_update", "wl.signin", "wl.contacts_skydrive" };
             LiveLoginResult liveLoginResult = null;
             LiveConnectSession session = null;
 

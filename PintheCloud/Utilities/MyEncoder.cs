@@ -6,9 +6,16 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.Utilities
 {
-    
+    /// <summary>
+    /// For Encoding Korean & other Escape characters.
+    /// </summary>
     public static class MyEncoder
     {
+        /// <summary>
+        /// Encodes the given string
+        /// </summary>
+        /// <param name="str">The string to encode</param>
+        /// <returns>The encoded string</returns>
         public static string Encode(string str)
         {
             return (System.Uri.EscapeDataString(str)).Replace("%2F", "/").Replace("%", ";");
@@ -19,6 +26,11 @@ namespace PintheCloud.Utilities
             return EcodedName;
             */
         }
+        /// <summary>
+        /// Decodes the given string
+        /// </summary>
+        /// <param name="str">The string to decode</param>
+        /// <returns>The decoded string</returns>
         public static string Decode(string str)
         {
             return System.Uri.UnescapeDataString(str.Replace(";", "%").Replace("/", "%2F"));
@@ -30,7 +42,6 @@ namespace PintheCloud.Utilities
             char[] decoded_char = new char[charCount];
             strDecoder.GetChars(to_DecodeByte, 0, to_DecodeByte.Length, decoded_char, 0);
             string Name = new string(decoded_char);
-
             return Name;
             */
         }    

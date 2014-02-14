@@ -17,6 +17,7 @@ using Windows.Devices.Geolocation;
 using System.Collections.ObjectModel;
 using Windows.Storage;
 using Windows.System;
+using PintheCloud.Managers;
 
 namespace PintheCloud.Pages
 {
@@ -127,9 +128,12 @@ namespace PintheCloud.Pages
             if (fileObject != null) 
             {
                 // Do Something
-                StorageFile downloadFile = await App.LocalStorageManager.CreateFileToLocalBlobStorageAsync(fileObject.Name);
-                await App.BlobStorageManager.DownloadFileAsync(fileObject.Id, downloadFile);
-                await Launcher.LaunchFileAsync(downloadFile);
+                //StorageFile downloadFile = await App.LocalStorageManager.CreateFileToLocalBlobStorageAsync(fileObject.Name);
+                //await App.BlobStorageManager.DownloadFileAsync(fileObject.Id, downloadFile);
+                //await Launcher.LaunchFileAsync(downloadFile);
+
+                FileObject rootFolder = await App.SkyDriveManager.GetRootFolderAsync();
+                await App.SkyDriveManager.UploadFileThroughStreamAsync(rootFolder.Id, fileObject.Name, await App.BlobStorageManager.DownloadFileThroughStreamAsync(fileObject.Id));
             }
         }
     }

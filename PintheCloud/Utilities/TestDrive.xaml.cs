@@ -21,16 +21,9 @@ namespace PintheCloud.Utilities
 {
     public partial class TestDrive : PtcPage
     {
-        TestModel model;
         public TestDrive()
         {
             InitializeComponent();
-            model = new TestModel();
-            model.name = "testName";
-            model.id = 123;
-            model.innerTestModel.innerName = "testInnerName";
-            model.innerTestModel.innerId = 123123;
-            //App.HDebug.WriteLine("TestDrive constructor!!");
         }
 
         protected  async override void OnNavigatedTo(NavigationEventArgs e)

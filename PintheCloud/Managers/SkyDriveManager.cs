@@ -14,48 +14,103 @@ using Windows.System;
 
 namespace PintheCloud.Managers
 {
+    // Summary
+    //      Implementation of IStorageManager.
+    //      It helps to access SkyDrive Storage.
     public class SkyDriveManager
     {
+        // Summary:
+        //     Client Object to communicate with SkyDrive.
         private LiveConnectClient LiveClient;
-        //private LiveAuthClient LiveAuth;
-        //private LiveLoginResult LiveResult;
-        private LiveConnectSession LiveSession;
-        private string ClientId;
-        private string[] Scopes;
 
+        /* Just in case */
+        // private LiveAuthClient LiveAuth;
+        // private LiveLoginResult LiveResult;
+        // private LiveConnectSession LiveSession;
+        // private string ClientId;
+        // private string[] Scopes;
+
+        // Summary:
+        //     SkyDriveManager Constructor.
+        //
+        // Parameters:
+        //   Session:
+        //     Session Object acuired from Windows Live Log in.
         public SkyDriveManager(LiveConnectSession Session)
         {
-            this.ClientId = GlobalKeys.AZURE_CLIENT_ID;
-            this.LiveSession = Session;
-            this.Scopes = new string[] { "wl.basic", "wl.skydrive", "wl.offline_access", "wl.signin", "wl.skydrive_update",
-                                                "wl.contacts_skydrive"};
-            this.LiveClient = new LiveConnectClient(this.LiveSession);
-
+            //this.ClientId = GlobalKeys.AZURE_CLIENT_ID;
+            //this.Scopes = new string[] { "wl.basic", "wl.skydrive", "wl.offline_access", "wl.signin", "wl.skydrive_update", "wl.contacts_skydrive"};
+            this.LiveClient = new LiveConnectClient(Session);
         }
+        // Summary:
+        //     Gets Root Folder of SkyDrive storage.
+        //     It will be used to access the storage in the begining.
+        //
+        // Returns:
+        //     Root Folder of SkyDrive.
         public async Task<FileObject> GetRootFolderAsync(){
             FileObject root = _GetData((await this.LiveClient.GetAsync("me/skydrive")).Result);
             root.Name = "";
             return root;
         }
+        // Summary:
+        //     Gets files in Root Folder of SkyDrive storage.
+        //
+        // Returns:
+        //     List of FileObject in root folder.
         public async Task<List<FileObject>> GetRootFilesAsync()
         {
             return _GetDataList((await this.LiveClient.GetAsync("me/skydrive/files")).Result);
         }
+        // Summary:
+        //     Gets the mete information of the file(such as id, name, size, etc.) by file id.
+        //
+        // Parameters:
+        //  fildId:
+        //      The id of the file you want the get the file meta information.
+        //
+        // Returns:
+        //     FileObject of the certain file id.
         public async Task<FileObject> GetFileAsync(string fileId)
         {
             return _GetData((await this.LiveClient.GetAsync(fileId)).Result);
         }
+        // Summary:
+        //     Gets list of meta information by folder id.
+        //
+        // Parameters:
+        //  fildId:
+        //      The id of the folder you want the get the list of file meta information.
+        //
+        // Returns:
+        //     List of FileObject of the folder id.
         public async Task<List<FileObject>> GetFilesFromFolderAsync(string folderId)
         {
             return _GetDataList((await this.LiveClient.GetAsync(folderId + "/files")).Result);
         }
+        // Summary:
+        //     Get the file meta information from the root to the node of the file tree.
+        //
+        // Returns:
+        //     Root FileObject of SkyDrive.
         public async Task<FileObject> Synchronize()
         {
             FileObject fo = await GetRootFolderAsync();
             fo.FileList = await _GetChildAsync(fo);
             return fo;
         }
-        
+        // Summary:
+        //     Download a file by file id.
+        //
+        // Parameters:
+        //  sourceFileId:
+        //      The id of the file you want to download.
+        //
+        //  destinationUri:
+        //      The local destination of the downloaded file as an Uri format.
+        //
+        // Returns:
+        //     The downloaded file.
         public async Task<StorageFile> DownloadFileAsync(string sourceFileId, Uri destinationUri)
         {
             
@@ -77,7 +132,15 @@ namespace PintheCloud.Managers
             }
             return await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/"+destinationUri));
         }
-
+        // Summary:
+        //     Download a file by file id.
+        //
+        // Parameters:
+        //  sourceFileId:
+        //      The id of the file you want to download.
+        //
+        // Returns:
+        //     The input stream to download file.
         public async Task<Stream> DownloadFileThroughStreamAsync(string sourceFileId)
         {
 
@@ -100,32 +163,19 @@ namespace PintheCloud.Managers
                 return null;
             }
         }
-       
-        public async Task<StorageFolder> DownloadFolderAsync(string sourceFolder, StorageFolder folder)
-        {
-            FileObject file = await this.GetFileAsync(sourceFolder);
-            file.FileList = await this._GetChildAsync(file);
-
-            int index = folder.Path.IndexOf("Local");
-            string folderUriString = ((folder.Path.Substring(index + "Local".Length, folder.Path.Length - (index + "Local".Length))));
-            folderUriString = folderUriString.Replace("\\", "/");
-            foreach(FileObject f in file.FileList)
-            {
-                if ("folder".Equals(f.Type))
-                {
-                    StorageFolder innerFolder = await folder.CreateFolderAsync(MyEncoder.Encode(f.Name));
-                    await this.DownloadFolderAsync(f.Id, innerFolder);
-                }
-                else
-                {
-                    await this.DownloadFileAsync(f.Id, new Uri(folderUriString + "/" + f.Name, UriKind.Relative));
-                }
-            }
-
-            return folder;
-        }
-
-        public async Task UploadFileAsync(string folderIdToStore, StorageFile file)
+        // Summary:
+        //     Upload files by StorageFile.
+        //
+        // Parameters:
+        //  sourceFolderId:
+        //      The id of the place you want to upload.
+        //
+        //  file:
+        //      The file you want to upload.
+        //
+        // Returns:
+        //     The StorageFolder where you downloaded folder.
+        public async Task<bool> UploadFileAsync(string folderIdToStore, StorageFile file)
         {
             System.Threading.CancellationTokenSource ctsUpload = new System.Threading.CancellationTokenSource();
             try
@@ -145,21 +195,35 @@ namespace PintheCloud.Managers
             {
                 ctsUpload.Cancel();
                 System.Diagnostics.Debug.WriteLine("taskcancel : "+ex.ToString());
-
+                return false;
             }
             catch (LiveConnectException exception)
             {
                 ctsUpload.Cancel();
                 System.Diagnostics.Debug.WriteLine("LiveConnection : "+exception.ToString());
+                return false;
             }
             catch (Exception e)
             {
                 ctsUpload.Cancel();
                 System.Diagnostics.Debug.WriteLine("exception : " + e.ToString());
+                return false;
             }
+            return true;
         }
-
-        public async Task UploadFileThroughStreamAsync(string folderIdToStore, string fileName, Stream outstream)
+        // Summary:
+        //     Upload files by output stream.
+        //
+        // Parameters:
+        //  sourceFolderId:
+        //      The id of the place you want to upload.
+        //
+        //  fileName:
+        //      The name you want to use after upload.
+        //
+        // Returns:
+        //     The StorageFolder where you downloaded folder.
+        public async Task<bool> UploadFileThroughStreamAsync(string folderIdToStore, string fileName, Stream outstream)
         {
             System.Threading.CancellationTokenSource ctsUpload = new System.Threading.CancellationTokenSource();
             try
@@ -169,28 +233,72 @@ namespace PintheCloud.Managers
                 var progressHandler = new Progress<LiveOperationProgress>(
                     (progress) => { progressBar.Value = progress.ProgressPercentage; });
                 progressBar.Value = 0;
-
                 LiveOperationResult result = await this.LiveClient.UploadAsync(folderIdToStore, fileName, outstream, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
-
             }
             catch (System.Threading.Tasks.TaskCanceledException ex)
             {
                 ctsUpload.Cancel();
                 System.Diagnostics.Debug.WriteLine("taskcancel : " + ex.ToString());
-
+                return false;
             }
             catch (LiveConnectException exception)
             {
                 ctsUpload.Cancel();
                 System.Diagnostics.Debug.WriteLine("LiveConnection : " + exception.ToString());
+                return false;
             }
             catch (Exception e)
             {
                 ctsUpload.Cancel();
                 System.Diagnostics.Debug.WriteLine("exception : " + e.ToString());
+                return false;
             }
+            return true;
         }
+        /////////////////////////////////////////////////////
+        // CAUTION: NOT STABLE VERSION. THERE MIGHT BE A BUG.
+        //
+        // Summary:
+        //     Download a folder by folder id.
+        //
+        // Parameters:
+        //  sourceFolderId:
+        //      The id of the folder you want to download.
+        //
+        // Returns:
+        //     The StorageFolder where you downloaded folder.
+        public async Task<StorageFolder> DownloadFolderAsync(string sourceFolderId, StorageFolder folder)
+        {
+            FileObject file = await this.GetFileAsync(sourceFolderId);
+            file.FileList = await this._GetChildAsync(file);
 
+            int index = folder.Path.IndexOf("Local");
+            string folderUriString = ((folder.Path.Substring(index + "Local".Length, folder.Path.Length - (index + "Local".Length))));
+            folderUriString = folderUriString.Replace("\\", "/");
+            foreach (FileObject f in file.FileList)
+            {
+                if ("folder".Equals(f.Type))
+                {
+                    StorageFolder innerFolder = await folder.CreateFolderAsync(MyEncoder.Encode(f.Name));
+                    await this.DownloadFolderAsync(f.Id, innerFolder);
+                }
+                else
+                {
+                    await this.DownloadFileAsync(f.Id, new Uri(folderUriString + "/" + f.Name, UriKind.Relative));
+                }
+            }
+
+            return folder;
+        }
+        ///////////////////
+        // Private Methods
+        ///////////////////
+
+        // Summary:
+        //      Model mapping method
+        //
+        // Returns:
+        //      FileObject from a dictionary.
         private FileObject _GetData(IDictionary<string, object> dic)
         {
             string id = (string)(dic["id"] ?? "");
@@ -202,9 +310,12 @@ namespace PintheCloud.Managers
             string updateAt = (string)dic["updated_time"] ?? DateTime.Now.ToString();
 
             return new FileObject(id, name, parent_id, size, id.Substring(0, id.IndexOf(".")), type, createAt, updateAt);
-
         }
-
+        // Summary:
+        //      List mapping method
+        //
+        // Returns:
+        //      List of FileObject from a dictionary.
         private List<FileObject> _GetDataList(IDictionary<string, object> dic)
         {
             List<object> data = (List<object>)dic["data"];
@@ -215,6 +326,11 @@ namespace PintheCloud.Managers
             }
             return list;
         }
+        // Summary:
+        //      Gets the children of the FileObject recursively.
+        //
+        // Returns:
+        //      Children list of given FileObject.
         private async Task<List<FileObject>> _GetChildAsync(FileObject fo)
         {
             if ("folder".Equals(fo.Type))

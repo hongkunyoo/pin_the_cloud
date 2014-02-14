@@ -84,11 +84,6 @@ namespace PintheCloud.Pages
                                 App.BlobStorageManager = new BlobStorageManager();
                                 await App.LocalStorageManager.SetupAsync();
 
-                                //if (GlobalKeys.USER.Equals("hongkun"))
-                                //{
-                                //    NavigationService.Navigate(new Uri("/Pages/SkyDrivePickerPage.xaml", UriKind.Relative));
-                                //}
-
                                 NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
                             }
                             else  // Login fail

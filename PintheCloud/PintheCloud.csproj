@@ -109,7 +109,6 @@
     <Compile Include="Models\AccountSpaceRelation.cs" />
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Space.cs" />
-    <Compile Include="Models\TestModel.cs" />
     <Compile Include="Utilities\StringToThumnailUriConverter.cs" />
     <Compile Include="Pages\FileListPage.xaml.cs">
       <DependentUpon>FileListPage.xaml</DependentUpon>
@@ -124,9 +123,6 @@
     </Compile>
     <Compile Include="Pages\MapViewPage.xaml.cs">
       <DependentUpon>MapViewPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\SkyDrivePickerPage.xaml.cs">
-      <DependentUpon>SkyDrivePickerPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Resources\AppResources1.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -183,10 +179,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\SettingsPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\SkyDrivePickerPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
