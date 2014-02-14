@@ -16,8 +16,5 @@ namespace PintheCloud
          
         // Current Usrer
         public static string USER = "";
-
-        // Debug Mode
-        public static bool DEBUG = true;
     }
 }

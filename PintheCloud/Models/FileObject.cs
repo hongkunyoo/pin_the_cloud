@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.Models
 {
+    /// <summary>
+    /// Model Class for storing file meta information from each kind of storages.
+    /// Every files will be handled by this object to provide a abstraction.
+    /// </summary>
     public class FileObject : INotifyPropertyChanged
     {
         // Instances
@@ -17,17 +21,46 @@ namespace PintheCloud.Models
         public static string CHECK_IMAGE_PATH = "/Assets/pajeon/png/general_checkbox_p.png";
         public static string TRANSPARENT_PATH = "/Assets/pajeon/png/general_transparent.png";
         
-
+        /// <summary>
+        /// The id to Get, Upload, Download
+        /// </summary>
         public string Id { get; set; }
-        public string Name { get; set; }    // Name
+        /// <summary>
+        /// The name of the file
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// The parent Id to get back to the parent tree.
+        /// </summary>
         public string ParentId { get; set; }
-        public double Size { get; set; }   // file size
-        public string Type { get; set; }    // whethere it is file or folder
-        public string TypeDetail { get; set; }  // TODO file extension such as PDF, MP3
-        public string ThumnailType { get; set; }    // Type for Thumnail
-        public string CreateAt { get; set; }    // do not use this
-        public string UpdateAt { get; set; }    // updated time & created time
-        public List<FileObject> FileList { get; set; }  // child List
+        /// <summary>
+        /// The size of the file
+        /// </summary>
+        public double Size { get; set; }
+        /// <summary>
+        /// file or folder
+        /// </summary>
+        public string Type { get; set; }
+        /// <summary>
+        /// The file extension such as mp3, pdf
+        /// </summary>
+        public string TypeDetail { get; set; }
+        /// <summary>
+        /// Thumbnail type
+        /// </summary>
+        public string ThumnailType { get; set; }
+        /// <summary>
+        /// No need to use.
+        /// </summary>
+        public string CreateAt { get; set; }
+        /// <summary>
+        /// For created time & updated time.
+        /// </summary>
+        public string UpdateAt { get; set; }
+        /// <summary>
+        /// The child list of the folder.
+        /// </summary>
+        public List<FileObject> FileList { get; set; }
 
         private string selectCheckImage;
         public string SelectCheckImage
@@ -70,9 +103,30 @@ namespace PintheCloud.Models
             this.CreateAt = createAt;
             this.UpdateAt = updateAt;
         }
+        public void SetSelectCheckImage(bool isCheck)
+        {
+            if (isCheck)
+                this.SelectCheckImage = CHECK_IMAGE_PATH;
+            else
+                this.SelectCheckImage = CHECK_NOT_IMAGE_PATH;
+        }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged(String propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
 
-        public static void PrintFileObject(FileObject fo){
+        /// <summary>
+        /// Test Code for Printing FileObject easily.
+        /// </summary>
+        /// <param name="fo"></param>
+        public static void PrintFileObject(FileObject fo)
+        {
             if (fo != null)
             {
                 MyDebug.WriteLine("id : " + fo.Id);
@@ -91,35 +145,15 @@ namespace PintheCloud.Models
             else
             {
                 MyDebug.WriteLine("FileObject Null!");
-                if(System.Diagnostics.Debugger.IsAttached)
+                if (System.Diagnostics.Debugger.IsAttached)
                     System.Diagnostics.Debugger.Break();
             }
-            
+
         }
-
-
         public static void PrintFileObjectList(List<FileObject> list)
         {
             foreach (FileObject fo in list)
                 FileObject.PrintFileObject(fo);
-        }
-
-        public void SetSelectCheckImage(bool isCheck)
-        {
-            if (isCheck)
-                this.SelectCheckImage = CHECK_IMAGE_PATH;
-            else
-                this.SelectCheckImage = CHECK_NOT_IMAGE_PATH;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged(String propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
     }
 }
