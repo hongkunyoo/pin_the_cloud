@@ -47,18 +47,12 @@ namespace PintheCloud.Pages
                 this.AccountId = NavigationContext.QueryString["accountId"];
                 this.AccountIdFontWeight = NavigationContext.QueryString["accountIdFontWeight"];
                 this.AccountName = NavigationContext.QueryString["accountName"];
-                this.SpaceLikeNumber = NavigationContext.QueryString["spaceLikeNumber"];
-                this.SpaceLikeNumberColor = NavigationContext.QueryString["spaceLikeNumberColor"];
 
                 // Set Binding Instances to UI
                 uiSpaceName.Text = this.SpaceName;
                 uiAccountName.Text = this.AccountName;
-                uiSpaceLikeNumber.Text = this.SpaceLikeNumber;
 
                 uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(this.AccountIdFontWeight);
-                Brush likeColor = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(this.SpaceLikeNumberColor));
-                uiSpaceLikeNumber.Foreground = likeColor;
-                uiSpaceLikeText.Foreground = likeColor;
 
                 await Refresh();
             }
@@ -66,7 +60,7 @@ namespace PintheCloud.Pages
             {
                 this.SpaceId = "";
                 this.SpaceName = "";
-                Account account = App.AccountManager.GetCurrentAcccount();
+                Account account = App.CloudManager.GetCurrentAccount();
                 this.AccountName = account.account_name;
                 this.AccountId = account.account_platform_id;
                 this.SpaceLikeNumber = "0";
@@ -75,11 +69,6 @@ namespace PintheCloud.Pages
                 // Set Binding Instances to UI
                 uiSpaceName.Text = this.SpaceName;
                 uiAccountName.Text = this.AccountName;
-                uiSpaceLikeNumber.Text = this.SpaceLikeNumber;
-
-                Brush likeColor = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(this.SpaceLikeNumberColor));
-                uiSpaceLikeNumber.Foreground = likeColor;
-                uiSpaceLikeText.Foreground = likeColor;
 
                 await UploadFilesAsync();
             }
@@ -90,7 +79,7 @@ namespace PintheCloud.Pages
        
             Geoposition geo = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
 
-            Space space = new Space(DateTime.Now.ToString(), geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0, 0);
+            Space space = new Space(DateTime.Now.ToString(), geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
                      
             await App.MobileService.GetTable<Space>().InsertAsync(space);
             this.SpaceId = space.id;

@@ -30,14 +30,13 @@ namespace PintheCloud
         // App
         public static MobileServiceClient MobileService = null;
         public static IsolatedStorageSettings ApplicationSettings = null;
-        public static ProgressIndicator ProgressIndicator = null;
 
         // Manager
-        public static AccountManager AccountManager = null;
         public static SpaceManager SpaceManager = null;
-        public static AccountSpaceRelationManager AccountSpaceRelationManager = null;
         public static GeoCalculateManager GeoCalculateManager = null;
-        public static SkyDriveManager SkyDriveManager = null;
+        public static CloudManager CloudManager = null;
+        public static CloudSkyDriveManager SkyDriveManager = null;
+        public static CloudGoogleDriveManager GoogleDriveManager = null;
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
 
@@ -67,14 +66,16 @@ namespace PintheCloud
                 "https://pinthecloud.azure-mobile.net/",
                 "yvulzHAGRgNsGnPLHKcEFCPJcuyzKj23"
             );
+            MobileServiceUser mobileServiceUser = new MobileServiceUser(GlobalKeys.AZURE_MOBILE_SERVICE_ID);
+            mobileServiceUser.MobileServiceAuthenticationToken = GlobalKeys.AZURE_MOBILE_SERVICE_TOKEN;
+            MobileService.CurrentUser = mobileServiceUser;
             ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
-            ProgressIndicator = new ProgressIndicator();
 
             // Manager
-            AccountManager = new AccountManagerImplement();
             SpaceManager = new SpaceManagerImplement();
-            AccountSpaceRelationManager = new AccountSpaceRelationManagerImplement();
             GeoCalculateManager = new GeoCalculateManagerImplement();
+            SkyDriveManager = new CloudSkyDriveManager();
+            GoogleDriveManager = new CloudGoogleDriveManager();
             LocalStorageManager = new LocalStorageManager();
 
 

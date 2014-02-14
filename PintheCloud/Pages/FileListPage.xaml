@@ -61,12 +61,8 @@
             </Grid.Resources>
 			<StackPanel Margin="0,25,0,0">
 				<StackPanel Margin="22,0,18,0">
-					<TextBlock x:Name="uiSpaceName" Foreground="Black" FontSize="50" LineHeight="58" TextTrimming="WordEllipsis" Height="67" Margin="0,0,0,20" />
-					<StackPanel Orientation="Horizontal">
-						<TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" Margin="0,0,10,0" FontWeight="Light" />
-						<TextBlock x:Name="uiSpaceLikeNumber" TextWrapping="Wrap" FontSize="32" FontWeight="Light" />
-						<TextBlock x:Name="uiSpaceLikeText" TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" FontSize="32" FontWeight="Light" />
-					</StackPanel>
+					<TextBlock x:Name="uiSpaceName" Foreground="Black" FontSize="50" LineHeight="58" TextTrimming="WordEllipsis" Margin="0,0,0,20" />
+					<TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" FontWeight="Light" />
 				</StackPanel>
 				<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiFileListItemTemplate}" Style="{StaticResource CustomLongListSelectorStyle}" Margin="0,28,0,0"/>
 			</StackPanel>

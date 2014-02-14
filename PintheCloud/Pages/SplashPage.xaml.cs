@@ -40,102 +40,101 @@ namespace PintheCloud.Pages
             for (int i = 0; i < backStackCount; i++)
                 NavigationService.RemoveBackEntry();
 
-            // Get bool variable whether this account have logined or not.
-            bool accountIsLogin = false;
-            App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_LOGIN, out accountIsLogin);
-            if (!accountIsLogin)  // First Login, Show Login Button.
-            {
-                uiSplashLogo.Visibility = Visibility.Collapsed;
-                uiLoginStackPanel.Visibility = Visibility.Visible;
-                
-                // It makes ERROR
-                //await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.SKYDRIVE_FOLDER, CreationCollisionOption.FailIfExists);
-                //await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.BLOBSTORAGE_FOLDER, CreationCollisionOption.FailIfExists);
-            }
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
 
-            else  // Second or more Login, Goto Explorer Page after some secconds.
-            {
-                await Task.Delay(TimeSpan.FromSeconds(1));
+            //// Get bool variable whether this account have logined or not.
+            //bool accountIsLogin = false;
+            //App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_LOGIN, out accountIsLogin);
+            //if (!accountIsLogin)  // First Login, Show Login Button.
+            //{
+            //    uiSplashLogo.Visibility = Visibility.Collapsed;
+            //    uiLoginStackPanel.Visibility = Visibility.Visible;
+            //}
 
-
-                // Get different Account Worker by internet state.
-                if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
-                {
-                    App.AccountManager.SetAccountWorker(new AccountInternetAvailableWorker());
+            //else  // Second or more Login, Goto Explorer Page after some secconds.
+            //{
+            //    await Task.Delay(TimeSpan.FromSeconds(1));
 
 
-                    // If Internet is good, get new information from Internet,
-                    // Otherwise get old information from local storage.
-                    if (await App.AccountManager.SetLiveConnectSessionAsync())  // Get session success
-                    {
-                        // Show progress indicator
-                        base.SetSystemTray(true, 0);
-                        base.SetProgressIndicator(true, AppResources.Loading);
+            //    // Get different Account Worker by internet state.
+            //    if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
+            //    {
+            //        App.AccountManager.SetAccountWorker(new AccountInternetAvailableWorker());
 
-                        // If it success to register live connect session,
-                        // Otherwise, Hide indicator, Show login fail message box.
-                        if (await App.AccountManager.SetProfileResultAsync())
-                        {
-                            // If online progress login failed, retry with local storage information.
-                            if (await App.AccountManager.LoginMicrosoftAccountSingleSignOnAsync())  // Login succeed
-                            {
-                                // Other manager allocation
-                                App.SkyDriveManager = new SkyDriveManager(App.AccountManager.GetLiveConnectSession());
-                                App.BlobStorageManager = new BlobStorageManager();
-                                await App.LocalStorageManager.SetupAsync();
 
-                                NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
-                            }
-                            else  // Login fail
-                            {
-                                // Retry. If it succeed, Move to explorer page.
-                                // Otherwise, Hide indicator, Show login fail message box.
-                                App.AccountManager.SetAccountWorker(new AccountInternetUnavailableWorker());
-                                if (await App.AccountManager.LoginMicrosoftAccountSingleSignOnAsync())
-                                {
-                                    NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
-                                }
-                                else
-                                {
-                                    uiSplashLogo.Visibility = Visibility.Collapsed;
-                                    uiLoginStackPanel.Visibility = Visibility.Visible;
-                                    MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            uiSplashLogo.Visibility = Visibility.Collapsed;
-                            uiLoginStackPanel.Visibility = Visibility.Visible;
-                            MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
-                        }
+            //        // If Internet is good, get new information from Internet,
+            //        // Otherwise get old information from local storage.
+            //        if (await App.AccountManager.SetLiveConnectSessionAsync())  // Get session success
+            //        {
+            //            // Show progress indicator
+            //            base.SetSystemTray(true, 0);
+            //            base.SetProgressIndicator(true, AppResources.Loading);
 
-                        // Hide progress indicator
-                        base.SetSystemTray(false, 0);
-                        base.SetProgressIndicator(false);
-                    }
-                    else  // Get session fail
-                    {
-                        uiMicrosoftLoginButton.Visibility = Visibility.Visible;
-                    }
-                }
+            //            // If it success to register live connect session,
+            //            // Otherwise, Hide indicator, Show login fail message box.
+            //            if (await App.AccountManager.SetProfileResultAsync())
+            //            {
+            //                // If online progress login failed, retry with local storage information.
+            //                if (await App.AccountManager.LoginMicrosoftAccountSingleSignOnAsync())  // Login succeed
+            //                {
+            //                    // Other manager allocation
+            //                    App.SkyDriveManager = new CloudSkyDriveManager(App.AccountManager.GetLiveConnectSession());
+            //                    App.BlobStorageManager = new BlobStorageManager();
+            //                    await App.LocalStorageManager.SetupAsync();
 
-                else  // Internet unavailable
-                {
-                    App.AccountManager.SetAccountWorker(new AccountInternetUnavailableWorker());
+            //                    NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+            //                }
+            //                else  // Login fail
+            //                {
+            //                    // Retry. If it succeed, Move to explorer page.
+            //                    // Otherwise, Hide indicator, Show login fail message box.
+            //                    App.AccountManager.SetAccountWorker(new AccountInternetUnavailableWorker());
+            //                    if (await App.AccountManager.LoginMicrosoftAccountSingleSignOnAsync())
+            //                    {
+            //                        NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+            //                    }
+            //                    else
+            //                    {
+            //                        uiSplashLogo.Visibility = Visibility.Collapsed;
+            //                        uiLoginStackPanel.Visibility = Visibility.Visible;
+            //                        MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+            //                    }
+            //                }
+            //            }
+            //            else
+            //            {
+            //                uiSplashLogo.Visibility = Visibility.Collapsed;
+            //                uiLoginStackPanel.Visibility = Visibility.Visible;
+            //                MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+            //            }
 
-                    // Login with local storage information and Move to explorer page.
-                    if (await App.AccountManager.LoginMicrosoftAccountSingleSignOnAsync())
-                    {
-                        NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
-                    }
-                    else
-                    {
-                        MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
-                        uiMicrosoftLoginButton.Visibility = Visibility.Visible;
-                    }
-                }
-            }
+            //            // Hide progress indicator
+            //            base.SetSystemTray(false, 0);
+            //            SetProgressIndicator(this, false);
+            //        }
+            //        else  // Get session fail
+            //        {
+            //            uiMicrosoftLoginButton.Visibility = Visibility.Visible;
+            //        }
+            //    }
+
+            //    else  // Internet unavailable
+            //    {
+            //        App.AccountManager.SetAccountWorker(new AccountInternetUnavailableWorker());
+
+            //        // Login with local storage information and Move to explorer page.
+            //        if (await App.AccountManager.LoginMicrosoftAccountSingleSignOnAsync())
+            //        {
+            //            NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+            //        }
+            //        else
+            //        {
+            //            MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+            //            uiMicrosoftLoginButton.Visibility = Visibility.Visible;
+            //        }
+            //    }
+            //}
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -143,53 +142,53 @@ namespace PintheCloud.Pages
             base.OnNavigatedFrom(e);
         }
 
-        private async void uiMicrosoftLoginButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void uiMicrosoftLoginButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            // Get different Account Worker by internet state.
-            // If internet is good, progress login.
-            // Otherwise, show warning message box.
-            if (NetworkInterface.GetIsNetworkAvailable())
-            {
-                App.AccountManager.SetAccountWorker(new AccountInternetAvailableWorker());
+            //// Get different Account Worker by internet state.
+            //// If internet is good, progress login.
+            //// Otherwise, show warning message box.
+            //if (NetworkInterface.GetIsNetworkAvailable())
+            //{
+            //    App.AccountManager.SetAccountWorker(new AccountInternetAvailableWorker());
 
-                // If it success to register live connect session,
-                if (await App.AccountManager.SetLiveConnectSessionAsync())
-                {
-                    // Show progress indicator, progress login
-                    base.SetSystemTray(true, 0);
-                    base.SetProgressIndicator(true, AppResources.Loading);
-                    uiMicrosoftLoginButton.IsEnabled = false;
+            //    // If it success to register live connect session,
+            //    if (await App.AccountManager.SetLiveConnectSessionAsync())
+            //    {
+            //        // Show progress indicator, progress login
+            //        base.SetSystemTray(true, 0);
+            //        base.SetProgressIndicator(true, AppResources.Loading);
+            //        uiMicrosoftLoginButton.IsEnabled = false;
 
-                    // Get profile result and Login.
-                    // If login succeed, Move to explorer page.
-                    // Otherwise, Hide indicator, Show login fail message box.
-                    if (await App.AccountManager.SetProfileResultAsync())
-                    {
-                        if (await App.AccountManager.LoginMicrosoftAccountSingleSignOnAsync())
-                        {
-                            NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
-                        }
-                        else
-                        {
-                            uiMicrosoftLoginButton.IsEnabled = true;
-                            MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
-                        }
-                    }
-                    else
-                    {
-                        uiMicrosoftLoginButton.IsEnabled = true;
-                        MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
-                    }
+            //        // Get profile result and Login.
+            //        // If login succeed, Move to explorer page.
+            //        // Otherwise, Hide indicator, Show login fail message box.
+            //        if (await App.AccountManager.SetProfileResultAsync())
+            //        {
+            //            if (await App.AccountManager.LoginMicrosoftAccountSingleSignOnAsync())
+            //            {
+            //                NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+            //            }
+            //            else
+            //            {
+            //                uiMicrosoftLoginButton.IsEnabled = true;
+            //                MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+            //            }
+            //        }
+            //        else
+            //        {
+            //            uiMicrosoftLoginButton.IsEnabled = true;
+            //            MessageBox.Show(AppResources.BadLoginMessage, AppResources.BadLoginCaption, MessageBoxButton.OK);
+            //        }
 
-                    // Hide progress indicator
-                    base.SetSystemTray(false, 0);
-                    base.SetProgressIndicator(false);
-                }
-            }
-            else
-            {
-                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
-            }
+            //        // Hide progress indicator
+            //        base.SetSystemTray(false, 0);
+            //        base.SetProgressIndicator(false);
+            //    }
+            //}
+            //else
+            //{
+            //    MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+            //}
         }
     }
 }

@@ -68,7 +68,8 @@ namespace PintheCloud.Pages
             MessageBoxResult result = MessageBox.Show(AppResources.LogoutMessage, AppResources.Logout, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
-                App.AccountManager.Logout();
+                App.CloudManager = App.SkyDriveManager;
+                App.CloudManager.SignOut();
                 NavigationService.Navigate(new Uri(PtcPage.SPLASH_PAGE, UriKind.Relative));
             }
         }
@@ -125,15 +126,11 @@ namespace PintheCloud.Pages
 
         private async Task SetMySpacePivotAsync(string message)
         {
-            // Set worker and show loading message
-            App.SpaceManager.SetAccountWorker(new SpaceInternetAvailableWorker());
-            App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
-
             // Show progress indicator 
             uiMySpaceList.Visibility = Visibility.Collapsed;
             uiMySpaceMessage.Text = message;
             uiMySpaceMessage.Visibility = Visibility.Visible;
-            base.SetProgressIndicator(true);
+            PtcPage.SetProgressIndicator(this, true);
 
             // Before go load, set mutex to true.
             MySpaceViewModel.IsDataLoading = true;
@@ -160,7 +157,7 @@ namespace PintheCloud.Pages
 
 
             // Hide progress indicator
-            base.SetProgressIndicator(false);
+            PtcPage.SetProgressIndicator(this, false);
         }
     }
 }

@@ -42,13 +42,15 @@ namespace PintheCloud.Pages
             SystemTray.IsVisible = value;
         }
 
-        public void SetProgressIndicator(bool value, string text = "")
+        public static void SetProgressIndicator(DependencyObject context, bool value, string text = "")
         {
-            App.ProgressIndicator.IsIndeterminate = value;
-            App.ProgressIndicator.IsVisible = value;
-            App.ProgressIndicator.Text = text;
-            SystemTray.SetProgressIndicator(this, App.ProgressIndicator);
+            ProgressIndicator progressIndicator = new ProgressIndicator();
+            progressIndicator.IsIndeterminate = value;
+            progressIndicator.IsVisible = value;
+            progressIndicator.Text = text;
+            SystemTray.SetProgressIndicator(context, progressIndicator);
         }
+
 
         public bool GetLocationAccessConsent()
         {
@@ -68,6 +70,7 @@ namespace PintheCloud.Pages
             return (bool)App.ApplicationSettings[Account.LOCATION_ACCESS];
         }
 
+
         public bool GetGeolocatorPositionStatus()
         { 
             Geolocator geolocator = new Geolocator();
@@ -77,6 +80,7 @@ namespace PintheCloud.Pages
                 return false;
         }
 
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
@@ -85,6 +89,8 @@ namespace PintheCloud.Pages
                 this.PREVIOUS_PAGE = (string)PhoneApplicationService.Current.State["PREV_PAGE"];
             PhoneApplicationService.Current.State["PREV_PAGE"] = this.NavigationService.CurrentSource.ToString();
         }
+
+
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);

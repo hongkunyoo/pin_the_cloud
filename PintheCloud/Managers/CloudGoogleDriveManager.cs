@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Workers
+namespace PintheCloud.Managers
 {
-    public class SpaceInternetAvailableWorker : SpaceWorker
+    public class CloudGoogleDriveManager
     {
     }
 }

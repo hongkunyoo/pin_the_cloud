@@ -61,7 +61,7 @@ namespace PintheCloud.Utilities
                 MyDebug.WriteLine(f.Name + " / ");
             }
             //Space space = App.SpaceManager.GetSpace("ee");
-            Space space = new Space("", 0, 0, "", "", 0, 0);
+            Space space = new Space("", 0, 0, "", "", 0);
 
             foreach (FileObject f in select_files)
             {
@@ -112,7 +112,7 @@ namespace PintheCloud.Utilities
         }
 
 
-        public async Task Test()
+        public void Test()
         {
             try
             {
@@ -163,24 +163,24 @@ namespace PintheCloud.Utilities
             catch(Exception e)
             {
                 MyDebug.WriteLine(e.ToString());
-            }
-            
-            
+            } 
         }
+
         private void button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             PhotoChooserTask photoChooserTask = new PhotoChooserTask();
             photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
             photoChooserTask.Show();
         }
+
         private void button_Click2(object sender, System.Windows.RoutedEventArgs e)
         {
             NavigationService.Navigate(new Uri(PtcPage.SETTINGS_PAGE, UriKind.Relative));
         }
+
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
             MyDebug.WriteLine("Chooser Done");
         }
-
     }
 }

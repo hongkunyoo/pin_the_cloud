@@ -19,11 +19,7 @@ namespace PintheCloud.Managers
     {
         /*** Instance ***/
 
-        private SpaceWorker CurrentSpaceWorker = null;
-        public void SetAccountWorker(SpaceWorker CurrentSpaceWorker)
-        {
-            this.CurrentSpaceWorker = CurrentSpaceWorker;
-        }
+        private SpaceWorker CurrentSpaceWorker = new SpaceWorker();
 
 
 
@@ -46,7 +42,7 @@ namespace PintheCloud.Managers
         {
             // Get spaces
             return await this.CurrentSpaceWorker
-                .GetMySpacesAsync(App.AccountManager.GetCurrentAcccount().account_platform_id);
+                .GetMySpacesAsync(App.CloudManager.GetCurrentAccount().account_platform_id);
         }
 
 

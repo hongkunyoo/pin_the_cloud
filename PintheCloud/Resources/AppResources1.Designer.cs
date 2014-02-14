@@ -97,20 +97,20 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Login failed과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Sign In Error과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string BadLoginCaption {
+        public static string BadSignInCaption {
             get {
-                return ResourceManager.GetString("BadLoginCaption", resourceCulture);
+                return ResourceManager.GetString("BadSignInCaption", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Login process stopped. Please try it again과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Sign in process met error. Please try it again과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string BadLoginMessage {
+        public static string BadSignInMessage {
             get {
-                return ResourceManager.GetString("BadLoginMessage", resourceCulture);
+                return ResourceManager.GetString("BadSignInMessage", resourceCulture);
             }
         }
         
@@ -273,6 +273,15 @@ namespace PintheCloud.Resources {
         public static string MySpot {
             get {
                 return ResourceManager.GetString("MySpot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   There is no files in your cloud.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoFileInCloudMessage {
+            get {
+                return ResourceManager.GetString("NoFileInCloudMessage", resourceCulture);
             }
         }
         
