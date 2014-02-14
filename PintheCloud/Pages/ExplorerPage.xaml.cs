@@ -26,13 +26,16 @@ namespace PintheCloud.Pages
 {
     public partial class ExplorerPage : PtcPage
     {
-        // Const Instances
-
-        private const string CONFIRM_APP_BAR_BUTTON_ICON_URI = "/Assets/AppBar/check.png";
-
+        // Static Instances
         public const int PICK_PIVOT = 0;
         public const int PIN_PIVOT = 1;
-        private const int CONFIRM_APP_BAR_BUTTON = 1;
+
+
+        // Const Instances
+        private const string CONFIRM_APP_BAR_BUTTON_ICON_URI = "/Assets/AppBar/check.png";
+        private const int PIN_APP_BAR_BUTTON = 1;
+        private const int SKY_DRIVE_APP_BAR_MENUITEMS = 1;
+        private const int GOOGLE_DRIVE_APP_BAR_BUTTON = 2;
 
 
         // Instances
@@ -80,7 +83,7 @@ namespace PintheCloud.Pages
                     {
                         this.FolderTree.Clear();
                         this.SelectedFile.Clear();
-                        await this.SetTreeForFolder(null, AppResources.Refreshing);
+                        await this.SetTreeForFolder(null, uiPinInfoMessage.Text);
                     }
                     else
                     {
@@ -93,7 +96,6 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-
             PhoneApplicationService.Current.State["PIVOT"] = uiExplorerPivot.SelectedIndex;
         }
 
@@ -106,8 +108,13 @@ namespace PintheCloud.Pages
             switch (uiExplorerPivot.SelectedIndex)
             {
                 case PICK_PIVOT:
-                    // Remove confirm button
-                    ApplicationBar.Buttons.RemoveAt(CONFIRM_APP_BAR_BUTTON);
+                    // Remove button and menuitems
+                    ApplicationBar.Buttons.RemoveAt(PIN_APP_BAR_BUTTON);
+                    ApplicationBar.MenuItems.RemoveAt(GOOGLE_DRIVE_APP_BAR_BUTTON);
+                    ApplicationBar.MenuItems.RemoveAt(SKY_DRIVE_APP_BAR_MENUITEMS);
+
+                    // Remove Cloud Kind Image
+                    uiCurrentCloudKindImage.Visibility = Visibility.Collapsed;
 
                     // If Internet available, Set space list
                     // Otherwise, show internet bad message
@@ -124,11 +131,26 @@ namespace PintheCloud.Pages
 
                 case PIN_PIVOT:
                     // Set confirm button
-                    ApplicationBarIconButton confirmAppBarButton = new ApplicationBarIconButton();
-                    confirmAppBarButton.Text = AppResources.Confirm;
-                    confirmAppBarButton.IconUri = new Uri(CONFIRM_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
-                    confirmAppBarButton.Click += uiAppBarConfirmButton_Click;
-                    ApplicationBar.Buttons.Add(confirmAppBarButton);
+                    ApplicationBarIconButton pinInfoAppBarButton = new ApplicationBarIconButton();
+                    pinInfoAppBarButton.Text = AppResources.Confirm;
+                    pinInfoAppBarButton.IconUri = new Uri(CONFIRM_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
+                    pinInfoAppBarButton.Click += pinInfoAppBarButton_Click;
+                    ApplicationBar.Buttons.Add(pinInfoAppBarButton);
+
+                    // Set Cloud Setting selection.
+                    ApplicationBarMenuItem skyDriveAppBarButton = new ApplicationBarMenuItem();
+                    skyDriveAppBarButton.Text = AppResources.SkyDrive;
+                    skyDriveAppBarButton.Click += skyDriveAppBarButton_Click;
+                    ApplicationBar.MenuItems.Add(skyDriveAppBarButton);
+
+                    ApplicationBarMenuItem googleDriveAppBarButton = new ApplicationBarMenuItem();
+                    googleDriveAppBarButton.Text = AppResources.GoogleDrive;
+                    googleDriveAppBarButton.Click += googleDriveAppBarButton_Click;
+                    ApplicationBar.MenuItems.Add(googleDriveAppBarButton);
+
+                    // Set Cloud Kind Image
+                    uiCurrentCloudKindImage.Visibility = Visibility.Visible;
+                    this.SetCloudKindImage(AppResources.SkyDrive);
 
                     // If Internet available, Set pin list with root folder file list.
                     // Otherwise, show internet bad message
@@ -138,7 +160,7 @@ namespace PintheCloud.Pages
                         {
                             this.FolderTree.Clear();
                             this.SelectedFile.Clear();
-                            await this.SetTreeForFolder(null, AppResources.Refreshing);
+                            await this.SetTreeForFolder(null, AppResources.Loading);
                         }
                     }
                     else
@@ -151,7 +173,7 @@ namespace PintheCloud.Pages
 
 
         // Refresh space list.
-        private async void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
+        private async void uiAppBarRefreshMenuItem_Click(object sender, System.EventArgs e)
         {
             switch (uiExplorerPivot.SelectedIndex)
             {
@@ -164,6 +186,13 @@ namespace PintheCloud.Pages
                     await this.SetTreeForFolder(null, AppResources.Refreshing);
                     break;
             }
+        }
+
+
+        // Move to Setting Page
+        private void uiAppBarSettingsButton_Click(object sender, System.EventArgs e)
+        {
+            NavigationService.Navigate(new Uri(PtcPage.SETTINGS_PAGE, UriKind.Relative));
         }
 
 
@@ -215,76 +244,6 @@ namespace PintheCloud.Pages
             this.IsLikeButtonClicked = true;
         }
 
-
-        // Move to Setting Page
-        private void uiAppBarSettingsButton_Click(object sender, System.EventArgs e)
-        {
-            NavigationService.Navigate(new Uri(PtcPage.SETTINGS_PAGE, UriKind.Relative));
-        }
-
-
-
-
-
-
-        /*** Pin Pivot ***/
-
-        // Go up to previous folder.
-        private void uiTreeupBtn_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            this.TreeUp();
-        }
-
-
-        protected override void OnBackKeyPress(CancelEventArgs e)
-        {
-            switch (uiExplorerPivot.SelectedIndex)
-            {
-                case PIN_PIVOT:
-                    if (this.FolderTree.Count == 1)
-                    {
-                        e.Cancel = false;
-                        NavigationService.GoBack();
-                    }
-                    else
-                    {
-                        this.TreeUp();
-                        e.Cancel = true;
-                    }
-                    base.OnBackKeyPress(e);
-                    break;
-            }
-        }
-
-        /*
-        private void uiPinList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems.Count <= 1)
-            {
-                FileObject file = (FileObject)e.AddedItems[0];
-                if (file.Type.Equals("folder"))
-                {
-                    this.GetTreeForFolder(file, AppResources.Loading);
-                    MyDebug.WriteLine(file.Name);
-                }
-                else  // Do selection if file
-                {
-                    this.selectedFile.Add(file);
-                    MyDebug.WriteLine(file.Name);
-                }
-            }
-        }
-        */
-
-        private void uiAppBarConfirmButton_Click(object sender, System.EventArgs e)
-        {
-            PhoneApplicationService.Current.State["SELECTED_FILE"] = this.SelectedFile;
-            NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE, UriKind.Relative));
-        }
-
-
-
-        /*** Self Method ***/
 
         private async Task SetExplorerPivotAsync(string message)
         {
@@ -385,6 +344,62 @@ namespace PintheCloud.Pages
         }
 
 
+        private void SetCloudKindImage(string kind)
+        {
+            uiCurrentCloudKindImage.Text = kind;
+        }
+
+
+
+        /*** Pin Pivot ***/
+
+        protected override void OnBackKeyPress(CancelEventArgs e)
+        {
+            switch (uiExplorerPivot.SelectedIndex)
+            {
+                case PIN_PIVOT:
+                    if (this.FolderTree.Count == 1)
+                    {
+                        e.Cancel = false;
+                        NavigationService.GoBack();
+                    }
+                    else
+                    {
+                        this.TreeUp();
+                        e.Cancel = true;
+                    }
+                    base.OnBackKeyPress(e);
+                    break;
+            }
+        }
+
+
+        private void skyDriveAppBarButton_Click(object sender, EventArgs e)
+        {
+            this.SetCloudKindImage(AppResources.SkyDrive);
+        }
+
+
+        private void googleDriveAppBarButton_Click(object sender, EventArgs e)
+        {
+            this.SetCloudKindImage(AppResources.GoogleDrive);
+        }
+
+
+        private void pinInfoAppBarButton_Click(object sender, EventArgs e)
+        {
+            if (this.SelectedFile.Count > 0)
+            {
+                PhoneApplicationService.Current.State["SELECTED_FILE"] = this.SelectedFile;
+                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE, UriKind.Relative));
+            }
+        }
+
+
+        private void uiPinInfoListUpButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.TreeUp();
+        }
 
 
         // Pin file selection event.
@@ -425,9 +440,6 @@ namespace PintheCloud.Pages
         }
 
 
-        
-
-
         // Get file tree from cloud
         private async Task SetTreeForFolder(FileObject folder, string message)
         {
@@ -440,13 +452,16 @@ namespace PintheCloud.Pages
 
             // If folder null, set root.
             if (folder == null)
+            {
+                uiPinInfoCurrentPath.Text = "";
                 folder = await App.SkyDriveManager.GetRootFolderAsync();
+            }
 
             // TODO If there are not any files?
             if (!this.FolderTree.Contains(folder))
                 this.FolderTree.Push(folder);
             List<FileObject> files = await App.SkyDriveManager.GetFilesFromFolderAsync(folder.Id);
-            uiCurrentPath.Text = this.GetCurrentPath();
+            uiPinInfoCurrentPath.Text = this.GetCurrentPath();
 
             // Set file tree to list.
             uiPinInfoList.DataContext = new ObservableCollection<FileObject>(files);
@@ -477,6 +492,11 @@ namespace PintheCloud.Pages
             }
         }
 
+
+        private void uiPinInfoSignInButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+
+        }
 
 
         /*** Private Method ***/

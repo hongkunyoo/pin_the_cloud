@@ -31,8 +31,16 @@
 			<Grid.Resources>
                 <DataTemplate x:Key="uiFileListItemTemplate">
                     <Grid x:Name="uiFileListItem">
+                    	<Grid.RowDefinitions>
+                    		<RowDefinition/>
+                    		<RowDefinition Height="1"/>
+                    	</Grid.RowDefinitions>
                     	<Button Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                     		<Grid Margin="22,0,18,0">
+                    			<Grid.RowDefinitions>
+                    				<RowDefinition/>
+                    				<RowDefinition Height="1"/>
+                    			</Grid.RowDefinitions>
                     			<Grid.ColumnDefinitions>
                     				<ColumnDefinition Width="114"/>
                     				<ColumnDefinition/>
@@ -40,10 +48,14 @@
                     			<Image x:Name="uiFileThumnail" Source="{Binding Type, Converter={StaticResource FileObjectConverter}}" HorizontalAlignment="Left" Height="94" VerticalAlignment="Center" Width="94" Stretch="None"/>
                     			<StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,20,0,0">
                     				<TextBlock x:Name="uiFileName" Text="{Binding Name}" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="Black" FontSize="22"/>
-                    				<TextBlock x:Name="uiFileSize" Text="{Binding Size}" TextWrapping="Wrap" Foreground="#FF3ABDBE" FontSize="22" FontWeight="Light"/>
+                    				<StackPanel Orientation="Horizontal">
+                    					<TextBlock x:Name="uiFileSize" Text="{Binding Size}" TextWrapping="Wrap" Foreground="#FF3ABDBE" FontSize="22" FontWeight="Light"/>
+                    					<TextBlock TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF3ABDBE" FontWeight="Light"/>
+                    				</StackPanel>
                     			</StackPanel>
                     		</Grid>
                     	</Button>
+                    	<Grid Background="#FFCED7DD" Grid.Row="1"/>
                     </Grid>
                 </DataTemplate>
             </Grid.Resources>
@@ -56,7 +68,7 @@
 						<TextBlock x:Name="uiSpaceLikeText" TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" FontSize="32" FontWeight="Light" />
 					</StackPanel>
 				</StackPanel>
-				<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiFileListItemTemplate}"/>
+				<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiFileListItemTemplate}" Style="{StaticResource CustomLongListSelectorStyle}" Margin="0,28,0,0"/>
 			</StackPanel>
 		</Grid>
 	</Grid>

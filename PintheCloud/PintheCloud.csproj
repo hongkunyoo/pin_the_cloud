@@ -131,14 +131,14 @@
     </Compile>
     <Compile Include="Utilities\ColorHexStringToBrushConverter.cs" />
     <Compile Include="ViewModels\SpaceViewItem.cs" />
+    <Compile Include="Workers\AccountInternetAvailableWorker.cs" />
+    <Compile Include="Workers\AccountInternetUnavailableWorker.cs" />
     <Compile Include="Workers\AccountSpaceRelationInternetAvailableWorker.cs" />
     <Compile Include="Workers\AccountSpaceRelationInternetUnavailableWorker.cs" />
     <Compile Include="Workers\AccountSpaceRelationWorker.cs" />
     <Compile Include="Workers\AccountWorker.cs" />
-    <Compile Include="Workers\AccountInternetUnavailableWorker.cs" />
     <Compile Include="Managers\AccountManager.cs" />
     <Compile Include="Managers\AccountManagerImplement.cs" />
-    <Compile Include="Workers\AccountInternetAvailableWorker.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountType.cs" />
     <Compile Include="Pages\PtcPage.cs" />

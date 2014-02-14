@@ -331,5 +331,38 @@
     <Utilities:StringToUriConverter x:Key="StringToUriConverter"/>
     <Utilities:StringToThumnailUriConverter x:Key="FileObjectConverter"/>
     <Utilities:StringToFontWeightConverter x:Key="StringToFontWeightConverter"/>
+    <Style x:Key="CustomLongListSelectorStyle" TargetType="phone:LongListSelector">
+    	<Setter Property="Background" Value="Transparent"/>
+    	<Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+    	<Setter Property="Template">
+    		<Setter.Value>
+    			<ControlTemplate TargetType="phone:LongListSelector">
+    				<Grid Background="{TemplateBinding Background}" d:DesignWidth="480" d:DesignHeight="800">
+    					<VisualStateManager.VisualStateGroups>
+    						<VisualStateGroup x:Name="ScrollStates">
+    							<VisualStateGroup.Transitions>
+    								<VisualTransition GeneratedDuration="00:00:00.5"/>
+    							</VisualStateGroup.Transitions>
+    							<VisualState x:Name="Scrolling">
+    								<Storyboard>
+    									<DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="Opacity" Storyboard.TargetName="VerticalScrollBar"/>
+    								</Storyboard>
+    							</VisualState>
+    							<VisualState x:Name="NotScrolling"/>
+    						</VisualStateGroup>
+    					</VisualStateManager.VisualStateGroups>
+    					<Grid Margin="{TemplateBinding Padding}">
+    						<Grid.ColumnDefinitions>
+    							<ColumnDefinition Width="*"/>
+    							<ColumnDefinition Width="auto"/>
+    						</Grid.ColumnDefinitions>
+    						<ViewportControl x:Name="ViewportControl" HorizontalContentAlignment="Stretch" VerticalAlignment="Top"/>
+    						<ScrollBar x:Name="VerticalScrollBar" Grid.Column="1" Opacity="0" Orientation="Vertical" Padding="0,1" MinWidth="0"/>
+    					</Grid>
+    				</Grid>
+    			</ControlTemplate>
+    		</Setter.Value>
+    	</Setter>
+    </Style>
     <!-- 리소스 사전 항목은 여기에서 정의해야 합니다. -->
 </ResourceDictionary>
