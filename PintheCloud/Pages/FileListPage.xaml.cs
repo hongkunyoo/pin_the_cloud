@@ -15,6 +15,8 @@ using PintheCloud.Models;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 using System.Collections.ObjectModel;
+using Windows.Storage;
+using Windows.System;
 
 namespace PintheCloud.Pages
 {
@@ -22,11 +24,11 @@ namespace PintheCloud.Pages
     {
         private string SpaceId;
         private string SpaceName;
+        private string AccountId;
+        private string AccountIdFontWeight;
         private string AccountName;
         private string SpaceLikeNumber;
         private string SpaceLikeNumberColor;
-
-        private string SpaceAccountId;
 
         public FileListPage()
         {
@@ -41,26 +43,31 @@ namespace PintheCloud.Pages
             {
                 this.SpaceId = NavigationContext.QueryString["spaceId"];
                 this.SpaceName = NavigationContext.QueryString["spaceName"];
+                this.AccountId = NavigationContext.QueryString["accountId"];
+                this.AccountIdFontWeight = NavigationContext.QueryString["accountIdFontWeight"];
                 this.AccountName = NavigationContext.QueryString["accountName"];
                 this.SpaceLikeNumber = NavigationContext.QueryString["spaceLikeNumber"];
                 this.SpaceLikeNumberColor = NavigationContext.QueryString["spaceLikeNumberColor"];
 
-                this.SpaceAccountId = (App.AccountManager.GetCurrentAcccount()).account_platform_id;
                 // Set Binding Instances to UI
                 uiSpaceName.Text = this.SpaceName;
                 uiAccountName.Text = this.AccountName;
                 uiSpaceLikeNumber.Text = this.SpaceLikeNumber;
 
+                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(this.AccountIdFontWeight);
                 Brush likeColor = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(this.SpaceLikeNumberColor));
                 uiSpaceLikeNumber.Foreground = likeColor;
                 uiSpaceLikeText.Foreground = likeColor;
+
                 await Refresh();
             }
             else
             {
                 this.SpaceId = "";
                 this.SpaceName = "";
-                this.AccountName = App.AccountManager.GetCurrentAcccount().account_name;
+                Account account = App.AccountManager.GetCurrentAcccount();
+                this.AccountName = account.account_name;
+                this.AccountId = account.account_platform_id;
                 this.SpaceLikeNumber = "0";
                 this.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
 
@@ -75,30 +82,30 @@ namespace PintheCloud.Pages
 
                 await UploadFilesAsync();
             }
-            
         }
 
         private async Task UploadFilesAsync()
         {
        
             Geoposition geo = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
-            Account account = App.AccountManager.GetCurrentAcccount();
-            Space space = new Space("DEFAULT_SPACE_NAME", geo.Coordinate.Latitude, geo.Coordinate.Longitude, account.account_platform_id, account.account_name, 0, 0);
 
-            this.SpaceAccountId = account.account_platform_id;
+            Space space = new Space(DateTime.Now.ToString(), geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0, 0);
+                     
             await App.MobileService.GetTable<Space>().InsertAsync(space);
             this.SpaceId = space.id;
+
             List<FileObject> list = (List<FileObject>)PhoneApplicationService.Current.State["SELECTED_FILE"];
             foreach (FileObject file in list)
             {
-                await App.BlobStorageManager.UploadFileThroughStreamAsync(SpaceAccountId, this.SpaceId + "/" + file.Name, await App.SkyDriveManager.DownloadFileThroughStreamAsync(file.Id));
+
+                await App.BlobStorageManager.UploadFileThroughStreamAsync(this.AccountId, this.SpaceId, file.Name, await App.SkyDriveManager.DownloadFileThroughStreamAsync(file.Id));
                 await Refresh();
             }
         }
 
         private async Task Refresh()
         {
-            ObservableCollection<FileObject> list = new ObservableCollection<FileObject>(await App.BlobStorageManager.GetFilesFromFolderAsync(this.SpaceAccountId,this.SpaceId));
+            ObservableCollection<FileObject> list = new ObservableCollection<FileObject>(await App.BlobStorageManager.GetFilesFromFolderAsync(this.AccountId, this.SpaceId));
             uiFileList.DataContext = list;
         }
 
@@ -108,7 +115,7 @@ namespace PintheCloud.Pages
         }
 
 
-        private void uiFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private async void uiFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected File Obejct
             FileObject fileObject = uiFileList.SelectedItem as FileObject;
@@ -120,6 +127,9 @@ namespace PintheCloud.Pages
             if (fileObject != null) 
             {
                 // Do Something
+                StorageFile downloadFile = await App.LocalStorageManager.CreateFileToLocalBlobStorageAsync(fileObject.Name);
+                await App.BlobStorageManager.DownloadFileAsync(fileObject.Id, downloadFile);
+                await Launcher.LaunchFileAsync(downloadFile);
             }
         }
     }

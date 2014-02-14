@@ -36,7 +36,7 @@
                     <Button x:Name="uiLogoutButton" Content="{Binding LocalizedResources.Logout, Source={StaticResource LocalizedStrings}}" Click="uiLogoutButton_Click" FontSize="33.333" HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" BorderBrush="Black" Foreground="Black"/>
                 </Grid>
             </phone:PivotItem>
-            <phone:PivotItem Header="{Binding LocalizedResources.MySpace, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
+            <phone:PivotItem Header="{Binding LocalizedResources.MySpot, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
                 <Grid>
                     <Grid.Resources>
                         <DataTemplate x:Key="uiSpaceListItemTemplate">
@@ -49,7 +49,7 @@
                                     <Grid Margin="22,17.5,18,14">
                                         <StackPanel Margin="0">
                                             <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
-                                            <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5" FontWeight="Light"/>
+                                            <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5" FontWeight="Bold"/>
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontWeight="Light"/>
                                                 <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontSize="22" FontWeight="Light"/>

@@ -56,12 +56,15 @@ namespace PintheCloud.Managers
             // Go to File List Page with parameters.
             string spaceId = spaceViewItem.SpaceId;
             string spaceName = spaceViewItem.SpaceName;
+            string accountId = spaceViewItem.AccountId;
+            string accountIdFontWeight = spaceViewItem.AccountIdFontWeight;
             string accountName = spaceViewItem.AccountName;
             int spaceLikeNumber = spaceViewItem.SpaceLikeNumber;
             string spaceLikeNumberColor = spaceViewItem.SpaceLikeNumberColor;
 
-            string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountName=" + accountName
-                + "&spaceLikeNumber=" + spaceLikeNumber + "&spaceLikeNumberColor=" + spaceLikeNumberColor;
+
+            string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountId=" + accountId + "&accountIdFontWeight=" + accountIdFontWeight
+                + "&accountName=" + accountName + "&spaceLikeNumber=" + spaceLikeNumber + "&spaceLikeNumberColor=" + spaceLikeNumberColor;
 
             return parameters;
         }

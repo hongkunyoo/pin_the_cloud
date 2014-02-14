@@ -33,7 +33,7 @@ namespace PintheCloud.Managers
         public async Task<FileObject> GetFileAsync(string id)
         {
             CloudBlockBlob blockBlob = (CloudBlockBlob)await container.GetBlobReferenceFromServerAsync(id);
-            return this.getFileObjectFromBlob(blockBlob);
+            return this._GetFileObjectFromBlob(blockBlob);
         }
         public async Task<FileObject> GetFileAsync(string account, string spaceId, string sourcePath)
         {
@@ -44,13 +44,13 @@ namespace PintheCloud.Managers
         public Task<List<FileObject>> GetFilesFromFolderAsync(string account, string spaceId, string sourcePath)
         {
             sourcePath = ParseHelper.TrimSlash(sourcePath);
-            return this.getFilesFromFolderByIdAsync(account + "/" + spaceId + "/" + sourcePath);
+            return this._GetFilesFromFolderByIdAsync(account + "/" + spaceId + "/" + sourcePath);
         }
         public Task<List<FileObject>> GetFilesFromFolderAsync(string account, string spaceId)
         {
-            return this.getFilesFromFolderByIdAsync(account + "/" + spaceId);
+            return this._GetFilesFromFolderByIdAsync(account + "/" + spaceId);
         }
-        private async Task<StorageFile> DownloadFileAsync(string id, StorageFile downloadFile)
+        public async Task<StorageFile> DownloadFileAsync(string id, StorageFile downloadFile)
         {
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(id);
             using (Stream s = await downloadFile.OpenStreamForWriteAsync())
@@ -70,30 +70,8 @@ namespace PintheCloud.Managers
             CloudBlockBlob blockBlob = container.GetBlockBlobReference(id);
             return await blockBlob.OpenReadAsync();
         }
-
-        private async Task<List<FileObject>> getFilesFromFolderByIdAsync(string id)
-        {
-            return await this.getFileObjectListFromBlobClient(this.CONTAINER_NAME + "/" + id + "/");
-        }
-
-        private async Task<string> _UploadFileAsync(string id, StorageFile uploadfile)
-        {
-            try
-            {
-                CloudBlockBlob blockBlob = container.GetBlockBlobReference(id);
-                using (Stream s = await uploadfile.OpenStreamForReadAsync())
-                {
-                    await blockBlob.UploadFromStreamAsync(s);
-                }
-            }
-            catch
-            {
-                return null;
-            }
-            return id;
-        }
-
-        public async Task<string> UploadFileThroughStreamAsync(string account, string id, Stream stream)
+        /*
+        private async Task<string> _UploadFileThroughStreamAsync(string account, string id, Stream stream)
         {
             try
             {
@@ -107,12 +85,29 @@ namespace PintheCloud.Managers
             {
                 return null;
             }
-            return id;
+            return account + id;
+        }
+        */
+        public async Task<string> UploadFileThroughStreamAsync(string account, string spaceId, string file, Stream stream)
+        {
+            try
+            {
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(account + "/" + spaceId + "/" + file);
+                using (Stream s = stream)
+                {
+                    await blockBlob.UploadFromStreamAsync(s);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            return account + "/" + spaceId + "/" + file;
         }
 
         public async Task<string> UploadFileAsync(string account, string spaceId, StorageFile uploadfile)
         {
-            return await this._UploadFileAsync(account + "/" + spaceId + "/" + MyEncoder.Decode(uploadfile.Name), uploadfile);
+            return await this._UploadFileAsyncById(account + "/" + spaceId + "/" + MyEncoder.Decode(uploadfile.Name), uploadfile);
         }
         public async Task<string> UploadFileAsync(string account, string spaceId, string sourcePath, StorageFile uploadfile)
         {
@@ -123,7 +118,7 @@ namespace PintheCloud.Managers
             else
             {
                 sourcePath = ParseHelper.TrimSlash(sourcePath);
-                return await this._UploadFileAsync(account + "/" + spaceId + "/" + sourcePath + "/" + MyEncoder.Decode(uploadfile.Name), uploadfile);
+                return await this._UploadFileAsyncById(account + "/" + spaceId + "/" + sourcePath + "/" + MyEncoder.Decode(uploadfile.Name), uploadfile);
             }
             
         }
@@ -146,8 +141,28 @@ namespace PintheCloud.Managers
         }
 
 
-        
-        private void getParentId(string fullPath, out string name, out string prefix, out string parentId)
+        private async Task<List<FileObject>> _GetFilesFromFolderByIdAsync(string id)
+        {
+            return await this._GetFileObjectListFromBlobClient(this.CONTAINER_NAME + "/" + id + "/");
+        }
+
+        private async Task<string> _UploadFileAsyncById(string id, StorageFile uploadfile)
+        {
+            try
+            {
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(id);
+                using (Stream s = await uploadfile.OpenStreamForReadAsync())
+                {
+                    await blockBlob.UploadFromStreamAsync(s);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            return id;
+        }
+        private void _GetParentId(string fullPath, out string name, out string prefix, out string parentId)
         {
             if (fullPath.EndsWith("/"))
                 fullPath = fullPath.Substring(0, fullPath.Length - 1);
@@ -164,12 +179,12 @@ namespace PintheCloud.Managers
             }
         }
 
-        private FileObject getFileObjectFromBlob(CloudBlockBlob blob)
+        private FileObject _GetFileObjectFromBlob(CloudBlockBlob blob)
         {
             string id = blob.Name;
             string name, parentId, prefix;
 
-            this.getParentId(id, out name, out prefix, out parentId);
+            this._GetParentId(id, out name, out prefix, out parentId);
             
             int size = (int)blob.Properties.Length;
             string type;
@@ -188,22 +203,7 @@ namespace PintheCloud.Managers
 
             return (new FileObject(id, name, parentId, size, type, typeDetail, createAt, updateAt));
         }
-        /*
-        private async Task<List<FileObject>> getFileObjectListFromDirectoryAsync(CloudBlobDirectory directory)
-        {
-            List<FileObject> list = new List<FileObject>();
-            BlobContinuationToken token = null;    
-            do
-            {
-                BlobResultSegment blobListSegment = await directory.ListBlobsSegmentedAsync(token);
-
-                //list.AddRange(getDataList(blobListSegment.Results));
-                token = blobListSegment.ContinuationToken;
-            } while (token != null);
-            return list;
-        }
-        */
-        private async Task<List<FileObject>> getFileObjectListFromBlobClient(string prefix)
+        private async Task<List<FileObject>> _GetFileObjectListFromBlobClient(string prefix)
         {
             List<FileObject> list = new List<FileObject>();
             BlobContinuationToken token = null;
@@ -212,18 +212,18 @@ namespace PintheCloud.Managers
             {
                 BlobResultSegment blobListSegment = await this.blobClient.ListBlobsSegmentedAsync(prefix, token);
 
-                list.AddRange(getDataList(blobListSegment.Results));
+                list.AddRange(_GetDataList(blobListSegment.Results));
                 token = blobListSegment.ContinuationToken;
             } while (token != null);
             return list;
         }
 
 
-        private FileObject getData(IListBlobItem item)
+        private FileObject _GetData(IListBlobItem item)
         {
             if (item.GetType() == typeof(CloudBlockBlob))
             {
-                return this.getFileObjectFromBlob((CloudBlockBlob)item);
+                return this._GetFileObjectFromBlob((CloudBlockBlob)item);
             }
             else if (item.GetType() == typeof(CloudBlobDirectory))
             {
@@ -232,7 +232,7 @@ namespace PintheCloud.Managers
                 string id = directory.Prefix;
                 string name, parentId, prefix;
 
-                this.getParentId(id, out name, out prefix, out parentId);
+                this._GetParentId(id, out name, out prefix, out parentId);
                 int size = 0;
                 string type = "folder";
                 string typeDetail = "folder";
@@ -243,12 +243,12 @@ namespace PintheCloud.Managers
             }
             return null;
         }
-        private List<FileObject> getDataList(IEnumerable<IListBlobItem> result)
+        private List<FileObject> _GetDataList(IEnumerable<IListBlobItem> result)
         {
             List<FileObject> list = new List<FileObject>();
             foreach (IListBlobItem item in result)
             {
-                FileObject fo = this.getData(item);
+                FileObject fo = this._GetData(item);
                 if (fo != null) list.Add(fo);
             }
             return list;

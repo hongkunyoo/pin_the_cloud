@@ -61,7 +61,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   about과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   About과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string About {
             get {
@@ -70,7 +70,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   application과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Application과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Application {
             get {
@@ -120,6 +120,15 @@ namespace PintheCloud.Resources {
         public static string Confirm {
             get {
                 return ResourceManager.GetString("Confirm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   folder과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Folder {
+            get {
+                return ResourceManager.GetString("Folder", resourceCulture);
             }
         }
         
@@ -214,11 +223,11 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   my space과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   My Spot과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string MySpace {
+        public static string MySpot {
             get {
-                return ResourceManager.GetString("MySpace", resourceCulture);
+                return ResourceManager.GetString("MySpot", resourceCulture);
             }
         }
         
@@ -268,7 +277,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   pick과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Pick과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Pick {
             get {
@@ -277,7 +286,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   pin과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Pin과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Pin {
             get {
@@ -295,7 +304,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   profile과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Profile과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Profile {
             get {
@@ -327,6 +336,15 @@ namespace PintheCloud.Resources {
         public static string ResourceLanguage {
             get {
                 return ResourceManager.GetString("ResourceLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string RootPath {
+            get {
+                return ResourceManager.GetString("RootPath", resourceCulture);
             }
         }
         

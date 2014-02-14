@@ -110,14 +110,15 @@
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Space.cs" />
     <Compile Include="Models\TestModel.cs" />
-    <Compile Include="Utilities\FileObjectConverter.cs" />
+    <Compile Include="Utilities\StringToThumnailUriConverter.cs" />
     <Compile Include="Pages\FileListPage.xaml.cs">
       <DependentUpon>FileListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\MyEncoder.cs" />
     <Compile Include="Utilities\MyDebug.cs" />
     <Compile Include="Utilities\ParseHelper.cs" />
-    <Compile Include="Utilities\StringtoUriConverter.cs" />
+    <Compile Include="Utilities\StringToFontWeightConverter.cs" />
+    <Compile Include="Utilities\StringToUriConverter.cs" />
     <Compile Include="Utilities\TestDrive.xaml.cs">
       <DependentUpon>TestDrive.xaml</DependentUpon>
     </Compile>
@@ -133,8 +134,6 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utilities\ColorHexStringToBrushConverter.cs" />
-    <Compile Include="ViewModels\FileObjectViewItem.cs" />
-    <Compile Include="ViewModels\FileObjectViewModel.cs" />
     <Compile Include="ViewModels\SpaceViewItem.cs" />
     <Compile Include="Workers\AccountSpaceRelationInternetAvailableWorker.cs" />
     <Compile Include="Workers\AccountSpaceRelationInternetUnavailableWorker.cs" />

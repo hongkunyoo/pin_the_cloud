@@ -27,22 +27,21 @@ namespace PintheCloud.Pages
     public partial class ExplorerPage : PtcPage
     {
         // Const Instances
+
+        private const string CONFIRM_APP_BAR_BUTTON_ICON_URI = "/Assets/AppBar/check.png";
+
         public const int PICK_PIVOT = 0;
         public const int PIN_PIVOT = 1;
         private const int CONFIRM_APP_BAR_BUTTON = 1;
 
-        private bool IsLikeButtonClicked = false;
-
-        private const string CONFIRM_APP_BAR_BUTTON_ICON_URI = "/Assets/AppBar/check.png";
-
 
         // Instances
-        public SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
-        public FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
+        private SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
+        private bool FileObjectIsDataLoading = false;
+        private Stack<FileObject> FolderTree = new Stack<FileObject>();
+        private List<FileObject> SelectedFile = new List<FileObject>();
 
-        private FileObject skydriveRootFolder;
-        private Stack<FileObject> folderTree;
-        private List<FileObject> selectedFile;
+        private bool IsLikeButtonClicked = false;
 
 
         public ExplorerPage()
@@ -50,12 +49,45 @@ namespace PintheCloud.Pages
             InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             // Check if it is on the backstack from SplashPage and remove that.
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
+
+            // If it doesn't first enter, but still loading, do it once again.
+            if (uiNearSpaceMessage.Visibility == Visibility.Visible)
+            {
+                if (uiNearSpaceMessage.Text.Equals(AppResources.Loading) || uiNearSpaceMessage.Text.Equals(AppResources.Refreshing))
+                {
+                    // If Internet available, Set space list
+                    // Otherwise, show internet bad message
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                        await this.SetExplorerPivotAsync(uiNearSpaceMessage.Text);
+                    else
+                        this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
+                }
+            }
+
+            if (uiPinInfoMessage.Visibility == Visibility.Visible)
+            {
+                if (uiPinInfoMessage.Text.Equals(AppResources.Loading) || uiPinInfoMessage.Text.Equals(AppResources.Refreshing))
+                {
+                    // If Internet available, Set pin list with root folder file list.
+                    // Otherwise, show internet bad message
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                    {
+                        this.FolderTree.Clear();
+                        this.SelectedFile.Clear();
+                        await this.SetTreeForFolder(null, AppResources.Refreshing);
+                    }
+                    else
+                    {
+                        this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
+                    }
+                }
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -86,9 +118,7 @@ namespace PintheCloud.Pages
                     }
                     else
                     {
-                        uiNearSpaceList.Visibility = Visibility.Collapsed;
-                        uiNearSpaceMessage.Text = AppResources.InternetUnavailableMessage;
-                        uiNearSpaceMessage.Visibility = Visibility.Visible;
+                        this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
                     }
                     break;
 
@@ -100,25 +130,42 @@ namespace PintheCloud.Pages
                     confirmAppBarButton.Click += uiAppBarConfirmButton_Click;
                     ApplicationBar.Buttons.Add(confirmAppBarButton);
 
-                    // If Internet available, Set pin list
+                    // If Internet available, Set pin list with root folder file list.
                     // Otherwise, show internet bad message
                     if (NetworkInterface.GetIsNetworkAvailable())
                     {
-                        // Get skydrive files.
-                        this.skydriveRootFolder = await App.SkyDriveManager.GetRootFolderAsync();
-                        this.folderTree = new Stack<FileObject>();
-                        this.selectedFile = new List<FileObject>();
-                        this.GetTreeForFolder(this.skydriveRootFolder, AppResources.Loading);
+                        if (!this.FileObjectIsDataLoading)  // Mutex check
+                        {
+                            this.FolderTree.Clear();
+                            this.SelectedFile.Clear();
+                            await this.SetTreeForFolder(null, AppResources.Refreshing);
+                        }
                     }
                     else
                     {
-                        uiPinList.Visibility = Visibility.Collapsed;
-                        uiPinMessage.Text = AppResources.InternetUnavailableMessage;
-                        uiPinMessage.Visibility = Visibility.Visible;
+                        this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
                     }
                     break;
             }
         }
+
+
+        // Refresh space list.
+        private async void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
+        {
+            switch (uiExplorerPivot.SelectedIndex)
+            {
+                case PICK_PIVOT:
+                    await this.SetExplorerPivotAsync(AppResources.Refreshing);
+                    break;
+                case PIN_PIVOT:
+                    this.FolderTree.Clear();
+                    this.SelectedFile.Clear();
+                    await this.SetTreeForFolder(null, AppResources.Refreshing);
+                    break;
+            }
+        }
+
 
 
         /*** Pick Pivot ***/
@@ -131,6 +178,7 @@ namespace PintheCloud.Pages
 
             // Set selected item to null for next selection of list item. 
             uiNearSpaceList.SelectedItem = null;
+
 
             // If selected item isn't null and it doesn't come from like button, goto File list page.
             // Otherwise, Process Like or Not Like by current state
@@ -149,7 +197,7 @@ namespace PintheCloud.Pages
                 if (NetworkInterface.GetIsNetworkAvailable()) //  Internet available.
                 {
                     App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
-                    await this.NearSpaceViewModel.LikeAsync(spaceViewItem);
+                    await this.LikeAsync(spaceViewItem);
                 }
                 else  // Internet bad
                 {
@@ -175,19 +223,7 @@ namespace PintheCloud.Pages
         }
 
 
-        // Refresh space list.
-        private async void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
-        {
-            // Refresh only if pivot is in pin pivot.
-            switch (uiExplorerPivot.SelectedIndex)
-            {
-                case PICK_PIVOT:
-                    // Set View model for dispaly,
-                    NearSpaceViewModel.IsDataLoading = false;  // Mutex
-                    await this.SetExplorerPivotAsync(AppResources.Refreshing);
-                    break;
-            }
-        }
+
 
 
 
@@ -205,7 +241,7 @@ namespace PintheCloud.Pages
             switch (uiExplorerPivot.SelectedIndex)
             {
                 case PIN_PIVOT:
-                    if (this.folderTree.Count == 1)
+                    if (this.FolderTree.Count == 1)
                     {
                         e.Cancel = false;
                         NavigationService.GoBack();
@@ -220,7 +256,7 @@ namespace PintheCloud.Pages
             }
         }
 
-
+        /*
         private void uiPinList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count <= 1)
@@ -238,11 +274,11 @@ namespace PintheCloud.Pages
                 }
             }
         }
-
+        */
 
         private void uiAppBarConfirmButton_Click(object sender, System.EventArgs e)
         {
-            PhoneApplicationService.Current.State["SELECTED_FILE"] = this.selectedFile;
+            PhoneApplicationService.Current.State["SELECTED_FILE"] = this.SelectedFile;
             NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE, UriKind.Relative));
         }
 
@@ -257,9 +293,7 @@ namespace PintheCloud.Pages
             App.AccountSpaceRelationManager.SetAccountSpaceRelationWorker(new AccountSpaceRelationInternetAvailableWorker());
 
             // Show progress indicator 
-            uiNearSpaceList.Visibility = Visibility.Collapsed;
-            uiNearSpaceMessage.Text = message;
-            uiNearSpaceMessage.Visibility = Visibility.Visible;
+            this.SetListUnableAndShowMessage(uiNearSpaceList, message, uiNearSpaceMessage);
             base.SetProgressIndicator(true);
 
             // Before go load, set mutex to true.
@@ -290,36 +324,28 @@ namespace PintheCloud.Pages
                         }
                         else  // No near spaces
                         {
-                            uiNearSpaceList.Visibility = Visibility.Collapsed;
-                            uiNearSpaceMessage.Text = AppResources.NoNearSpaceMessage;
-                            uiNearSpaceMessage.Visibility = Visibility.Visible;
+                            this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoNearSpaceMessage, uiNearSpaceMessage);
                             NearSpaceViewModel.IsDataLoading = false;  // Mutex
                         }
                     }
                     else  // works bad
                     {
                         // Show GPS off message box.
-                        uiNearSpaceList.Visibility = Visibility.Collapsed;
-                        uiNearSpaceMessage.Text = AppResources.BadGpsMessage;
-                        uiNearSpaceMessage.Visibility = Visibility.Visible;
+                        this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.BadGpsMessage, uiNearSpaceMessage);
                         NearSpaceViewModel.IsDataLoading = false;  // Mutex
                     }
                 }
                 else  // GPS is off
                 {
                     // Show GPS off message box.
-                    uiNearSpaceList.Visibility = Visibility.Collapsed;
-                    uiNearSpaceMessage.Text = AppResources.NoGpsOnMessage;
-                    uiNearSpaceMessage.Visibility = Visibility.Visible;
+                    this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoGpsOnMessage, uiNearSpaceMessage);
                     NearSpaceViewModel.IsDataLoading = false;  // Mutex
                 }
             }
             else  // First or not consented of access in location information.
             {
                 // Show no consent message box.
-                uiNearSpaceList.Visibility = Visibility.Collapsed;
-                uiNearSpaceMessage.Text = AppResources.NoLocationAcessConsentMessage;
-                uiNearSpaceMessage.Visibility = Visibility.Visible;
+                this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoLocationAcessConsentMessage, uiNearSpaceMessage);
                 NearSpaceViewModel.IsDataLoading = false;  // Mutex
             }
 
@@ -329,25 +355,103 @@ namespace PintheCloud.Pages
         }
 
 
-        private async void GetTreeForFolder(FileObject folder, string message)
+        // Do selection changed event job.
+        private async Task LikeAsync(SpaceViewItem spaceViewItem)
+        {
+            // Get information about image
+            string spaceId = spaceViewItem.SpaceId;
+            string spaceLikeButtonImageUri = spaceViewItem.SpaceLikeButtonImage.ToString();
+
+
+            // Set Image and number first for good user experience.
+            // Like or Note LIke by current state
+            if (spaceLikeButtonImageUri.Equals(SpaceViewItem.LIKE_NOT_PRESS_IMAGE_PATH))  // Do Like
+            {
+                spaceViewItem.SetLikeButtonImage(true, 1);
+
+                // If like fail, set image and number back to original
+                if (!(await App.AccountSpaceRelationManager.LikeAysnc(spaceId, true)))
+                    spaceViewItem.SetLikeButtonImage(false, 1);
+            }
+
+            else  // Do Not Like
+            {
+                spaceViewItem.SetLikeButtonImage(false, 1);
+
+                // If not like fail, set image back to original
+                if (!(await App.AccountSpaceRelationManager.LikeAysnc(spaceId, false)))
+                    spaceViewItem.SetLikeButtonImage(true, 1);
+            }
+        }
+
+
+
+
+        // Pin file selection event.
+        private async void uiPinInfoList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            // Get Selected File Object
+            FileObject fileObject = uiPinInfoList.SelectedItem as FileObject;
+
+            // Set selected item to null for next selection of list item. 
+            uiPinInfoList.SelectedItem = null;
+
+            // If selected item isn't null, Do something
+            if (fileObject != null)
+            {
+                // If user select folder, go in.
+                // Otherwise, add it to list.
+                if (fileObject.ThumnailType.Equals(AppResources.Folder))
+                {
+                    await this.SetTreeForFolder(fileObject, AppResources.Loading);
+                    MyDebug.WriteLine(fileObject.Name);
+                }
+                else  // Do selection if file
+                {
+                    if (fileObject.SelectCheckImage.Equals(FileObject.CHECK_NOT_IMAGE_PATH))
+                    {
+                        fileObject.SetSelectCheckImage(true);
+                        this.SelectedFile.Add(fileObject);
+                    }
+
+                    else
+                    {
+                        fileObject.SetSelectCheckImage(false);
+                        this.SelectedFile.Remove(fileObject);
+                    }
+                    MyDebug.WriteLine(fileObject.Name);
+                }
+            }
+        }
+
+
+        
+
+
+        // Get file tree from cloud
+        private async Task SetTreeForFolder(FileObject folder, string message)
         {
             // Show progress indicator 
-            uiPinList.Visibility = Visibility.Collapsed;
-            uiPinMessage.Text = message;
-            uiPinMessage.Visibility = Visibility.Visible;
+            this.SetListUnableAndShowMessage(uiPinInfoList, message, uiPinInfoMessage);
             base.SetProgressIndicator(true);
 
-            // Get file tree from cloud
+            // Before go load, set mutex to true.
+            this.FileObjectIsDataLoading = true;
+
+            // If folder null, set root.
+            if (folder == null)
+                folder = await App.SkyDriveManager.GetRootFolderAsync();
+
+            // TODO If there are not any files?
+            if (!this.FolderTree.Contains(folder))
+                this.FolderTree.Push(folder);
             List<FileObject> files = await App.SkyDriveManager.GetFilesFromFolderAsync(folder.Id);
-            if (!this.folderTree.Contains(folder))
-                this.folderTree.Push(folder);
             uiCurrentPath.Text = this.GetCurrentPath();
 
             // Set file tree to list.
-            uiPinList.DataContext = new ObservableCollection<FileObject>(files);
-            uiPinList.Visibility = Visibility.Visible;
-            uiPinMessage.Visibility = Visibility.Collapsed;
-
+            uiPinInfoList.DataContext = new ObservableCollection<FileObject>(files);
+            uiPinInfoList.Visibility = Visibility.Visible;
+            uiPinInfoMessage.Visibility = Visibility.Collapsed;
 
             // Hide progress indicator
             base.SetProgressIndicator(false);
@@ -356,24 +460,32 @@ namespace PintheCloud.Pages
 
         private string GetCurrentPath()
         {
-            FileObject[] array = folderTree.Reverse<FileObject>().ToArray<FileObject>();
-
+            FileObject[] array = this.FolderTree.Reverse<FileObject>().ToArray<FileObject>();
             string str = "";
             foreach (FileObject f in array)
-            {
-                str += f.Name + "/";
-            }
+                str += f.Name + AppResources.RootPath;
             return str;
         }
 
 
-        private void TreeUp()
+        private async void TreeUp()
         {
-            if (folderTree.Count > 1)
+            if (this.FolderTree.Count > 1)
             {
-                folderTree.Pop();
-                this.GetTreeForFolder(folderTree.First(), AppResources.Loading);
+                this.FolderTree.Pop();
+                await this.SetTreeForFolder(this.FolderTree.First(), AppResources.Loading);
             }
+        }
+
+
+
+        /*** Private Method ***/
+
+        private void SetListUnableAndShowMessage(LongListSelector list, string message, TextBlock messageTextBlock)
+        {
+            list.Visibility = Visibility.Collapsed;
+            messageTextBlock.Text = message;
+            messageTextBlock.Visibility = Visibility.Visible;
         }
     }
 }

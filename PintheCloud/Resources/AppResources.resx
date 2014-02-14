@@ -126,10 +126,10 @@
     <comment>Controls the Language and ensures that the font for all elements in the RootFrame aligns with the app's language. Set to the language code of this resource file's language.</comment>
   </data>
   <data name="About" xml:space="preserve">
-    <value>about</value>
+    <value>About</value>
   </data>
   <data name="Application" xml:space="preserve">
-    <value>application</value>
+    <value>Application</value>
   </data>
   <data name="ApplicationTitle" xml:space="preserve">
     <value>Pin the Cloud</value>
@@ -141,13 +141,13 @@
     <value>Login process stopped. Please try it again</value>
   </data>
   <data name="Pin" xml:space="preserve">
-    <value>pin</value>
+    <value>Pin</value>
   </data>
   <data name="Logout" xml:space="preserve">
     <value>Logout</value>
   </data>
-  <data name="MySpace" xml:space="preserve">
-    <value>my space</value>
+  <data name="MySpot" xml:space="preserve">
+    <value>My Spot</value>
   </data>
   <data name="InternetUnavailableCaption" xml:space="preserve">
     <value>Interent unavailable</value>
@@ -156,7 +156,7 @@
     <value>Sorry. Could not connect to At Here. Please check WIFI and try again.</value>
   </data>
   <data name="Profile" xml:space="preserve">
-    <value>profile</value>
+    <value>Profile</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
@@ -207,12 +207,18 @@
     <value>Terms of Service</value>
   </data>
   <data name="Pick" xml:space="preserve">
-    <value>pick</value>
+    <value>Pick</value>
   </data>
   <data name="Confirm" xml:space="preserve">
     <value>confirm</value>
   </data>
   <data name="Path" xml:space="preserve">
     <value>Path : </value>
+  </data>
+  <data name="Folder" xml:space="preserve">
+    <value>folder</value>
+  </data>
+  <data name="RootPath" xml:space="preserve">
+    <value>/</value>
   </data>
 </root>

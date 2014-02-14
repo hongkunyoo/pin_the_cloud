@@ -8,7 +8,7 @@ using System.Windows.Data;
 
 namespace PintheCloud.Utilities
 {
-    public class StringtoUriConverter : IValueConverter
+    public class StringToUriConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
