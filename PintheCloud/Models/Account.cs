@@ -11,7 +11,6 @@ namespace PintheCloud.Models
     {
         // Application Account Setting Key
         public static string ACCOUNT_SKY_DRIVE_IS_SIGN_IN = "ACCOUNT_SKY_DRIVE_IS_SIGN_IN";
-        public static string ACCOUNT_GOOGLE_DRIVE_IS_SIGN_IN = "ACCOUNT_GOOGLE_DRIVE_IS_SIGN_IN";
         public static string ACCOUNT_PLATFORM_ID = "ACCOUNT_PLATFROM_ID";
         public static string ACCOUNT_PLATFORM_ID_TYPE = "ACCOUNT_PLATFROM_ID_TYPE";
         public static string ACCOUNT_NAME = "ACCOUNT_NAME";

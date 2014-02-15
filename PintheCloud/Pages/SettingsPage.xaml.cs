@@ -93,7 +93,7 @@ namespace PintheCloud.Pages
 
                     // If Internet available, Set space list
                     if (NetworkInterface.GetIsNetworkAvailable())
-                        if (!MySpaceViewModel.IsDataLoading)  // Mutex check
+                        if (!MySpaceViewModel.IsDataLoaded)  // Mutex check
                             await this.SetMySpacePivotAsync(AppResources.Loading);
                     break;
 
@@ -238,7 +238,7 @@ namespace PintheCloud.Pages
             PtcPage.SetProgressIndicator(this, true);
 
             // Before go load, set mutex to true.
-            MySpaceViewModel.IsDataLoading = true;
+            MySpaceViewModel.IsDataLoaded = true;
 
             // If there is my spaces, Clear and Add spaces to list
             // Otherwise, Show none message.
@@ -254,7 +254,7 @@ namespace PintheCloud.Pages
             else  // No my spaces
             {
                 base.SetListUnableAndShowMessage(uiMySpaceList, AppResources.NoMySpaceMessage, uiMySpaceMessage);
-                MySpaceViewModel.IsDataLoading = false;  // Mutex
+                MySpaceViewModel.IsDataLoaded = false;  // Mutex
             }
 
             // Hide progress indicator
