@@ -36,11 +36,22 @@ namespace PintheCloud.Pages
         {
         }
 
-        public void SetSystemTray(bool value, double opacity)
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            SystemTray.Opacity = opacity;
-            SystemTray.IsVisible = value;
+            base.OnNavigatedFrom(e);
+
+            if (PhoneApplicationService.Current.State.ContainsKey("PREV_PAGE"))
+                this.PREVIOUS_PAGE = (string)PhoneApplicationService.Current.State["PREV_PAGE"];
+            PhoneApplicationService.Current.State["PREV_PAGE"] = this.NavigationService.CurrentSource.ToString();
         }
+
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+        }
+
 
         public static void SetProgressIndicator(DependencyObject context, bool value, string text = "")
         {
@@ -49,6 +60,14 @@ namespace PintheCloud.Pages
             progressIndicator.IsVisible = value;
             progressIndicator.Text = text;
             SystemTray.SetProgressIndicator(context, progressIndicator);
+        }
+
+
+        public void SetListUnableAndShowMessage(LongListSelector list, string message, TextBlock messageTextBlock)
+        {
+            list.Visibility = Visibility.Collapsed;
+            messageTextBlock.Text = message;
+            messageTextBlock.Visibility = Visibility.Visible;
         }
 
 
@@ -78,22 +97,6 @@ namespace PintheCloud.Pages
                 return true;
             else
                 return false;
-        }
-
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-
-            if (PhoneApplicationService.Current.State.ContainsKey("PREV_PAGE"))
-                this.PREVIOUS_PAGE = (string)PhoneApplicationService.Current.State["PREV_PAGE"];
-            PhoneApplicationService.Current.State["PREV_PAGE"] = this.NavigationService.CurrentSource.ToString();
-        }
-
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
         }
     }
 }

@@ -180,10 +180,10 @@
     <value>GPS doesn't work well not. Please load it again.</value>
   </data>
   <data name="NoGpsOnMessage" xml:space="preserve">
-    <value>Location serivces are disabled. Please enable it at your system to use GPS.</value>
+    <value>Location serivces are disabled. Please enable it at your system.</value>
   </data>
   <data name="NoLocationAcessConsentMessage" xml:space="preserve">
-    <value>This app requires consent to access location information. Please consent it.</value>
+    <value>This app requires consent to access location information. Please consent it in settings.</value>
   </data>
   <data name="Likes" xml:space="preserve">
     <value> likes</value>
@@ -244,5 +244,11 @@
   </data>
   <data name="SignOutCaption" xml:space="preserve">
     <value>Sign Out</value>
+  </data>
+  <data name="NoGpsOnCaption" xml:space="preserve">
+    <value>Gps Off</value>
+  </data>
+  <data name="NoLocationAcessConsentCaption" xml:space="preserve">
+    <value>Location Acess Consent</value>
   </data>
 </root>

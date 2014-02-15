@@ -32,7 +32,7 @@ namespace PintheCloud.Pages
 
 
         // Const Instances
-        private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/AppBar/png/general_bar_upload.png";
+        private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_upload.png";
         private const int SETTING_APP_BAR_BUTTON = 0;
         private const int PIN_APP_BAR_BUTTON = 1;
         private const int SKY_DRIVE_APP_BAR_MENUITEMS = 1;
@@ -69,7 +69,7 @@ namespace PintheCloud.Pages
                     if (NetworkInterface.GetIsNetworkAvailable())
                         await this.SetExplorerPivotAsync(uiNearSpaceMessage.Text);
                     else
-                        this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
+                        base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
                 }
             }
 
@@ -87,7 +87,7 @@ namespace PintheCloud.Pages
                     }
                     else
                     {
-                        this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
+                        base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
                     }
                 }
             }
@@ -125,7 +125,7 @@ namespace PintheCloud.Pages
                     }
                     else
                     {
-                        this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
+                        base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
                     }
                     break;
 
@@ -176,7 +176,7 @@ namespace PintheCloud.Pages
                         {
                             if (!this.IsFileObjectLoaded)  // Mutex check
                             {
-                                this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
+                                base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
 
                                 // SIgn cloud manager. If success, show files.
                                 // Otherwise, show error message
@@ -184,14 +184,14 @@ namespace PintheCloud.Pages
                                 {
                                     if (!await this.InitialPinInfoListSetUp(this))
                                     {
-                                        this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.BadSignInMessage, uiPinInfoMessage);
+                                        base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.BadSignInMessage, uiPinInfoMessage);
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
+                            base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
                         }
                     }
                     break;
@@ -205,12 +205,16 @@ namespace PintheCloud.Pages
             switch (uiExplorerPivot.SelectedIndex)
             {
                 case PICK_PIVOT:
-                    await this.SetExplorerPivotAsync(AppResources.Refreshing);
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                        await this.SetExplorerPivotAsync(AppResources.Refreshing);
                     break;
                 case PIN_PIVOT:
-                    this.FolderTree.Clear();
-                    this.SelectedFile.Clear();
-                    await this.SetFileTreeForFolder(null, AppResources.Refreshing);
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                    {
+                        this.FolderTree.Clear();
+                        this.SelectedFile.Clear();
+                        await this.SetFileTreeForFolder(null, AppResources.Refreshing);                        
+                    }
                     break;
             }
         }
@@ -249,7 +253,7 @@ namespace PintheCloud.Pages
         private async Task SetExplorerPivotAsync(string message)
         {
             // Show progress indicator 
-            this.SetListUnableAndShowMessage(uiNearSpaceList, message, uiNearSpaceMessage);
+            base.SetListUnableAndShowMessage(uiNearSpaceList, message, uiNearSpaceMessage);
             PtcPage.SetProgressIndicator(this, true);
 
             // Before go load, set mutex to true.
@@ -280,28 +284,28 @@ namespace PintheCloud.Pages
                         }
                         else  // No near spaces
                         {
-                            this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoNearSpaceMessage, uiNearSpaceMessage);
+                            base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoNearSpaceMessage, uiNearSpaceMessage);
                             NearSpaceViewModel.IsDataLoading = false;  // Mutex
                         }
                     }
                     else  // works bad
                     {
                         // Show GPS off message box.
-                        this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.BadGpsMessage, uiNearSpaceMessage);
+                        base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.BadGpsMessage, uiNearSpaceMessage);
                         NearSpaceViewModel.IsDataLoading = false;  // Mutex
                     }
                 }
                 else  // GPS is off
                 {
                     // Show GPS off message box.
-                    this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoGpsOnMessage, uiNearSpaceMessage);
+                    base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoGpsOnMessage, uiNearSpaceMessage);
                     NearSpaceViewModel.IsDataLoading = false;  // Mutex
                 }
             }
             else  // First or not consented of access in location information.
             {
                 // Show no consent message box.
-                this.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoLocationAcessConsentMessage, uiNearSpaceMessage);
+                base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoLocationAcessConsentMessage, uiNearSpaceMessage);
                 NearSpaceViewModel.IsDataLoading = false;  // Mutex
             }
 
@@ -349,10 +353,25 @@ namespace PintheCloud.Pages
 
         private void pinInfoAppBarButton_Click(object sender, EventArgs e)
         {
-            if (this.SelectedFile.Count > 0)
+            // Check whether user consented for location access.
+            if (base.GetLocationAccessConsent())  // Got consent of location access.
             {
-                PhoneApplicationService.Current.State["SELECTED_FILE"] = this.SelectedFile;
-                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE, UriKind.Relative));
+                // Check whether GPS is on or not
+                if (base.GetGeolocatorPositionStatus())  // GPS is on
+                {
+                    PhoneApplicationService.Current.State["SELECTED_FILE"] = this.SelectedFile;
+                    NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE, UriKind.Relative));
+                }
+                else  // GPS is off
+                {
+                    // Show GPS off message box.
+                    MessageBox.Show(AppResources.NoGpsOnMessage, AppResources.NoGpsOnCaption, MessageBoxButton.OK);
+                }
+            }
+            else  // First or not consented of access in location information.
+            {
+                // Show no consent message box.
+                MessageBox.Show(AppResources.NoLocationAcessConsentMessage, AppResources.NoLocationAcessConsentCaption, MessageBoxButton.OK);
             }
         }
 
@@ -408,7 +427,7 @@ namespace PintheCloud.Pages
         private async Task SetFileTreeForFolder(FileObject folder, string message)
         {
             // Show progress indicator 
-            this.SetListUnableAndShowMessage(uiPinInfoList, message, uiPinInfoMessage);
+            base.SetListUnableAndShowMessage(uiPinInfoList, message, uiPinInfoMessage);
             PtcPage.SetProgressIndicator(this, true);
 
             // Before go load, set mutex to true.
@@ -440,7 +459,7 @@ namespace PintheCloud.Pages
             }
             else
             {
-                this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.NoFileInCloudMessage, uiPinInfoMessage);
+                base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.NoFileInCloudMessage, uiPinInfoMessage);
             }
         }
 
@@ -492,7 +511,7 @@ namespace PintheCloud.Pages
                 // Show Loading message and save is login true for pivot moving action while sign in.
                 uiPinInfoListGrid.Visibility = Visibility.Visible;
                 uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
-                this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
+                base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
                 App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_IS_LOGIN] = true;
                 App.ApplicationSettings.Save();
 
@@ -513,17 +532,6 @@ namespace PintheCloud.Pages
                 uiPinInfoSignInGrid.Visibility = Visibility.Visible;
                 App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_LOGIN);
             }
-        }
-
-
-
-        /*** Private Method ***/
-
-        private void SetListUnableAndShowMessage(LongListSelector list, string message, TextBlock messageTextBlock)
-        {
-            list.Visibility = Visibility.Collapsed;
-            messageTextBlock.Text = message;
-            messageTextBlock.Visibility = Visibility.Visible;
         }
     }
 }

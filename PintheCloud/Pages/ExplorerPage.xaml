@@ -26,7 +26,7 @@
                 <shell:ApplicationBarMenuItem x:Name="uiAppBarGoogleDriveMenuItem" IsEnabled="True" Text="google drive"/>
             </shell:ApplicationBar.MenuItems>
             <shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/pajeon/png/general_bar_setting.png" IsEnabled="True" Text="settings" Click="uiAppBarSettingsButton_Click"/>
-            <shell:ApplicationBarIconButton x:Name="uiAppBarPinInfoButton" IconUri="/Assets/AppBar/png/general_bar_upload.png" IsEnabled="False" Text="pin"/>
+            <shell:ApplicationBarIconButton x:Name="uiAppBarPinInfoButton" IconUri="/Assets/pajeon/png/general_bar_upload.png" IsEnabled="False" Text="pin"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
 

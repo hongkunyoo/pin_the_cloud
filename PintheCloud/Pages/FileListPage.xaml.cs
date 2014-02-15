@@ -26,9 +26,8 @@ namespace PintheCloud.Pages
         private string SpaceId;
         private string SpaceName;
         private string AccountId;
-        private string AccountIdFontWeight;
         private string AccountName;
-        private string SpaceLikeNumber;
+        private string AccountNameFontWeight;
         private string SpaceLikeNumberColor;
 
         public FileListPage()
@@ -39,46 +38,53 @@ namespace PintheCloud.Pages
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
             // Get parameters
             if ((int)PhoneApplicationService.Current.State["PIVOT"] == ExplorerPage.PICK_PIVOT)
             {
                 this.SpaceId = NavigationContext.QueryString["spaceId"];
                 this.SpaceName = NavigationContext.QueryString["spaceName"];
                 this.AccountId = NavigationContext.QueryString["accountId"];
-                this.AccountIdFontWeight = NavigationContext.QueryString["accountIdFontWeight"];
                 this.AccountName = NavigationContext.QueryString["accountName"];
+                this.AccountNameFontWeight = NavigationContext.QueryString["accountIdFontWeight"];
 
                 // Set Binding Instances to UI
                 uiSpaceName.Text = this.SpaceName;
                 uiAccountName.Text = this.AccountName;
-
-                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(this.AccountIdFontWeight);
+                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(this.AccountNameFontWeight);
 
                 await Refresh();
             }
             else
             {
-                this.SpaceId = "";
-                this.SpaceName = "";
+                // Test name of space, it will be nick name set by user in setting view.
+                this.SpaceName = "Nickname";
+
                 Account account = App.CloudManager.GetCurrentAccount();
-                this.AccountName = account.account_name;
                 this.AccountId = account.account_platform_id;
-                this.SpaceLikeNumber = "0";
-                this.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
+                this.AccountName = account.account_name;
+                this.AccountNameFontWeight = StringToFontWeightConverter.BOLD;
 
                 // Set Binding Instances to UI
                 uiSpaceName.Text = this.SpaceName;
                 uiAccountName.Text = this.AccountName;
+                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(this.AccountNameFontWeight);
 
                 await UploadFilesAsync();
             }
         }
 
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+        }
+
+
         private async Task UploadFilesAsync()
         {
-       
+            // Test Name of space, now time.
             Geoposition geo = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
-
             Space space = new Space(DateTime.Now.ToString(), geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
                      
             await App.MobileService.GetTable<Space>().InsertAsync(space);
@@ -87,21 +93,16 @@ namespace PintheCloud.Pages
             List<FileObject> list = (List<FileObject>)PhoneApplicationService.Current.State["SELECTED_FILE"];
             foreach (FileObject file in list)
             {
-
                 await App.BlobStorageManager.UploadFileThroughStreamAsync(this.AccountId, this.SpaceId, file.Name, await App.SkyDriveManager.DownloadFileThroughStreamAsync(file.Id));
                 await Refresh();
             }
         }
 
+
         private async Task Refresh()
         {
             ObservableCollection<FileObject> list = new ObservableCollection<FileObject>(await App.BlobStorageManager.GetFilesFromFolderAsync(this.AccountId, this.SpaceId));
             uiFileList.DataContext = list;
-        }
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
         }
 
 

@@ -24,10 +24,6 @@ namespace PintheCloud.Pages
     {
         // Instances
         private const int MY_SPACES_PIVOT = 1;
-
-        private const string EDIT_IMAGE_PATH = "/Assets/pajeon/png/general_edit.png";
-        private const string VIEW_IMAGE_PATH = "/Assets/pajeon/png/general_view.png";
-
         public SpaceViewModel MySpaceViewModel = new SpaceViewModel();
 
 
@@ -45,7 +41,7 @@ namespace PintheCloud.Pages
             switch (uiSettingPivot.SelectedIndex)
             {
                 case MY_SPACES_PIVOT:
-                    uiSpaceEditButton.Visibility = Visibility.Visible;
+                    ApplicationBar.IsVisible = true;
 
                     // If Internet available, Set space list
                     if (NetworkInterface.GetIsNetworkAvailable())
@@ -53,7 +49,7 @@ namespace PintheCloud.Pages
                             await this.SetMySpacePivotAsync(AppResources.Loading);
                     break;
                 default:
-                    uiSpaceEditButton.Visibility = Visibility.Collapsed;
+                    ApplicationBar.IsVisible = false;
                     break;
             }
         }
@@ -76,32 +72,7 @@ namespace PintheCloud.Pages
 
 
 
-        /*** My Space ***/
-
-        // Process of editing spaces, especially deleting or not.
-        private void uiSpaceEditButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            // Get information about image
-            Button editButton = (Button)sender;
-            Image editButtonImage = (Image)editButton.Content;
-            BitmapImage editButtonImageBitmap = (BitmapImage)editButtonImage.Source;
-            string editButtonImageUriSource = editButtonImageBitmap.UriSource.ToString();
-
-            // If it is not view mode, go edit
-            // Otherwise, go view mode
-            if (editButtonImageUriSource.Equals(EDIT_IMAGE_PATH))  // It is View mode
-            {
-                editButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_PATH, UriKind.Relative));
-
-                // TODO Chande mode to edit mode
-            }
-            else  // It is Edit mode
-            {
-                editButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_PATH, UriKind.Relative));
-
-                // TODO Chande mode to view mode
-            }
-        }
+        /*** My Spot ***/
 
         // List select event
         private void uiMySpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -121,20 +92,29 @@ namespace PintheCloud.Pages
         }
 
 
+        // Refresh space list.
+        private async void uiAppBarRefreshMenuItem_Click(object sender, System.EventArgs e)
+        {
+            // If Internet available, Set space list
+            if (NetworkInterface.GetIsNetworkAvailable())
+                await this.SetMySpacePivotAsync(AppResources.Loading);
+        }
 
-        /*** Self Method ***/
+
+        private void uiAppBarRemoveButton_Click(object sender, System.EventArgs e)
+        {
+            // TODO: 여기에 구현된 이벤트 처리기를 추가하십시오.
+        }
+
 
         private async Task SetMySpacePivotAsync(string message)
         {
             // Show progress indicator 
-            uiMySpaceList.Visibility = Visibility.Collapsed;
-            uiMySpaceMessage.Text = message;
-            uiMySpaceMessage.Visibility = Visibility.Visible;
+            base.SetListUnableAndShowMessage(uiMySpaceList, message, uiMySpaceMessage);
             PtcPage.SetProgressIndicator(this, true);
 
             // Before go load, set mutex to true.
             MySpaceViewModel.IsDataLoading = true;
-
 
             // If there is my spaces, Clear and Add spaces to list
             // Otherwise, Show none message.
@@ -149,15 +129,24 @@ namespace PintheCloud.Pages
             }
             else  // No my spaces
             {
-                uiMySpaceList.Visibility = Visibility.Collapsed;
-                uiMySpaceMessage.Text = AppResources.NoMySpaceMessage;
-                uiMySpaceMessage.Visibility = Visibility.Visible;
+                base.SetListUnableAndShowMessage(uiMySpaceList, AppResources.NoMySpaceMessage, uiMySpaceMessage);
                 MySpaceViewModel.IsDataLoading = false;  // Mutex
             }
 
-
             // Hide progress indicator
             PtcPage.SetProgressIndicator(this, false);
+        }
+
+
+        private void skyDriveAppBarButton_Click(object sender, EventArgs e)
+        {
+            uiCurrentCloudKindText.Text = AppResources.SkyDrive;
+        }
+
+
+        private void googleDriveAppBarButton_Click(object sender, EventArgs e)
+        {
+            uiCurrentCloudKindText.Text = AppResources.GoogleDrive;
         }
     }
 }

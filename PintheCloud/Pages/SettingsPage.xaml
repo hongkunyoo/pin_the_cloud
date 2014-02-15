@@ -14,6 +14,16 @@
     SupportedOrientations="Portrait"  
 	Orientation="Portrait"
     shell:SystemTray.IsVisible="True" >
+    <local:PtcPage.ApplicationBar>
+        <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
+            <shell:ApplicationBarIconButton x:Name="uiAppBarRemoveButton" IconUri="/Assets/pajeon/png/general_bar_delete.png" IsEnabled="True" Text="remove" Click="uiAppBarRemoveButton_Click"/>
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshMenuItem" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshMenuItem_Click"/>
+                <shell:ApplicationBarMenuItem x:Name="uiAppBarSkyDriveMenuItem" IsEnabled="True" Text="skydrive" Click="skyDriveAppBarButton_Click"/>
+                <shell:ApplicationBarMenuItem x:Name="uiAppBarGoogleDriveMenuItem" IsEnabled="True" Text="google drive" Click="googleDriveAppBarButton_Click"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </local:PtcPage.ApplicationBar>
 
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
     <Grid x:Name="LayoutRoot" Background="White">
@@ -24,10 +34,8 @@
         <!--피벗 컨트롤-->
         <Grid Background="#FF00A4BF">
             <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <Button x:Name="uiSpaceEditButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Visibility="Collapsed" Click="uiSpaceEditButton_Click">
-                <Image x:Name="uiSpaceEditButtonImage" Source="/Assets/pajeon/png/general_edit.png" Stretch="None" Height="72" Width="72"/>
-            </Button>
-        </Grid>
+			<TextBlock x:Name="uiCurrentCloudKindText" HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,18,0"/>
+		</Grid>
         <!--피벗 컨트롤-->
         <phone:Pivot x:Name="uiSettingPivot" Title="{Binding LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Foreground="Black" Style="{StaticResource CustomPivotStyle}" SelectionChanged="uiSettingPivot_SelectionChanged">
             <!--피벗 항목 1-->
@@ -73,50 +81,50 @@
             <phone:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
                 <Grid>
                     <RichTextBox Foreground="Black" HorizontalAlignment="Left" VerticalAlignment="Top" >
-                    	<Paragraph>
-                    		<Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run FontSize="1.5" Text=""/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run/>
-                    		<Run Text="At Here helps you "/>
-                    		<Run Text="direct "/>
-                    		<Run Text="share information with people around you"/>
-                    		<Run Text=". "/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run Text="Without any previous settings job, you"/>
-                    		<Run Text=" can see spaces "/>
-                    		<Run Text="nearby you where "/>
-                    		<Run Text="other who wants to share with you made"/>
-                    		<Run Text="."/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run Text="You don't need to mind state of others. Just access where you want, "/>
-                    		<Run Text="and "/>
-                    		<Run Text="give or get information"/>
-                    		<Run Text=" with simple UI."/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run Text="Version : 1.0"/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
-                    	</Paragraph>
+                        <Paragraph>
+                            <Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run FontSize="1.5" Text=""/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                            <Run Text="At Here helps you "/>
+                            <Run Text="direct "/>
+                            <Run Text="share information with people around you"/>
+                            <Run Text=". "/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run Text="Without any previous settings job, you"/>
+                            <Run Text=" can see spaces "/>
+                            <Run Text="nearby you where "/>
+                            <Run Text="other who wants to share with you made"/>
+                            <Run Text="."/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run Text="You don't need to mind state of others. Just access where you want, "/>
+                            <Run Text="and "/>
+                            <Run Text="give or get information"/>
+                            <Run Text=" with simple UI."/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run Text="Version : 1.0"/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
+                        </Paragraph>
                     </RichTextBox>
                 </Grid>
             </phone:PivotItem>
