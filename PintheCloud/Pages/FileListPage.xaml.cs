@@ -57,8 +57,7 @@ namespace PintheCloud.Pages
             }
             else
             {
-                // Test name of space, it will be nick name set by user in setting view.
-                this.SpaceName = "Nickname";
+                this.SpaceName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME];
 
                 Account account = App.CloudManager.GetCurrentAccount();
                 this.AccountId = account.account_platform_id;

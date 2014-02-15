@@ -23,6 +23,7 @@ namespace PintheCloud.Pages
     public partial class SettingsPage : PtcPage
     {
         // Instances
+        private const int APPLICATION_PIVOT = 0;
         private const int MY_SPACES_PIVOT = 1;
         public SpaceViewModel MySpaceViewModel = new SpaceViewModel();
 
@@ -40,7 +41,22 @@ namespace PintheCloud.Pages
             // One time loading.
             switch (uiSettingPivot.SelectedIndex)
             {
+                case APPLICATION_PIVOT:
+                    uiCurrentCloudKindText.Visibility = Visibility.Collapsed;
+                    ApplicationBar.IsVisible = false;
+
+                    string nickName = null;
+                    if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME, out nickName))
+                    {
+                        App.ApplicationSettings[Account.ACCOUNT_NICK_NAME] = AppResources.AtHere;
+                        App.ApplicationSettings.Save();
+                    }
+
+                    uiNickNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME];
+                    break;
+
                 case MY_SPACES_PIVOT:
+                    uiCurrentCloudKindText.Visibility = Visibility.Visible;
                     ApplicationBar.IsVisible = true;
 
                     // If Internet available, Set space list
@@ -48,7 +64,9 @@ namespace PintheCloud.Pages
                         if (!MySpaceViewModel.IsDataLoading)  // Mutex check
                             await this.SetMySpacePivotAsync(AppResources.Loading);
                     break;
+
                 default:
+                    uiCurrentCloudKindText.Visibility = Visibility.Collapsed;
                     ApplicationBar.IsVisible = false;
                     break;
             }
@@ -56,11 +74,12 @@ namespace PintheCloud.Pages
 
 
 
-        /*** Profile ***/
+        /*** Application ***/
 
-        // Logout
-        private void uiLogoutButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void uiSkyDriveSignButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            // TODO SIgn in
+            // Sign out
             MessageBoxResult result = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
@@ -68,6 +87,27 @@ namespace PintheCloud.Pages
                 App.CloudManager.SignOut();
                 NavigationService.Navigate(new Uri(PtcPage.SPLASH_PAGE, UriKind.Relative));
             }
+        }
+
+
+        private void uiGoogleDriveSignButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // TODO
+        }
+
+
+        private void uiNickNameTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (uiNickNameTextBox.Text.Length > 0)
+                uiNickNameSetButton.IsEnabled = true;
+            else
+                uiNickNameSetButton.IsEnabled = false;
+        }
+
+
+        private void uiNickNameSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // TODO Set Nick name
         }
 
 

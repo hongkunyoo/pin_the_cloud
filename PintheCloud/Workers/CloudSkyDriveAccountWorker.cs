@@ -1,6 +1,7 @@
 ﻿using Microsoft.Live;
 using Microsoft.WindowsAzure.MobileServices;
 using PintheCloud.Models;
+using PintheCloud.Resources;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -175,6 +176,11 @@ namespace PintheCloud.Workers
             App.ApplicationSettings[Account.ACCOUNT_TOKEN] = account.account_token;
             App.ApplicationSettings[Account.ACCOUNT_USED_SIZE] = account.account_used_size;
             App.ApplicationSettings[Account.ACCOUNT_TYPE_NAME] = account.account_type_name;
+
+            string nickName = null;
+            if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME, out nickName))
+                App.ApplicationSettings[Account.ACCOUNT_NICK_NAME] = AppResources.AtHere;
+
             App.ApplicationSettings.Save();
         }
 
@@ -192,7 +198,6 @@ namespace PintheCloud.Workers
             App.ApplicationSettings.Remove(Account.ACCOUNT_TOKEN);
             App.ApplicationSettings.Remove(Account.ACCOUNT_USED_SIZE);
             App.ApplicationSettings.Remove(Account.ACCOUNT_TYPE_NAME);
-            App.ApplicationSettings.Remove(Account.LOCATION_ACCESS);
         }
     }
 }

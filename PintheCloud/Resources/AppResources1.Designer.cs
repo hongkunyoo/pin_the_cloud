@@ -88,6 +88,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   At Here과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string AtHere {
+            get {
+                return ResourceManager.GetString("AtHere", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   GPS doesn&apos;t work well not. Please load it again.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string BadGpsMessage {
@@ -147,6 +156,24 @@ namespace PintheCloud.Resources {
         public static string GoogleDrive {
             get {
                 return ResourceManager.GetString("GoogleDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Google Drive Sign In과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string GoogleDriveSignIn {
+            get {
+                return ResourceManager.GetString("GoogleDriveSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Google Drive Sign Out과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string GoogleDriveSignOut {
+            get {
+                return ResourceManager.GetString("GoogleDriveSignOut", resourceCulture);
             }
         }
         
@@ -246,6 +273,24 @@ namespace PintheCloud.Resources {
         public static string MySpot {
             get {
                 return ResourceManager.GetString("MySpot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Nick Name과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NickName {
+            get {
+                return ResourceManager.GetString("NickName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   (Max 15 length)과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NickNameMaxLength {
+            get {
+                return ResourceManager.GetString("NickNameMaxLength", resourceCulture);
             }
         }
         
@@ -435,6 +480,15 @@ namespace PintheCloud.Resources {
         public static string SkyDrive {
             get {
                 return ResourceManager.GetString("SkyDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   SkyDrive Sign In과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string SkyDriveSignIn {
+            get {
+                return ResourceManager.GetString("SkyDriveSignIn", resourceCulture);
             }
         }
         

@@ -245,10 +245,28 @@
   <data name="SignOutCaption" xml:space="preserve">
     <value>Sign Out</value>
   </data>
+  <data name="AtHere" xml:space="preserve">
+    <value>At Here</value>
+  </data>
+  <data name="GoogleDriveSignIn" xml:space="preserve">
+    <value>Google Drive Sign In</value>
+  </data>
+  <data name="GoogleDriveSignOut" xml:space="preserve">
+    <value>Google Drive Sign Out</value>
+  </data>
+  <data name="NickName" xml:space="preserve">
+    <value>Nick Name</value>
+  </data>
+  <data name="NickNameMaxLength" xml:space="preserve">
+    <value>(Max 15 length)</value>
+  </data>
   <data name="NoGpsOnCaption" xml:space="preserve">
     <value>Gps Off</value>
   </data>
   <data name="NoLocationAcessConsentCaption" xml:space="preserve">
     <value>Location Acess Consent</value>
+  </data>
+  <data name="SkyDriveSignIn" xml:space="preserve">
+    <value>SkyDrive Sign In</value>
   </data>
 </root>

@@ -22,6 +22,7 @@ namespace PintheCloud.Models
         public static string ACCOUNT_USED_SIZE = "ACCOUNT_USED_SIZE";
         public static string ACCOUNT_TYPE_NAME = "ACCOUNT_TYPE_NAME";
         public static string LOCATION_ACCESS = "LOCATION_ACCESS";
+        public static string ACCOUNT_NICK_NAME = "ACCOUNT_NICK_NAME";
 
         public string id { get; set; }
 
