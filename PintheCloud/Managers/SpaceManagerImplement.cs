@@ -42,7 +42,7 @@ namespace PintheCloud.Managers
         {
             // Get spaces
             return await this.CurrentSpaceWorker
-                .GetMySpacesAsync(App.CloudManager.GetCurrentAccount().account_platform_id);
+                .GetMySpacesAsync(App.IStorageManager.GetCurrentAccount().account_platform_id);
         }
 
 

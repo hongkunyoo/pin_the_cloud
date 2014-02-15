@@ -110,32 +110,32 @@ namespace PintheCloud.Pages
 
         /*** Application ***/
 
-        private void uiSkyDriveSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            // Sign out
-            MessageBoxResult result = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.OK)
-            {
-                App.CloudManager = App.SkyDriveManager;
-                App.CloudManager.SignOut();
-                this.SetSkyDriveSignButton(false);
-            }
-        }
-
-
         private async void uiSkyDriveSignInButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             this.IsSignIning = true;
             uiApplicationGrid.Visibility = Visibility.Collapsed;
             uiApplicationMessageGrid.Visibility = Visibility.Visible;
-            App.CloudManager = App.SkyDriveManager;
-            if (await App.CloudManager.SignIn(this))
+            App.IStorageManager = App.SkyDriveManager;
+            if (await App.IStorageManager.SignIn(this))
                 this.SetSkyDriveSignButton(true);
             else
                 MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
             uiApplicationGrid.Visibility = Visibility.Visible;
             uiApplicationMessageGrid.Visibility = Visibility.Collapsed;
             this.IsSignIning = false;
+        }
+
+
+        private void uiSkyDriveSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // Sign out
+            MessageBoxResult result = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.OK)
+            {
+                App.IStorageManager = App.SkyDriveManager;
+                App.IStorageManager.SignOut();
+                this.SetSkyDriveSignButton(false);
+            }
         }
 
 
@@ -153,12 +153,6 @@ namespace PintheCloud.Pages
                 uiSkyDriveSignButton.Click -= uiSkyDriveSignOutButton_Click;
                 uiSkyDriveSignButton.Click += uiSkyDriveSignInButton_Click;
             }
-        }
-
-
-        private void uiGoogleDriveSignButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            // TODO
         }
 
 
@@ -274,9 +268,9 @@ namespace PintheCloud.Pages
         }
 
 
-        private void googleDriveAppBarButton_Click(object sender, EventArgs e)
+        private void dropboxAppBarButton_Click(object sender, EventArgs e)
         {
-            uiCurrentCloudKindText.Text = AppResources.GoogleDrive;
+            uiCurrentCloudKindText.Text = AppResources.Dropbox;
         }
     }
 }

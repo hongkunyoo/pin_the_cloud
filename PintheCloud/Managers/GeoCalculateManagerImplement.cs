@@ -28,5 +28,15 @@ namespace PintheCloud.Managers
             }
             return geoposition;
         }
+
+
+        public bool GetGeolocatorPositionStatus()
+        {
+            Geolocator geolocator = new Geolocator();
+            if (geolocator.LocationStatus != PositionStatus.Disabled)
+                return true;
+            else
+                return false;
+        }
     }
 }

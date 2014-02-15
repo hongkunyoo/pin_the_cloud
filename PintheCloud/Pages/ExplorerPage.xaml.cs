@@ -36,12 +36,13 @@ namespace PintheCloud.Pages
         private const int SETTING_APP_BAR_BUTTON = 0;
         private const int PIN_APP_BAR_BUTTON = 1;
         private const int SKY_DRIVE_APP_BAR_MENUITEMS = 1;
-        private const int GOOGLE_DRIVE_APP_BAR_BUTTON = 2;
+        private const int DROPBOX_APP_BAR_BUTTON = 2;
 
 
         // Instances
         private SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
         private bool IsFileObjectLoaded = false;
+        private bool IsFileObjectLoading = false;
         private Stack<FileObject> FolderTree = new Stack<FileObject>();
         private List<FileObject> SelectedFile = new List<FileObject>();
         private bool IsSignIning = false;
@@ -111,27 +112,12 @@ namespace PintheCloud.Pages
                     // Show Loading message and save is login true for pivot moving action while sign in.
                     uiPinInfoListGrid.Visibility = Visibility.Visible;
                     uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
+                    uiPinInfoCurrentPath.Text = "";
 
-                    // If Internet available, Set pin list with root folder file list.
-                    // Otherwise, show internet bad message
                     if (NetworkInterface.GetIsNetworkAvailable())
-                    {
-                        base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
-
-                        // SIgn cloud manager. If success, show files.
-                        // Otherwise, show error message
-                        if (!await this.InitialPinInfoListSetUp(this))
-                        {
-                            MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
-                            uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                            uiPinInfoSignInGrid.Visibility = Visibility.Visible;
-                            App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN);
-                        }
-                    }
+                        this.SetPinInfoPivotAsync();
                     else
-                    {
                         base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
-                    }
                 }
             }
         }
@@ -153,7 +139,7 @@ namespace PintheCloud.Pages
                 case PICK_PIVOT:
                     // Remove button and menuitems
                     ApplicationBar.Buttons.RemoveAt(PIN_APP_BAR_BUTTON);
-                    ApplicationBar.MenuItems.RemoveAt(GOOGLE_DRIVE_APP_BAR_BUTTON);
+                    ApplicationBar.MenuItems.RemoveAt(DROPBOX_APP_BAR_BUTTON);
                     ApplicationBar.MenuItems.RemoveAt(SKY_DRIVE_APP_BAR_MENUITEMS);
 
                     // Remove Cloud Kind Image
@@ -163,7 +149,7 @@ namespace PintheCloud.Pages
                     // Otherwise, show internet bad message
                     if (NetworkInterface.GetIsNetworkAvailable())
                     {
-                        if (!this.NearSpaceViewModel.IsDataLoading)  // Mutex check
+                        if (!this.NearSpaceViewModel.IsDataLoaded)  // Mutex check
                             await this.SetExplorerPivotAsync(AppResources.Loading);
                     }
                     else
@@ -188,14 +174,14 @@ namespace PintheCloud.Pages
                     skyDriveAppBarButton.Click += skyDriveAppBarButton_Click;
                     ApplicationBar.MenuItems.Add(skyDriveAppBarButton);
 
-                    ApplicationBarMenuItem googleDriveAppBarButton = new ApplicationBarMenuItem();
-                    googleDriveAppBarButton.Text = AppResources.GoogleDrive;
-                    googleDriveAppBarButton.Click += googleDriveAppBarButton_Click;
-                    ApplicationBar.MenuItems.Add(googleDriveAppBarButton);
+                    ApplicationBarMenuItem dropboxAppBarButton = new ApplicationBarMenuItem();
+                    dropboxAppBarButton.Text = AppResources.Dropbox;
+                    dropboxAppBarButton.Click += dropboxAppBarButton_Click;
+                    ApplicationBar.MenuItems.Add(dropboxAppBarButton);
 
 
                     // Set Cloud Kind Image
-                    App.CloudManager = App.SkyDriveManager;
+                    App.IStorageManager = App.SkyDriveManager;
                     uiCurrentCloudKindText.Visibility = Visibility.Visible;
                     uiCurrentCloudKindText.Text = AppResources.SkyDrive;
 
@@ -213,27 +199,10 @@ namespace PintheCloud.Pages
                         uiPinInfoListGrid.Visibility = Visibility.Visible;
                         uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
 
-                        // If Internet available, Set pin list with root folder file list.
-                        // Otherwise, show internet bad message
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
-                            if (!this.IsFileObjectLoaded)  // Mutex check
-                            {
-                                if (!this.IsSignIning)  // Mutex check
-                                {
-                                    base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
-
-                                    // SIgn cloud manager. If success, show files.
-                                    // Otherwise, show error message
-                                    if (!await this.InitialPinInfoListSetUp(this))
-                                    {
-                                        MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
-                                        uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                                        uiPinInfoSignInGrid.Visibility = Visibility.Visible;
-                                        App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN);
-                                    }
-                                }
-                            }
+                            if (!this.IsFileObjectLoaded)
+                                this.SetPinInfoPivotAsync();
                         }
                         else
                         {
@@ -253,13 +222,21 @@ namespace PintheCloud.Pages
                 case PICK_PIVOT:
                     if (NetworkInterface.GetIsNetworkAvailable())
                         await this.SetExplorerPivotAsync(AppResources.Refreshing);
+                    else
+                        base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
                     break;
                 case PIN_PIVOT:
-                    if (NetworkInterface.GetIsNetworkAvailable())
+                    // TODO different by current state
+                    // If it is already signin skydrive, load files.
+                    // Otherwise, show signin button.
+                    bool isSignIn = false;
+                    App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN, out isSignIn);
+                    if (isSignIn)
                     {
-                        this.FolderTree.Clear();
-                        this.SelectedFile.Clear();
-                        await this.SetFileTreeForFolder(null, AppResources.Refreshing);                        
+                        if (NetworkInterface.GetIsNetworkAvailable())
+                            this.SetPinInfoPivotAsync();
+                        else
+                            base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
                     }
                     break;
             }
@@ -303,14 +280,14 @@ namespace PintheCloud.Pages
             PtcPage.SetProgressIndicator(this, true);
 
             // Before go load, set mutex to true.
-            this.NearSpaceViewModel.IsDataLoading = true;
+            this.NearSpaceViewModel.IsDataLoaded = true;
 
 
             // Check whether user consented for location access.
             if (base.GetLocationAccessConsent())  // Got consent of location access.
             {
                 // Check whether GPS is on or not
-                if (base.GetGeolocatorPositionStatus())  // GPS is on
+                if (App.GeoCalculateManager.GetGeolocatorPositionStatus())  // GPS is on
                 {
                     Geoposition currentGeoposition = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
 
@@ -337,21 +314,21 @@ namespace PintheCloud.Pages
                     {
                         // Show GPS off message box.
                         base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.BadGpsMessage, uiNearSpaceMessage);
-                        NearSpaceViewModel.IsDataLoading = false;  // Mutex
+                        NearSpaceViewModel.IsDataLoaded = false;  // Mutex
                     }
                 }
                 else  // GPS is off
                 {
                     // Show GPS off message box.
                     base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoGpsOnMessage, uiNearSpaceMessage);
-                    NearSpaceViewModel.IsDataLoading = false;  // Mutex
+                    NearSpaceViewModel.IsDataLoaded = false;  // Mutex
                 }
             }
             else  // First or not consented of access in location information.
             {
                 // Show no consent message box.
                 base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoLocationAcessConsentMessage, uiNearSpaceMessage);
-                NearSpaceViewModel.IsDataLoading = false;  // Mutex
+                NearSpaceViewModel.IsDataLoaded = false;  // Mutex
             }
 
 
@@ -363,15 +340,59 @@ namespace PintheCloud.Pages
 
         /*** Pin Pivot ***/
 
-        private void skyDriveAppBarButton_Click(object sender, EventArgs e)
+        private async void skyDriveAppBarButton_Click(object sender, EventArgs e)
         {
             uiCurrentCloudKindText.Text = AppResources.SkyDrive;
+
+            if (!this.IsFileObjectLoading && !this.IsSignIning)
+            {
+                App.IStorageManager = App.SkyDriveManager;
+
+                // If it is already signin skydrive, load files.
+                // Otherwise, show signin button.
+                bool isSkyDriveLogin = false;
+                App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN, out isSkyDriveLogin);
+                if (!isSkyDriveLogin)
+                {
+                    uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                    uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    // Show Loading message and save is login true for pivot moving action while sign in.
+                    uiPinInfoListGrid.Visibility = Visibility.Visible;
+                    uiCurrentCloudKindText.Text = "";
+                    uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
+
+                    // If Internet available, Set pin list with root folder file list.
+                    // Otherwise, show internet bad message
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                    {
+                        base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
+
+                        // SIgn cloud manager. If success, show files.
+                        // Otherwise, show error message
+                        if (!await this.InitialPinInfoListSetUp(this))
+                        {
+                            MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+                            uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                            uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                            App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN);
+                        }
+                    }
+                    else
+                    {
+                        base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
+                    }
+                }
+            }
         }
 
 
-        private void googleDriveAppBarButton_Click(object sender, EventArgs e)
+        private void dropboxAppBarButton_Click(object sender, EventArgs e)
         {
-            uiCurrentCloudKindText.Text = AppResources.GoogleDrive;
+            // TODO set dropbox up
+            uiCurrentCloudKindText.Text = AppResources.Dropbox;
         }
 
 
@@ -381,7 +402,7 @@ namespace PintheCloud.Pages
             if (base.GetLocationAccessConsent())  // Got consent of location access.
             {
                 // Check whether GPS is on or not
-                if (base.GetGeolocatorPositionStatus())  // GPS is on
+                if (App.GeoCalculateManager.GetGeolocatorPositionStatus())  // GPS is on
                 {
                     PhoneApplicationService.Current.State["SELECTED_FILE"] = this.SelectedFile;
                     NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE, UriKind.Relative));
@@ -456,20 +477,18 @@ namespace PintheCloud.Pages
 
             // Before go load, set mutex to true.
             this.IsFileObjectLoaded = true;
+            this.IsFileObjectLoading = true;
 
             // If folder null, set root.
             if (folder == null)
             {
                 uiPinInfoCurrentPath.Text = "";
-                folder = await App.CloudManager.GetRootFolderAsync();
+                folder = await App.IStorageManager.GetRootFolderAsync();
             }
 
             if (!this.FolderTree.Contains(folder))
                 this.FolderTree.Push(folder);
-            List<FileObject> files = await App.CloudManager.GetFilesFromFolderAsync(folder.Id);
-
-            // Hide progress indicator
-            PtcPage.SetProgressIndicator(this, false);
+            List<FileObject> files = await App.IStorageManager.GetFilesFromFolderAsync(folder.Id);
 
             // If there exists file, return that.
             if (files.Count > 0)
@@ -485,6 +504,10 @@ namespace PintheCloud.Pages
             {
                 base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.NoFileInCloudMessage, uiPinInfoMessage);
             }
+
+            // Hide progress indicator
+            PtcPage.SetProgressIndicator(this, false);
+            this.IsFileObjectLoading = false;
         }
 
 
@@ -513,7 +536,7 @@ namespace PintheCloud.Pages
         {
             this.IsSignIning = true;
             ((ApplicationBarIconButton)ApplicationBar.Buttons[SETTING_APP_BAR_BUTTON]).IsEnabled = false;
-            bool result = await App.CloudManager.SignIn(context);
+            bool result = await App.IStorageManager.SignIn(context);
             if (result)
             {
                 this.FolderTree.Clear();
@@ -549,6 +572,25 @@ namespace PintheCloud.Pages
             else
             {
                 MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+            }
+        }
+
+
+        private async void SetPinInfoPivotAsync()
+        {
+            if (!this.IsFileObjectLoading && !this.IsSignIning)  // Mutex check
+            {
+                base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
+
+                // SIgn cloud manager. If success, show files.
+                // Otherwise, show error message
+                if (!await this.InitialPinInfoListSetUp(this))
+                {
+                    MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+                    uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                    uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                    App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN);
+                }
             }
         }
     }

@@ -96,8 +96,6 @@
     </Compile>
     <Compile Include="GlobalKeys.cs" />
     <Compile Include="LocalizedStrings.cs" />
-    <Compile Include="Managers\CloudGoogleDriveManager.cs" />
-    <Compile Include="Managers\CloudManager.cs" />
     <Compile Include="Managers\IStorageManager.cs" />
     <Compile Include="Managers\BlobStorageManager.cs" />
     <Compile Include="Managers\LocalStorageManager.cs" />

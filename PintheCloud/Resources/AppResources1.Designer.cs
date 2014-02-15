@@ -142,6 +142,33 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Dropbox과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Dropbox {
+            get {
+                return ResourceManager.GetString("Dropbox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Dropbox Sign In과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DropboxSignIn {
+            get {
+                return ResourceManager.GetString("DropboxSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Dropbox Sign Out과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DropboxSignOut {
+            get {
+                return ResourceManager.GetString("DropboxSignOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   folder과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Folder {
@@ -156,33 +183,6 @@ namespace PintheCloud.Resources {
         public static string GB {
             get {
                 return ResourceManager.GetString("GB", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Google Drive과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string GoogleDrive {
-            get {
-                return ResourceManager.GetString("GoogleDrive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Google Drive Sign In과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string GoogleDriveSignIn {
-            get {
-                return ResourceManager.GetString("GoogleDriveSignIn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Google Drive Sign Out과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string GoogleDriveSignOut {
-            get {
-                return ResourceManager.GetString("GoogleDriveSignOut", resourceCulture);
             }
         }
         

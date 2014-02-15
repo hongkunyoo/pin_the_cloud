@@ -10,5 +10,7 @@ namespace PintheCloud.Managers
     public interface GeoCalculateManager
     {
         Task<Geoposition> GetCurrentGeopositionAsync();
+
+        bool GetGeolocatorPositionStatus();
     }
 }

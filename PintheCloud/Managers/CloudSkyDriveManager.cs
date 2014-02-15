@@ -20,7 +20,7 @@ namespace PintheCloud.Managers
     // Summary
     //      Implementation of IStorageManager.
     //      It helps to access SkyDrive Storage.
-    public class CloudSkyDriveManager : CloudManager
+    public class CloudSkyDriveManager : IStorageManager
     {
         // Summary:
         //     Object to communicate with SkyDrive.

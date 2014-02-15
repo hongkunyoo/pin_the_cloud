@@ -20,7 +20,7 @@
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshMenuItem" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshMenuItem_Click"/>
                 <shell:ApplicationBarMenuItem x:Name="uiAppBarSkyDriveMenuItem" IsEnabled="True" Text="skydrive" Click="skyDriveAppBarButton_Click"/>
-                <shell:ApplicationBarMenuItem x:Name="uiAppBarGoogleDriveMenuItem" IsEnabled="True" Text="google drive" Click="googleDriveAppBarButton_Click"/>
+                <shell:ApplicationBarMenuItem x:Name="uiAppBarDropboxMenuItem" IsEnabled="True" Text="dropbox" Click="dropboxAppBarButton_Click"/>
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
@@ -64,7 +64,7 @@
             			</StackPanel>
             			<StackPanel Grid.Row="1">
             				<Button x:Name="uiSkyDriveSignButton" Content="{Binding LocalizedResources.SkyDriveSignIn, Source={StaticResource LocalizedStrings}}" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
-            				<Button x:Name="uiGoogleDriveSignButton" Content="{Binding LocalizedResources.GoogleDriveSignIn, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" FontSize="22.667" Click="uiGoogleDriveSignButton_Click"/>
+            				<Button x:Name="uiDropboxDriveSignButton" Content="{Binding LocalizedResources.DropboxSignIn, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
             			</StackPanel>
             			<StackPanel Grid.Row="2">
             				<CheckBox x:Name="uiLocationAccessConsentCheckBox" Content="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Foreground="Black" BorderBrush="Black" Style="{StaticResource CustomCheckBoxStyle}" Checked="uiLocationAccessConsentCheckBox_Checked" Unchecked="uiLocationAccessConsentCheckBox_Unchecked"/>

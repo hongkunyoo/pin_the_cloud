@@ -215,8 +215,8 @@
   <data name="RootPath" xml:space="preserve">
     <value>/</value>
   </data>
-  <data name="GoogleDrive" xml:space="preserve">
-    <value>Google Drive</value>
+  <data name="Dropbox" xml:space="preserve">
+    <value>Dropbox</value>
   </data>
   <data name="SkyDrive" xml:space="preserve">
     <value>SkyDrive</value>
@@ -248,11 +248,11 @@
   <data name="AtHere" xml:space="preserve">
     <value>At Here</value>
   </data>
-  <data name="GoogleDriveSignIn" xml:space="preserve">
-    <value>Google Drive Sign In</value>
+  <data name="DropboxSignIn" xml:space="preserve">
+    <value>Dropbox Sign In</value>
   </data>
-  <data name="GoogleDriveSignOut" xml:space="preserve">
-    <value>Google Drive Sign Out</value>
+  <data name="DropboxSignOut" xml:space="preserve">
+    <value>Dropbox Sign Out</value>
   </data>
   <data name="SpotNickName" xml:space="preserve">
     <value>Spot Nick Name</value>

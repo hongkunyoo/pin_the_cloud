@@ -88,15 +88,5 @@ namespace PintheCloud.Pages
 
             return (bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT];
         }
-
-
-        public bool GetGeolocatorPositionStatus()
-        { 
-            Geolocator geolocator = new Geolocator();
-            if (geolocator.LocationStatus != PositionStatus.Disabled)
-                return true;
-            else
-                return false;
-        }
     }
 }

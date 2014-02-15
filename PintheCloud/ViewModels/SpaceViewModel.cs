@@ -22,7 +22,7 @@ namespace PintheCloud.ViewModels
         public ObservableCollection<SpaceViewItem> Items { get; set; }
 
         // Mutex
-        public bool IsDataLoading { get; set; }
+        public bool IsDataLoaded { get; set; }
 
 
         public SpaceViewModel()
@@ -83,7 +83,7 @@ namespace PintheCloud.ViewModels
 
             // If this space is this account's, set id bold font.
             // Otherwise, set light font.
-            if (App.CloudManager.GetCurrentAccount().account_platform_id.Equals(space.account_id))
+            if (App.IStorageManager.GetCurrentAccount().account_platform_id.Equals(space.account_id))
                 spaceViewItem.AccountIdFontWeight = StringToFontWeightConverter.BOLD;
             else
                 spaceViewItem.AccountIdFontWeight = StringToFontWeightConverter.LIGHT;

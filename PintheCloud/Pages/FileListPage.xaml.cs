@@ -59,7 +59,7 @@ namespace PintheCloud.Pages
             {
                 this.SpaceName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME];
 
-                Account account = App.CloudManager.GetCurrentAccount();
+                Account account = App.IStorageManager.GetCurrentAccount();
                 this.AccountId = account.account_platform_id;
                 this.AccountName = account.account_name;
                 this.AccountNameFontWeight = StringToFontWeightConverter.BOLD;

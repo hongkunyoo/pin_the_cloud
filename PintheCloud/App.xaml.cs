@@ -34,9 +34,8 @@ namespace PintheCloud
         // Manager
         public static SpaceManager SpaceManager = null;
         public static GeoCalculateManager GeoCalculateManager = null;
-        public static CloudManager CloudManager = null;
+        public static IStorageManager IStorageManager = null;
         public static CloudSkyDriveManager SkyDriveManager = null;
-        public static CloudGoogleDriveManager GoogleDriveManager = null;
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
 
@@ -75,7 +74,6 @@ namespace PintheCloud
             SpaceManager = new SpaceManagerImplement();
             GeoCalculateManager = new GeoCalculateManagerImplement();
             SkyDriveManager = new CloudSkyDriveManager();
-            GoogleDriveManager = new CloudGoogleDriveManager();
             LocalStorageManager = new LocalStorageManager();
 
 
