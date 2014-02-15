@@ -32,6 +32,9 @@ namespace PintheCloud.Managers
         public async Task<bool> SignIn(DependencyObject context)
         {
             bool result = false;
+            App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN] = true;
+            App.ApplicationSettings.Save();
+
             // If it haven't registerd live client, register
             if (this.LiveClient == null)
             {
@@ -63,15 +66,19 @@ namespace PintheCloud.Managers
                     PtcPage.SetProgressIndicator(context, false);
                 }
             }
+            else
+            {
+                return true;
+            }
             return result;
         }
 
 
         public void SignOut()
         {
-            this.AccountWorker.SignOut();
             this.LiveClient = null;
             this.CurrentAccount = null;
+            this.AccountWorker.SignOut();
         }
 
 

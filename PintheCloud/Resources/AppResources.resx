@@ -254,10 +254,10 @@
   <data name="GoogleDriveSignOut" xml:space="preserve">
     <value>Google Drive Sign Out</value>
   </data>
-  <data name="NickName" xml:space="preserve">
-    <value>Nick Name</value>
+  <data name="SpotNickName" xml:space="preserve">
+    <value>Spot Nick Name</value>
   </data>
-  <data name="NickNameMaxLength" xml:space="preserve">
+  <data name="SpotNickNameMaxLength" xml:space="preserve">
     <value>(Max 15 length)</value>
   </data>
   <data name="NoGpsOnCaption" xml:space="preserve">
@@ -268,5 +268,14 @@
   </data>
   <data name="SkyDriveSignIn" xml:space="preserve">
     <value>SkyDrive Sign In</value>
+  </data>
+  <data name="DoingSignIn" xml:space="preserve">
+    <value>Doing sign in...</value>
+  </data>
+  <data name="SetSpotNickNameCaption" xml:space="preserve">
+    <value>Nick Name</value>
+  </data>
+  <data name="SetSpotNickNameMessage" xml:space="preserve">
+    <value>New nick name is successfully registered. New spot's will be the nick name.</value>
   </data>
 </root>

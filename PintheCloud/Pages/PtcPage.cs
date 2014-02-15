@@ -74,19 +74,19 @@ namespace PintheCloud.Pages
         public bool GetLocationAccessConsent()
         {
             bool locationAccess = false;
-            App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS, out locationAccess);
+            App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS_CONSENT, out locationAccess);
             if (!locationAccess)  // First or not consented of access in location information.
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.LocationAccessMessage, AppResources.LocationAccess, MessageBoxButton.OKCancel);
 
                 if (result == MessageBoxResult.OK)
-                    App.ApplicationSettings[Account.LOCATION_ACCESS] = true;
+                    App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT] = true;
                 else
-                    App.ApplicationSettings[Account.LOCATION_ACCESS] = false;
+                    App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT] = false;
                 App.ApplicationSettings.Save();
             }
 
-            return (bool)App.ApplicationSettings[Account.LOCATION_ACCESS];
+            return (bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT];
         }
 
 

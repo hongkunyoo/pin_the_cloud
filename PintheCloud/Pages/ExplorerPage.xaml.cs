@@ -91,6 +91,49 @@ namespace PintheCloud.Pages
                     }
                 }
             }
+
+            // If it is already signin skydrive, load files.
+            // Otherwise, show signin button.
+            bool isSkyDriveLogin = false;
+            App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN, out isSkyDriveLogin);
+            if (!isSkyDriveLogin)
+            {
+                if (uiPinInfoSignInGrid.Visibility == Visibility.Collapsed)
+                {
+                    uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                    uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                }
+            }
+            else
+            {
+                if (uiPinInfoSignInGrid.Visibility == Visibility.Visible)
+                {
+                    // Show Loading message and save is login true for pivot moving action while sign in.
+                    uiPinInfoListGrid.Visibility = Visibility.Visible;
+                    uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
+
+                    // If Internet available, Set pin list with root folder file list.
+                    // Otherwise, show internet bad message
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                    {
+                        base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
+
+                        // SIgn cloud manager. If success, show files.
+                        // Otherwise, show error message
+                        if (!await this.InitialPinInfoListSetUp(this))
+                        {
+                            MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+                            uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                            uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                            App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN);
+                        }
+                    }
+                    else
+                    {
+                        base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
+                    }
+                }
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -120,7 +163,7 @@ namespace PintheCloud.Pages
                     // Otherwise, show internet bad message
                     if (NetworkInterface.GetIsNetworkAvailable())
                     {
-                        if (!NearSpaceViewModel.IsDataLoading)  // Mutex check
+                        if (!this.NearSpaceViewModel.IsDataLoading)  // Mutex check
                             await this.SetExplorerPivotAsync(AppResources.Loading);
                     }
                     else
@@ -159,7 +202,7 @@ namespace PintheCloud.Pages
                     // If it is already signin skydrive, load files.
                     // Otherwise, show signin button.
                     bool isSkyDriveLogin = false;
-                    App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_SKY_DRIVE_IS_LOGIN, out isSkyDriveLogin);
+                    App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN, out isSkyDriveLogin);
                     if (!isSkyDriveLogin)
                     {
                         uiPinInfoListGrid.Visibility = Visibility.Collapsed;
@@ -176,15 +219,18 @@ namespace PintheCloud.Pages
                         {
                             if (!this.IsFileObjectLoaded)  // Mutex check
                             {
-                                base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
-
-                                // SIgn cloud manager. If success, show files.
-                                // Otherwise, show error message
                                 if (!this.IsSignIning)  // Mutex check
                                 {
+                                    base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
+
+                                    // SIgn cloud manager. If success, show files.
+                                    // Otherwise, show error message
                                     if (!await this.InitialPinInfoListSetUp(this))
                                     {
-                                        base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.BadSignInMessage, uiPinInfoMessage);
+                                        MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+                                        uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                                        uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                                        App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN);
                                     }
                                 }
                             }
@@ -257,7 +303,7 @@ namespace PintheCloud.Pages
             PtcPage.SetProgressIndicator(this, true);
 
             // Before go load, set mutex to true.
-            NearSpaceViewModel.IsDataLoading = true;
+            this.NearSpaceViewModel.IsDataLoading = true;
 
 
             // Check whether user consented for location access.
@@ -285,7 +331,6 @@ namespace PintheCloud.Pages
                         else  // No near spaces
                         {
                             base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoNearSpaceMessage, uiNearSpaceMessage);
-                            NearSpaceViewModel.IsDataLoading = false;  // Mutex
                         }
                     }
                     else  // works bad
@@ -317,27 +362,6 @@ namespace PintheCloud.Pages
 
 
         /*** Pin Pivot ***/
-
-        protected override void OnBackKeyPress(CancelEventArgs e)
-        {
-            switch (uiExplorerPivot.SelectedIndex)
-            {
-                case PIN_PIVOT:
-                    if (this.FolderTree.Count == 1)
-                    {
-                        e.Cancel = false;
-                        NavigationService.GoBack();
-                    }
-                    else
-                    {
-                        this.TreeUp();
-                        e.Cancel = true;
-                    }
-                    base.OnBackKeyPress(e);
-                    break;
-            }
-        }
-
 
         private void skyDriveAppBarButton_Click(object sender, EventArgs e)
         {
@@ -511,9 +535,7 @@ namespace PintheCloud.Pages
                 // Show Loading message and save is login true for pivot moving action while sign in.
                 uiPinInfoListGrid.Visibility = Visibility.Visible;
                 uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
-                base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
-                App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_IS_LOGIN] = true;
-                App.ApplicationSettings.Save();
+                base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.DoingSignIn, uiPinInfoMessage);
 
                 // SIgn cloud manager. If success, show files.
                 // Otherwise, show error message
@@ -522,15 +544,11 @@ namespace PintheCloud.Pages
                     MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
                     uiPinInfoListGrid.Visibility = Visibility.Collapsed;
                     uiPinInfoSignInGrid.Visibility = Visibility.Visible;
-                    App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_LOGIN);
                 }
             }
             else
             {
                 MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
-                uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                uiPinInfoSignInGrid.Visibility = Visibility.Visible;
-                App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_LOGIN);
             }
         }
     }

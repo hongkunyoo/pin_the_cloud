@@ -15,7 +15,7 @@
 	Orientation="Portrait"
     shell:SystemTray.IsVisible="True" >
     <local:PtcPage.ApplicationBar>
-        <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
+        <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E" IsVisible="False">
             <shell:ApplicationBarIconButton x:Name="uiAppBarRemoveButton" IconUri="/Assets/pajeon/png/general_bar_delete.png" IsEnabled="True" Text="remove" Click="uiAppBarRemoveButton_Click"/>
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshMenuItem" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshMenuItem_Click"/>
@@ -41,35 +41,40 @@
             <!--피벗 항목 1-->
             <phone:PivotItem Header="{Binding LocalizedResources.Application, Source={StaticResource LocalizedStrings}}">
             	<Grid>
-            		<Grid.RowDefinitions>
-            			<RowDefinition/>
-            			<RowDefinition/>
-            			<RowDefinition/>
-            			<RowDefinition Height="72"/>
-            		</Grid.RowDefinitions>
-            		<StackPanel>
-            			<StackPanel Orientation="Horizontal">
-            				<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.NickName, Source={StaticResource LocalizedStrings}}" FontSize="22.667" Margin="0,0,10,0"/>
-            				<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.NickNameMaxLength, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Bottom" FontSize="17.333" FontWeight="Light"/>
+            		<Grid x:Name="uiApplicationGrid">
+            			<Grid.RowDefinitions>
+            				<RowDefinition/>
+            				<RowDefinition/>
+            				<RowDefinition/>
+            				<RowDefinition Height="72"/>
+            			</Grid.RowDefinitions>
+            			<StackPanel>
+            				<StackPanel Orientation="Horizontal" Margin="18,0,0,0">
+            					<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.NickName, Source={StaticResource LocalizedStrings}}" FontSize="22.667" Margin="0,0,10,0"/>
+            					<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.NickNameMaxLength, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Bottom" FontSize="17.333" FontWeight="Light"/>
+            				</StackPanel>
+            				<Grid>
+            					<Grid.ColumnDefinitions>
+            						<ColumnDefinition/>
+            						<ColumnDefinition Width="82"/>
+            					</Grid.ColumnDefinitions>
+            					<TextBox x:Name="uiSpotNickNameTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="22.667" VerticalAlignment="Top" MaxLength="15" TextChanged="uiSpotNickNameTextBox_TextChanged"/>
+            					<Button x:Name="uiSpotNickNameSetButton" Content="Set" BorderBrush="Black" Foreground="Black" FontSize="22.667" Grid.Column="1" Click="uiSpotNickNameSetButton_Click"/>
+            				</Grid>
             			</StackPanel>
-            			<Grid>
-            				<Grid.ColumnDefinitions>
-            					<ColumnDefinition/>
-            					<ColumnDefinition Width="82"/>
-            				</Grid.ColumnDefinitions>
-            				<TextBox x:Name="uiNickNameTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="22.667" VerticalAlignment="Top" MaxLength="15" TextChanged="uiNickNameTextBox_TextChanged"/>
-            				<Button x:Name="uiNickNameSetButton" Content="Set" BorderBrush="Black" Foreground="Black" FontSize="22.667" Grid.Column="1" Click="uiNickNameSetButton_Click"/>
-            			</Grid>
-            		</StackPanel>
-            		<StackPanel Grid.Row="1">
-            			<Button x:Name="uiSkyDriveSignButton" Content="{Binding LocalizedResources.SkyDriveSignIn, Source={StaticResource LocalizedStrings}}" Click="uiSkyDriveSignButton_Click" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
-            			<Button x:Name="uiGoogleDriveSignButton" Content="{Binding LocalizedResources.GoogleDriveSignIn, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" FontSize="22.667" Click="uiGoogleDriveSignButton_Click"/>
-            		</StackPanel>
-            		<StackPanel Grid.Row="2">
-            			<CheckBox x:Name="uiLocationServiceConsentCheckBox" Content="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Foreground="Black" BorderBrush="Black" Style="{StaticResource CustomCheckBoxStyle}"/>
-            			<HyperlinkButton Content="{Binding LocalizedResources.TermsOfService, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
-            			<HyperlinkButton Content="{Binding LocalizedResources.PrivatePolicy, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
-            		</StackPanel>
+            			<StackPanel Grid.Row="1">
+            				<Button x:Name="uiSkyDriveSignButton" Content="{Binding LocalizedResources.SkyDriveSignIn, Source={StaticResource LocalizedStrings}}" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
+            				<Button x:Name="uiGoogleDriveSignButton" Content="{Binding LocalizedResources.GoogleDriveSignIn, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" FontSize="22.667" Click="uiGoogleDriveSignButton_Click"/>
+            			</StackPanel>
+            			<StackPanel Grid.Row="2">
+            				<CheckBox x:Name="uiLocationAccessConsentCheckBox" Content="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Foreground="Black" BorderBrush="Black" Style="{StaticResource CustomCheckBoxStyle}" Checked="uiLocationAccessConsentCheckBox_Checked" Unchecked="uiLocationAccessConsentCheckBox_Unchecked"/>
+            				<HyperlinkButton Content="{Binding LocalizedResources.TermsOfService, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" Margin="0,0,0,8" />
+            				<HyperlinkButton Content="{Binding LocalizedResources.PrivatePolicy, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
+            			</StackPanel>
+            		</Grid>
+            		<Grid x:Name="uiApplicationMessageGrid" Visibility="Collapsed">
+            			<TextBlock Text="{Binding LocalizedResources.DoingSignIn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22" Margin="22,28,8,0"/>
+            		</Grid>
             	</Grid>
             </phone:PivotItem>
             <phone:PivotItem Header="{Binding LocalizedResources.MySpot, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">

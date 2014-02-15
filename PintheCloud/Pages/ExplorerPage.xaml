@@ -103,27 +103,23 @@
                     <Grid>
                 		<Grid x:Name="uiPinInfoListGrid">
                 			<Grid.RowDefinitions>
-                				<RowDefinition Height="72"/>
                 				<RowDefinition Height="73"/>
                 				<RowDefinition/>
                 			</Grid.RowDefinitions>
-                			<Grid x:Name="uiPinInfoCurrentGrid" Background="#FFEFF2F6" Width="426" Height="52" VerticalAlignment="Top">
-                				<TextBlock x:Name="uiPinInfoCurrentPath" Foreground="Black" TextTrimming="WordEllipsis" VerticalAlignment="Center" FontSize="22" FontWeight="Medium" FontStyle="Italic" Margin="10,0"/>
-                			</Grid>
-                			<Grid x:Name="uiPinInfoListUpButtonGrid" Grid.Row="1">
+                			<Grid x:Name="uiPinInfoListUpButtonGrid">
                 				<Grid.RowDefinitions>
                 					<RowDefinition/>
                 					<RowDefinition Height="1"/>
                 				</Grid.RowDefinitions>
                 				<Button x:Name="uiPinInfoListUpButton" Foreground="Black" Margin="0" BorderBrush="Transparent" Click="uiPinInfoListUpButton_Click" Style="{StaticResource ListItemButtonStyle}" FontSize="22" HorizontalContentAlignment="Left">
                 					<Grid Margin="22,0,0,0">
-                						<TextBlock TextWrapping="Wrap" Text=".."/>
+                						<TextBlock x:Name="uiPinInfoCurrentPath" TextWrapping="Wrap"/>
                 					</Grid>
                 				</Button>
                 				<Grid Grid.Row="1" Background="#FFCED7DD"/>
                 			</Grid>
-                			<TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Margin="22,28,18,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="2" Visibility="Collapsed" />
-                			<phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" Visibility="Collapsed" Grid.Row="2" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}"/>
+                			<TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Margin="22,28,18,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Visibility="Collapsed" FontSize="22" />
+                			<phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Grid.Row="1"/>
                 		</Grid>
                 		<Grid x:Name="uiPinInfoSignInGrid" Visibility="Collapsed">
                 			<Button x:Name="uiPinInfoSignInButton" Content="{Binding LocalizedResources.SignIn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black" Foreground="Black" Click="uiPinInfoSignInButton_Click"/>

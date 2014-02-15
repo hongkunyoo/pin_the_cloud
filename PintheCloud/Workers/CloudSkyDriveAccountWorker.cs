@@ -26,6 +26,7 @@ namespace PintheCloud.Workers
             }
             catch (InvalidOperationException)
             {
+                this.SignOut();
                 return null;
             }
 
@@ -49,6 +50,7 @@ namespace PintheCloud.Workers
                     }
                     catch (InvalidOperationException)
                     {
+                        this.SignOut();
                         return null;
                     }
                 }
@@ -68,6 +70,7 @@ namespace PintheCloud.Workers
                     }
                     catch (InvalidOperationException)
                     {
+                        this.SignOut();
                         return null;
                     }
                 }
@@ -94,6 +97,7 @@ namespace PintheCloud.Workers
             }
             catch (LiveAuthException)
             {
+                this.SignOut();
                 return null;
             }
 
@@ -107,28 +111,47 @@ namespace PintheCloud.Workers
                 }
                 catch (LiveAuthException)
                 {
+                    this.SignOut();
                     return null;
                 }
             }
 
             // Get Client using session which we get above
-            return new LiveConnectClient(liveLoginResult.Session);
+            if (liveLoginResult.Session == null)
+            {
+                this.SignOut();
+                return null;
+            }
+            else
+            {
+                return new LiveConnectClient(liveLoginResult.Session);
+            }
         }
 
 
         // Get User Profile information result using registered live connection session
         public async Task<dynamic> GetProfileResultAsync(LiveConnectClient liveClient)
         {
-            dynamic result = null;
+            LiveOperationResult operationResult = null;
             try
             {
-                LiveOperationResult operationResult = await liveClient.GetAsync("me");
-                result = operationResult.Result;
+                operationResult = await liveClient.GetAsync("me");
             }
             catch (LiveConnectException)
             {
+                this.SignOut();
+                return null;
             }
-            return result;
+
+            if (operationResult.Result == null)
+            {
+                this.SignOut();
+                return null;
+            }
+            else 
+            {
+                return operationResult.Result;
+            }
         }
 
 
@@ -188,7 +211,7 @@ namespace PintheCloud.Workers
         // Save profile information to local isolated App settings.
         private void RemoveProfileReslutFromAppSettings()
         {
-            App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_LOGIN);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN);
             App.ApplicationSettings.Remove(Account.ACCOUNT_PLATFORM_ID);
             App.ApplicationSettings.Remove(Account.ACCOUNT_PLATFORM_ID_TYPE);
             App.ApplicationSettings.Remove(Account.ACCOUNT_NAME);

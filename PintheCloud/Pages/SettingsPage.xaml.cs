@@ -24,13 +24,27 @@ namespace PintheCloud.Pages
     {
         // Instances
         private const int APPLICATION_PIVOT = 0;
-        private const int MY_SPACES_PIVOT = 1;
+        private const int MY_SPOT_PIVOT = 1;
+
+        private bool IsSignIning = false;
         public SpaceViewModel MySpaceViewModel = new SpaceViewModel();
 
 
         public SettingsPage()
         {
             InitializeComponent();
+        }
+
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        { 
+
+        }
+
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+
         }
 
 
@@ -42,20 +56,38 @@ namespace PintheCloud.Pages
             switch (uiSettingPivot.SelectedIndex)
             {
                 case APPLICATION_PIVOT:
+
+                    // Set My Spot stuff unable
                     uiCurrentCloudKindText.Visibility = Visibility.Collapsed;
                     ApplicationBar.IsVisible = false;
 
+                    // Set Nickname
                     string nickName = null;
                     if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME, out nickName))
                     {
                         App.ApplicationSettings[Account.ACCOUNT_NICK_NAME] = AppResources.AtHere;
                         App.ApplicationSettings.Save();
                     }
+                    uiSpotNickNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME];
 
-                    uiNickNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME];
+                    // Set SkyDrive Sign button
+                    bool isSignIn = false;
+                    App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN, out isSignIn);
+                    this.SetSkyDriveSignButton(isSignIn);
+
+                    // Set location access consent checkbox
+                    bool isLocationAccessConsent = false;
+                    App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS_CONSENT, out isLocationAccessConsent);
+                    if (isLocationAccessConsent)
+                        uiLocationAccessConsentCheckBox.IsChecked = true;
+                    else 
+                        uiLocationAccessConsentCheckBox.IsChecked = false;
+
                     break;
 
-                case MY_SPACES_PIVOT:
+                case MY_SPOT_PIVOT:
+
+                    // Set My Spot stuff enable
                     uiCurrentCloudKindText.Visibility = Visibility.Visible;
                     ApplicationBar.IsVisible = true;
 
@@ -66,6 +98,8 @@ namespace PintheCloud.Pages
                     break;
 
                 default:
+
+                    // Set My Spot stuff enable
                     uiCurrentCloudKindText.Visibility = Visibility.Collapsed;
                     ApplicationBar.IsVisible = false;
                     break;
@@ -76,16 +110,48 @@ namespace PintheCloud.Pages
 
         /*** Application ***/
 
-        private void uiSkyDriveSignButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void uiSkyDriveSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            // TODO SIgn in
             // Sign out
             MessageBoxResult result = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
                 App.CloudManager = App.SkyDriveManager;
                 App.CloudManager.SignOut();
-                NavigationService.Navigate(new Uri(PtcPage.SPLASH_PAGE, UriKind.Relative));
+                this.SetSkyDriveSignButton(false);
+            }
+        }
+
+
+        private async void uiSkyDriveSignInButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.IsSignIning = true;
+            uiApplicationGrid.Visibility = Visibility.Collapsed;
+            uiApplicationMessageGrid.Visibility = Visibility.Visible;
+            App.CloudManager = App.SkyDriveManager;
+            if (await App.CloudManager.SignIn(this))
+                this.SetSkyDriveSignButton(true);
+            else
+                MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+            uiApplicationGrid.Visibility = Visibility.Visible;
+            uiApplicationMessageGrid.Visibility = Visibility.Collapsed;
+            this.IsSignIning = false;
+        }
+
+
+        private void SetSkyDriveSignButton(bool isSignIn)
+        {
+            if (isSignIn)  // It is signed in
+            {
+                uiSkyDriveSignButton.Content = AppResources.SkyDriveSignOut;
+                uiSkyDriveSignButton.Click += uiSkyDriveSignOutButton_Click;
+                uiSkyDriveSignButton.Click -= uiSkyDriveSignInButton_Click;
+            }
+            else  // It haven't signed in
+            {
+                uiSkyDriveSignButton.Content = AppResources.SkyDriveSignIn;
+                uiSkyDriveSignButton.Click -= uiSkyDriveSignOutButton_Click;
+                uiSkyDriveSignButton.Click += uiSkyDriveSignInButton_Click;
             }
         }
 
@@ -96,18 +162,42 @@ namespace PintheCloud.Pages
         }
 
 
-        private void uiNickNameTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void uiSpotNickNameTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (uiNickNameTextBox.Text.Length > 0)
-                uiNickNameSetButton.IsEnabled = true;
+            if (uiSpotNickNameTextBox.Text.Length > 0)
+                uiSpotNickNameSetButton.IsEnabled = true;
             else
-                uiNickNameSetButton.IsEnabled = false;
+                uiSpotNickNameSetButton.IsEnabled = false;
         }
 
 
-        private void uiNickNameSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void uiSpotNickNameSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            // TODO Set Nick name
+            App.ApplicationSettings[Account.ACCOUNT_NICK_NAME] = uiSpotNickNameTextBox.Text;
+            App.ApplicationSettings.Save();
+            MessageBox.Show(AppResources.SetSpotNickNameMessage, AppResources.SetSpotNickNameCaption, MessageBoxButton.OK);
+        }
+
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+            // If it is in sign in, unable back key.
+            // Otherwise, do normal back key.
+            if (this.IsSignIning)
+                e.Cancel = true;
+        }
+
+
+        private void uiLocationAccessConsentCheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT] = true;
+            App.ApplicationSettings.Save();
+        }
+
+        private void uiLocationAccessConsentCheckBox_Unchecked(object sender, System.Windows.RoutedEventArgs e)
+        {
+            App.ApplicationSettings.Remove(Account.LOCATION_ACCESS_CONSENT);
         }
 
 

@@ -133,6 +133,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Doing sign in...과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DoingSignIn {
+            get {
+                return ResourceManager.GetString("DoingSignIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   folder과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Folder {
@@ -273,24 +282,6 @@ namespace PintheCloud.Resources {
         public static string MySpot {
             get {
                 return ResourceManager.GetString("MySpot", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Nick Name과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string NickName {
-            get {
-                return ResourceManager.GetString("NickName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   (Max 15 length)과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string NickNameMaxLength {
-            get {
-                return ResourceManager.GetString("NickNameMaxLength", resourceCulture);
             }
         }
         
@@ -439,6 +430,24 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Nick Name과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string SetSpotNickNameCaption {
+            get {
+                return ResourceManager.GetString("SetSpotNickNameCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   New nick name is successfully registered. New spot&apos;s will be the nick name.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string SetSpotNickNameMessage {
+            get {
+                return ResourceManager.GetString("SetSpotNickNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Settings과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Settings {
@@ -498,6 +507,24 @@ namespace PintheCloud.Resources {
         public static string SkyDriveSignOut {
             get {
                 return ResourceManager.GetString("SkyDriveSignOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Spot Nick Name과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string SpotNickName {
+            get {
+                return ResourceManager.GetString("SpotNickName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   (Max 15 length)과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string SpotNickNameMaxLength {
+            get {
+                return ResourceManager.GetString("SpotNickNameMaxLength", resourceCulture);
             }
         }
         
