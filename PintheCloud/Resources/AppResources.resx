@@ -158,8 +158,8 @@
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
-  <data name="NoMySpaceMessage" xml:space="preserve">
-    <value>There is no your space. Make it yours.</value>
+  <data name="NoMySpotMessage" xml:space="preserve">
+    <value>There is no your spot. Make it yours.</value>
   </data>
   <data name="LocationAccess" xml:space="preserve">
     <value>Location Access</value>
@@ -170,8 +170,8 @@
   <data name="SignOutMessage" xml:space="preserve">
     <value>Do you want sign out? Your setting will be intialized.</value>
   </data>
-  <data name="NoNearSpaceMessage" xml:space="preserve">
-    <value>There is no near space. Make it yours.</value>
+  <data name="NoNearSpotMessage" xml:space="preserve">
+    <value>There is no near spot. Make it yours.</value>
   </data>
   <data name="Loading" xml:space="preserve">
     <value>Loading...</value>

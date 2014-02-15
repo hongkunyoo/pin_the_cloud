@@ -81,13 +81,6 @@ namespace PintheCloud.ViewModels
             spaceViewItem.SpaceId = space.id;
             spaceViewItem.SpaceDistance = Math.Round(space.space_distance);
 
-            // If this space is this account's, set id bold font.
-            // Otherwise, set light font.
-            if (App.IStorageManager.GetCurrentAccount().account_platform_id.Equals(space.account_id))
-                spaceViewItem.AccountIdFontWeight = StringToFontWeightConverter.BOLD;
-            else
-                spaceViewItem.AccountIdFontWeight = StringToFontWeightConverter.LIGHT;
-
             return spaceViewItem;
         }
 

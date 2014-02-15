@@ -22,12 +22,15 @@ namespace PintheCloud.Pages
 {
     public partial class SettingsPage : PtcPage
     {
-        // Instances
+        // Const Instances
+        private const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
+        private const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
         private const int APPLICATION_PIVOT = 0;
         private const int MY_SPOT_PIVOT = 1;
 
+        // Instances
         private bool IsSignIning = false;
-        public SpaceViewModel MySpaceViewModel = new SpaceViewModel();
+        public SpaceViewModel MySpotViewModel = new SpaceViewModel();
 
 
         public SettingsPage()
@@ -58,7 +61,7 @@ namespace PintheCloud.Pages
                 case APPLICATION_PIVOT:
 
                     // Set My Spot stuff unable
-                    uiCurrentCloudKindText.Visibility = Visibility.Collapsed;
+                    uiMySpotEditViewButton.Visibility = Visibility.Collapsed;
                     ApplicationBar.IsVisible = false;
 
                     // Set Nickname
@@ -88,19 +91,19 @@ namespace PintheCloud.Pages
                 case MY_SPOT_PIVOT:
 
                     // Set My Spot stuff enable
-                    uiCurrentCloudKindText.Visibility = Visibility.Visible;
+                    uiMySpotEditViewButton.Visibility = Visibility.Visible;
                     ApplicationBar.IsVisible = true;
 
                     // If Internet available, Set space list
                     if (NetworkInterface.GetIsNetworkAvailable())
-                        if (!MySpaceViewModel.IsDataLoaded)  // Mutex check
-                            await this.SetMySpacePivotAsync(AppResources.Loading);
+                        if (!MySpotViewModel.IsDataLoaded)  // Mutex check
+                            await this.SetMySpotPivotAsync(AppResources.Loading);
                     break;
 
                 default:
 
                     // Set My Spot stuff enable
-                    uiCurrentCloudKindText.Visibility = Visibility.Collapsed;
+                    uiMySpotEditViewButton.Visibility = Visibility.Collapsed;
                     ApplicationBar.IsVisible = false;
                     break;
             }
@@ -158,10 +161,14 @@ namespace PintheCloud.Pages
 
         private void uiSpotNickNameTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            if (uiSpotNickNameTextBox.Text.Length > 0)
-                uiSpotNickNameSetButton.IsEnabled = true;
-            else
-                uiSpotNickNameSetButton.IsEnabled = false;
+            string nickName = uiSpotNickNameTextBox.Text;
+            if (!nickName.Trim().Equals("")) 
+            {
+                if (nickName.Length > 0)
+                    uiSpotNickNameSetButton.IsEnabled = true;
+                else
+                    uiSpotNickNameSetButton.IsEnabled = false;
+            }
         }
 
 
@@ -199,10 +206,10 @@ namespace PintheCloud.Pages
         /*** My Spot ***/
 
         // List select event
-        private void uiMySpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void uiMySpotList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected Space View Item
-            SpaceViewItem spaceViewItem = uiMySpaceList.SelectedItem as SpaceViewItem;
+            SpaceViewItem spaceViewItem = uiMySpotList.SelectedItem as SpaceViewItem;
 
             // If selected item isn't null, goto File list page.
             if (spaceViewItem != null)
@@ -212,7 +219,7 @@ namespace PintheCloud.Pages
             }
 
             // Set selected item to null for next selection of list item. 
-            uiMySpaceList.SelectedItem = null;
+            uiMySpotList.SelectedItem = null;
         }
 
 
@@ -221,24 +228,18 @@ namespace PintheCloud.Pages
         {
             // If Internet available, Set space list
             if (NetworkInterface.GetIsNetworkAvailable())
-                await this.SetMySpacePivotAsync(AppResources.Loading);
+                await this.SetMySpotPivotAsync(AppResources.Loading);
         }
 
 
-        private void uiAppBarRemoveButton_Click(object sender, System.EventArgs e)
-        {
-            // TODO: 여기에 구현된 이벤트 처리기를 추가하십시오.
-        }
-
-
-        private async Task SetMySpacePivotAsync(string message)
+        private async Task SetMySpotPivotAsync(string message)
         {
             // Show progress indicator 
-            base.SetListUnableAndShowMessage(uiMySpaceList, message, uiMySpaceMessage);
+            base.SetListUnableAndShowMessage(uiMySpotList, message, uiMySpotMessage);
             PtcPage.SetProgressIndicator(this, true);
 
             // Before go load, set mutex to true.
-            MySpaceViewModel.IsDataLoaded = true;
+            MySpotViewModel.IsDataLoaded = true;
 
             // If there is my spaces, Clear and Add spaces to list
             // Otherwise, Show none message.
@@ -246,15 +247,15 @@ namespace PintheCloud.Pages
 
             if (spaces != null)  // There are my spaces
             {
-                this.MySpaceViewModel.SetItems(spaces);
-                uiMySpaceList.DataContext = this.MySpaceViewModel;
-                uiMySpaceList.Visibility = Visibility.Visible;
-                uiMySpaceMessage.Visibility = Visibility.Collapsed;
+                this.MySpotViewModel.SetItems(spaces);
+                uiMySpotList.DataContext = this.MySpotViewModel;
+                uiMySpotList.Visibility = Visibility.Visible;
+                uiMySpotMessage.Visibility = Visibility.Collapsed;
             }
             else  // No my spaces
             {
-                base.SetListUnableAndShowMessage(uiMySpaceList, AppResources.NoMySpaceMessage, uiMySpaceMessage);
-                MySpaceViewModel.IsDataLoaded = false;  // Mutex
+                base.SetListUnableAndShowMessage(uiMySpotList, AppResources.NoMySpotMessage, uiMySpotMessage);
+                MySpotViewModel.IsDataLoaded = false;  // Mutex
             }
 
             // Hide progress indicator
@@ -262,15 +263,13 @@ namespace PintheCloud.Pages
         }
 
 
-        private void skyDriveAppBarButton_Click(object sender, EventArgs e)
+        private void uiMySpotEditViewButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            uiCurrentCloudKindText.Text = AppResources.SkyDrive;
-        }
-
-
-        private void dropboxAppBarButton_Click(object sender, EventArgs e)
-        {
-            uiCurrentCloudKindText.Text = AppResources.Dropbox;
+            string currentEditViewMode = ((BitmapImage)uiMySpotEditViewButtonImage.Source).UriSource.ToString();
+            if (currentEditViewMode.Equals(EDIT_IMAGE_URI))
+                uiMySpotEditViewButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_URI, UriKind.Relative));
+            else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))
+                uiMySpotEditViewButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_URI, UriKind.Relative));
         }
     }
 }

@@ -143,7 +143,7 @@ namespace PintheCloud.Pages
                     ApplicationBar.MenuItems.RemoveAt(SKY_DRIVE_APP_BAR_MENUITEMS);
 
                     // Remove Cloud Kind Image
-                    uiCurrentCloudKindText.Visibility = Visibility.Collapsed;
+                    uiCurrentCloudModeText.Visibility = Visibility.Collapsed;
 
                     // If Internet available, Set space list
                     // Otherwise, show internet bad message
@@ -182,8 +182,8 @@ namespace PintheCloud.Pages
 
                     // Set Cloud Kind Image
                     App.IStorageManager = App.SkyDriveManager;
-                    uiCurrentCloudKindText.Visibility = Visibility.Visible;
-                    uiCurrentCloudKindText.Text = AppResources.SkyDrive;
+                    uiCurrentCloudModeText.Visibility = Visibility.Visible;
+                    uiCurrentCloudModeText.Text = AppResources.SkyDrive;
 
                     // If it is already signin skydrive, load files.
                     // Otherwise, show signin button.
@@ -313,7 +313,7 @@ namespace PintheCloud.Pages
                         }
                         else  // No near spaces
                         {
-                            base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoNearSpaceMessage, uiNearSpaceMessage);
+                            base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoNearSpotMessage, uiNearSpaceMessage);
                         }
                     }
                     else  // works bad
@@ -349,9 +349,9 @@ namespace PintheCloud.Pages
         private async void skyDriveAppBarButton_Click(object sender, EventArgs e)
         {
             // If it is not in sky drive mode, change it.
-            if (!uiCurrentCloudKindText.Text.Equals(AppResources.SkyDrive))
+            if (!uiCurrentCloudModeText.Text.Equals(AppResources.SkyDrive))
             {
-                uiCurrentCloudKindText.Text = AppResources.SkyDrive;
+                uiCurrentCloudModeText.Text = AppResources.SkyDrive;
                 App.IStorageManager = App.SkyDriveManager;
                 if (!this.IsSignIning && !this.IsFileObjectLoading)
                 {
@@ -385,9 +385,9 @@ namespace PintheCloud.Pages
         {
             //TODO. Code below is pseudo.
             // If it is not in dropbox mode, change it.
-            if (!uiCurrentCloudKindText.Text.Equals(AppResources.Dropbox))
+            if (!uiCurrentCloudModeText.Text.Equals(AppResources.Dropbox))
             {
-                uiCurrentCloudKindText.Text = AppResources.Dropbox;
+                uiCurrentCloudModeText.Text = AppResources.Dropbox;
             //    if (!this.IsSignIning && !this.IsFileObjectLoading)
             //    {
             //        // If it is already signin skydrive, load files.

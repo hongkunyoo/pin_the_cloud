@@ -27,8 +27,6 @@ namespace PintheCloud.Pages
         private string SpaceName;
         private string AccountId;
         private string AccountName;
-        private string AccountNameFontWeight;
-        private string SpaceLikeNumberColor;
 
         public FileListPage()
         {
@@ -46,12 +44,11 @@ namespace PintheCloud.Pages
                 this.SpaceName = NavigationContext.QueryString["spaceName"];
                 this.AccountId = NavigationContext.QueryString["accountId"];
                 this.AccountName = NavigationContext.QueryString["accountName"];
-                this.AccountNameFontWeight = NavigationContext.QueryString["accountIdFontWeight"];
 
                 // Set Binding Instances to UI
                 uiSpaceName.Text = this.SpaceName;
                 uiAccountName.Text = this.AccountName;
-                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(this.AccountNameFontWeight);
+                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.LIGHT);
 
                 await Refresh();
             }
@@ -62,12 +59,11 @@ namespace PintheCloud.Pages
                 Account account = App.IStorageManager.GetCurrentAccount();
                 this.AccountId = account.account_platform_id;
                 this.AccountName = account.account_name;
-                this.AccountNameFontWeight = StringToFontWeightConverter.BOLD;
 
                 // Set Binding Instances to UI
                 uiSpaceName.Text = this.SpaceName;
                 uiAccountName.Text = this.AccountName;
-                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(this.AccountNameFontWeight);
+                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.BOLD);
 
                 await UploadFilesAsync();
             }
@@ -100,7 +96,9 @@ namespace PintheCloud.Pages
 
         private async Task Refresh()
         {
-            ObservableCollection<FileObject> list = new ObservableCollection<FileObject>(await App.BlobStorageManager.GetFilesFromFolderAsync(this.AccountId, this.SpaceId));
+            // ERROR
+            ObservableCollection<FileObject> list = new ObservableCollection<FileObject>
+                (await App.BlobStorageManager.GetFilesFromFolderAsync(this.AccountId, this.SpaceId));
             uiFileList.DataContext = list;
         }
 

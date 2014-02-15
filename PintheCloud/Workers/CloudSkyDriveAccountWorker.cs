@@ -190,15 +190,9 @@ namespace PintheCloud.Workers
         // Save profile information to local isolated App settings.
         private void SaveProfileReslutToAppSettings(Account account)
         {
-            App.ApplicationSettings[Account.ACCOUNT_PLATFORM_ID] = account.account_platform_id;
-            App.ApplicationSettings[Account.ACCOUNT_PLATFORM_ID_TYPE] = account.account_platform_id_type;
-            App.ApplicationSettings[Account.ACCOUNT_NAME] = account.account_name;
-            App.ApplicationSettings[Account.ACCOUNT_FIRST_NAME] = account.account_first_name;
-            App.ApplicationSettings[Account.ACCOUNT_LAST_NAME] = account.account_last_name;
-            App.ApplicationSettings[Account.ACCOUNT_LOCAL] = account.account_locale;
-            App.ApplicationSettings[Account.ACCOUNT_TOKEN] = account.account_token;
-            App.ApplicationSettings[Account.ACCOUNT_USED_SIZE] = account.account_used_size;
-            App.ApplicationSettings[Account.ACCOUNT_TYPE_NAME] = account.account_type_name;
+            App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_ID] = account.account_platform_id;
+            App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_USED_SIZE] = account.account_used_size;
+            App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_TYPE_NAME] = account.account_type_name;
 
             string nickName = null;
             if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME, out nickName))
@@ -212,15 +206,9 @@ namespace PintheCloud.Workers
         private void RemoveProfileReslutFromAppSettings()
         {
             App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_PLATFORM_ID);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_PLATFORM_ID_TYPE);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_NAME);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_FIRST_NAME);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_LAST_NAME);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_LOCAL);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_TOKEN);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_USED_SIZE);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_TYPE_NAME);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_ID);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_USED_SIZE);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_TYPE_NAME);
         }
     }
 }

@@ -16,11 +16,8 @@
     shell:SystemTray.IsVisible="True" >
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E" IsVisible="False">
-            <shell:ApplicationBarIconButton x:Name="uiAppBarRemoveButton" IconUri="/Assets/pajeon/png/general_bar_delete.png" IsEnabled="True" Text="remove" Click="uiAppBarRemoveButton_Click"/>
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshMenuItem" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshMenuItem_Click"/>
-                <shell:ApplicationBarMenuItem x:Name="uiAppBarSkyDriveMenuItem" IsEnabled="True" Text="skydrive" Click="skyDriveAppBarButton_Click"/>
-                <shell:ApplicationBarMenuItem x:Name="uiAppBarDropboxMenuItem" IsEnabled="True" Text="dropbox" Click="dropboxAppBarButton_Click"/>
             </shell:ApplicationBar.MenuItems>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
@@ -34,7 +31,9 @@
         <!--피벗 컨트롤-->
         <Grid Background="#FF00A4BF">
             <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-			<TextBlock x:Name="uiCurrentCloudKindText" HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,18,0"/>
+            <Button x:Name="uiMySpotEditViewButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Visibility="Collapsed" Click="uiMySpotEditViewButton_Click">
+            	<Image x:Name="uiMySpotEditViewButtonImage" Source="/Assets/pajeon/png/general_edit.png" Stretch="None"/>
+            </Button>
 		</Grid>
         <!--피벗 컨트롤-->
         <phone:Pivot x:Name="uiSettingPivot" Title="{Binding LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Foreground="Black" Style="{StaticResource CustomPivotStyle}" SelectionChanged="uiSettingPivot_SelectionChanged">
@@ -98,8 +97,8 @@
                             </Grid>
                         </DataTemplate>
                     </Grid.Resources>
-                    <phone:LongListSelector x:Name="uiMySpaceList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpaceList_SelectionChanged" />
-                    <TextBlock x:Name="uiMySpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,0,18,0"/>
+                    <TextBlock x:Name="uiMySpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,0,18,0" Visibility="Collapsed"/>
+                    <phone:LongListSelector x:Name="uiMySpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpotList_SelectionChanged" />
                 </Grid>
             </phone:PivotItem>
             <phone:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
