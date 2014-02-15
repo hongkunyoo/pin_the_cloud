@@ -65,7 +65,7 @@ namespace PintheCloud.Pages
         // Logout
         private void uiLogoutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show(AppResources.LogoutMessage, AppResources.Logout, MessageBoxButton.OKCancel);
+            MessageBoxResult result = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
                 App.CloudManager = App.SkyDriveManager;

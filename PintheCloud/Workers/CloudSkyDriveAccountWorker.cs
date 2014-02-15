@@ -104,7 +104,7 @@ namespace PintheCloud.Workers
                 {
                     liveLoginResult = await liveAuthClient.LoginAsync(scopes);
                 }
-                catch (InvalidOperationException)
+                catch (LiveAuthException)
                 {
                     return null;
                 }
@@ -166,7 +166,6 @@ namespace PintheCloud.Workers
         // Save profile information to local isolated App settings.
         private void SaveProfileReslutToAppSettings(Account account)
         {
-            App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_IS_LOGIN] = true;
             App.ApplicationSettings[Account.ACCOUNT_PLATFORM_ID] = account.account_platform_id;
             App.ApplicationSettings[Account.ACCOUNT_PLATFORM_ID_TYPE] = account.account_platform_id_type;
             App.ApplicationSettings[Account.ACCOUNT_NAME] = account.account_name;

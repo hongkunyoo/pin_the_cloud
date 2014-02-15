@@ -124,15 +124,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   confirm과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Confirm {
-            get {
-                return ResourceManager.GetString("Confirm", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   folder과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Folder {
@@ -228,24 +219,6 @@ namespace PintheCloud.Resources {
         public static string LocationService {
             get {
                 return ResourceManager.GetString("LocationService", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Logout과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Logout {
-            get {
-                return ResourceManager.GetString("Logout", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Do you want logout? Your setting will be intialized.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string LogoutMessage {
-            get {
-                return ResourceManager.GetString("LogoutMessage", resourceCulture);
             }
         }
         
@@ -421,11 +394,38 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Sign Out과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string SignOutCaption {
+            get {
+                return ResourceManager.GetString("SignOutCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want sign out? Your setting will be intialized.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string SignOutMessage {
+            get {
+                return ResourceManager.GetString("SignOutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   SkyDrive과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string SkyDrive {
             get {
                 return ResourceManager.GetString("SkyDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   SkyDrive Sign Out과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string SkyDriveSignOut {
+            get {
+                return ResourceManager.GetString("SkyDriveSignOut", resourceCulture);
             }
         }
         

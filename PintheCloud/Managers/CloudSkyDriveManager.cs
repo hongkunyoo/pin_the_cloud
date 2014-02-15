@@ -70,6 +70,8 @@ namespace PintheCloud.Managers
         public void SignOut()
         {
             this.AccountWorker.SignOut();
+            this.LiveClient = null;
+            this.CurrentAccount = null;
         }
 
 

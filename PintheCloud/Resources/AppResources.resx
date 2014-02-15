@@ -140,8 +140,8 @@
   <data name="Pin" xml:space="preserve">
     <value>Pin</value>
   </data>
-  <data name="Logout" xml:space="preserve">
-    <value>Logout</value>
+  <data name="SkyDriveSignOut" xml:space="preserve">
+    <value>SkyDrive Sign Out</value>
   </data>
   <data name="MySpot" xml:space="preserve">
     <value>My Spot</value>
@@ -167,8 +167,8 @@
   <data name="LocationAccessMessage" xml:space="preserve">
     <value>This app accesses your phone's location. Is that ok?</value>
   </data>
-  <data name="LogoutMessage" xml:space="preserve">
-    <value>Do you want logout? Your setting will be intialized.</value>
+  <data name="SignOutMessage" xml:space="preserve">
+    <value>Do you want sign out? Your setting will be intialized.</value>
   </data>
   <data name="NoNearSpaceMessage" xml:space="preserve">
     <value>There is no near space. Make it yours.</value>
@@ -206,9 +206,6 @@
   <data name="Pick" xml:space="preserve">
     <value>Pick</value>
   </data>
-  <data name="Confirm" xml:space="preserve">
-    <value>confirm</value>
-  </data>
   <data name="Path" xml:space="preserve">
     <value>Path : </value>
   </data>
@@ -244,5 +241,8 @@
   </data>
   <data name="NoFileInCloudMessage" xml:space="preserve">
     <value>There is no files in your cloud.</value>
+  </data>
+  <data name="SignOutCaption" xml:space="preserve">
+    <value>Sign Out</value>
   </data>
 </root>

@@ -32,7 +32,8 @@ namespace PintheCloud.Pages
 
 
         // Const Instances
-        private const string CONFIRM_APP_BAR_BUTTON_ICON_URI = "/Assets/AppBar/check.png";
+        private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/AppBar/png/general_bar_upload.png";
+        private const int SETTING_APP_BAR_BUTTON = 0;
         private const int PIN_APP_BAR_BUTTON = 1;
         private const int SKY_DRIVE_APP_BAR_MENUITEMS = 1;
         private const int GOOGLE_DRIVE_APP_BAR_BUTTON = 2;
@@ -40,9 +41,10 @@ namespace PintheCloud.Pages
 
         // Instances
         private SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
-        private bool FileObjectIsDataLoading = false;
+        private bool IsFileObjectLoaded = false;
         private Stack<FileObject> FolderTree = new Stack<FileObject>();
         private List<FileObject> SelectedFile = new List<FileObject>();
+        private bool IsSignIning = false;
 
 
         public ExplorerPage()
@@ -129,10 +131,11 @@ namespace PintheCloud.Pages
 
 
                 case PIN_PIVOT:
-                    // Set confirm button
+                    // Set pin button
                     ApplicationBarIconButton pinInfoAppBarButton = new ApplicationBarIconButton();
-                    pinInfoAppBarButton.Text = AppResources.Confirm;
-                    pinInfoAppBarButton.IconUri = new Uri(CONFIRM_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
+                    pinInfoAppBarButton.Text = AppResources.Pin;
+                    pinInfoAppBarButton.IconUri = new Uri(PIN_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
+                    pinInfoAppBarButton.IsEnabled = false;
                     pinInfoAppBarButton.Click += pinInfoAppBarButton_Click;
                     ApplicationBar.Buttons.Add(pinInfoAppBarButton);
 
@@ -171,21 +174,18 @@ namespace PintheCloud.Pages
                         // Otherwise, show internet bad message
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
-                            if (!this.FileObjectIsDataLoading)  // Mutex check
+                            if (!this.IsFileObjectLoaded)  // Mutex check
                             {
                                 this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
 
                                 // SIgn cloud manager. If success, show files.
                                 // Otherwise, show error message
-                                if (await App.CloudManager.SignIn(this))
+                                if (!this.IsSignIning)  // Mutex check
                                 {
-                                    this.FolderTree.Clear();
-                                    this.SelectedFile.Clear();
-                                    await this.SetFileTreeForFolder(null, AppResources.Loading);
-                                }
-                                else
-                                {
-                                    this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.BadSignInMessage, uiPinInfoMessage);
+                                    if (!await this.InitialPinInfoListSetUp(this))
+                                    {
+                                        this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.BadSignInMessage, uiPinInfoMessage);
+                                    }
                                 }
                             }
                         }
@@ -386,14 +386,17 @@ namespace PintheCloud.Pages
                 {
                     if (fileObject.SelectCheckImage.Equals(FileObject.CHECK_NOT_IMAGE_PATH))
                     {
-                        fileObject.SetSelectCheckImage(true);
                         this.SelectedFile.Add(fileObject);
+                        fileObject.SetSelectCheckImage(true);
+                        ((ApplicationBarIconButton) ApplicationBar.Buttons[PIN_APP_BAR_BUTTON]).IsEnabled = true;
                     }
 
                     else
                     {
-                        fileObject.SetSelectCheckImage(false);
                         this.SelectedFile.Remove(fileObject);
+                        fileObject.SetSelectCheckImage(false);
+                        if (this.SelectedFile.Count <= 0)
+                            ((ApplicationBarIconButton)ApplicationBar.Buttons[PIN_APP_BAR_BUTTON]).IsEnabled = false;
                     }
                     MyDebug.WriteLine(fileObject.Name);
                 }
@@ -409,7 +412,7 @@ namespace PintheCloud.Pages
             PtcPage.SetProgressIndicator(this, true);
 
             // Before go load, set mutex to true.
-            this.FileObjectIsDataLoading = true;
+            this.IsFileObjectLoaded = true;
 
             // If folder null, set root.
             if (folder == null)
@@ -462,37 +465,56 @@ namespace PintheCloud.Pages
         }
 
 
+        // Signin. It includes set mutex.
+        private async Task<bool> InitialPinInfoListSetUp(DependencyObject context)
+        {
+            this.IsSignIning = true;
+            ((ApplicationBarIconButton)ApplicationBar.Buttons[SETTING_APP_BAR_BUTTON]).IsEnabled = false;
+            bool result = await App.CloudManager.SignIn(context);
+            if (result)
+            {
+                this.FolderTree.Clear();
+                this.SelectedFile.Clear();
+                await this.SetFileTreeForFolder(null, AppResources.Loading);
+            }
+            ((ApplicationBarIconButton)ApplicationBar.Buttons[SETTING_APP_BAR_BUTTON]).IsEnabled = true;
+            this.IsSignIning = false;
+            return result;
+        }
+
+
         private async void uiPinInfoSignInButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             // If Internet available, Set pin list with root folder file list.
             // Otherwise, show internet bad message
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                uiPinInfoSignInButton.IsEnabled = false;
-                uiPinInfoSignInButton.Content = AppResources.Loading;
+                // Show Loading message and save is login true for pivot moving action while sign in.
+                uiPinInfoListGrid.Visibility = Visibility.Visible;
+                uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
+                this.SetListUnableAndShowMessage(uiPinInfoList, AppResources.Loading, uiPinInfoMessage);
+                App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_IS_LOGIN] = true;
+                App.ApplicationSettings.Save();
 
                 // SIgn cloud manager. If success, show files.
                 // Otherwise, show error message
-                if (await App.CloudManager.SignIn(this))
+                if (!await this.InitialPinInfoListSetUp(this))
                 {
-                    this.FolderTree.Clear();
-                    this.SelectedFile.Clear();
-                    await this.SetFileTreeForFolder(null, AppResources.Loading);
-                }
-                else
-                {
-                    uiPinInfoSignInButton.IsEnabled = true;
-                    uiPinInfoSignInButton.Content = AppResources.SignIn;
                     MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+                    uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                    uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                    App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_LOGIN);
                 }
             }
             else
             {
-                uiPinInfoSignInButton.IsEnabled = true;
-                uiPinInfoSignInButton.Content = AppResources.SignIn;
                 MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+                uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_LOGIN);
             }
         }
+
 
 
         /*** Private Method ***/
