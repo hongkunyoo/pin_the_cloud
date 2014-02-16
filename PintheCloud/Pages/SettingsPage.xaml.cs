@@ -185,11 +185,12 @@ namespace PintheCloud.Pages
         }
 
 
+        // If it is in sign in, unable back key.
+        // Otherwise, do normal back key.
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
             base.OnBackKeyPress(e);
-            // If it is in sign in, unable back key.
-            // Otherwise, do normal back key.
+            
             if (this.IsSignIning)
                 e.Cancel = true;
         }

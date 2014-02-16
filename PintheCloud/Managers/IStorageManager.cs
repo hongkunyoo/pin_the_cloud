@@ -1,4 +1,5 @@
-﻿using PintheCloud.Models;
+﻿using Microsoft.Live;
+using PintheCloud.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -28,7 +29,7 @@ namespace PintheCloud.Managers
 
         Task<StorageFile> DownloadFileAsync(string sourceFileId, Uri destinationUri);
 
-        Task<Stream> DownloadFileThroughStreamAsync(string sourceFileId);
+        Task<Stream> DownloadFileThroughStreamAsync(string sourceFileId, Progress<LiveOperationProgress> listener);
 
         Task<bool> UploadFileAsync(string folderIdToStore, StorageFile file);
 

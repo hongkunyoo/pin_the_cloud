@@ -313,11 +313,20 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   There is no files in your cloud.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   There is no files in this cloud.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoFileInCloudMessage {
             get {
                 return ResourceManager.GetString("NoFileInCloudMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   There is no files in this spot.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoFileInSpotMessage {
+            get {
+                return ResourceManager.GetString("NoFileInSpotMessage", resourceCulture);
             }
         }
         

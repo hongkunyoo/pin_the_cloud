@@ -28,7 +28,7 @@ namespace PintheCloud.Pages
     {
         // Static Instances
         public const int PICK_PIVOT = 0;
-        public const int PIN_PIVOT = 1;
+        public const int PIN_INFO_PIVOT = 1;
 
 
         // Const Instances
@@ -43,6 +43,7 @@ namespace PintheCloud.Pages
         private bool IsFileObjectLoading = false;
         private bool IsSignIning = false;
 
+        private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
         private SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
         private Stack<FileObject> FolderTree = new Stack<FileObject>();
         private List<FileObject> SelectedFile = new List<FileObject>();
@@ -94,6 +95,21 @@ namespace PintheCloud.Pages
                 }
             }
 
+            // Comes from File list Page
+            // If selected files are over 1, erase it.
+            if (this.SelectedFile.Count > 0)
+            {
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+                    this.PinInfoAppBarButton.IsEnabled = false;
+                    await this.SetPinInfoListAsync(null, AppResources.Loading);
+                }
+                else
+                {
+                    base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
+                }
+            }
+
 
             // Comes from setting page
             // If files loading failed, do it again.
@@ -130,7 +146,6 @@ namespace PintheCloud.Pages
                     // Show Loading message and save is login true for pivot moving action while sign in.
                     uiPinInfoListGrid.Visibility = Visibility.Visible;
                     uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
-                    uiPinInfoCurrentPath.Text = "";
 
                     if (NetworkInterface.GetIsNetworkAvailable())
                         await this.SetPinInfoListAsync(null, AppResources.Loading);
@@ -179,14 +194,13 @@ namespace PintheCloud.Pages
                     break;
 
 
-                case PIN_PIVOT:
+                case PIN_INFO_PIVOT:
                     // Set pin button
-                    ApplicationBarIconButton pinInfoAppBarButton = new ApplicationBarIconButton();
-                    pinInfoAppBarButton.Text = AppResources.Pin;
-                    pinInfoAppBarButton.IconUri = new Uri(PIN_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
-                    pinInfoAppBarButton.IsEnabled = false;
-                    pinInfoAppBarButton.Click += pinInfoAppBarButton_Click;
-                    ApplicationBar.Buttons.Add(pinInfoAppBarButton);
+                    this.PinInfoAppBarButton.Text = AppResources.Pin;
+                    this.PinInfoAppBarButton.IconUri = new Uri(PIN_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
+                    this.PinInfoAppBarButton.IsEnabled = false;
+                    this.PinInfoAppBarButton.Click += pinInfoAppBarButton_Click;
+                    ApplicationBar.Buttons.Add(this.PinInfoAppBarButton);
 
                     // Set Cloud Setting selection.
                     ApplicationBarMenuItem skyDriveAppBarButton = new ApplicationBarMenuItem();
@@ -246,15 +260,13 @@ namespace PintheCloud.Pages
                         base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
                     break;
 
-                case PIN_PIVOT:
+                case PIN_INFO_PIVOT:
                     // If it is in sign in process, don't refresh.
                     if (!this.IsSignIning)
                     {
                         // Refresh only in was already signed in.
                         if (uiPinInfoListGrid.Visibility == Visibility.Visible)
                         {
-                            uiPinInfoCurrentPath.Text = "";
-
                             if (NetworkInterface.GetIsNetworkAvailable())
                             {
                                 this.SetIStorageManager();
@@ -392,7 +404,6 @@ namespace PintheCloud.Pages
                         // Show Loading message and save is login true for pivot moving action while sign in.
                         uiPinInfoListGrid.Visibility = Visibility.Visible;
                         uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
-                        uiPinInfoCurrentPath.Text = "";
 
                         if (NetworkInterface.GetIsNetworkAvailable())
                             await this.SetPinInfoListAsync(null, AppResources.Loading);
@@ -440,9 +451,30 @@ namespace PintheCloud.Pages
         }
 
 
-        private void uiPinInfoListUpButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        protected override async void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
-            this.TreeUp();
+            base.OnBackKeyPress(e);
+
+            if (uiExplorerPivot.SelectedIndex == PIN_INFO_PIVOT)
+            {
+                if (this.FolderTree.Count <= 1)
+                {
+                    e.Cancel = false;
+                }
+                else
+                {
+                    e.Cancel = true;
+                    if (!IsFileObjectLoading)
+                        await this.TreeUp();
+                }
+            }
+        }
+
+
+        private async void uiPinInfoListUpButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (this.FolderTree.Count > 1)
+                await this.TreeUp();
         }
 
 
@@ -497,13 +529,10 @@ namespace PintheCloud.Pages
         }
 
 
-        private async void TreeUp()
+        private async Task TreeUp()
         {
-            if (this.FolderTree.Count > 1)
-            {
-                this.FolderTree.Pop();
-                await this.SetPinInfoListAsync(this.FolderTree.First(), AppResources.Loading);
-            }
+            this.FolderTree.Pop();
+            await this.SetPinInfoListAsync(this.FolderTree.First(), AppResources.Loading);
         }
 
 
@@ -516,7 +545,6 @@ namespace PintheCloud.Pages
                 // Show Loading message and save is login true for pivot moving action while sign in.
                 uiPinInfoListGrid.Visibility = Visibility.Visible;
                 uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
-                uiPinInfoCurrentPath.Text = "";
 
                 this.SetIStorageManager();
                 if (await this.SignIn(this))
@@ -555,16 +583,12 @@ namespace PintheCloud.Pages
             base.SetListUnableAndShowMessage(uiPinInfoList, message, uiPinInfoMessage);
             PtcPage.SetProgressIndicator(this, true);
 
-
-            // SIgn cloud manager. If success, show files.
-            // Otherwise, show error message
-            this.FolderTree.Clear();
-            this.SelectedFile.Clear();
-
             // If folder null, set root.
             if (folder == null)
             {
                 uiPinInfoCurrentPath.Text = "";
+                this.FolderTree.Clear();
+                this.SelectedFile.Clear();
                 folder = await App.IStorageManager.GetRootFolderAsync();
             }
 

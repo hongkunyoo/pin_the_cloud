@@ -15,6 +15,20 @@ namespace PintheCloud.Workers
 {
     public class SpaceWorker
     {
+        public async Task<bool> PinSpaceAsync(Space space)
+        {
+            try
+            {
+                await App.MobileService.GetTable<Space>().InsertAsync(space);
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+                return false;
+            }
+            return true;
+        }
+
+
         // Get spaces 300m away from here
         public async Task<JArray> GetNearSpacesAsync(double currentLatitude, double currentLongtitude)
         {

@@ -90,7 +90,7 @@
             		</Grid>
             	</Grid>
             </phone:PivotItem>
-            <phone:PivotItem Header="{Binding LocalizedResources.MySpot, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
+            <phone:PivotItem Header="{Binding LocalizedResources.MySpot, Source={StaticResource LocalizedStrings}}" Margin="0">
                 <Grid>
                     <Grid.Resources>
                         <DataTemplate x:Key="uiSpaceListItemTemplate">
@@ -111,7 +111,7 @@
                             </Grid>
                         </DataTemplate>
                     </Grid.Resources>
-                    <TextBlock x:Name="uiMySpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,0,18,0" Visibility="Collapsed"/>
+                    <TextBlock x:Name="uiMySpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,28,18,0" Visibility="Collapsed"/>
                     <phone:LongListSelector x:Name="uiMySpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpotList_SelectionChanged" />
                 </Grid>
             </phone:PivotItem>

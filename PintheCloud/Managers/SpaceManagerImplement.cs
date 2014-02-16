@@ -25,6 +25,12 @@ namespace PintheCloud.Managers
 
         /*** Implementation ***/
 
+        public async Task<bool> PinSpaceAsync(Space space)
+        {
+            return await this.CurrentSpaceWorker.PinSpaceAsync(space);
+        }
+
+
         // Get space view item from space list.
         public async Task<JArray> GetNearSpaceViewItemsAsync(Geoposition currentGeoposition)
         {

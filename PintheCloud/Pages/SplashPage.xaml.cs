@@ -44,17 +44,20 @@ namespace PintheCloud.Pages
             }
 
 
-            // Sky Drive SIgn in
-            for (int i = 0; i < App.IStorageManagers.Length; i++)
+            // SIgn in
+            if (NetworkInterface.GetIsNetworkAvailable())
             {
-                App.IStorageManager = App.IStorageManagers[i];
+                for (int i = 0; i < App.IStorageManagers.Length; i++)
+                {
+                    App.IStorageManager = App.IStorageManagers[i];
 
-                // If main platform is signed in, process it.
-                // Otherwise, ignore and go to explorer page.
-                bool isSignIn = false;
-                App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[i], out isSignIn);
-                if (isSignIn)
-                    await App.IStorageManager.SignIn(this);
+                    // If main platform is signed in, process it.
+                    // Otherwise, ignore and go to explorer page.
+                    bool isSignIn = false;
+                    App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[i], out isSignIn);
+                    if (isSignIn)
+                        await App.IStorageManager.SignIn(this);
+                }
             }
             NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
         }

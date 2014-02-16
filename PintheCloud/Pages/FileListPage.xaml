@@ -59,13 +59,21 @@
                     </Grid>
                 </DataTemplate>
             </Grid.Resources>
-			<StackPanel Margin="0,25,0,0">
+			<Grid Margin="0,28,0,0">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
 				<StackPanel Margin="22,0,18,0">
 					<TextBlock x:Name="uiSpaceName" Foreground="Black" FontSize="50" LineHeight="58" TextTrimming="WordEllipsis" Margin="0,0,0,20" />
 					<TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" FontWeight="Light" />
 				</StackPanel>
-				<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiFileListItemTemplate}" Style="{StaticResource CustomLongListSelectorStyle}" Margin="0,28,0,0"/>
-			</StackPanel>
+				<Grid Grid.Row="1" Margin="0,28,0,0">
+					<ProgressBar x:Name="uiFileListProgressBar" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+					<TextBlock x:Name="uiFileListMessage" TextWrapping="Wrap" Margin="22,0,18,0" Visibility="Collapsed" Foreground="Black" FontSize="22"/>
+					<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiFileListItemTemplate}" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed"/>
+				</Grid>
+			</Grid>
 		</Grid>
 	</Grid>
 

@@ -34,11 +34,12 @@ namespace PintheCloud
         // Manager
         public static SpaceManager SpaceManager = null;
         public static GeoCalculateManager GeoCalculateManager = null;
+        public static BlobStorageManager BlobStorageManager = null;
+        public static LocalStorageManager LocalStorageManager = null;
+
         public static IStorageManager IStorageManager = null;
         public static IStorageManager[] IStorageManagers = null;
         public static SkyDriveManager SkyDriveManager = null;
-        public static BlobStorageManager BlobStorageManager = null;
-        public static LocalStorageManager LocalStorageManager = null;
 
         /// <summary>
         /// Application 개체의 생성자입니다.
@@ -74,6 +75,7 @@ namespace PintheCloud
             // Manager
             SpaceManager = new SpaceManagerImplement();
             GeoCalculateManager = new GeoCalculateManagerImplement();
+            BlobStorageManager = new BlobStorageManager();
             LocalStorageManager = new LocalStorageManager();
 
             SkyDriveManager = new SkyDriveManager();

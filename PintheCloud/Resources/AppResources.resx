@@ -234,7 +234,7 @@
     <value>Sign In Error</value>
   </data>
   <data name="NoFileInCloudMessage" xml:space="preserve">
-    <value>There is no files in your cloud.</value>
+    <value>There is no files in this cloud.</value>
   </data>
   <data name="SignOutCaption" xml:space="preserve">
     <value>Sign Out</value>
@@ -286,5 +286,8 @@
   </data>
   <data name="SkyDrive" xml:space="preserve">
     <value>SkyDrive</value>
+  </data>
+  <data name="NoFileInSpotMessage" xml:space="preserve">
+    <value>There is no files in this spot.</value>
   </data>
 </root>

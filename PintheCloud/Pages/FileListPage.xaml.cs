@@ -18,15 +18,21 @@ using System.Collections.ObjectModel;
 using Windows.Storage;
 using Windows.System;
 using PintheCloud.Managers;
+using System.IO;
+using Microsoft.Live;
+using System.Net.NetworkInformation;
+using PintheCloud.Resources;
 
 namespace PintheCloud.Pages
 {
     public partial class FileListPage : PtcPage
     {
+        // Instances
         private string SpaceId;
         private string SpaceName;
         private string AccountId;
         private string AccountName;
+
 
         public FileListPage()
         {
@@ -50,7 +56,19 @@ namespace PintheCloud.Pages
                 uiAccountName.Text = this.AccountName;
                 uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.LIGHT);
 
-                await Refresh();
+
+                // If internet is on, refresh
+                // Otherwise, show internet unavailable message.
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+                    uiFileList.Visibility = Visibility.Visible;
+                    uiFileListMessage.Visibility = Visibility.Collapsed;
+                    await this.Refresh();
+                }
+                else
+                { 
+                    base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
+                }
             }
             else
             {
@@ -65,7 +83,20 @@ namespace PintheCloud.Pages
                 uiAccountName.Text = this.AccountName;
                 uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.BOLD);
 
-                await UploadFilesAsync();
+
+                // If internet is on, upload file given from previous page.
+                // Otherwise, show internet unavailable message.
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+                    uiFileList.Visibility = Visibility.Visible;
+                    uiFileListMessage.Visibility = Visibility.Collapsed;
+                    if (await this.UploadFilesAsync())
+                        await this.Refresh();
+                }
+                else
+                {
+                    base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
+                }
             }
         }
 
@@ -76,30 +107,44 @@ namespace PintheCloud.Pages
         }
 
 
-        private async Task UploadFilesAsync()
+        private async Task Refresh()
         {
-            // Test Name of space, now time.
-            Geoposition geo = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
-            Space space = new Space(DateTime.Now.ToString(), geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
-                     
-            await App.MobileService.GetTable<Space>().InsertAsync(space);
-            this.SpaceId = space.id;
+            // TODO Does it get all files every time?
+            ObservableCollection<FileObject> list = new ObservableCollection<FileObject>
+                (await App.BlobStorageManager.GetFilesFromFolderAsync(this.AccountId, this.SpaceId));
 
-            List<FileObject> list = (List<FileObject>)PhoneApplicationService.Current.State["SELECTED_FILE"];
-            foreach (FileObject file in list)
-            {
-                await App.BlobStorageManager.UploadFileThroughStreamAsync(this.AccountId, this.SpaceId, file.Name, await App.SkyDriveManager.DownloadFileThroughStreamAsync(file.Id));
-                await Refresh();
-            }
+            // If file exists, show it.
+            // Otherwise, show no file in spot message.
+            if (list.Count > 0)
+                uiFileList.DataContext = list;
+            else
+                base.SetListUnableAndShowMessage(uiFileList, AppResources.NoFileInSpotMessage, uiFileListMessage);
         }
 
 
-        private async Task Refresh()
+        private async Task<bool> UploadFilesAsync()
         {
-            // ERROR
-            ObservableCollection<FileObject> list = new ObservableCollection<FileObject>
-                (await App.BlobStorageManager.GetFilesFromFolderAsync(this.AccountId, this.SpaceId));
-            uiFileList.DataContext = list;
+            bool result = false;
+            Geoposition geo = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
+            Space space = new Space(DateTime.Now.ToString(), geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
+
+            if (await App.SpaceManager.PinSpaceAsync(space))
+            {
+                this.SpaceId = space.id;
+                List<FileObject> list = (List<FileObject>)PhoneApplicationService.Current.State["SELECTED_FILE"];
+                foreach (FileObject file in list)
+                {
+                    ProgressBar progressBar = new ProgressBar();
+                    progressBar.Value = 0;
+                    Progress<LiveOperationProgress> progressHandler
+                        = new Progress<LiveOperationProgress>((progress) => { progressBar.Value = progress.ProgressPercentage; });
+
+                    Stream stream = await App.IStorageManager.DownloadFileThroughStreamAsync(file.Id, progressHandler);
+                    await App.BlobStorageManager.UploadFileThroughStreamAsync(this.AccountId, this.SpaceId, file.Name, stream);
+                }
+                result = true;
+            }
+            return result;
         }
 
 
@@ -114,13 +159,15 @@ namespace PintheCloud.Pages
             // If selected item isn't null, Do something
             if (fileObject != null) 
             {
+                // TODO save local or cloud or chooser...
                 // Do Something
                 //StorageFile downloadFile = await App.LocalStorageManager.CreateFileToLocalBlobStorageAsync(fileObject.Name);
                 //await App.BlobStorageManager.DownloadFileAsync(fileObject.Id, downloadFile);
                 //await Launcher.LaunchFileAsync(downloadFile);
 
-                FileObject rootFolder = await App.SkyDriveManager.GetRootFolderAsync();
-                await App.SkyDriveManager.UploadFileThroughStreamAsync(rootFolder.Id, fileObject.Name, await App.BlobStorageManager.DownloadFileThroughStreamAsync(fileObject.Id));
+                FileObject rootFolder = await App.IStorageManager.GetRootFolderAsync();
+                await App.IStorageManager.UploadFileThroughStreamAsync
+                    (rootFolder.Id, fileObject.Name, await App.BlobStorageManager.DownloadFileThroughStreamAsync(fileObject.Id));
             }
         }
     }
