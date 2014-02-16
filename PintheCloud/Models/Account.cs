@@ -10,13 +10,8 @@ namespace PintheCloud.Models
     public class Account
     {
         // Application Account Setting Key
-        public static string ACCOUNT_SKY_DRIVE_IS_SIGN_IN = "ACCOUNT_SKY_DRIVE_IS_SIGN_IN";
-        public static string ACCOUNT_DROPBOX_IS_SIGN_IN = "ACCOUNT_DROPBOX_IS_SIGN_IN";
-
+        public static string[] ACCOUNT_IS_SIGN_IN_KEYS = { "ACCOUNT_SKY_DRIVE_IS_SIGN_IN_KEY", "ACCOUNT_DROPBOX_IS_SIGN_IN_KEY" };
         public static string[] ACCOUNT_ID_KEYS = { "ACCOUNT_SKY_DRIVE_ID_KEY", "ACCOUNT_DROPBOX_ID_KEY" };
-
-        public static int ACCOUNT_SKY_DRIVE_ID_KEY_LOCATION = 0;
-        public static int ACCOUNT_DROPBOX_ID_KEY_LOCATION = 1;
 
         public static string ACCOUNT_MAIN_PLATFORM_TYPE = "ACCOUNT_MAIN_PLATFORM_TYPE";
 

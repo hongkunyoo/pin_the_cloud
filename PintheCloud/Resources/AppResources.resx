@@ -215,12 +215,6 @@
   <data name="RootPath" xml:space="preserve">
     <value>/</value>
   </data>
-  <data name="Dropbox" xml:space="preserve">
-    <value>Dropbox</value>
-  </data>
-  <data name="SkyDrive" xml:space="preserve">
-    <value>SkyDrive</value>
-  </data>
   <data name="GB" xml:space="preserve">
     <value> GB</value>
   </data>
@@ -286,5 +280,11 @@
   </data>
   <data name="MainCloudChangeMessage" xml:space="preserve">
     <value>Main Cloud is changed successfully.</value>
+  </data>
+  <data name="Dropbox" xml:space="preserve">
+    <value>Dropbox</value>
+  </data>
+  <data name="SkyDrive" xml:space="preserve">
+    <value>SkyDrive</value>
   </data>
 </root>

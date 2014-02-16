@@ -16,8 +16,12 @@ namespace PintheCloud
 
 
         // Platform Id
-        public static string MICROSOFT = "Microsoft";
-        public static string DROPBOX = "Dropbox";
+        public static string[] PLATFORMS = { "SkyDrive", "Dropbox" };
+
+
+        // Location
+        public static int SKY_DRIVE_LOCATION_KEY = 0;
+        public static int DROPBOX_LOCATION_KEY = 1;
          
 
         // Current Usrer

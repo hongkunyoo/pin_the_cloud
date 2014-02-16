@@ -41,7 +41,7 @@ namespace PintheCloud.Workers
 
                 if (account == null)  // First Login.
                 {
-                    account = new Account(App.MobileService.CurrentUser.UserId, GlobalKeys.MICROSOFT, "" + profileResult.name,
+                    account = new Account(App.MobileService.CurrentUser.UserId, GlobalKeys.PLATFORMS[GlobalKeys.SKY_DRIVE_LOCATION_KEY], "" + profileResult.name,
                         "" + profileResult.first_name, "" + profileResult.last_name, "" + profileResult.locale,
                         App.MobileService.CurrentUser.MobileServiceAuthenticationToken, 0, AccountType.NORMAL_ACCOUNT_TYPE);
                     try
@@ -190,7 +190,7 @@ namespace PintheCloud.Workers
         // Save profile information to local isolated App settings.
         private void SaveProfileReslutToAppSettings(Account account)
         {
-            App.ApplicationSettings[Account.ACCOUNT_ID_KEYS[Account.ACCOUNT_SKY_DRIVE_ID_KEY_LOCATION]] = account.account_platform_id;
+            App.ApplicationSettings[Account.ACCOUNT_ID_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY]] = account.account_platform_id;
             App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_USED_SIZE] = account.account_used_size;
             App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_TYPE_NAME] = account.account_type_name;
 
@@ -205,8 +205,8 @@ namespace PintheCloud.Workers
         // Save profile information to local isolated App settings.
         private void RemoveProfileReslutFromAppSettings()
         {
-            App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_ID_KEYS[Account.ACCOUNT_SKY_DRIVE_ID_KEY_LOCATION]);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_IS_SIGN_IN_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY]);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_ID_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY]);
             App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_USED_SIZE);
             App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_TYPE_NAME);
         }

@@ -99,7 +99,7 @@
     <Compile Include="Managers\IStorageManager.cs" />
     <Compile Include="Managers\BlobStorageManager.cs" />
     <Compile Include="Managers\LocalStorageManager.cs" />
-    <Compile Include="Managers\CloudSkyDriveManager.cs" />
+    <Compile Include="Managers\SkyDriveManager.cs" />
     <Compile Include="Managers\GeoCalculateManager.cs" />
     <Compile Include="Managers\GeoCalculateManagerImplement.cs" />
     <Compile Include="Managers\SpaceManager.cs" />

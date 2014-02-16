@@ -20,7 +20,7 @@ namespace PintheCloud.Managers
     // Summary
     //      Implementation of IStorageManager.
     //      It helps to access SkyDrive Storage.
-    public class CloudSkyDriveManager : IStorageManager
+    public class SkyDriveManager : IStorageManager
     {
         // Summary:
         //     Object to communicate with SkyDrive.
@@ -32,7 +32,7 @@ namespace PintheCloud.Managers
         public async Task<bool> SignIn(DependencyObject context)
         {
             bool result = false;
-            App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN] = true;
+            App.ApplicationSettings[Account.ACCOUNT_IS_SIGN_IN_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY]] = true;
             App.ApplicationSettings.Save();
 
             // If it haven't registerd live client, register

@@ -35,7 +35,8 @@ namespace PintheCloud
         public static SpaceManager SpaceManager = null;
         public static GeoCalculateManager GeoCalculateManager = null;
         public static IStorageManager IStorageManager = null;
-        public static CloudSkyDriveManager SkyDriveManager = null;
+        public static IStorageManager[] IStorageManagers = null;
+        public static SkyDriveManager SkyDriveManager = null;
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
 
@@ -73,9 +74,11 @@ namespace PintheCloud
             // Manager
             SpaceManager = new SpaceManagerImplement();
             GeoCalculateManager = new GeoCalculateManagerImplement();
-            SkyDriveManager = new CloudSkyDriveManager();
             LocalStorageManager = new LocalStorageManager();
 
+            SkyDriveManager = new SkyDriveManager();
+            IStorageManagers = new IStorageManager[] { SkyDriveManager };
+ 
 
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.
             if (Debugger.IsAttached)
@@ -155,6 +158,9 @@ namespace PintheCloud
                 System.Diagnostics.Debug.WriteLine(new StackFrame(1, true));
                 System.Diagnostics.Debug.WriteLine("-------------------------");
                 
+                for(int i=0 ; i<Account.ACCOUNT_IS_SIGN_IN_KEYS.Length ; i++)
+                    App.ApplicationSettings.Remove(Account.ACCOUNT_IS_SIGN_IN_KEYS[i]);
+
                 // 처리되지 않은 예외가 발생했습니다. 중단하고 디버거를 실행합니다.
                 Debugger.Break();
             }

@@ -59,7 +59,7 @@ namespace PintheCloud.Pages
 
             // Set SkyDrive Sign button
             bool isSignIn = false;
-            App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN, out isSignIn);
+            App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY], out isSignIn);
             this.SetSkyDriveSignButton(isSignIn);
 
             // Set location access consent checkbox
@@ -121,7 +121,7 @@ namespace PintheCloud.Pages
             uiApplicationGrid.Visibility = Visibility.Collapsed;
             uiApplicationMessageGrid.Visibility = Visibility.Visible;
 
-            App.IStorageManager = App.SkyDriveManager;
+            App.IStorageManager = App.IStorageManagers[GlobalKeys.SKY_DRIVE_LOCATION_KEY];
             if (await App.IStorageManager.SignIn(this))
                 this.SetSkyDriveSignButton(true);
             else
@@ -140,7 +140,7 @@ namespace PintheCloud.Pages
             MessageBoxResult result = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
-                App.IStorageManager = App.SkyDriveManager;
+                App.IStorageManager = App.IStorageManagers[GlobalKeys.SKY_DRIVE_LOCATION_KEY];
                 App.IStorageManager.SignOut();
                 this.SetSkyDriveSignButton(false);
             }
@@ -209,7 +209,7 @@ namespace PintheCloud.Pages
 
         private void uiSkyDriveSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = GlobalKeys.MICROSOFT;
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = GlobalKeys.PLATFORMS[GlobalKeys.SKY_DRIVE_LOCATION_KEY];
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
@@ -217,7 +217,7 @@ namespace PintheCloud.Pages
 
         private void uiDropboxSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = GlobalKeys.DROPBOX;
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = GlobalKeys.PLATFORMS[GlobalKeys.DROPBOX_LOCATION_KEY];
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
