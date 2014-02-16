@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Microsoft.WindowsAzure.MobileServices;
 using PintheCloud.Models;
+using Newtonsoft.Json.Linq;
 
 namespace PintheCloud.Pages
 {
@@ -39,65 +40,65 @@ namespace PintheCloud.Pages
         }
 
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        { 
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
 
+
+
+            /*** Application Pivot ***/
+
+            // Set Nickname
+            string nickName = null;
+            if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME, out nickName))
+            {
+                App.ApplicationSettings[Account.ACCOUNT_NICK_NAME] = AppResources.AtHere;
+                App.ApplicationSettings.Save();
+            }
+            uiSpotNickNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME];
+
+            // Set SkyDrive Sign button
+            bool isSignIn = false;
+            App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN, out isSignIn);
+            this.SetSkyDriveSignButton(isSignIn);
+
+            // Set location access consent checkbox
+            bool isLocationAccessConsent = false;
+            App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS_CONSENT, out isLocationAccessConsent);
+            if (isLocationAccessConsent)
+                uiLocationAccessConsentCheckBox.IsChecked = true;
+            else
+                uiLocationAccessConsentCheckBox.IsChecked = false;
+
+
+
+            /*** My Spot Pivot ***/
+
+            // If Internet available, Set space list
+            if (NetworkInterface.GetIsNetworkAvailable())
+                if (!MySpotViewModel.IsDataLoaded)  // Mutex check
+                    await this.SetMySpotPivotAsync(AppResources.Loading);
         }
 
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-
+            base.OnNavigatedFrom(e);
         }
 
 
         // Construct pivot item by page index
-        private async void uiSettingPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void uiSettingPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Set View model for dispaly,
             // One time loading.
             switch (uiSettingPivot.SelectedIndex)
             {
-                case APPLICATION_PIVOT:
-
-                    // Set My Spot stuff unable
-                    uiMySpotEditViewButton.Visibility = Visibility.Collapsed;
-                    ApplicationBar.IsVisible = false;
-
-                    // Set Nickname
-                    string nickName = null;
-                    if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME, out nickName))
-                    {
-                        App.ApplicationSettings[Account.ACCOUNT_NICK_NAME] = AppResources.AtHere;
-                        App.ApplicationSettings.Save();
-                    }
-                    uiSpotNickNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME];
-
-                    // Set SkyDrive Sign button
-                    bool isSignIn = false;
-                    App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN, out isSignIn);
-                    this.SetSkyDriveSignButton(isSignIn);
-
-                    // Set location access consent checkbox
-                    bool isLocationAccessConsent = false;
-                    App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS_CONSENT, out isLocationAccessConsent);
-                    if (isLocationAccessConsent)
-                        uiLocationAccessConsentCheckBox.IsChecked = true;
-                    else 
-                        uiLocationAccessConsentCheckBox.IsChecked = false;
-
-                    break;
-
                 case MY_SPOT_PIVOT:
 
                     // Set My Spot stuff enable
                     uiMySpotEditViewButton.Visibility = Visibility.Visible;
                     ApplicationBar.IsVisible = true;
-
-                    // If Internet available, Set space list
-                    if (NetworkInterface.GetIsNetworkAvailable())
-                        if (!MySpotViewModel.IsDataLoaded)  // Mutex check
-                            await this.SetMySpotPivotAsync(AppResources.Loading);
                     break;
 
                 default:
@@ -115,14 +116,18 @@ namespace PintheCloud.Pages
 
         private async void uiSkyDriveSignInButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            // Set process indicator
             this.IsSignIning = true;
             uiApplicationGrid.Visibility = Visibility.Collapsed;
             uiApplicationMessageGrid.Visibility = Visibility.Visible;
+
             App.IStorageManager = App.SkyDriveManager;
             if (await App.IStorageManager.SignIn(this))
                 this.SetSkyDriveSignButton(true);
             else
                 MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+
+            // Hide process indicator
             uiApplicationGrid.Visibility = Visibility.Visible;
             uiApplicationMessageGrid.Visibility = Visibility.Collapsed;
             this.IsSignIning = false;
@@ -202,6 +207,22 @@ namespace PintheCloud.Pages
         }
 
 
+        private void uiSkyDriveSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = GlobalKeys.MICROSOFT;
+            App.ApplicationSettings.Save();
+            MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+        }
+
+
+        private void uiDropboxSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = GlobalKeys.DROPBOX;
+            App.ApplicationSettings.Save();
+            MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+        }
+
+
 
         /*** My Spot ***/
 
@@ -211,15 +232,15 @@ namespace PintheCloud.Pages
             // Get Selected Space View Item
             SpaceViewItem spaceViewItem = uiMySpotList.SelectedItem as SpaceViewItem;
 
+            // Set selected item to null for next selection of list item. 
+            uiMySpotList.SelectedItem = null;
+
             // If selected item isn't null, goto File list page.
             if (spaceViewItem != null)
             {
                 string parameters = App.SpaceManager.GetParameterStringFromSpaceViewItem(spaceViewItem);
                 NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
             }
-
-            // Set selected item to null for next selection of list item. 
-            uiMySpotList.SelectedItem = null;
         }
 
 
@@ -228,7 +249,9 @@ namespace PintheCloud.Pages
         {
             // If Internet available, Set space list
             if (NetworkInterface.GetIsNetworkAvailable())
-                await this.SetMySpotPivotAsync(AppResources.Loading);
+                await this.SetMySpotPivotAsync(AppResources.Refreshing);
+            else
+                base.SetListUnableAndShowMessage(uiMySpotList, AppResources.InternetUnavailableMessage, uiMySpotMessage);
         }
 
 
@@ -243,7 +266,7 @@ namespace PintheCloud.Pages
 
             // If there is my spaces, Clear and Add spaces to list
             // Otherwise, Show none message.
-            MobileServiceCollection<Space, Space> spaces = await App.SpaceManager.GetMySpaceViewItemsAsync();
+            JArray spaces = await App.SpaceManager.GetMySpaceViewItemsAsync();
 
             if (spaces != null)  // There are my spaces
             {
@@ -255,7 +278,6 @@ namespace PintheCloud.Pages
             else  // No my spaces
             {
                 base.SetListUnableAndShowMessage(uiMySpotList, AppResources.NoMySpotMessage, uiMySpotMessage);
-                MySpotViewModel.IsDataLoaded = false;  // Mutex
             }
 
             // Hide progress indicator

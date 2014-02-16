@@ -16,7 +16,7 @@ namespace PintheCloud.Managers
     public interface SpaceManager
     {
         Task<JArray> GetNearSpaceViewItemsAsync(Geoposition currentGeoposition);
-        Task<MobileServiceCollection<Space, Space>> GetMySpaceViewItemsAsync();
+        Task<JArray> GetMySpaceViewItemsAsync();
         string GetParameterStringFromSpaceViewItem(SpaceViewItem spaceViewItem);
     }
 }

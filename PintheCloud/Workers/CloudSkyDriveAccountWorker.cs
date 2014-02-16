@@ -190,7 +190,7 @@ namespace PintheCloud.Workers
         // Save profile information to local isolated App settings.
         private void SaveProfileReslutToAppSettings(Account account)
         {
-            App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_ID] = account.account_platform_id;
+            App.ApplicationSettings[Account.ACCOUNT_ID_KEYS[Account.ACCOUNT_SKY_DRIVE_ID_KEY_LOCATION]] = account.account_platform_id;
             App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_USED_SIZE] = account.account_used_size;
             App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_TYPE_NAME] = account.account_type_name;
 
@@ -206,7 +206,7 @@ namespace PintheCloud.Workers
         private void RemoveProfileReslutFromAppSettings()
         {
             App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_ID);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_ID_KEYS[Account.ACCOUNT_SKY_DRIVE_ID_KEY_LOCATION]);
             App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_USED_SIZE);
             App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_TYPE_NAME);
         }

@@ -49,8 +49,8 @@
             			</Grid.RowDefinitions>
             			<StackPanel>
             				<StackPanel Orientation="Horizontal" Margin="18,0,0,0">
-            					<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.NickName, Source={StaticResource LocalizedStrings}}" FontSize="22.667" Margin="0,0,10,0"/>
-            					<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.NickNameMaxLength, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Bottom" FontSize="17.333" FontWeight="Light"/>
+            					<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.SpotNickName, Source={StaticResource LocalizedStrings}}" FontSize="22.667" Margin="0,0,10,0"/>
+            					<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.SpotNickNameMaxLength, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Bottom" FontSize="17.333" FontWeight="Light"/>
             				</StackPanel>
             				<Grid>
             					<Grid.ColumnDefinitions>
@@ -62,8 +62,22 @@
             				</Grid>
             			</StackPanel>
             			<StackPanel Grid.Row="1">
-            				<Button x:Name="uiSkyDriveSignButton" Content="{Binding LocalizedResources.SkyDriveSignIn, Source={StaticResource LocalizedStrings}}" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
-            				<Button x:Name="uiDropboxDriveSignButton" Content="{Binding LocalizedResources.DropboxSignIn, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
+            				<Grid>
+            					<Grid.ColumnDefinitions>
+            						<ColumnDefinition/>
+            						<ColumnDefinition Width="110"/>
+            					</Grid.ColumnDefinitions>
+            					<Button x:Name="uiSkyDriveSignButton" Content="{Binding LocalizedResources.SkyDriveSignIn, Source={StaticResource LocalizedStrings}}" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
+            					<Button x:Name="uiSkyDriveSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" Grid.Column="1" Click="uiSkyDriveSetMainButton_Click"/>
+            				</Grid>
+            				<Grid>
+            					<Grid.ColumnDefinitions>
+            						<ColumnDefinition/>
+            						<ColumnDefinition Width="110"/>
+            					</Grid.ColumnDefinitions>
+            					<Button x:Name="uiDropboxDriveSignButton" Content="{Binding LocalizedResources.DropboxSignIn, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
+            					<Button x:Name="uiDropboxSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" Grid.Column="1" BorderBrush="Black" Foreground="Black" Click="uiDropboxSetMainButton_Click"/>
+            				</Grid>
             			</StackPanel>
             			<StackPanel Grid.Row="2">
             				<CheckBox x:Name="uiLocationAccessConsentCheckBox" Content="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Foreground="Black" BorderBrush="Black" Style="{StaticResource CustomCheckBoxStyle}" Checked="uiLocationAccessConsentCheckBox_Checked" Unchecked="uiLocationAccessConsentCheckBox_Unchecked"/>

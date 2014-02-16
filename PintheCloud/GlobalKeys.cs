@@ -17,7 +17,7 @@ namespace PintheCloud
 
         // Platform Id
         public static string MICROSOFT = "Microsoft";
-        public static string GOOGLE = "Google";
+        public static string DROPBOX = "Dropbox";
          
 
         // Current Usrer

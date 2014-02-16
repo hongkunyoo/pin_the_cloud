@@ -31,14 +31,17 @@ namespace PintheCloud.ViewModels
         }
 
 
-        public void SetItems(JArray spaces, Geoposition currentGeoposition)
+        public void SetItems(JArray spaces, Geoposition currentGeoposition = null)
         {
             // If items have something, clear.
             this.Items.Clear();
 
             // Get current coordinate
-            double currentLatitude = currentGeoposition.Coordinate.Latitude;
-            double currentLongtitude = currentGeoposition.Coordinate.Longitude;
+            if (currentGeoposition != null)
+            {
+                double currentLatitude = currentGeoposition.Coordinate.Latitude;
+                double currentLongtitude = currentGeoposition.Coordinate.Longitude;
+            }
 
             // Convert jarray spaces to space view items and set to view model
             foreach (JObject jSpace in spaces)
@@ -55,15 +58,6 @@ namespace PintheCloud.ViewModels
                 space.id = space_id;
                 this.Items.Add(this.MakeSpaceViewItemFromSpace(space));
             }
-        }
-        public void SetItems(MobileServiceCollection<Space, Space> spaces)
-        {
-            // If items have something, clear.
-            this.Items.Clear();
-
-            // Convert spaces to space view items and set to view model
-            foreach (Space space in spaces)
-                this.Items.Add(this.MakeSpaceViewItemFromSpace(space));
         }
 
 

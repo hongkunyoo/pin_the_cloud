@@ -60,6 +60,10 @@ namespace PintheCloud.Pages
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
 
+
+
+            /*** Pick Pivot ***/
+
             // If it doesn't first enter, but still loading, do it once again.
             if (uiNearSpaceMessage.Visibility == Visibility.Visible)
             {
@@ -73,6 +77,10 @@ namespace PintheCloud.Pages
                         base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
                 }
             }
+
+
+
+            /*** Pin Pivot ***/
 
             if (uiPinInfoMessage.Visibility == Visibility.Visible)
             {
@@ -92,6 +100,7 @@ namespace PintheCloud.Pages
                     }
                 }
             }
+
 
             // If it is already signin skydrive, load files.
             // Otherwise, show signin button.
@@ -122,6 +131,7 @@ namespace PintheCloud.Pages
             }
         }
 
+
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
@@ -144,6 +154,7 @@ namespace PintheCloud.Pages
 
                     // Remove Cloud Kind Image
                     uiCurrentCloudModeText.Visibility = Visibility.Collapsed;
+
 
                     // If Internet available, Set space list
                     // Otherwise, show internet bad message
@@ -185,8 +196,10 @@ namespace PintheCloud.Pages
                     uiCurrentCloudModeText.Visibility = Visibility.Visible;
                     uiCurrentCloudModeText.Text = AppResources.SkyDrive;
 
+
                     // If it is already signin skydrive, load files.
                     // Otherwise, show signin button.
+                    
                     bool isSkyDriveLogin = false;
                     App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_SKY_DRIVE_IS_SIGN_IN, out isSkyDriveLogin);
                     if (!isSkyDriveLogin)
@@ -225,6 +238,7 @@ namespace PintheCloud.Pages
                     else
                         base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
                     break;
+
                 case PIN_PIVOT:
                     // TODO different by current state
                     // If it is in sign in process, don't refresh.
@@ -553,6 +567,7 @@ namespace PintheCloud.Pages
 
         private async void uiPinInfoSignInButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            // TODO Add other cloud mode.
             // If Internet available, Set pin list with root folder file list.
             // Otherwise, show internet bad message
             if (NetworkInterface.GetIsNetworkAvailable())

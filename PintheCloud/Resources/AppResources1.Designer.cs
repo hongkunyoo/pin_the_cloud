@@ -259,6 +259,33 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Main과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Main {
+            get {
+                return ResourceManager.GetString("Main", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Main Cloud과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MainCloudChangeCpation {
+            get {
+                return ResourceManager.GetString("MainCloudChangeCpation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Main Cloud is changed successfully.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MainCloudChangeMessage {
+            get {
+                return ResourceManager.GetString("MainCloudChangeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///    MB과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MB {

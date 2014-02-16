@@ -38,11 +38,19 @@ namespace PintheCloud.Managers
 
 
         // Get space view item from space list.
-        public async Task<MobileServiceCollection<Space, Space>> GetMySpaceViewItemsAsync()
+        public async Task<JArray> GetMySpaceViewItemsAsync()
         {
-            // Get spaces
-            return await this.CurrentSpaceWorker
-                .GetMySpacesAsync(App.IStorageManager.GetCurrentAccount().account_platform_id);
+            // Get My spaces
+            List<string> ids = new List<string>();
+            string id = null;
+            for (int i = 0; i < Account.ACCOUNT_ID_KEYS.Length; i++)
+                if (App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_ID_KEYS[i], out id))
+                    ids.Add(id);
+
+            if (ids.Count <= 0)
+                return null;
+            else
+                return await this.CurrentSpaceWorker.GetMySpacesAsync(ids);
         }
 
 

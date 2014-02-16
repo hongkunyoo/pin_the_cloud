@@ -278,4 +278,13 @@
   <data name="SetSpotNickNameMessage" xml:space="preserve">
     <value>New nick name is successfully registered. New spot's will be the nick name.</value>
   </data>
+  <data name="Main" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="MainCloudChangeCpation" xml:space="preserve">
+    <value>Main Cloud</value>
+  </data>
+  <data name="MainCloudChangeMessage" xml:space="preserve">
+    <value>Main Cloud is changed successfully.</value>
+  </data>
 </root>
