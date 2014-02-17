@@ -53,21 +53,27 @@ namespace PintheCloud.Pages
         }
 
 
-        public static void SetProgressIndicator(DependencyObject context, bool value, string text = "")
+        public void SetProgressIndicator(bool value, string text = "")
         {
-            ProgressIndicator progressIndicator = new ProgressIndicator();
-            progressIndicator.IsIndeterminate = value;
-            progressIndicator.IsVisible = value;
-            progressIndicator.Text = text;
-            SystemTray.SetProgressIndicator(context, progressIndicator);
+            this.Dispatcher.BeginInvoke(() =>
+            {
+                ProgressIndicator progressIndicator = new ProgressIndicator();
+                progressIndicator.IsIndeterminate = value;
+                progressIndicator.IsVisible = value;
+                progressIndicator.Text = text;
+                SystemTray.SetProgressIndicator(this, progressIndicator);
+            });
         }
 
 
         public void SetListUnableAndShowMessage(LongListSelector list, string message, TextBlock messageTextBlock)
         {
-            list.Visibility = Visibility.Collapsed;
-            messageTextBlock.Text = message;
-            messageTextBlock.Visibility = Visibility.Visible;
+            this.Dispatcher.BeginInvoke(() =>
+            {
+                list.Visibility = Visibility.Collapsed;
+                messageTextBlock.Text = message;
+                messageTextBlock.Visibility = Visibility.Visible;
+            });
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Live;
+using Microsoft.Phone.Shell;
 using PintheCloud.Models;
 using System;
 using System.Collections.Generic;

@@ -44,16 +44,36 @@ namespace PintheCloud.Pages
         private bool IsSignIning = false;
 
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
+        private ApplicationBarMenuItem skyDriveAppBarButton = new ApplicationBarMenuItem();
+        private ApplicationBarMenuItem dropboxAppBarButton = new ApplicationBarMenuItem();
         private SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
         private Stack<FileObject> FolderTree = new Stack<FileObject>();
         private List<FileObject> SelectedFile = new List<FileObject>();
 
 
 
+        // Constructer
         public ExplorerPage()
         {
             InitializeComponent();
+
+            // Set pin button
+            this.PinInfoAppBarButton.Text = AppResources.Pin;
+            this.PinInfoAppBarButton.IconUri = new Uri(PIN_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
+            this.PinInfoAppBarButton.IsEnabled = false;
+            this.PinInfoAppBarButton.Click += pinInfoAppBarButton_Click;
+
+            // Set Cloud Setting selection.
+            this.skyDriveAppBarButton.Text = AppResources.SkyDrive;
+            this.skyDriveAppBarButton.Click += skyDriveAppBarButton_Click;
+
+            this.dropboxAppBarButton.Text = AppResources.Dropbox;
+            this.dropboxAppBarButton.Click += dropboxAppBarButton_Click;
+
+            // Set Data Context
+            uiNearSpaceList.DataContext = this.NearSpaceViewModel;
         }
+
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -95,14 +115,16 @@ namespace PintheCloud.Pages
                 }
             }
 
-            // Comes from File list Page
+
+            // Comes from File list Page and setting page
             // If selected files are over 1, erase it.
             if (this.SelectedFile.Count > 0)
             {
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
+                    this.SelectedFile.Clear();
                     this.PinInfoAppBarButton.IsEnabled = false;
-                    await this.SetPinInfoListAsync(null, AppResources.Loading);
+                    await this.SetPinInfoListAsync(this.FolderTree.First(), AppResources.Loading);
                 }
                 else
                 {
@@ -118,7 +140,7 @@ namespace PintheCloud.Pages
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
                     if (!this.IsSignIning)
-                        await this.SetPinInfoListAsync(null, AppResources.Loading);
+                        await this.SetPinInfoListAsync(this.FolderTree.First(), AppResources.Loading);
                 }
                 else
                 {
@@ -195,23 +217,10 @@ namespace PintheCloud.Pages
 
 
                 case PIN_INFO_PIVOT:
-                    // Set pin button
-                    this.PinInfoAppBarButton.Text = AppResources.Pin;
-                    this.PinInfoAppBarButton.IconUri = new Uri(PIN_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
-                    this.PinInfoAppBarButton.IsEnabled = false;
-                    this.PinInfoAppBarButton.Click += pinInfoAppBarButton_Click;
+                    // Set pin app bar button and cloud setting menu items
                     ApplicationBar.Buttons.Add(this.PinInfoAppBarButton);
-
-                    // Set Cloud Setting selection.
-                    ApplicationBarMenuItem skyDriveAppBarButton = new ApplicationBarMenuItem();
-                    skyDriveAppBarButton.Text = AppResources.SkyDrive;
-                    skyDriveAppBarButton.Click += skyDriveAppBarButton_Click;
-                    ApplicationBar.MenuItems.Add(skyDriveAppBarButton);
-
-                    ApplicationBarMenuItem dropboxAppBarButton = new ApplicationBarMenuItem();
-                    dropboxAppBarButton.Text = AppResources.Dropbox;
-                    dropboxAppBarButton.Click += dropboxAppBarButton_Click;
-                    ApplicationBar.MenuItems.Add(dropboxAppBarButton);
+                    ApplicationBar.MenuItems.Add(this.skyDriveAppBarButton);
+                    ApplicationBar.MenuItems.Add(this.dropboxAppBarButton);
 
                     // Set Cloud Mode Text
                     uiCurrentCloudModeText.Visibility = Visibility.Visible;
@@ -320,7 +329,7 @@ namespace PintheCloud.Pages
 
             // Show progress indicator 
             base.SetListUnableAndShowMessage(uiNearSpaceList, message, uiNearSpaceMessage);
-            PtcPage.SetProgressIndicator(this, true);
+            base.SetProgressIndicator(true);
 
 
             // Check whether user consented for location access.
@@ -340,10 +349,12 @@ namespace PintheCloud.Pages
 
                         if (spaces != null)  // There are near spaces
                         {
-                            this.NearSpaceViewModel.SetItems(spaces, currentGeoposition);
-                            uiNearSpaceList.DataContext = this.NearSpaceViewModel;
-                            uiNearSpaceList.Visibility = Visibility.Visible;
-                            uiNearSpaceMessage.Visibility = Visibility.Collapsed;
+                            this.Dispatcher.BeginInvoke(() =>
+                            {
+                                this.NearSpaceViewModel.SetItems(spaces, currentGeoposition);
+                                uiNearSpaceList.Visibility = Visibility.Visible;
+                                uiNearSpaceMessage.Visibility = Visibility.Collapsed;
+                            });
                         }
                         else  // No near spaces
                         {
@@ -373,7 +384,7 @@ namespace PintheCloud.Pages
 
 
             // Hide progress indicator
-            PtcPage.SetProgressIndicator(this, false);
+            base.SetProgressIndicator(false);
         }
 
 
@@ -494,6 +505,8 @@ namespace PintheCloud.Pages
                 // Otherwise, add it to list.
                 if (fileObject.ThumnailType.Equals(AppResources.Folder))
                 {
+                    this.SelectedFile.Clear();
+                    this.PinInfoAppBarButton.IsEnabled = false;
                     await this.SetPinInfoListAsync(fileObject, AppResources.Loading);
                     MyDebug.WriteLine(fileObject.Name);
                 }
@@ -503,7 +516,7 @@ namespace PintheCloud.Pages
                     {
                         this.SelectedFile.Add(fileObject);
                         fileObject.SetSelectCheckImage(true);
-                        ((ApplicationBarIconButton)ApplicationBar.Buttons[PIN_APP_BAR_BUTTON]).IsEnabled = true;
+                        this.PinInfoAppBarButton.IsEnabled = true;
                     }
 
                     else
@@ -511,7 +524,7 @@ namespace PintheCloud.Pages
                         this.SelectedFile.Remove(fileObject);
                         fileObject.SetSelectCheckImage(false);
                         if (this.SelectedFile.Count <= 0)
-                            ((ApplicationBarIconButton)ApplicationBar.Buttons[PIN_APP_BAR_BUTTON]).IsEnabled = false;
+                            this.PinInfoAppBarButton.IsEnabled = false;
                     }
                     MyDebug.WriteLine(fileObject.Name);
                 }
@@ -532,6 +545,8 @@ namespace PintheCloud.Pages
         private async Task TreeUp()
         {
             this.FolderTree.Pop();
+            this.SelectedFile.Clear();
+            this.PinInfoAppBarButton.IsEnabled = false;
             await this.SetPinInfoListAsync(this.FolderTree.First(), AppResources.Loading);
         }
 
@@ -564,12 +579,14 @@ namespace PintheCloud.Pages
             bool result = await App.IStorageManager.SignIn(context);
             if (!result)
             {
-                MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
-                uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                this.Dispatcher.BeginInvoke(() =>
+                {
+                    MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+                    uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                    uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                });
             }
 
-            PtcPage.SetProgressIndicator(this, false);
             this.IsSignIning = false;
             return result;
         }
@@ -581,12 +598,16 @@ namespace PintheCloud.Pages
             this.IsFileObjectLoaded = true;
             this.IsFileObjectLoading = true;
             base.SetListUnableAndShowMessage(uiPinInfoList, message, uiPinInfoMessage);
-            PtcPage.SetProgressIndicator(this, true);
+            base.SetProgressIndicator(true);
+
 
             // If folder null, set root.
             if (folder == null)
             {
-                uiPinInfoCurrentPath.Text = "";
+                this.Dispatcher.BeginInvoke(() =>
+                {
+                    uiPinInfoCurrentPath.Text = "";
+                });
                 this.FolderTree.Clear();
                 this.SelectedFile.Clear();
                 folder = await App.IStorageManager.GetRootFolderAsync();
@@ -599,20 +620,24 @@ namespace PintheCloud.Pages
             // If there exists file, return that.
             if (files.Count > 0)
             {
-                uiPinInfoCurrentPath.Text = this.GetCurrentPath();
+                this.Dispatcher.BeginInvoke(() =>
+                {
+                    uiPinInfoCurrentPath.Text = this.GetCurrentPath();
 
-                // Set file tree to list.
-                uiPinInfoList.DataContext = new ObservableCollection<FileObject>(files);
-                uiPinInfoList.Visibility = Visibility.Visible;
-                uiPinInfoMessage.Visibility = Visibility.Collapsed;
+                    // Set file tree to list.
+                    uiPinInfoList.DataContext = new ObservableCollection<FileObject>(files);
+                    uiPinInfoList.Visibility = Visibility.Visible;
+                    uiPinInfoMessage.Visibility = Visibility.Collapsed;
+                });
             }
             else
             {
                 base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.NoFileInCloudMessage, uiPinInfoMessage);
             }
 
+
             // Set Mutex false and Hide Process Indicator
-            PtcPage.SetProgressIndicator(this, false);
+            base.SetProgressIndicator(false);
             this.IsFileObjectLoading = false;
         }
 

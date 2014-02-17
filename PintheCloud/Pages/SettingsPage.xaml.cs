@@ -76,8 +76,14 @@ namespace PintheCloud.Pages
 
             // If Internet available, Set space list
             if (NetworkInterface.GetIsNetworkAvailable())
+            {
                 if (!MySpotViewModel.IsDataLoaded)  // Mutex check
                     await this.SetMySpotPivotAsync(AppResources.Loading);
+            }
+            else
+            {
+                base.SetListUnableAndShowMessage(uiMySpotList, AppResources.InternetUnavailableMessage, uiMySpotMessage);
+            }
         }
 
 
@@ -260,7 +266,7 @@ namespace PintheCloud.Pages
         {
             // Show progress indicator 
             base.SetListUnableAndShowMessage(uiMySpotList, message, uiMySpotMessage);
-            PtcPage.SetProgressIndicator(this, true);
+            base.SetProgressIndicator(true);
 
             // Before go load, set mutex to true.
             MySpotViewModel.IsDataLoaded = true;
@@ -282,7 +288,7 @@ namespace PintheCloud.Pages
             }
 
             // Hide progress indicator
-            PtcPage.SetProgressIndicator(this, false);
+            base.SetProgressIndicator(false);
         }
 
 

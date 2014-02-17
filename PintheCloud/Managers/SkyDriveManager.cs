@@ -42,9 +42,7 @@ namespace PintheCloud.Managers
                 LiveConnectClient liveClient = await this.AccountWorker.GetLiveConnectClientAsync();
                 if (liveClient != null)
                 {
-                    // Show progress indicator, progress login
                     // Register live client
-                    PtcPage.SetProgressIndicator(context, true);
                     this.LiveClient = liveClient;
 
 
@@ -61,9 +59,6 @@ namespace PintheCloud.Managers
                             result = true;
                         }
                     }
-
-                    // Hide progress indicator
-                    PtcPage.SetProgressIndicator(context, false);
                 }
             }
             else
@@ -140,19 +135,6 @@ namespace PintheCloud.Managers
         public async Task<List<FileObject>> GetFilesFromFolderAsync(string folderId)
         {
             return _GetDataList((await this.LiveClient.GetAsync(folderId + "/files")).Result);
-        }
-
-
-        // Summary:
-        //     Get the file meta information from the root to the node of the file tree.
-        //
-        // Returns:
-        //     Root FileObject of SkyDrive.
-        public async Task<FileObject> Synchronize()
-        {
-            FileObject fo = await GetRootFolderAsync();
-            fo.FileList = await _GetChildAsync(fo);
-            return fo;
         }
 
 
@@ -395,6 +377,8 @@ namespace PintheCloud.Managers
             }
             return list;
         }
+
+
         // Summary:
         //      Gets the children of the FileObject recursively.
         //
@@ -417,6 +401,19 @@ namespace PintheCloud.Managers
                 return null;
             }
 
+        }
+
+
+        // Summary:
+        //     Get the file meta information from the root to the node of the file tree.
+        //
+        // Returns:
+        //     Root FileObject of SkyDrive.
+        private async Task<FileObject> Synchronize()
+        {
+            FileObject fo = await GetRootFolderAsync();
+            fo.FileList = await _GetChildAsync(fo);
+            return fo;
         }
     }
 }
