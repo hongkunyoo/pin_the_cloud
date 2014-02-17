@@ -26,7 +26,30 @@ namespace PintheCloud
         /// <returns>전화 응용 프로그램의 루트 프레임입니다.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
 
-        // Root static instance variable.
+
+
+        /*** Const instance variable ***/
+
+        // Azure
+        public static string AZURE_CLIENT_ID = "0000000044110129";
+        public static string AZURE_MOBILE_SERVICE_ID = "MicrosoftAccount:2914cb486d0f9106050de9ad70564d53";
+        public static string AZURE_MOBILE_SERVICE_TOKEN
+            = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjAifQ.eyJleHAiOjEzOTQ5Nzg4NTcsImlzcyI6InVybjptaWNyb3NvZnQ6d2luZG93cy1henVyZTp6dW1vIiwidmVyIjoyLCJhdWQiOiJNaWNyb3NvZnRBY2NvdW50IiwidWlkIjoiTWljcm9zb2Z0QWNjb3VudDoyOTE0Y2I0ODZkMGY5MTA2MDUwZGU5YWQ3MDU2NGQ1MyIsInVybjptaWNyb3NvZnQ6Y3JlZGVudGlhbHMiOiJrc2VzY21WaXA1b2ZrZDhUenBQQ1h3PT0ifQ.cUrvBbXsHQOiz0ZRu8FxA5HxqpQbPRSQQb8_N0-6eAo";
+
+        // Platform Id
+        public static string[] PLATFORMS = { "SkyDrive", "Dropbox" };
+
+        // Location
+        public static int SKY_DRIVE_LOCATION_KEY = 0;
+        public static int DROPBOX_LOCATION_KEY = 1;
+
+        // Current Usrer
+        public static string USER = "";
+
+
+
+        /*** Root static instance variable ***/
+
         // App
         public static MobileServiceClient MobileService = null;
         public static IsolatedStorageSettings ApplicationSettings = null;
@@ -67,8 +90,8 @@ namespace PintheCloud
                 "https://pinthecloud.azure-mobile.net/",
                 "yvulzHAGRgNsGnPLHKcEFCPJcuyzKj23"
             );
-            MobileServiceUser mobileServiceUser = new MobileServiceUser(GlobalKeys.AZURE_MOBILE_SERVICE_ID);
-            mobileServiceUser.MobileServiceAuthenticationToken = GlobalKeys.AZURE_MOBILE_SERVICE_TOKEN;
+            MobileServiceUser mobileServiceUser = new MobileServiceUser(App.AZURE_MOBILE_SERVICE_ID);
+            mobileServiceUser.MobileServiceAuthenticationToken = App.AZURE_MOBILE_SERVICE_TOKEN;
             MobileService.CurrentUser = mobileServiceUser;
             ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
 

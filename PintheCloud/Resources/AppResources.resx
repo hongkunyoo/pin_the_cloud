@@ -290,4 +290,13 @@
   <data name="NoFileInSpotMessage" xml:space="preserve">
     <value>There is no files in this spot.</value>
   </data>
+  <data name="Percentage" xml:space="preserve">
+    <value>%</value>
+  </data>
+  <data name="PiningSpot" xml:space="preserve">
+    <value>Pining Spot...</value>
+  </data>
+  <data name="Uploading" xml:space="preserve">
+    <value>Uploading</value>
+  </data>
 </root>

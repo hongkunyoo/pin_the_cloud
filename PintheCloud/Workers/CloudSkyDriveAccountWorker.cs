@@ -41,7 +41,7 @@ namespace PintheCloud.Workers
 
                 if (account == null)  // First Login.
                 {
-                    account = new Account(App.MobileService.CurrentUser.UserId, GlobalKeys.PLATFORMS[GlobalKeys.SKY_DRIVE_LOCATION_KEY], "" + profileResult.name,
+                    account = new Account(App.MobileService.CurrentUser.UserId, App.PLATFORMS[App.SKY_DRIVE_LOCATION_KEY], "" + profileResult.name,
                         "" + profileResult.first_name, "" + profileResult.last_name, "" + profileResult.locale,
                         App.MobileService.CurrentUser.MobileServiceAuthenticationToken, 0, AccountType.NORMAL_ACCOUNT_TYPE);
                     try
@@ -86,7 +86,7 @@ namespace PintheCloud.Workers
         // Register Live Connect Session for Live Profile
         public async Task<LiveConnectClient> GetLiveConnectClientAsync()
         {
-            LiveAuthClient liveAuthClient = new LiveAuthClient(GlobalKeys.AZURE_CLIENT_ID);
+            LiveAuthClient liveAuthClient = new LiveAuthClient(App.AZURE_CLIENT_ID);
             string[] scopes = new[] { "wl.basic", "wl.offline_access", "wl.skydrive", "wl.skydrive_update", "wl.signin", "wl.contacts_skydrive" };
             LiveLoginResult liveLoginResult = null;
 
@@ -158,7 +158,7 @@ namespace PintheCloud.Workers
         // Get out connection session
         public void SignOut()
         {
-            LiveAuthClient liveAuthClient = new LiveAuthClient(GlobalKeys.AZURE_CLIENT_ID);
+            LiveAuthClient liveAuthClient = new LiveAuthClient(App.AZURE_CLIENT_ID);
             liveAuthClient.Logout();
             this.RemoveProfileReslutFromAppSettings();
         }
@@ -190,7 +190,7 @@ namespace PintheCloud.Workers
         // Save profile information to local isolated App settings.
         private void SaveProfileReslutToAppSettings(Account account)
         {
-            App.ApplicationSettings[Account.ACCOUNT_ID_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY]] = account.account_platform_id;
+            App.ApplicationSettings[Account.ACCOUNT_ID_KEYS[App.SKY_DRIVE_LOCATION_KEY]] = account.account_platform_id;
             App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_USED_SIZE] = account.account_used_size;
             App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_TYPE_NAME] = account.account_type_name;
 
@@ -205,8 +205,8 @@ namespace PintheCloud.Workers
         // Save profile information to local isolated App settings.
         private void RemoveProfileReslutFromAppSettings()
         {
-            App.ApplicationSettings.Remove(Account.ACCOUNT_IS_SIGN_IN_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY]);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_ID_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY]);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_LOCATION_KEY]);
+            App.ApplicationSettings.Remove(Account.ACCOUNT_ID_KEYS[App.SKY_DRIVE_LOCATION_KEY]);
             App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_USED_SIZE);
             App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_TYPE_NAME);
         }

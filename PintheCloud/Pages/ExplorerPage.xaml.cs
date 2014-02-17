@@ -88,7 +88,7 @@ namespace PintheCloud.Pages
 
             // Comes from setting page
             // If near spaces loading failed, do it again.
-            if (uiNearSpaceMessage.Visibility == Visibility.Visible)
+            if (uiNearSpaceMessage.Visibility == Visibility.Visible && !uiNearSpaceMessage.Text.Equals(AppResources.NoNearSpotMessage))
             {
                 // If Internet available, Set space list
                 // Otherwise, show internet bad message
@@ -105,12 +105,12 @@ namespace PintheCloud.Pages
             // Check main platform at frist login.
             string mainPlatformType = null;
             App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_MAIN_PLATFORM_TYPE, out mainPlatformType);
-            for (int i = 0; i < GlobalKeys.PLATFORMS.Length; i++)
+            for (int i = 0; i < App.PLATFORMS.Length; i++)
             {
-                if (mainPlatformType.Equals(GlobalKeys.PLATFORMS[i]))
+                if (mainPlatformType.Equals(App.PLATFORMS[i]))
                 {
                     // Set Cloud Mode
-                    uiCurrentCloudModeText.Text = GlobalKeys.PLATFORMS[i];
+                    uiCurrentCloudModeText.Text = App.PLATFORMS[i];
                     break;
                 }
             }
@@ -349,7 +349,7 @@ namespace PintheCloud.Pages
 
                         if (spaces != null)  // There are near spaces
                         {
-                            this.Dispatcher.BeginInvoke(() =>
+                            base.Dispatcher.BeginInvoke(() =>
                             {
                                 this.NearSpaceViewModel.SetItems(spaces, currentGeoposition);
                                 uiNearSpaceList.Visibility = Visibility.Visible;
@@ -394,17 +394,17 @@ namespace PintheCloud.Pages
         private async void skyDriveAppBarButton_Click(object sender, EventArgs e)
         {
             // If it is not in sky drive mode, change it.
-            if (!uiCurrentCloudModeText.Text.Equals(GlobalKeys.PLATFORMS[GlobalKeys.SKY_DRIVE_LOCATION_KEY]))
+            if (!uiCurrentCloudModeText.Text.Equals(App.PLATFORMS[App.SKY_DRIVE_LOCATION_KEY]))
             {
-                App.IStorageManager = App.IStorageManagers[GlobalKeys.SKY_DRIVE_LOCATION_KEY];
-                uiCurrentCloudModeText.Text = GlobalKeys.PLATFORMS[GlobalKeys.SKY_DRIVE_LOCATION_KEY];
+                App.IStorageManager = App.IStorageManagers[App.SKY_DRIVE_LOCATION_KEY];
+                uiCurrentCloudModeText.Text = App.PLATFORMS[App.SKY_DRIVE_LOCATION_KEY];
 
                 if (!this.IsSignIning && !this.IsFileObjectLoading)
                 {
                     // If it is already signin skydrive, load files.
                     // Otherwise, show signin button.
                     bool isSkyDriveLogin = false;
-                    App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY], out isSkyDriveLogin);
+                    App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_LOCATION_KEY], out isSkyDriveLogin);
                     if (!isSkyDriveLogin)
                     {
                         uiPinInfoListGrid.Visibility = Visibility.Collapsed;
@@ -430,9 +430,9 @@ namespace PintheCloud.Pages
         {
             //TODO. Code below is pseudo.
             // If it is not in dropbox mode, change it.
-            if (!uiCurrentCloudModeText.Text.Equals(GlobalKeys.PLATFORMS[GlobalKeys.DROPBOX_LOCATION_KEY]))
+            if (!uiCurrentCloudModeText.Text.Equals(App.PLATFORMS[App.DROPBOX_LOCATION_KEY]))
             {
-                uiCurrentCloudModeText.Text = GlobalKeys.PLATFORMS[GlobalKeys.DROPBOX_LOCATION_KEY];
+                uiCurrentCloudModeText.Text = App.PLATFORMS[App.DROPBOX_LOCATION_KEY];
             }
         }
 
@@ -579,7 +579,7 @@ namespace PintheCloud.Pages
             bool result = await App.IStorageManager.SignIn(context);
             if (!result)
             {
-                this.Dispatcher.BeginInvoke(() =>
+                base.Dispatcher.BeginInvoke(() =>
                 {
                     MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
                     uiPinInfoListGrid.Visibility = Visibility.Collapsed;
@@ -604,7 +604,7 @@ namespace PintheCloud.Pages
             // If folder null, set root.
             if (folder == null)
             {
-                this.Dispatcher.BeginInvoke(() =>
+                base.Dispatcher.BeginInvoke(() =>
                 {
                     uiPinInfoCurrentPath.Text = "";
                 });
@@ -620,7 +620,7 @@ namespace PintheCloud.Pages
             // If there exists file, return that.
             if (files.Count > 0)
             {
-                this.Dispatcher.BeginInvoke(() =>
+                base.Dispatcher.BeginInvoke(() =>
                 {
                     uiPinInfoCurrentPath.Text = this.GetCurrentPath();
 
@@ -644,9 +644,9 @@ namespace PintheCloud.Pages
 
         private void SetIStorageManager()
         {
-            for (int i = 0; i < GlobalKeys.PLATFORMS.Length; i++)
+            for (int i = 0; i < App.PLATFORMS.Length; i++)
             {
-                if (uiCurrentCloudModeText.Text.Equals(GlobalKeys.PLATFORMS[i]))
+                if (uiCurrentCloudModeText.Text.Equals(App.PLATFORMS[i]))
                 {
                     App.IStorageManager = App.IStorageManagers[i];
                     break;
@@ -658,9 +658,9 @@ namespace PintheCloud.Pages
         private bool GetIsSignIn()
         {
             bool isSignIn = false;
-            for (int i = 0; i < GlobalKeys.PLATFORMS.Length; i++)
+            for (int i = 0; i < App.PLATFORMS.Length; i++)
             {
-                if (uiCurrentCloudModeText.Text.Equals(GlobalKeys.PLATFORMS[i]))
+                if (uiCurrentCloudModeText.Text.Equals(App.PLATFORMS[i]))
                 {
                     if (!App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[i], out isSignIn))
                         return false;

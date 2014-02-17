@@ -32,7 +32,7 @@ namespace PintheCloud.Managers
         public async Task<bool> SignIn(DependencyObject context)
         {
             bool result = false;
-            App.ApplicationSettings[Account.ACCOUNT_IS_SIGN_IN_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY]] = true;
+            App.ApplicationSettings[Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_LOCATION_KEY]] = true;
             App.ApplicationSettings.Save();
 
             // If it haven't registerd live client, register

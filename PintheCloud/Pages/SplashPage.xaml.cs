@@ -39,7 +39,7 @@ namespace PintheCloud.Pages
             string mainPlatformType = null;
             if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_MAIN_PLATFORM_TYPE, out mainPlatformType))
             {
-                App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = GlobalKeys.PLATFORMS[GlobalKeys.SKY_DRIVE_LOCATION_KEY];
+                App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = App.PLATFORMS[App.SKY_DRIVE_LOCATION_KEY];
                 App.ApplicationSettings.Save();
             }
 
