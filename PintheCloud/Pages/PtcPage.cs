@@ -36,46 +36,6 @@ namespace PintheCloud.Pages
         {
         }
 
-        public void SetSystemTray(bool value, double opacity)
-        {
-            SystemTray.Opacity = opacity;
-            SystemTray.IsVisible = value;
-        }
-
-        public void SetProgressIndicator(bool value, string text = "")
-        {
-            App.ProgressIndicator.IsIndeterminate = value;
-            App.ProgressIndicator.IsVisible = value;
-            App.ProgressIndicator.Text = text;
-            SystemTray.SetProgressIndicator(this, App.ProgressIndicator);
-        }
-
-        public bool GetLocationAccessConsent()
-        {
-            bool locationAccess = false;
-            App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS, out locationAccess);
-            if (!locationAccess)  // First or not consented of access in location information.
-            {
-                MessageBoxResult result = MessageBox.Show(AppResources.LocationAccessMessage, AppResources.LocationAccess, MessageBoxButton.OKCancel);
-
-                if (result == MessageBoxResult.OK)
-                    App.ApplicationSettings[Account.LOCATION_ACCESS] = true;
-                else
-                    App.ApplicationSettings[Account.LOCATION_ACCESS] = false;
-                App.ApplicationSettings.Save();
-            }
-
-            return (bool)App.ApplicationSettings[Account.LOCATION_ACCESS];
-        }
-
-        public bool GetGeolocatorPositionStatus()
-        { 
-            Geolocator geolocator = new Geolocator();
-            if (geolocator.LocationStatus != PositionStatus.Disabled)
-                return true;
-            else
-                return false;
-        }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -85,9 +45,48 @@ namespace PintheCloud.Pages
                 this.PREVIOUS_PAGE = (string)PhoneApplicationService.Current.State["PREV_PAGE"];
             PhoneApplicationService.Current.State["PREV_PAGE"] = this.NavigationService.CurrentSource.ToString();
         }
+
+
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+        }
+
+
+        public static void SetProgressIndicator(DependencyObject context, bool value, string text = "")
+        {
+            ProgressIndicator progressIndicator = new ProgressIndicator();
+            progressIndicator.IsIndeterminate = value;
+            progressIndicator.IsVisible = value;
+            progressIndicator.Text = text;
+            SystemTray.SetProgressIndicator(context, progressIndicator);
+        }
+
+
+        public void SetListUnableAndShowMessage(LongListSelector list, string message, TextBlock messageTextBlock)
+        {
+            list.Visibility = Visibility.Collapsed;
+            messageTextBlock.Text = message;
+            messageTextBlock.Visibility = Visibility.Visible;
+        }
+
+
+        public bool GetLocationAccessConsent()
+        {
+            bool locationAccess = false;
+            App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS_CONSENT, out locationAccess);
+            if (!locationAccess)  // First or not consented of access in location information.
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.LocationAccessMessage, AppResources.LocationAccess, MessageBoxButton.OKCancel);
+
+                if (result == MessageBoxResult.OK)
+                    App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT] = true;
+                else
+                    App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT] = false;
+                App.ApplicationSettings.Save();
+            }
+
+            return (bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT];
         }
     }
 }

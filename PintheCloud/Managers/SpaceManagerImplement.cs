@@ -19,11 +19,7 @@ namespace PintheCloud.Managers
     {
         /*** Instance ***/
 
-        private SpaceWorker CurrentSpaceWorker = null;
-        public void SetAccountWorker(SpaceWorker CurrentSpaceWorker)
-        {
-            this.CurrentSpaceWorker = CurrentSpaceWorker;
-        }
+        private SpaceWorker CurrentSpaceWorker = new SpaceWorker();
 
 
 
@@ -42,11 +38,19 @@ namespace PintheCloud.Managers
 
 
         // Get space view item from space list.
-        public async Task<MobileServiceCollection<Space, Space>> GetMySpaceViewItemsAsync()
+        public async Task<JArray> GetMySpaceViewItemsAsync()
         {
-            // Get spaces
-            return await this.CurrentSpaceWorker
-                .GetMySpacesAsync(App.AccountManager.GetCurrentAcccount().account_platform_id);
+            // Get My spaces
+            List<string> ids = new List<string>();
+            string id = null;
+            for (int i = 0; i < Account.ACCOUNT_ID_KEYS.Length; i++)
+                if (App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_ID_KEYS[i], out id))
+                    ids.Add(id);
+
+            if (ids.Count <= 0)
+                return null;
+            else
+                return await this.CurrentSpaceWorker.GetMySpacesAsync(ids);
         }
 
 
@@ -57,15 +61,8 @@ namespace PintheCloud.Managers
             string spaceId = spaceViewItem.SpaceId;
             string spaceName = spaceViewItem.SpaceName;
             string accountId = spaceViewItem.AccountId;
-            string accountIdFontWeight = spaceViewItem.AccountIdFontWeight;
             string accountName = spaceViewItem.AccountName;
-            int spaceLikeNumber = spaceViewItem.SpaceLikeNumber;
-            string spaceLikeNumberColor = spaceViewItem.SpaceLikeNumberColor;
-
-
-            string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountId=" + accountId + "&accountIdFontWeight=" + accountIdFontWeight
-                + "&accountName=" + accountName + "&spaceLikeNumber=" + spaceLikeNumber + "&spaceLikeNumberColor=" + spaceLikeNumberColor;
-
+            string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountId=" + accountId + "&accountName=" + accountName;
             return parameters;
         }
 

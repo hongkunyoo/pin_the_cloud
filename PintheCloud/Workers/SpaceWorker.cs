@@ -28,6 +28,7 @@ namespace PintheCloud.Workers
             }
             catch (MobileServiceInvalidOperationException)
             {
+                return null;
             }
             if (spaces.Count > 0)
                 return spaces;
@@ -37,45 +38,17 @@ namespace PintheCloud.Workers
 
 
         // Get spaces from DB
-        public async Task<MobileServiceCollection<Space, Space>> GetMySpacesAsync(string account_id)
+        public async Task<JArray> GetMySpacesAsync(List<string> ids)
         {
-            MobileServiceCollection<Space, Space> spaces = null;
+            JArray spaces = null;
             try
             {
-                ///*** DEBUG CODE ***/
-                //Random random = new Random();
-                //double currentLat = 37.61017539;
-                //double currentLon = 126.99735290;
-                //double unit = 100000000.0;
-
-                //double random1 = ((double)random.Next(10)) / unit;
-                //double random2 = ((double)random.Next(10)) / unit;
-                //await App.MobileService.GetTable<Space>().InsertAsync(new Space("Imagine Cup", currentLat + random1, currentLon + random2, account_id, "Seungmin Lee", 0, 0));
-
-                //random1 = ((double)random.Next(10)) / unit;
-                //random2 = ((double)random.Next(10)) / unit;
-                //await App.MobileService.GetTable<Space>().InsertAsync(new Space("Innovation", currentLat + random1, currentLon - random2, "MicrosoftAccount:511dbec057e113d9a3b9d6dc79f339ef", "Chaesoo Rim", 0, 0));
-
-                //random1 = ((double)random.Next(10)) / unit;
-                //random2 = ((double)random.Next(10)) / unit;
-                //await App.MobileService.GetTable<Space>().InsertAsync(new Space("Pin the Cloud", currentLat - random1, currentLon + random2, "MicrosoftAccount:b8547ee2dd7eb2ac6fcf3a4f3c6c56aa", "hongkun yoo", 0, 0));
-
-                //random1 = ((double)random.Next(10)) / unit;
-                //random2 = ((double)random.Next(10)) / unit;
-                //await App.MobileService.GetTable<Space>().InsertAsync(new Space("At Here", currentLat - random1, currentLon - random2, "MicrosoftAccount:tempid", "Hwajeong Kim", 0, 0));
-
-                //random1 = ((double)random.Next(10)) / unit;
-                //random2 = ((double)random.Next(10)) / unit;
-                //await App.MobileService.GetTable<Space>().InsertAsync(new Space("Direct Sharing", currentLat + random1, currentLon + random2, account_id, "Seungmin Lee", 0, 0));
-                ///*** DEBUG CODE **/*
-
                 // Load current account's spaces
-                spaces = await App.MobileService.GetTable<Space>()
-                    .Where(s => s.account_id == account_id)
-                    .ToCollectionAsync();
+                spaces = (JArray)await App.MobileService.InvokeApiAsync<List<string>, JArray>("select_my_spaces_async", ids);
             }
             catch (MobileServiceInvalidOperationException)
             {
+                return null;
             }
 
             if (spaces.Count > 0)

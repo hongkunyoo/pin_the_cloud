@@ -134,17 +134,14 @@
   <data name="ApplicationTitle" xml:space="preserve">
     <value>Pin the Cloud</value>
   </data>
-  <data name="BadLoginCaption" xml:space="preserve">
-    <value>Login failed</value>
-  </data>
-  <data name="BadLoginMessage" xml:space="preserve">
-    <value>Login process stopped. Please try it again</value>
+  <data name="BadSignInMessage" xml:space="preserve">
+    <value>Sign in process met error. Please try it again</value>
   </data>
   <data name="Pin" xml:space="preserve">
     <value>Pin</value>
   </data>
-  <data name="Logout" xml:space="preserve">
-    <value>Logout</value>
+  <data name="SkyDriveSignOut" xml:space="preserve">
+    <value>SkyDrive Sign Out</value>
   </data>
   <data name="MySpot" xml:space="preserve">
     <value>My Spot</value>
@@ -161,8 +158,8 @@
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
   </data>
-  <data name="NoMySpaceMessage" xml:space="preserve">
-    <value>There is no your space. Make it yours.</value>
+  <data name="NoMySpotMessage" xml:space="preserve">
+    <value>There is no your spot. Make it yours.</value>
   </data>
   <data name="LocationAccess" xml:space="preserve">
     <value>Location Access</value>
@@ -170,11 +167,11 @@
   <data name="LocationAccessMessage" xml:space="preserve">
     <value>This app accesses your phone's location. Is that ok?</value>
   </data>
-  <data name="LogoutMessage" xml:space="preserve">
-    <value>Do you want logout? Your setting will be intialized.</value>
+  <data name="SignOutMessage" xml:space="preserve">
+    <value>Do you want sign out? Your setting will be intialized.</value>
   </data>
-  <data name="NoNearSpaceMessage" xml:space="preserve">
-    <value>There is no near space. Make it yours.</value>
+  <data name="NoNearSpotMessage" xml:space="preserve">
+    <value>There is no near spot. Make it yours.</value>
   </data>
   <data name="Loading" xml:space="preserve">
     <value>Loading...</value>
@@ -183,10 +180,10 @@
     <value>GPS doesn't work well not. Please load it again.</value>
   </data>
   <data name="NoGpsOnMessage" xml:space="preserve">
-    <value>Location serivces are disabled. Please enable it at your system to use GPS.</value>
+    <value>Location serivces are disabled. Please enable it at your system.</value>
   </data>
   <data name="NoLocationAcessConsentMessage" xml:space="preserve">
-    <value>This app requires consent to access location information. Please consent it.</value>
+    <value>This app requires consent to access location information. Please consent it in settings.</value>
   </data>
   <data name="Likes" xml:space="preserve">
     <value> likes</value>
@@ -209,9 +206,6 @@
   <data name="Pick" xml:space="preserve">
     <value>Pick</value>
   </data>
-  <data name="Confirm" xml:space="preserve">
-    <value>confirm</value>
-  </data>
   <data name="Path" xml:space="preserve">
     <value>Path : </value>
   </data>
@@ -220,5 +214,77 @@
   </data>
   <data name="RootPath" xml:space="preserve">
     <value>/</value>
+  </data>
+  <data name="GB" xml:space="preserve">
+    <value> GB</value>
+  </data>
+  <data name="KB" xml:space="preserve">
+    <value> KB</value>
+  </data>
+  <data name="MB" xml:space="preserve">
+    <value> MB</value>
+  </data>
+  <data name="Bytes" xml:space="preserve">
+    <value> bytes</value>
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="BadSignInCaption" xml:space="preserve">
+    <value>Sign In Error</value>
+  </data>
+  <data name="NoFileInCloudMessage" xml:space="preserve">
+    <value>There is no files in your cloud.</value>
+  </data>
+  <data name="SignOutCaption" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="AtHere" xml:space="preserve">
+    <value>At Here</value>
+  </data>
+  <data name="DropboxSignIn" xml:space="preserve">
+    <value>Dropbox Sign In</value>
+  </data>
+  <data name="DropboxSignOut" xml:space="preserve">
+    <value>Dropbox Sign Out</value>
+  </data>
+  <data name="SpotNickName" xml:space="preserve">
+    <value>Spot Nick Name</value>
+  </data>
+  <data name="SpotNickNameMaxLength" xml:space="preserve">
+    <value>(Max 15 length)</value>
+  </data>
+  <data name="NoGpsOnCaption" xml:space="preserve">
+    <value>Gps Off</value>
+  </data>
+  <data name="NoLocationAcessConsentCaption" xml:space="preserve">
+    <value>Location Acess Consent</value>
+  </data>
+  <data name="SkyDriveSignIn" xml:space="preserve">
+    <value>SkyDrive Sign In</value>
+  </data>
+  <data name="DoingSignIn" xml:space="preserve">
+    <value>Doing sign in...</value>
+  </data>
+  <data name="SetSpotNickNameCaption" xml:space="preserve">
+    <value>Nick Name</value>
+  </data>
+  <data name="SetSpotNickNameMessage" xml:space="preserve">
+    <value>New nick name is successfully registered. New spot's will be the nick name.</value>
+  </data>
+  <data name="Main" xml:space="preserve">
+    <value>Main</value>
+  </data>
+  <data name="MainCloudChangeCpation" xml:space="preserve">
+    <value>Main Cloud</value>
+  </data>
+  <data name="MainCloudChangeMessage" xml:space="preserve">
+    <value>Main Cloud is changed successfully.</value>
+  </data>
+  <data name="Dropbox" xml:space="preserve">
+    <value>Dropbox</value>
+  </data>
+  <data name="SkyDrive" xml:space="preserve">
+    <value>SkyDrive</value>
   </data>
 </root>

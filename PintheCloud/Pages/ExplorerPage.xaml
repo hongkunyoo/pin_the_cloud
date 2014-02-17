@@ -8,6 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ViewModels="clr-namespace:PintheCloud.ViewModels"
 	xmlns:MobileServices="clr-namespace:Microsoft.WindowsAzure.MobileServices;assembly=Microsoft.WindowsAzure.Mobile.UI"
+	xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
 	x:Class="PintheCloud.Pages.ExplorerPage"
 	mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
@@ -20,10 +21,12 @@
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
             <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshButton" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
+                <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshMenuItem" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshMenuItem_Click"/>
+                <shell:ApplicationBarMenuItem x:Name="uiAppBarSkyDriveMenuItem" IsEnabled="True" Text="skydrive"/>
+                <shell:ApplicationBarMenuItem x:Name="uiAppBarGoogleDriveMenuItem" IsEnabled="True" Text="google drive"/>
             </shell:ApplicationBar.MenuItems>
             <shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/pajeon/png/general_bar_setting.png" IsEnabled="True" Text="settings" Click="uiAppBarSettingsButton_Click"/>
-            <shell:ApplicationBarIconButton x:Name="uiAppBarConfirmButton" IsEnabled="True" Text="confirm" Click="uiAppBarConfirmButton_Click" IconUri="/Assets/AppBar/check.png"/>
+            <shell:ApplicationBarIconButton x:Name="uiAppBarPinInfoButton" IconUri="/Assets/pajeon/png/general_bar_upload.png" IsEnabled="False" Text="pin"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
 
@@ -36,6 +39,7 @@
         <!--피벗 컨트롤-->
         <Grid Background="#FF00A4BF">
             <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            <TextBlock x:Name="uiCurrentCloudModeText" HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,18,0"/>
         </Grid>
         <Grid x:Name="ContentPanel" Grid.Row="1">
             <Grid.Resources>
@@ -47,24 +51,15 @@
                         </Grid.RowDefinitions>
                         <Button x:Name="uiSpaceButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <Grid Margin="22,17.5,18,14">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="93"/>
-                                </Grid.ColumnDefinitions>
-                                <StackPanel Margin="0">
-                                    <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,8" UseLayoutRounding="True" Foreground="Black"/>
-                                    <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,8" FontWeight="{Binding AccountIdFontWeight, Converter={StaticResource StringToFontWeightConverter}}"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontWeight="Light" />
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontSize="22" Margin="0,0,10,0" FontWeight="Light"/>
-                                        <TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22" FontWeight="Light"/>
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Meter, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22" FontWeight="Light"/>
-                                    </StackPanel>
-                                </StackPanel>
-                                <Button x:Name="uiSpaceLikeButton" VerticalAlignment="Center" HorizontalAlignment="Right" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiSpaceLikeButton_Click" >
-                                    <Image x:Name="uiSpaceLikeButtonImage" Stretch="None" Source="{Binding SpaceLikeButtonImage, Converter={StaticResource StringToUriConverter}}" Tag="{Binding SpaceId}" />
-                                </Button>
-                            </Grid>
+                        		<StackPanel Margin="0">
+                        			<TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,8" UseLayoutRounding="True" Foreground="Black"/>
+                        			<TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,8" FontWeight="Light"/>
+                        			<StackPanel Orientation="Horizontal">
+                        				<TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22" FontWeight="Light"/>
+                        				<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Meter, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22" FontWeight="Light"/>
+                        			</StackPanel>
+                        		</StackPanel>
+                        	</Grid>
                         </Button>
                         <Grid Grid.Row="1" Background="#FFCED7DD"/>
                     </Grid>
@@ -76,40 +71,60 @@
                             <RowDefinition Height="1"/>
                         </Grid.RowDefinitions>
                         <Button Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                        	<Grid Margin="22,0,18,0">
-                        		<Grid.ColumnDefinitions>
-                        			<ColumnDefinition Width="114"/>
-                        			<ColumnDefinition/>
-                        			<ColumnDefinition Width="49"/>
-                        		</Grid.ColumnDefinitions>
-                        		<Image x:Name="uiInfoThumnail" Source="{Binding ThumnailType, Converter={StaticResource FileObjectConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="94" Height="94" Stretch="None"/>
-                        		<TextBlock x:Name="uiInfoName" Text="{Binding Name}" TextWrapping="Wrap" FontSize="22" Foreground="Black" VerticalAlignment="Center" Grid.Column="1"/>
-                        		<Image x:Name="uiInfoSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Stretch="None"/>
-                        	</Grid>
+                            <Grid Margin="22,0,18,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="114"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="49"/>
+                                </Grid.ColumnDefinitions>
+                                <Image x:Name="uiInfoThumnail" Source="{Binding ThumnailType, Converter={StaticResource FileObjectConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="94" Height="94" Stretch="None"/>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,20,0,0">
+                                    <TextBlock x:Name="uiFileName" Text="{Binding Name}" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="Black" FontSize="22"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock x:Name="uiFileSize" Text="{Binding Size}" TextWrapping="Wrap" Foreground="#FF3ABDBE" FontSize="22" FontWeight="Light"/>
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF3ABDBE" FontWeight="Light"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <Image x:Name="uiInfoSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Stretch="None"/>
+                            </Grid>
                         </Button>
-                    	<Grid Grid.Row="1" Background="#FFCED7DD"/>
+                        <Grid Grid.Row="1" Background="#FFCED7DD"/>
                     </Grid>
                 </DataTemplate>
             </Grid.Resources>
             <phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged" Style="{StaticResource CustomPivotStyle}" Foreground="Black">
                 <phone:PivotItem x:Name="uiPickPivot" Header="{Binding LocalizedResources.Pick, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
                     <Grid>
-                        <phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpaceList_SelectionChanged" />
                         <TextBlock x:Name="uiNearSpaceMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,0,18,0" Foreground="Black" Visibility="Collapsed" />
+                        <phone:LongListSelector x:Name="uiNearSpaceList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpaceList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" />
                     </Grid>
                 </phone:PivotItem>
                 <phone:PivotItem x:Name="uiPinInfoPivot" Header="{Binding LocalizedResources.Pin, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="82.5"/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Grid Background="#FFEFF2F6" Width="426" Height="62.5" VerticalAlignment="Top">
-                        	<TextBlock x:Name="uiCurrentPath" Foreground="Black" TextTrimming="WordEllipsis" VerticalAlignment="Center" FontSize="32" FontWeight="Medium" FontStyle="Italic" Margin="10,0,0,0"/>
-                        </Grid>
-                        <phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" Visibility="Collapsed" Grid.Row="1" SelectionChanged="uiPinInfoList_SelectionChanged"/>
-                        <TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Margin="22,0,18,0" Grid.Row="1" Visibility="Collapsed" />
-                    </Grid>
+                		<Grid x:Name="uiPinInfoListGrid">
+                			<Grid.RowDefinitions>
+                				<RowDefinition Height="73"/>
+                				<RowDefinition/>
+                			</Grid.RowDefinitions>
+                			<Grid x:Name="uiPinInfoListUpButtonGrid">
+                				<Grid.RowDefinitions>
+                					<RowDefinition/>
+                					<RowDefinition Height="1"/>
+                				</Grid.RowDefinitions>
+                				<Button x:Name="uiPinInfoListUpButton" Foreground="Black" Margin="0" BorderBrush="Transparent" Click="uiPinInfoListUpButton_Click" Style="{StaticResource ListItemButtonStyle}" FontSize="22" HorizontalContentAlignment="Left">
+                					<Grid Margin="22,0,0,0">
+                						<TextBlock x:Name="uiPinInfoCurrentPath" TextWrapping="Wrap"/>
+                					</Grid>
+                				</Button>
+                				<Grid Grid.Row="1" Background="#FFCED7DD"/>
+                			</Grid>
+                			<TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Margin="22,28,18,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Visibility="Collapsed" FontSize="22" />
+                			<phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Grid.Row="1"/>
+                		</Grid>
+                		<Grid x:Name="uiPinInfoSignInGrid" Visibility="Collapsed">
+                			<Button x:Name="uiPinInfoSignInButton" Content="{Binding LocalizedResources.SignIn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black" Foreground="Black" Click="uiPinInfoSignInButton_Click"/>
+                		</Grid>
+                	</Grid>
                 </phone:PivotItem>
             </phone:Pivot>
         </Grid>

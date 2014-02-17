@@ -10,17 +10,20 @@ namespace PintheCloud.Models
     public class Account
     {
         // Application Account Setting Key
-        public static string ACCOUNT_IS_LOGIN = "ACCOUNT_IS_LOGIN";
-        public static string ACCOUNT_PLATFORM_ID = "ACCOUNT_PLATFROM_ID";
-        public static string ACCOUNT_PLATFORM_ID_TYPE = "ACCOUNT_PLATFROM_ID_TYPE";
-        public static string ACCOUNT_NAME = "ACCOUNT_NAME";
-        public static string ACCOUNT_FIRST_NAME = "ACCOUNT_FIRST_NAME";
-        public static string ACCOUNT_LAST_NAME = "ACCOUNT_LAST_NAME";
-        public static string ACCOUNT_LOCAL = "ACCOUNT_LOCAL";
-        public static string ACCOUNT_TOKEN = "ACCOUNT_TOKEN";
-        public static string ACCOUNT_USED_SIZE = "ACCOUNT_USED_SIZE";
-        public static string ACCOUNT_TYPE_NAME = "ACCOUNT_TYPE_NAME";
-        public static string LOCATION_ACCESS = "LOCATION_ACCESS";
+        public static string[] ACCOUNT_IS_SIGN_IN_KEYS = { "ACCOUNT_SKY_DRIVE_IS_SIGN_IN_KEY", "ACCOUNT_DROPBOX_IS_SIGN_IN_KEY" };
+        public static string[] ACCOUNT_ID_KEYS = { "ACCOUNT_SKY_DRIVE_ID_KEY", "ACCOUNT_DROPBOX_ID_KEY" };
+
+        public static string ACCOUNT_MAIN_PLATFORM_TYPE = "ACCOUNT_MAIN_PLATFORM_TYPE";
+
+        public static string ACCOUNT_SKY_DRIVE_USED_SIZE = "ACCOUNT_SKY_DRIVE_USED_SIZE";
+        public static string ACCOUNT_DROPBOX_USED_SIZE = "ACCOUNT_DROPBOX_USED_SIZE";
+
+        public static string ACCOUNT_SKY_DRIVE_TYPE_NAME = "ACCOUNT_SKY_DRIVE_TYPE_NAME";
+        public static string ACCOUNT_DROPBOX_TYPE_NAME = "ACCOUNT_DROPBOX_TYPE_NAME";
+
+        public static string LOCATION_ACCESS_CONSENT = "LOCATION_ACCESS_CONSENT";
+        public static string ACCOUNT_NICK_NAME = "ACCOUNT_NICK_NAME";
+
 
         public string id { get; set; }
 

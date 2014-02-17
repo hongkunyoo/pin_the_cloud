@@ -26,10 +26,7 @@ namespace PintheCloud.Pages
         private string SpaceId;
         private string SpaceName;
         private string AccountId;
-        private string AccountIdFontWeight;
         private string AccountName;
-        private string SpaceLikeNumber;
-        private string SpaceLikeNumberColor;
 
         public FileListPage()
         {
@@ -39,58 +36,51 @@ namespace PintheCloud.Pages
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
             // Get parameters
             if ((int)PhoneApplicationService.Current.State["PIVOT"] == ExplorerPage.PICK_PIVOT)
             {
                 this.SpaceId = NavigationContext.QueryString["spaceId"];
                 this.SpaceName = NavigationContext.QueryString["spaceName"];
                 this.AccountId = NavigationContext.QueryString["accountId"];
-                this.AccountIdFontWeight = NavigationContext.QueryString["accountIdFontWeight"];
                 this.AccountName = NavigationContext.QueryString["accountName"];
-                this.SpaceLikeNumber = NavigationContext.QueryString["spaceLikeNumber"];
-                this.SpaceLikeNumberColor = NavigationContext.QueryString["spaceLikeNumberColor"];
 
                 // Set Binding Instances to UI
                 uiSpaceName.Text = this.SpaceName;
                 uiAccountName.Text = this.AccountName;
-                uiSpaceLikeNumber.Text = this.SpaceLikeNumber;
-
-                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(this.AccountIdFontWeight);
-                Brush likeColor = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(this.SpaceLikeNumberColor));
-                uiSpaceLikeNumber.Foreground = likeColor;
-                uiSpaceLikeText.Foreground = likeColor;
+                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.LIGHT);
 
                 await Refresh();
             }
             else
             {
-                this.SpaceId = "";
-                this.SpaceName = "";
-                Account account = App.AccountManager.GetCurrentAcccount();
-                this.AccountName = account.account_name;
+                this.SpaceName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME];
+
+                Account account = App.IStorageManager.GetCurrentAccount();
                 this.AccountId = account.account_platform_id;
-                this.SpaceLikeNumber = "0";
-                this.SpaceLikeNumberColor = ColorHexStringToBrushConverter.LIKE_NOT_COLOR;
+                this.AccountName = account.account_name;
 
                 // Set Binding Instances to UI
                 uiSpaceName.Text = this.SpaceName;
                 uiAccountName.Text = this.AccountName;
-                uiSpaceLikeNumber.Text = this.SpaceLikeNumber;
-
-                Brush likeColor = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(this.SpaceLikeNumberColor));
-                uiSpaceLikeNumber.Foreground = likeColor;
-                uiSpaceLikeText.Foreground = likeColor;
+                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.BOLD);
 
                 await UploadFilesAsync();
             }
         }
 
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+        }
+
+
         private async Task UploadFilesAsync()
         {
-       
+            // Test Name of space, now time.
             Geoposition geo = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
-
-            Space space = new Space(DateTime.Now.ToString(), geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0, 0);
+            Space space = new Space(DateTime.Now.ToString(), geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
                      
             await App.MobileService.GetTable<Space>().InsertAsync(space);
             this.SpaceId = space.id;
@@ -98,21 +88,18 @@ namespace PintheCloud.Pages
             List<FileObject> list = (List<FileObject>)PhoneApplicationService.Current.State["SELECTED_FILE"];
             foreach (FileObject file in list)
             {
-
                 await App.BlobStorageManager.UploadFileThroughStreamAsync(this.AccountId, this.SpaceId, file.Name, await App.SkyDriveManager.DownloadFileThroughStreamAsync(file.Id));
                 await Refresh();
             }
         }
 
+
         private async Task Refresh()
         {
-            ObservableCollection<FileObject> list = new ObservableCollection<FileObject>(await App.BlobStorageManager.GetFilesFromFolderAsync(this.AccountId, this.SpaceId));
+            // ERROR
+            ObservableCollection<FileObject> list = new ObservableCollection<FileObject>
+                (await App.BlobStorageManager.GetFilesFromFolderAsync(this.AccountId, this.SpaceId));
             uiFileList.DataContext = list;
-        }
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
         }
 
 

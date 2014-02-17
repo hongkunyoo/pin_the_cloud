@@ -14,6 +14,13 @@
     SupportedOrientations="Portrait"  
 	Orientation="Portrait"
     shell:SystemTray.IsVisible="True" >
+    <local:PtcPage.ApplicationBar>
+        <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E" IsVisible="False">
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshMenuItem" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshMenuItem_Click"/>
+            </shell:ApplicationBar.MenuItems>
+        </shell:ApplicationBar>
+    </local:PtcPage.ApplicationBar>
 
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
     <Grid x:Name="LayoutRoot" Background="White">
@@ -24,17 +31,64 @@
         <!--피벗 컨트롤-->
         <Grid Background="#FF00A4BF">
             <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <Button x:Name="uiSpaceEditButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Visibility="Collapsed" Click="uiSpaceEditButton_Click">
-                <Image x:Name="uiSpaceEditButtonImage" Source="/Assets/pajeon/png/general_edit.png" Stretch="None" Height="72" Width="72"/>
+            <Button x:Name="uiMySpotEditViewButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Visibility="Collapsed" Click="uiMySpotEditViewButton_Click">
+            	<Image x:Name="uiMySpotEditViewButtonImage" Source="/Assets/pajeon/png/general_edit.png" Stretch="None"/>
             </Button>
-        </Grid>
+		</Grid>
         <!--피벗 컨트롤-->
         <phone:Pivot x:Name="uiSettingPivot" Title="{Binding LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Foreground="Black" Style="{StaticResource CustomPivotStyle}" SelectionChanged="uiSettingPivot_SelectionChanged">
             <!--피벗 항목 1-->
-            <phone:PivotItem Header="{Binding LocalizedResources.Profile, Source={StaticResource LocalizedStrings}}">
-                <Grid>
-                    <Button x:Name="uiLogoutButton" Content="{Binding LocalizedResources.Logout, Source={StaticResource LocalizedStrings}}" Click="uiLogoutButton_Click" FontSize="33.333" HorizontalAlignment="Center" VerticalAlignment="Center" Background="White" BorderBrush="Black" Foreground="Black"/>
-                </Grid>
+            <phone:PivotItem Header="{Binding LocalizedResources.Application, Source={StaticResource LocalizedStrings}}">
+            	<Grid>
+            		<Grid x:Name="uiApplicationGrid">
+            			<Grid.RowDefinitions>
+            				<RowDefinition/>
+            				<RowDefinition/>
+            				<RowDefinition/>
+            				<RowDefinition Height="72"/>
+            			</Grid.RowDefinitions>
+            			<StackPanel>
+            				<StackPanel Orientation="Horizontal" Margin="18,0,0,0">
+            					<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.SpotNickName, Source={StaticResource LocalizedStrings}}" FontSize="22.667" Margin="0,0,10,0"/>
+            					<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.SpotNickNameMaxLength, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Bottom" FontSize="17.333" FontWeight="Light"/>
+            				</StackPanel>
+            				<Grid>
+            					<Grid.ColumnDefinitions>
+            						<ColumnDefinition/>
+            						<ColumnDefinition Width="82"/>
+            					</Grid.ColumnDefinitions>
+            					<TextBox x:Name="uiSpotNickNameTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="22.667" VerticalAlignment="Top" MaxLength="15" TextChanged="uiSpotNickNameTextBox_TextChanged"/>
+            					<Button x:Name="uiSpotNickNameSetButton" Content="Set" BorderBrush="Black" Foreground="Black" FontSize="22.667" Grid.Column="1" Click="uiSpotNickNameSetButton_Click"/>
+            				</Grid>
+            			</StackPanel>
+            			<StackPanel Grid.Row="1">
+            				<Grid>
+            					<Grid.ColumnDefinitions>
+            						<ColumnDefinition/>
+            						<ColumnDefinition Width="110"/>
+            					</Grid.ColumnDefinitions>
+            					<Button x:Name="uiSkyDriveSignButton" Content="{Binding LocalizedResources.SkyDriveSignIn, Source={StaticResource LocalizedStrings}}" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
+            					<Button x:Name="uiSkyDriveSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" Grid.Column="1" Click="uiSkyDriveSetMainButton_Click"/>
+            				</Grid>
+            				<Grid>
+            					<Grid.ColumnDefinitions>
+            						<ColumnDefinition/>
+            						<ColumnDefinition Width="110"/>
+            					</Grid.ColumnDefinitions>
+            					<Button x:Name="uiDropboxDriveSignButton" Content="{Binding LocalizedResources.DropboxSignIn, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
+            					<Button x:Name="uiDropboxSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" Grid.Column="1" BorderBrush="Black" Foreground="Black" Click="uiDropboxSetMainButton_Click"/>
+            				</Grid>
+            			</StackPanel>
+            			<StackPanel Grid.Row="2">
+            				<CheckBox x:Name="uiLocationAccessConsentCheckBox" Content="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Foreground="Black" BorderBrush="Black" Style="{StaticResource CustomCheckBoxStyle}" Checked="uiLocationAccessConsentCheckBox_Checked" Unchecked="uiLocationAccessConsentCheckBox_Unchecked"/>
+            				<HyperlinkButton Content="{Binding LocalizedResources.TermsOfService, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" Margin="0,0,0,8" />
+            				<HyperlinkButton Content="{Binding LocalizedResources.PrivatePolicy, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
+            			</StackPanel>
+            		</Grid>
+            		<Grid x:Name="uiApplicationMessageGrid" Visibility="Collapsed">
+            			<TextBlock Text="{Binding LocalizedResources.DoingSignIn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22" Margin="22,28,8,0"/>
+            		</Grid>
+            	</Grid>
             </phone:PivotItem>
             <phone:PivotItem Header="{Binding LocalizedResources.MySpot, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
                 <Grid>
@@ -49,11 +103,7 @@
                                     <Grid Margin="22,17.5,18,14">
                                         <StackPanel Margin="0">
                                             <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
-                                            <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,10.5" FontWeight="Bold"/>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock x:Name="uiSpaceLike" TextWrapping="Wrap" Text="{Binding SpaceLikeNumber}" FontSize="22" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontWeight="Light"/>
-                                                <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Likes, Source={StaticResource LocalizedStrings}}" Foreground="{Binding SpaceLikeNumberColor, Converter={StaticResource ColorHexStringToBrushConverter}}" FontSize="22" FontWeight="Light"/>
-                                            </StackPanel>
+                                            <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" FontWeight="Bold"/>
                                         </StackPanel>
                                     </Grid>
                                 </Button>
@@ -61,66 +111,57 @@
                             </Grid>
                         </DataTemplate>
                     </Grid.Resources>
-                    <phone:LongListSelector x:Name="uiMySpaceList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpaceList_SelectionChanged" />
-                    <TextBlock x:Name="uiMySpaceMessage" Text="{Binding LocalizedResources.InternetUnavailableMessage, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,0,18,0"/>
-                </Grid>
-            </phone:PivotItem>
-            <phone:PivotItem Header="{Binding LocalizedResources.Application, Source={StaticResource LocalizedStrings}}">
-                <Grid>
-                    <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
-                        <CheckBox x:Name="uiLocationServiceConsentCheckBox" Content="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Foreground="Black" BorderBrush="Black" Style="{StaticResource CustomCheckBoxStyle}"/>
-                        <HyperlinkButton Content="{Binding LocalizedResources.TermsOfService, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
-                        <HyperlinkButton Content="{Binding LocalizedResources.PrivatePolicy, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
-                    </StackPanel>
+                    <TextBlock x:Name="uiMySpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,0,18,0" Visibility="Collapsed"/>
+                    <phone:LongListSelector x:Name="uiMySpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpotList_SelectionChanged" />
                 </Grid>
             </phone:PivotItem>
             <phone:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
                 <Grid>
                     <RichTextBox Foreground="Black" HorizontalAlignment="Left" VerticalAlignment="Top" >
-                    	<Paragraph>
-                    		<Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run FontSize="1.5" Text=""/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run/>
-                    		<Run Text="At Here helps you "/>
-                    		<Run Text="direct "/>
-                    		<Run Text="share information with people around you"/>
-                    		<Run Text=". "/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run Text="Without any previous settings job, you"/>
-                    		<Run Text=" can see spaces "/>
-                    		<Run Text="nearby you where "/>
-                    		<Run Text="other who wants to share with you made"/>
-                    		<Run Text="."/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run Text="You don't need to mind state of others. Just access where you want, "/>
-                    		<Run Text="and "/>
-                    		<Run Text="give or get information"/>
-                    		<Run Text=" with simple UI."/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run Text="Version : 1.0"/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run/>
-                    	</Paragraph>
-                    	<Paragraph>
-                    		<Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
-                    	</Paragraph>
+                        <Paragraph>
+                            <Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run FontSize="1.5" Text=""/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                            <Run Text="At Here helps you "/>
+                            <Run Text="direct "/>
+                            <Run Text="share information with people around you"/>
+                            <Run Text=". "/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run Text="Without any previous settings job, you"/>
+                            <Run Text=" can see spaces "/>
+                            <Run Text="nearby you where "/>
+                            <Run Text="other who wants to share with you made"/>
+                            <Run Text="."/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run Text="You don't need to mind state of others. Just access where you want, "/>
+                            <Run Text="and "/>
+                            <Run Text="give or get information"/>
+                            <Run Text=" with simple UI."/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run Text="Version : 1.0"/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run/>
+                        </Paragraph>
+                        <Paragraph>
+                            <Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
+                        </Paragraph>
                     </RichTextBox>
                 </Grid>
             </phone:PivotItem>

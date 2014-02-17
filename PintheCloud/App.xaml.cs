@@ -30,13 +30,12 @@ namespace PintheCloud
         // App
         public static MobileServiceClient MobileService = null;
         public static IsolatedStorageSettings ApplicationSettings = null;
-        public static ProgressIndicator ProgressIndicator = null;
 
         // Manager
-        public static AccountManager AccountManager = null;
         public static SpaceManager SpaceManager = null;
-        public static AccountSpaceRelationManager AccountSpaceRelationManager = null;
         public static GeoCalculateManager GeoCalculateManager = null;
+        public static IStorageManager IStorageManager = null;
+        public static IStorageManager[] IStorageManagers = null;
         public static SkyDriveManager SkyDriveManager = null;
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
@@ -67,16 +66,19 @@ namespace PintheCloud
                 "https://pinthecloud.azure-mobile.net/",
                 "yvulzHAGRgNsGnPLHKcEFCPJcuyzKj23"
             );
+            MobileServiceUser mobileServiceUser = new MobileServiceUser(GlobalKeys.AZURE_MOBILE_SERVICE_ID);
+            mobileServiceUser.MobileServiceAuthenticationToken = GlobalKeys.AZURE_MOBILE_SERVICE_TOKEN;
+            MobileService.CurrentUser = mobileServiceUser;
             ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
-            ProgressIndicator = new ProgressIndicator();
 
             // Manager
-            AccountManager = new AccountManagerImplement();
             SpaceManager = new SpaceManagerImplement();
-            AccountSpaceRelationManager = new AccountSpaceRelationManagerImplement();
             GeoCalculateManager = new GeoCalculateManagerImplement();
             LocalStorageManager = new LocalStorageManager();
 
+            SkyDriveManager = new SkyDriveManager();
+            IStorageManagers = new IStorageManager[] { SkyDriveManager };
+ 
 
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.
             if (Debugger.IsAttached)
@@ -156,6 +158,9 @@ namespace PintheCloud
                 System.Diagnostics.Debug.WriteLine(new StackFrame(1, true));
                 System.Diagnostics.Debug.WriteLine("-------------------------");
                 
+                for(int i=0 ; i<Account.ACCOUNT_IS_SIGN_IN_KEYS.Length ; i++)
+                    App.ApplicationSettings.Remove(Account.ACCOUNT_IS_SIGN_IN_KEYS[i]);
+
                 // 처리되지 않은 예외가 발생했습니다. 중단하고 디버거를 실행합니다.
                 Debugger.Break();
             }

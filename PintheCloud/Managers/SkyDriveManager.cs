@@ -11,48 +11,97 @@ using System.Windows.Controls;
 using Windows.Storage;
 using System.IO;
 using Windows.System;
+using PintheCloud.Workers;
+using System.Windows;
+using PintheCloud.Pages;
 
 namespace PintheCloud.Managers
 {
     // Summary
     //      Implementation of IStorageManager.
     //      It helps to access SkyDrive Storage.
-    public class SkyDriveManager
+    public class SkyDriveManager : IStorageManager
     {
         // Summary:
-        //     Client Object to communicate with SkyDrive.
-        private LiveConnectClient LiveClient;
+        //     Object to communicate with SkyDrive.
+        private CloudSkyDriveAccountWorker AccountWorker = new CloudSkyDriveAccountWorker();
+        private LiveConnectClient LiveClient = null;
+        private Account CurrentAccount = null;
 
-        /* Just in case */
-        // private LiveAuthClient LiveAuth;
-        // private LiveLoginResult LiveResult;
-        // private LiveConnectSession LiveSession;
-        // private string ClientId;
-        // private string[] Scopes;
 
-        // Summary:
-        //     SkyDriveManager Constructor.
-        //
-        // Parameters:
-        //   Session:
-        //     Session Object acuired from Windows Live Log in.
-        public SkyDriveManager(LiveConnectSession Session)
+        public async Task<bool> SignIn(DependencyObject context)
         {
-            //this.ClientId = GlobalKeys.AZURE_CLIENT_ID;
-            //this.Scopes = new string[] { "wl.basic", "wl.skydrive", "wl.offline_access", "wl.signin", "wl.skydrive_update", "wl.contacts_skydrive"};
-            this.LiveClient = new LiveConnectClient(Session);
+            bool result = false;
+            App.ApplicationSettings[Account.ACCOUNT_IS_SIGN_IN_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY]] = true;
+            App.ApplicationSettings.Save();
+
+            // If it haven't registerd live client, register
+            if (this.LiveClient == null)
+            {
+                // If it success to register live connect session,
+                LiveConnectClient liveClient = await this.AccountWorker.GetLiveConnectClientAsync();
+                if (liveClient != null)
+                {
+                    // Show progress indicator, progress login
+                    // Register live client
+                    PtcPage.SetProgressIndicator(context, true);
+                    this.LiveClient = liveClient;
+
+
+                    // Get profile result and Login.
+                    // If login succeed, Move to explorer page.
+                    // Otherwise, Hide indicator, Show login fail message box.
+                    dynamic profileResult = await this.AccountWorker.GetProfileResultAsync(liveClient);
+                    if (profileResult != null)
+                    {
+                        Account account = await this.AccountWorker.SignInSkyDriveAccountSingleSignOnAsync(liveClient, profileResult);
+                        if (account != null)
+                        {
+                            this.CurrentAccount = account;
+                            result = true;
+                        }
+                    }
+
+                    // Hide progress indicator
+                    PtcPage.SetProgressIndicator(context, false);
+                }
+            }
+            else
+            {
+                return true;
+            }
+            return result;
         }
+
+
+        public void SignOut()
+        {
+            this.LiveClient = null;
+            this.CurrentAccount = null;
+            this.AccountWorker.SignOut();
+        }
+
+
+        public Account GetCurrentAccount()
+        {
+            return this.CurrentAccount;
+        }
+
+
         // Summary:
         //     Gets Root Folder of SkyDrive storage.
         //     It will be used to access the storage in the begining.
         //
         // Returns:
         //     Root Folder of SkyDrive.
-        public async Task<FileObject> GetRootFolderAsync(){
+        public async Task<FileObject> GetRootFolderAsync()
+        {
             FileObject root = _GetData((await this.LiveClient.GetAsync("me/skydrive")).Result);
             root.Name = "";
             return root;
         }
+
+
         // Summary:
         //     Gets files in Root Folder of SkyDrive storage.
         //
@@ -62,6 +111,8 @@ namespace PintheCloud.Managers
         {
             return _GetDataList((await this.LiveClient.GetAsync("me/skydrive/files")).Result);
         }
+
+
         // Summary:
         //     Gets the mete information of the file(such as id, name, size, etc.) by file id.
         //
@@ -75,6 +126,8 @@ namespace PintheCloud.Managers
         {
             return _GetData((await this.LiveClient.GetAsync(fileId)).Result);
         }
+
+
         // Summary:
         //     Gets list of meta information by folder id.
         //
@@ -88,6 +141,8 @@ namespace PintheCloud.Managers
         {
             return _GetDataList((await this.LiveClient.GetAsync(folderId + "/files")).Result);
         }
+
+
         // Summary:
         //     Get the file meta information from the root to the node of the file tree.
         //
@@ -99,6 +154,8 @@ namespace PintheCloud.Managers
             fo.FileList = await _GetChildAsync(fo);
             return fo;
         }
+
+
         // Summary:
         //     Download a file by file id.
         //
@@ -113,14 +170,14 @@ namespace PintheCloud.Managers
         //     The downloaded file.
         public async Task<StorageFile> DownloadFileAsync(string sourceFileId, Uri destinationUri)
         {
-            
+
             ProgressBar progressBar = new ProgressBar();
-            progressBar.Value = 0; 
+            progressBar.Value = 0;
             var progressHandler = new Progress<LiveOperationProgress>(
                 (progress) => { progressBar.Value = progress.ProgressPercentage; });
-            
+
             System.Threading.CancellationTokenSource ctsDownload = new System.Threading.CancellationTokenSource();
-            
+
             try
             {
                 LiveOperationResult result = await this.LiveClient.BackgroundDownloadAsync(sourceFileId + "/content", destinationUri, ctsDownload.Token, progressHandler);
@@ -130,8 +187,10 @@ namespace PintheCloud.Managers
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
                 return null;
             }
-            return await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/"+destinationUri));
+            return await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/" + destinationUri));
         }
+
+
         // Summary:
         //     Download a file by file id.
         //
@@ -154,7 +213,7 @@ namespace PintheCloud.Managers
             try
             {
                 LiveDownloadOperationResult result = await this.LiveClient.DownloadAsync(sourceFileId + "/content");
-             
+
                 return result.Stream;
             }
             catch (Exception ex)
@@ -184,23 +243,23 @@ namespace PintheCloud.Managers
                 progressBar.Value = 0;
                 var progressHandler = new Progress<LiveOperationProgress>(
                     (progress) => { progressBar.Value = progress.ProgressPercentage; });
-                
+
                 progressBar.Value = 0;
 
                 Stream input = await file.OpenStreamForReadAsync();
                 LiveOperationResult result = await this.LiveClient.UploadAsync(folderIdToStore, "plzdo.pdf", input, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
-                
+
             }
             catch (System.Threading.Tasks.TaskCanceledException ex)
             {
                 ctsUpload.Cancel();
-                System.Diagnostics.Debug.WriteLine("taskcancel : "+ex.ToString());
+                System.Diagnostics.Debug.WriteLine("taskcancel : " + ex.ToString());
                 return false;
             }
             catch (LiveConnectException exception)
             {
                 ctsUpload.Cancel();
-                System.Diagnostics.Debug.WriteLine("LiveConnection : "+exception.ToString());
+                System.Diagnostics.Debug.WriteLine("LiveConnection : " + exception.ToString());
                 return false;
             }
             catch (Exception e)
@@ -255,6 +314,8 @@ namespace PintheCloud.Managers
             }
             return true;
         }
+
+
         /////////////////////////////////////////////////////
         // CAUTION: NOT STABLE VERSION. THERE MIGHT BE A BUG.
         //
@@ -290,6 +351,10 @@ namespace PintheCloud.Managers
 
             return folder;
         }
+
+
+
+
         ///////////////////
         // Private Methods
         ///////////////////

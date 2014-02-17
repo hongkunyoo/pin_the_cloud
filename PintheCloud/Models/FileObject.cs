@@ -38,6 +38,10 @@ namespace PintheCloud.Models
         /// </summary>
         public double Size { get; set; }
         /// <summary>
+        /// The size unit of the file
+        /// </summary>
+        public string SizeUnit { get; set; }
+        /// <summary>
         /// file or folder
         /// </summary>
         public string Type { get; set; }
@@ -85,9 +89,33 @@ namespace PintheCloud.Models
             this.Id = id;
             this.Name = name;
             this.ParentId = parentId;
-            this.Size = size;
 
-            //this.Type = id.Substring(0,id.IndexOf("."));
+            // Set Size and Size Unit
+            double kbUnit = 1024.0;
+            double mbUnit = Math.Pow(kbUnit, 2);
+            double gbUnit = Math.Pow(kbUnit, 3);
+            if ((size / gbUnit) >= 1)  // GB
+            {
+                this.Size = Math.Round((size / gbUnit) * 10.0) / 10.0;
+                this.SizeUnit = AppResources.GB;
+            }
+            else if ((size / mbUnit) >= 1)  // MB
+            {
+                this.Size = Math.Round((size / mbUnit) * 10.0) / 10.0;
+                this.SizeUnit = AppResources.MB;
+            }
+            else if ((size / kbUnit) >= 1)  // KB
+            {
+                this.Size = Math.Round(size / kbUnit);
+                this.SizeUnit = AppResources.KB;
+            }
+            else  // Bytes
+            {
+                this.Size = size;
+                this.SizeUnit = AppResources.Bytes;
+            }
+
+            // Set Type
             this.Type = type;
             this.TypeDetail = typeDetail;
             if (this.Type.Equals(AppResources.Folder))
@@ -103,6 +131,8 @@ namespace PintheCloud.Models
             this.CreateAt = createAt;
             this.UpdateAt = updateAt;
         }
+
+
         public void SetSelectCheckImage(bool isCheck)
         {
             if (isCheck)
@@ -110,6 +140,7 @@ namespace PintheCloud.Models
             else
                 this.SelectCheckImage = CHECK_NOT_IMAGE_PATH;
         }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(String propertyName)
@@ -120,6 +151,7 @@ namespace PintheCloud.Models
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+
 
         /// <summary>
         /// Test Code for Printing FileObject easily.

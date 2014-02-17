@@ -96,9 +96,6 @@
     </Compile>
     <Compile Include="GlobalKeys.cs" />
     <Compile Include="LocalizedStrings.cs" />
-    <Compile Include="Managers\AccountSpaceRelationManagerImplement.cs" />
-    <Compile Include="Managers\AccountSpaceRelationManager.cs" />
-    <Compile Include="Managers\DropBoxManager.cs" />
     <Compile Include="Managers\IStorageManager.cs" />
     <Compile Include="Managers\BlobStorageManager.cs" />
     <Compile Include="Managers\LocalStorageManager.cs" />
@@ -107,7 +104,6 @@
     <Compile Include="Managers\GeoCalculateManagerImplement.cs" />
     <Compile Include="Managers\SpaceManager.cs" />
     <Compile Include="Managers\SpaceManagerImplement.cs" />
-    <Compile Include="Models\AccountSpaceRelation.cs" />
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Space.cs" />
     <Compile Include="Utilities\StringToThumnailUriConverter.cs" />
@@ -132,14 +128,7 @@
     </Compile>
     <Compile Include="Utilities\ColorHexStringToBrushConverter.cs" />
     <Compile Include="ViewModels\SpaceViewItem.cs" />
-    <Compile Include="Workers\AccountSpaceRelationInternetAvailableWorker.cs" />
-    <Compile Include="Workers\AccountSpaceRelationInternetUnavailableWorker.cs" />
-    <Compile Include="Workers\AccountSpaceRelationWorker.cs" />
-    <Compile Include="Workers\AccountWorker.cs" />
-    <Compile Include="Workers\AccountInternetUnavailableWorker.cs" />
-    <Compile Include="Managers\AccountManager.cs" />
-    <Compile Include="Managers\AccountManagerImplement.cs" />
-    <Compile Include="Workers\AccountInternetAvailableWorker.cs" />
+    <Compile Include="Workers\CloudSkyDriveAccountWorker.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountType.cs" />
     <Compile Include="Pages\PtcPage.cs" />
@@ -154,8 +143,6 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\SpaceViewModel.cs" />
-    <Compile Include="Workers\SpaceInternetAvailableWorker.cs" />
-    <Compile Include="Workers\SpaceInternetUnavailableWorker.cs" />
     <Compile Include="Workers\SpaceWorker.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -201,10 +188,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\AppBar\check.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\AppBar\general_bar_me.png" />
     <Content Include="Assets\pajeon\png%402x\filelist_edit.png" />
     <Content Include="Assets\pajeon\png%402x\filelist_like.png" />
     <Content Include="Assets\pajeon\png%402x\filelist_like_p.png" />
