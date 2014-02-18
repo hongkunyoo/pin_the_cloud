@@ -10,7 +10,8 @@ namespace PintheCloud.Models
     class AccountType
     {
         // Account Type
-        public static string NORMAL_ACCOUNT_TYPE = "Normal";
+        public const string NORMAL_ACCOUNT_TYPE = "Normal";
+
 
         public string id { get; set; }
 

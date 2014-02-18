@@ -31,51 +31,23 @@ namespace PintheCloud.ViewModels
         }
 
 
-        public void SetItems(JArray spaces, Geoposition currentGeoposition = null)
+        public void SetItems(JArray spaces)
         {
             // If items have something, clear.
             this.Items.Clear();
 
-            // Get current coordinate
-            if (currentGeoposition != null)
-            {
-                double currentLatitude = currentGeoposition.Coordinate.Latitude;
-                double currentLongtitude = currentGeoposition.Coordinate.Longitude;
-            }
-
             // Convert jarray spaces to space view items and set to view model
             foreach (JObject jSpace in spaces)
             {
-                string space_id = (string)jSpace["id"];
-                string space_name = (string)jSpace["space_name"];
-                double space_latitude = (double)jSpace["space_latitude"];
-                double space_longtitude = (double)jSpace["space_longtitude"];
-                string account_id = (string)jSpace["account_id"];
-                string account_name = (string)jSpace["account_name"];
-                double space_distance = (double)jSpace["space_distance"];
-
-                Space space = new Space(space_name, space_latitude, space_longtitude, account_id, account_name, space_distance);
-                space.id = space_id;
-                this.Items.Add(this.MakeSpaceViewItemFromSpace(space));
+                // Set new space view item
+                SpaceViewItem spaceViewItem = new SpaceViewItem();
+                spaceViewItem.SpaceName = (string)jSpace["space_name"];
+                spaceViewItem.AccountId = (string)jSpace["account_id"];
+                spaceViewItem.AccountName = (string)jSpace["account_name"];
+                spaceViewItem.SpaceId = (string)jSpace["id"];
+                spaceViewItem.SpaceDistance = (double)jSpace["space_distance"];
+                this.Items.Add(spaceViewItem);
             }
-        }
-
-
-
-        /*** Self Method ***/
-
-        // Make new space view item from space model object.
-        private SpaceViewItem MakeSpaceViewItemFromSpace(Space space)
-        {
-            // Set new space view item
-            SpaceViewItem spaceViewItem = new SpaceViewItem();
-            spaceViewItem.SpaceName = space.space_name;
-            spaceViewItem.AccountId = space.account_id;
-            spaceViewItem.AccountName = space.account_name;
-            spaceViewItem.SpaceId = space.id;
-            spaceViewItem.SpaceDistance = Math.Round(space.space_distance);
-
-            return spaceViewItem;
         }
 
 

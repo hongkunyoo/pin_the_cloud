@@ -27,7 +27,6 @@ namespace PintheCloud.Models
         [JsonProperty(PropertyName = "account_name")]
         public string account_name { get; set; }
 
-
         [JsonProperty(PropertyName = "space_distance")]
         public double space_distance { get; set; }
 

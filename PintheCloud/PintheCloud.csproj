@@ -123,6 +123,8 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utilities\ColorHexStringToBrushConverter.cs" />
+    <Compile Include="ViewModels\FileObjectViewItem.cs" />
+    <Compile Include="ViewModels\FileObjectViewModel.cs" />
     <Compile Include="ViewModels\SpaceViewItem.cs" />
     <Compile Include="Workers\CloudSkyDriveAccountWorker.cs" />
     <Compile Include="Models\Account.cs" />

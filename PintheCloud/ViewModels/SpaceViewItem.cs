@@ -11,15 +11,12 @@ namespace PintheCloud.ViewModels
 {
     public class SpaceViewItem : INotifyPropertyChanged
     {
-        public const string LIKE_NOT_PRESS_IMAGE_URI = "/Assets/pajeon/png/general_like.png";
-        public const string LIKE_PRESS_IMAGE_URI = "/Assets/pajeon/png/general_like_p.png";
-
-
         public string SpaceName { get; set; }
         public string AccountId { get; set; }
         public string AccountName { get; set; }
         public double SpaceDistance { get; set; }
         public string SpaceId { get; set; }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(String propertyName)

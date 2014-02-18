@@ -132,8 +132,7 @@ namespace PintheCloud.Pages
 
                 // If it is already signin skydrive, load files.
                 // Otherwise, show signin button.
-                bool isSkyDriveLogin = this.GetIsSignIn();
-                if (!isSkyDriveLogin)
+                if (!this.GetIsSignIn())
                 {
                     if (uiPinInfoSignInGrid.Visibility == Visibility.Collapsed)
                     {
@@ -220,8 +219,7 @@ namespace PintheCloud.Pages
 
                     // If it wasn't already signed in, show signin button.
                     // Otherwise, load files
-                    bool isSignIn = this.GetIsSignIn();
-                    if (!isSignIn)  // wasn't signed in.
+                    if (!this.GetIsSignIn())  // wasn't signed in.
                     {
                         uiPinInfoListGrid.Visibility = Visibility.Collapsed;
                         uiPinInfoSignInGrid.Visibility = Visibility.Visible;
@@ -360,7 +358,7 @@ namespace PintheCloud.Pages
                         {
                             base.Dispatcher.BeginInvoke(() =>
                             {
-                                this.NearSpaceViewModel.SetItems(spaces, currentGeoposition);
+                                this.NearSpaceViewModel.SetItems(spaces);
                                 uiNearSpaceList.Visibility = Visibility.Visible;
                                 uiNearSpaceMessage.Visibility = Visibility.Collapsed;
                             });
