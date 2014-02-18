@@ -18,6 +18,5 @@ namespace PintheCloud.Managers
         Task<bool> PinSpaceAsync(Space space);
         Task<JArray> GetNearSpaceViewItemsAsync(Geoposition currentGeoposition);
         Task<JArray> GetMySpaceViewItemsAsync();
-        string GetParameterStringFromSpaceViewItem(SpaceViewItem spaceViewItem);
     }
 }

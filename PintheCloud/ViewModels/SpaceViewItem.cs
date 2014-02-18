@@ -11,8 +11,8 @@ namespace PintheCloud.ViewModels
 {
     public class SpaceViewItem : INotifyPropertyChanged
     {
-        public static string LIKE_NOT_PRESS_IMAGE_URI = "/Assets/pajeon/png/general_like.png";
-        public static string LIKE_PRESS_IMAGE_URI = "/Assets/pajeon/png/general_like_p.png";
+        public const string LIKE_NOT_PRESS_IMAGE_URI = "/Assets/pajeon/png/general_like.png";
+        public const string LIKE_PRESS_IMAGE_URI = "/Assets/pajeon/png/general_like_p.png";
 
 
         public string SpaceName { get; set; }

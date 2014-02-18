@@ -60,19 +60,6 @@ namespace PintheCloud.Managers
         }
 
 
-        // Get parameters from given space view item
-        public string GetParameterStringFromSpaceViewItem(SpaceViewItem spaceViewItem)
-        {
-            // Go to File List Page with parameters.
-            string spaceId = spaceViewItem.SpaceId;
-            string spaceName = spaceViewItem.SpaceName;
-            string accountId = spaceViewItem.AccountId;
-            string accountName = spaceViewItem.AccountName;
-            string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountId=" + accountId + "&accountName=" + accountName;
-            return parameters;
-        }
-
-
         // TODO Sort space list
     }
 }

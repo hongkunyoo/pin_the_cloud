@@ -117,9 +117,6 @@
     <Compile Include="Utilities\TestDrive.xaml.cs">
       <DependentUpon>TestDrive.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\MapViewPage.xaml.cs">
-      <DependentUpon>MapViewPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Resources\AppResources1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -158,10 +155,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\FileListPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\MapViewPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

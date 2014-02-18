@@ -26,8 +26,9 @@ namespace PintheCloud.Pages
         // Const Instances
         private const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
         private const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
-        private const int APPLICATION_PIVOT = 0;
-        private const int MY_SPOT_PIVOT = 1;
+
+        private const int APPLICATION_PIVOT_INDEX = 0;
+        private const int MY_SPOT_PIVOT_INDEX = 1;
 
         // Instances
         private bool IsSignIning = false;
@@ -50,21 +51,21 @@ namespace PintheCloud.Pages
 
             // Set Nickname
             string nickName = null;
-            if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME, out nickName))
+            if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME_KEY, out nickName))
             {
-                App.ApplicationSettings[Account.ACCOUNT_NICK_NAME] = AppResources.AtHere;
+                App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY] = AppResources.AtHere;
                 App.ApplicationSettings.Save();
             }
-            uiSpotNickNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME];
+            uiSpotNickNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
 
             // Set SkyDrive Sign button
             bool isSignIn = false;
-            App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_LOCATION_KEY], out isSignIn);
+            App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_KEY_INDEX], out isSignIn);
             this.SetSkyDriveSignButton(isSignIn);
 
             // Set location access consent checkbox
             bool isLocationAccessConsent = false;
-            App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS_CONSENT, out isLocationAccessConsent);
+            App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS_CONSENT_KEY, out isLocationAccessConsent);
             if (isLocationAccessConsent)
                 uiLocationAccessConsentCheckBox.IsChecked = true;
             else
@@ -100,7 +101,7 @@ namespace PintheCloud.Pages
             // One time loading.
             switch (uiSettingPivot.SelectedIndex)
             {
-                case MY_SPOT_PIVOT:
+                case MY_SPOT_PIVOT_INDEX:
 
                     // Set My Spot stuff enable
                     uiMySpotEditViewButton.Visibility = Visibility.Visible;
@@ -127,7 +128,7 @@ namespace PintheCloud.Pages
             uiApplicationGrid.Visibility = Visibility.Collapsed;
             uiApplicationMessageGrid.Visibility = Visibility.Visible;
 
-            App.IStorageManager = App.IStorageManagers[App.SKY_DRIVE_LOCATION_KEY];
+            App.IStorageManager = App.IStorageManagers[App.SKY_DRIVE_KEY_INDEX];
             if (await App.IStorageManager.SignIn(this))
                 this.SetSkyDriveSignButton(true);
             else
@@ -146,7 +147,7 @@ namespace PintheCloud.Pages
             MessageBoxResult result = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
-                App.IStorageManager = App.IStorageManagers[App.SKY_DRIVE_LOCATION_KEY];
+                App.IStorageManager = App.IStorageManagers[App.SKY_DRIVE_KEY_INDEX];
                 App.IStorageManager.SignOut();
                 this.SetSkyDriveSignButton(false);
             }
@@ -185,7 +186,7 @@ namespace PintheCloud.Pages
 
         private void uiSpotNickNameSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_NICK_NAME] = uiSpotNickNameTextBox.Text;
+            App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY] = uiSpotNickNameTextBox.Text;
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.SetSpotNickNameMessage, AppResources.SetSpotNickNameCaption, MessageBoxButton.OK);
         }
@@ -204,19 +205,19 @@ namespace PintheCloud.Pages
 
         private void uiLocationAccessConsentCheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT] = true;
+            App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = true;
             App.ApplicationSettings.Save();
         }
 
         private void uiLocationAccessConsentCheckBox_Unchecked(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings.Remove(Account.LOCATION_ACCESS_CONSENT);
+            App.ApplicationSettings.Remove(Account.LOCATION_ACCESS_CONSENT_KEY);
         }
 
 
         private void uiSkyDriveSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = App.PLATFORMS[App.SKY_DRIVE_LOCATION_KEY];
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = App.PLATFORMS[App.SKY_DRIVE_KEY_INDEX];
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
@@ -224,7 +225,7 @@ namespace PintheCloud.Pages
 
         private void uiDropboxSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = App.PLATFORMS[App.DROPBOX_LOCATION_KEY];
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = App.PLATFORMS[App.DROPBOX_KEY_INDEX];
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
@@ -245,8 +246,8 @@ namespace PintheCloud.Pages
             // If selected item isn't null, goto File list page.
             if (spaceViewItem != null)
             {
-                string parameters = App.SpaceManager.GetParameterStringFromSpaceViewItem(spaceViewItem);
-                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
+                string parameters = base.GetParameterStringFromSpaceViewItem(spaceViewItem);
+                NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters, UriKind.Relative));
             }
         }
 

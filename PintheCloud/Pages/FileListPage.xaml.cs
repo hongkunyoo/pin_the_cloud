@@ -39,28 +39,36 @@ namespace PintheCloud.Pages
         public FileListPage()
         {
             InitializeComponent();
+
+
+            // Make progress handler
+            this.ProgressHandler = new Progress<LiveOperationProgress>((progress) =>
+            {
+                uiFileListProgressBar.Value = progress.ProgressPercentage;
+                double percentage = Math.Round(uiFileListProgressBar.Value * 10.0) / 10.0;
+                uiFileListProgressPercentageText.Text = percentage.ToString();
+            });
         }
+
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
-            // Make progress handler
-            this.ProgressHandler = new Progress<LiveOperationProgress>((progress) =>
-                {
-                    uiFileListProgressBar.Value = progress.ProgressPercentage;
-                    double percentage = Math.Round(uiFileListProgressBar.Value * 10.0) / 10.0;
-                    uiFileListProgressPercentageText.Text = percentage.ToString();
-                });
+            // Get pivot state
+            int pivot = ExplorerPage.PICK_PIVOT_INDEX;
+            if (PREVIOUS_PAGE.Equals(EXPLORER_PAGE))
+                pivot = Convert.ToInt32(NavigationContext.QueryString["pivot"]);
 
-
-            // Get parameters
-            if ((int)PhoneApplicationService.Current.State["PIVOT"] == ExplorerPage.PICK_PIVOT)
+            // Set diffetent by pivot state
+            if (pivot == ExplorerPage.PICK_PIVOT_INDEX)  // Pick state
             {
+                // Get parameters
                 this.SpaceId = NavigationContext.QueryString["spaceId"];
                 this.SpaceName = NavigationContext.QueryString["spaceName"];
                 this.AccountId = NavigationContext.QueryString["accountId"];
                 this.AccountName = NavigationContext.QueryString["accountName"];
+
 
                 // Set Binding Instances to UI
                 uiSpaceName.Text = this.SpaceName;
@@ -81,13 +89,15 @@ namespace PintheCloud.Pages
                     base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
                 }
             }
-            else
-            {
-                this.SpaceName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME];
 
+            else if (pivot == ExplorerPage.PIN_INFO_PIVOT_INDEX)  // Pin state
+            {
+                // Get parameters
                 Account account = App.IStorageManager.GetCurrentAccount();
+                this.SpaceName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
                 this.AccountId = account.account_platform_id;
                 this.AccountName = account.account_name;
+
 
                 // Set Binding Instances to UI
                 uiSpaceName.Text = this.SpaceName;
@@ -121,6 +131,9 @@ namespace PintheCloud.Pages
         }
 
 
+
+        /*** Self Methods ***/
+
         private async void uiFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected File Obejct
@@ -133,6 +146,7 @@ namespace PintheCloud.Pages
             if (fileObject != null)
             {
                 // TODO save local or cloud or chooser...
+
                 // Do Something
                 //StorageFile downloadFile = await App.LocalStorageManager.CreateFileToLocalBlobStorageAsync(fileObject.Name);
                 //await App.BlobStorageManager.DownloadFileAsync(fileObject.Id, downloadFile);
@@ -203,13 +217,13 @@ namespace PintheCloud.Pages
 
             // Register space id and get selected files from previous page.
             this.SpaceId = spaceId;
-            List<FileObject> list = (List<FileObject>)PhoneApplicationService.Current.State["SELECTED_FILE"];
+            List<FileObject> list = (List<FileObject>)PhoneApplicationService.Current.State[ExplorerPage.SELECTED_FILE_KEY];
 
             // Upload each files in order.
             foreach (FileObject file in list)
             {
                 // Show Uploading message and reset percentage to 0.
-                base.SetListUnableAndShowMessage(uiFileList, AppResources.Uploading + "  " + file.Name, uiFileListMessage);
+                base.SetListUnableAndShowMessage(uiFileList, AppResources.Uploading + "  " + file.Name + "...", uiFileListMessage);
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     uiFileListProgressPercentageText.Text = "0";

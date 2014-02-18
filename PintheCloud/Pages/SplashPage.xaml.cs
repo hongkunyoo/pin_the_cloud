@@ -37,9 +37,9 @@ namespace PintheCloud.Pages
 
             // Check main platform at frist login.
             string mainPlatformType = null;
-            if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_MAIN_PLATFORM_TYPE, out mainPlatformType))
+            if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY, out mainPlatformType))
             {
-                App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = App.PLATFORMS[App.SKY_DRIVE_LOCATION_KEY];
+                App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = App.PLATFORMS[App.SKY_DRIVE_KEY_INDEX];
                 App.ApplicationSettings.Save();
             }
 
@@ -59,7 +59,7 @@ namespace PintheCloud.Pages
                         await App.IStorageManager.SignIn(this);
                 }
             }
-            NavigationService.Navigate(new Uri(PtcPage.EXPLORER_PAGE, UriKind.Relative));
+            NavigationService.Navigate(new Uri(EXPLORER_PAGE, UriKind.Relative));
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
