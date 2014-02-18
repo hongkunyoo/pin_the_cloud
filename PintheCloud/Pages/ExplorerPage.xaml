@@ -39,7 +39,7 @@
         <!--피벗 컨트롤-->
         <Grid Background="#FF00A4BF">
             <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <TextBlock x:Name="uiCurrentCloudModeText" HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,18,0"/>
+            <TextBlock x:Name="uiCurrentPlatformText" HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,18,0"/>
         </Grid>
         <Grid x:Name="ContentPanel" Grid.Row="1">
             <Grid.Resources>

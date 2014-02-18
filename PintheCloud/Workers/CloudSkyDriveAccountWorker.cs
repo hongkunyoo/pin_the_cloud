@@ -158,6 +158,7 @@ namespace PintheCloud.Workers
         // Get out connection session
         public void SignOut()
         {
+            App.ApplicationSettings.Remove(Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_KEY_INDEX]);
             LiveAuthClient liveAuthClient = new LiveAuthClient(App.AZURE_CLIENT_ID);
             liveAuthClient.Logout();
             this.RemoveProfileReslutFromAppSettings();
@@ -205,7 +206,6 @@ namespace PintheCloud.Workers
         // Save profile information to local isolated App settings.
         private void RemoveProfileReslutFromAppSettings()
         {
-            App.ApplicationSettings.Remove(Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_KEY_INDEX]);
             App.ApplicationSettings.Remove(Account.ACCOUNT_ID_KEYS[App.SKY_DRIVE_KEY_INDEX]);
             App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_USED_SIZE_KEY);
             App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_TYPE_NAME_KEY);

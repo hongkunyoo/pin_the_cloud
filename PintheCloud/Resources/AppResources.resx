@@ -299,4 +299,7 @@
   <data name="Uploading" xml:space="preserve">
     <value>Uploading</value>
   </data>
+  <data name="DoingSignOut" xml:space="preserve">
+    <value>Doing Sign Out...</value>
+  </data>
 </root>

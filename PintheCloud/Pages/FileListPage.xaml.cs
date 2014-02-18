@@ -82,7 +82,7 @@ namespace PintheCloud.Pages
                 {
                     uiFileList.Visibility = Visibility.Visible;
                     uiFileListMessage.Visibility = Visibility.Collapsed;
-                    await this.Refresh();
+                    this.Refresh();
                 }
                 else
                 {
@@ -115,7 +115,7 @@ namespace PintheCloud.Pages
                     string spaceId = await this.PinSpot();
                     if (spaceId != null)
                         if (await this.UploadFilesAsync(spaceId))
-                            await this.Refresh();
+                            this.Refresh();
                 }
                 else
                 {
@@ -157,7 +157,7 @@ namespace PintheCloud.Pages
         }
 
 
-        private async Task Refresh()
+        private async void Refresh()
         {
             // Show Refresh message and Progress Indicator
             base.SetListUnableAndShowMessage(uiFileList, AppResources.Refreshing, uiFileListMessage);

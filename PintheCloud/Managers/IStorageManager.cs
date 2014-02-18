@@ -14,7 +14,7 @@ namespace PintheCloud.Managers
 {
     public interface IStorageManager
     {
-        Task<bool> SignIn(DependencyObject context);
+        Task SignIn();
 
         void SignOut();
 

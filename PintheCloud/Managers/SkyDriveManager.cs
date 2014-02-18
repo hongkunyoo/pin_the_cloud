@@ -29,9 +29,9 @@ namespace PintheCloud.Managers
         private Account CurrentAccount = null;
 
 
-        public async Task<bool> SignIn(DependencyObject context)
+        public async Task SignIn()
         {
-            bool result = false;
+            // Add application settings before work for good UX
             App.ApplicationSettings[Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_KEY_INDEX]] = true;
             App.ApplicationSettings.Save();
 
@@ -40,32 +40,23 @@ namespace PintheCloud.Managers
             {
                 // If it success to register live connect session,
                 LiveConnectClient liveClient = await this.AccountWorker.GetLiveConnectClientAsync();
-                if (liveClient != null)
-                {
-                    // Register live client
+                if (liveClient == null)
+                    return;
+                else
                     this.LiveClient = liveClient;
-
-
-                    // Get profile result and Login.
-                    // If login succeed, Move to explorer page.
-                    // Otherwise, Hide indicator, Show login fail message box.
-                    dynamic profileResult = await this.AccountWorker.GetProfileResultAsync(liveClient);
-                    if (profileResult != null)
-                    {
-                        Account account = await this.AccountWorker.SignInSkyDriveAccountSingleSignOnAsync(liveClient, profileResult);
-                        if (account != null)
-                        {
-                            this.CurrentAccount = account;
-                            result = true;
-                        }
-                    }
-                }
             }
-            else
+
+
+            // Get profile result and Login.
+            // If login succeed, Move to explorer page.
+            // Otherwise, Hide indicator, Show login fail message box.
+            dynamic profileResult = await this.AccountWorker.GetProfileResultAsync(this.LiveClient);
+            if (profileResult != null)
             {
-                return true;
+                Account account = await this.AccountWorker.SignInSkyDriveAccountSingleSignOnAsync(this.LiveClient, profileResult);
+                if (account != null)
+                    this.CurrentAccount = account;
             }
-            return result;
         }
 
 

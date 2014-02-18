@@ -114,6 +114,7 @@
     <Compile Include="Utilities\ParseHelper.cs" />
     <Compile Include="Utilities\StringToFontWeightConverter.cs" />
     <Compile Include="Utilities\StringToUriConverter.cs" />
+    <Compile Include="Utilities\TaskManager.cs" />
     <Compile Include="Utilities\TestDrive.xaml.cs">
       <DependentUpon>TestDrive.xaml</DependentUpon>
     </Compile>
