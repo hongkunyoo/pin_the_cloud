@@ -64,7 +64,6 @@ namespace PintheCloud.Workers
             {
                 return null;
             }
-
             if (spaces.Count > 0)
                 return spaces;
             else

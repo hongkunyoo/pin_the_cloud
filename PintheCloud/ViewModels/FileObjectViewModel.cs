@@ -40,6 +40,7 @@ namespace PintheCloud.ViewModels
             {
                 // Set new file view item
                 FileObjectViewItem fileObjectViewItem = new FileObjectViewItem();
+                fileObjectViewItem.Id = fileObject.Id;
                 fileObjectViewItem.Name = fileObject.Name;
                 
 

@@ -119,7 +119,7 @@
                 				<Grid Grid.Row="1" Background="#FFCED7DD"/>
                 			</Grid>
                 			<TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Margin="22,28,18,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Visibility="Collapsed" FontSize="22" />
-                			<phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Grid.Row="1"/>
+                			<phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Grid.Row="1"/>
                 		</Grid>
                 		<Grid x:Name="uiPinInfoSignInGrid" Visibility="Collapsed">
                 			<Button x:Name="uiPinInfoSignInButton" Content="{Binding LocalizedResources.SignIn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black" Foreground="Black" Click="uiPinInfoSignInButton_Click"/>

@@ -46,7 +46,10 @@ namespace PintheCloud.Pages
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarMenuItem skyDriveAppBarButton = new ApplicationBarMenuItem();
         private ApplicationBarMenuItem dropboxAppBarButton = new ApplicationBarMenuItem();
+
         private SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
+        private FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
+
         private Stack<FileObject> FolderTree = new Stack<FileObject>();
         private List<FileObject> SelectedFile = new List<FileObject>();
 
@@ -56,9 +59,6 @@ namespace PintheCloud.Pages
         public ExplorerPage()
         {
             InitializeComponent();
-
-
-            /*** Pin Pivot ***/
 
             // Set pin button
             this.PinInfoAppBarButton.Text = AppResources.Pin;
@@ -73,12 +73,15 @@ namespace PintheCloud.Pages
             this.dropboxAppBarButton.Text = AppResources.Dropbox;
             this.dropboxAppBarButton.Click += dropboxAppBarButton_Click;
 
-
             // Check main platform at frist login and set cloud mode
             int mainPlatformType = 0;
             App.ApplicationSettings.TryGetValue<int>(Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY, out mainPlatformType);
             uiCurrentPlatformText.Text = App.PLATFORMS[mainPlatformType];
             this.CurrentPlatformIndex = mainPlatformType;
+
+            // Set Datacontext
+            uiNearSpaceList.DataContext = this.NearSpaceViewModel;
+            uiPinInfoList.DataContext = this.FileObjectViewModel;
         }
 
 
@@ -412,7 +415,7 @@ namespace PintheCloud.Pages
                     PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.SelectedFile;
                     this.SelectedFile.Clear();
                     this.PinInfoAppBarButton.IsEnabled = false;
-                    NavigationService.Navigate(new Uri(FILE_LIST_PAGE + "&pivot=" + PIN_INFO_PIVOT_INDEX, UriKind.Relative));
+                    NavigationService.Navigate(new Uri(FILE_LIST_PAGE + "?pivot=" + PIN_INFO_PIVOT_INDEX, UriKind.Relative));
                 }
                 else  // GPS is off
                 {
@@ -457,40 +460,39 @@ namespace PintheCloud.Pages
         private void uiPinInfoList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected File Object
-            FileObject fileObject = uiPinInfoList.SelectedItem as FileObject;
+            FileObjectViewItem fileObjectViewItem = uiPinInfoList.SelectedItem as FileObjectViewItem;
 
             // Set selected item to null for next selection of list item. 
             uiPinInfoList.SelectedItem = null;
 
+
             // If selected item isn't null, Do something
-            if (fileObject != null)
+            if (fileObjectViewItem != null)
             {
                 // If user select folder, go in.
                 // Otherwise, add it to list.
-                if (fileObject.ThumnailType.Equals(AppResources.Folder))
+                if (fileObjectViewItem.ThumnailType.Equals(AppResources.Folder))
                 {
                     this.SelectedFile.Clear();
                     this.PinInfoAppBarButton.IsEnabled = false;
                     this.SetPinInfoListAsync(fileObject, AppResources.Loading);
-                    MyDebug.WriteLine(fileObject.Name);
                 }
                 else  // Do selection if file
                 {
-                    if (fileObject.SelectCheckImage.Equals(FileObject.CHECK_NOT_IMAGE_PATH))
+                    if (fileObjectViewItem.SelectCheckImage.Equals(FileObject.CHECK_NOT_IMAGE_PATH))
                     {
                         this.SelectedFile.Add(fileObject);
-                        fileObject.SetSelectCheckImage(true);
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_IMAGE_URI;
                         this.PinInfoAppBarButton.IsEnabled = true;
                     }
 
                     else
                     {
                         this.SelectedFile.Remove(fileObject);
-                        fileObject.SetSelectCheckImage(false);
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
                         if (this.SelectedFile.Count <= 0)
                             this.PinInfoAppBarButton.IsEnabled = false;
                     }
-                    MyDebug.WriteLine(fileObject.Name);
                 }
             }
         }
@@ -591,10 +593,9 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        uiPinInfoCurrentPath.Text = this.GetCurrentPath();
-
                         // Set file tree to list.
-                        uiPinInfoList.DataContext = new ObservableCollection<FileObject>(files);
+                        this.FileObjectViewModel.SetItems(files);
+                        uiPinInfoCurrentPath.Text = this.GetCurrentPath();
                         uiPinInfoList.Visibility = Visibility.Visible;
                         uiPinInfoMessage.Visibility = Visibility.Collapsed;
                     });

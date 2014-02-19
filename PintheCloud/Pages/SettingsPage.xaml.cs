@@ -88,9 +88,6 @@ namespace PintheCloud.Pages
             // One time loading.
             switch (uiSettingPivot.SelectedIndex)
             {
-                case APPLICATION_PIVOT_INDEX:
-                    break;
-
                 case MY_SPOT_PIVOT_INDEX:
 
                     // Set My Spot stuff enable
