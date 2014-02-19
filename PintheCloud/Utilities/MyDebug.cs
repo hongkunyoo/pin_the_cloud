@@ -10,7 +10,7 @@ namespace PintheCloud.Utilities
     {
         public static bool IsEnable()
         {
-            return GlobalKeys.USER.Equals("hongkun");
+            return App.USER.Equals("hongkun");
         }
 
         public static bool Enable = false;

@@ -91,7 +91,7 @@ namespace PintheCloud.Utilities
 
                     s.Start();
                     downloadTime = s.ElapsedMilliseconds;
-                    Stream isr = await App.SkyDriveManager.DownloadFileThroughStreamAsync(f.Id);
+                    //Stream isr = await App.SkyDriveManager.DownloadFileThroughStreamAsync(f.Id);
                     downloadTime = s.ElapsedMilliseconds - downloadTime;
                     MyDebug.WriteLine("End Download : " + downloadTime / 1000.0 + "sec");
                     uploadTime = s.ElapsedMilliseconds;

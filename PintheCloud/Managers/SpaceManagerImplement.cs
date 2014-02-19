@@ -25,6 +25,12 @@ namespace PintheCloud.Managers
 
         /*** Implementation ***/
 
+        public async Task<bool> PinSpaceAsync(Space space)
+        {
+            return await this.CurrentSpaceWorker.PinSpaceAsync(space);
+        }
+
+
         // Get space view item from space list.
         public async Task<JArray> GetNearSpaceViewItemsAsync(Geoposition currentGeoposition)
         {
@@ -51,19 +57,6 @@ namespace PintheCloud.Managers
                 return null;
             else
                 return await this.CurrentSpaceWorker.GetMySpacesAsync(ids);
-        }
-
-
-        // Get parameters from given space view item
-        public string GetParameterStringFromSpaceViewItem(SpaceViewItem spaceViewItem)
-        {
-            // Go to File List Page with parameters.
-            string spaceId = spaceViewItem.SpaceId;
-            string spaceName = spaceViewItem.SpaceName;
-            string accountId = spaceViewItem.AccountId;
-            string accountName = spaceViewItem.AccountName;
-            string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountId=" + accountId + "&accountName=" + accountName;
-            return parameters;
         }
 
 

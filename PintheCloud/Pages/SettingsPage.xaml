@@ -86,11 +86,11 @@
             			</StackPanel>
             		</Grid>
             		<Grid x:Name="uiApplicationMessageGrid" Visibility="Collapsed">
-            			<TextBlock Text="{Binding LocalizedResources.DoingSignIn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22" Margin="22,28,8,0"/>
+            			<TextBlock x:Name="uiApplicationMessage" Text="{Binding LocalizedResources.DoingSignIn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22" Margin="22,28,8,0"/>
             		</Grid>
             	</Grid>
             </phone:PivotItem>
-            <phone:PivotItem Header="{Binding LocalizedResources.MySpot, Source={StaticResource LocalizedStrings}}" Margin="0,28,0,0">
+            <phone:PivotItem Header="{Binding LocalizedResources.MySpot, Source={StaticResource LocalizedStrings}}" Margin="0">
                 <Grid>
                     <Grid.Resources>
                         <DataTemplate x:Key="uiSpaceListItemTemplate">
@@ -111,7 +111,11 @@
                             </Grid>
                         </DataTemplate>
                     </Grid.Resources>
-                    <TextBlock x:Name="uiMySpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Grid.Row="1" Margin="22,0,18,0" Visibility="Collapsed"/>
+                	<Grid.RowDefinitions>
+                		<RowDefinition/>
+                		<RowDefinition Height="72"/>
+                	</Grid.RowDefinitions>
+                    <TextBlock x:Name="uiMySpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,28,18,0" Visibility="Collapsed"/>
                     <phone:LongListSelector x:Name="uiMySpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpotList_SelectionChanged" />
                 </Grid>
             </phone:PivotItem>
@@ -126,29 +130,19 @@
                         </Paragraph>
                         <Paragraph>
                             <Run/>
-                            <Run Text="At Here helps you "/>
-                            <Run Text="direct "/>
-                            <Run Text="share information with people around you"/>
-                            <Run Text=". "/>
+                            <Run Text="At Here helps you direct share information with people around you."/>
                         </Paragraph>
                         <Paragraph>
                             <Run/>
                         </Paragraph>
                         <Paragraph>
-                            <Run Text="Without any previous settings job, you"/>
-                            <Run Text=" can see spaces "/>
-                            <Run Text="nearby you where "/>
-                            <Run Text="other who wants to share with you made"/>
-                            <Run Text="."/>
+                            <Run Text="Without any previous settings job, you can see spots nearby you where other who wants to share with you made."/>
                         </Paragraph>
                         <Paragraph>
                             <Run/>
                         </Paragraph>
                         <Paragraph>
-                            <Run Text="You don't need to mind state of others. Just access where you want, "/>
-                            <Run Text="and "/>
-                            <Run Text="give or get information"/>
-                            <Run Text=" with simple UI."/>
+                            <Run Text="You don't need to mind state of others. Just access where you want and give or get information with simple flow."/>
                         </Paragraph>
                         <Paragraph>
                             <Run/>

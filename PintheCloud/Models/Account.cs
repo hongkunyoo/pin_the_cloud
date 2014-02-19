@@ -13,16 +13,16 @@ namespace PintheCloud.Models
         public static string[] ACCOUNT_IS_SIGN_IN_KEYS = { "ACCOUNT_SKY_DRIVE_IS_SIGN_IN_KEY", "ACCOUNT_DROPBOX_IS_SIGN_IN_KEY" };
         public static string[] ACCOUNT_ID_KEYS = { "ACCOUNT_SKY_DRIVE_ID_KEY", "ACCOUNT_DROPBOX_ID_KEY" };
 
-        public static string ACCOUNT_MAIN_PLATFORM_TYPE = "ACCOUNT_MAIN_PLATFORM_TYPE";
+        public const string ACCOUNT_MAIN_PLATFORM_TYPE_KEY = "ACCOUNT_MAIN_PLATFORM_TYPE_KEY";
 
-        public static string ACCOUNT_SKY_DRIVE_USED_SIZE = "ACCOUNT_SKY_DRIVE_USED_SIZE";
-        public static string ACCOUNT_DROPBOX_USED_SIZE = "ACCOUNT_DROPBOX_USED_SIZE";
+        public const string ACCOUNT_SKY_DRIVE_USED_SIZE_KEY = "ACCOUNT_SKY_DRIVE_USED_SIZE_KEY";
+        public const string ACCOUNT_DROPBOX_USED_SIZE_KEY = "ACCOUNT_DROPBOX_USED_SIZE_KEY";
 
-        public static string ACCOUNT_SKY_DRIVE_TYPE_NAME = "ACCOUNT_SKY_DRIVE_TYPE_NAME";
-        public static string ACCOUNT_DROPBOX_TYPE_NAME = "ACCOUNT_DROPBOX_TYPE_NAME";
+        public const string ACCOUNT_SKY_DRIVE_TYPE_NAME_KEY = "ACCOUNT_SKY_DRIVE_TYPE_NAME_KEY";
+        public const string ACCOUNT_DROPBOX_TYPE_NAME_KEY = "ACCOUNT_DROPBOX_TYPE_NAME_KEY";
 
-        public static string LOCATION_ACCESS_CONSENT = "LOCATION_ACCESS_CONSENT";
-        public static string ACCOUNT_NICK_NAME = "ACCOUNT_NICK_NAME";
+        public const string LOCATION_ACCESS_CONSENT_KEY = "LOCATION_ACCESS_CONSENT_KEY";
+        public const string ACCOUNT_NICK_NAME_KEY = "ACCOUNT_NICK_NAME_KEY";
 
 
         public string id { get; set; }

@@ -94,7 +94,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GlobalKeys.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Managers\IStorageManager.cs" />
     <Compile Include="Managers\BlobStorageManager.cs" />
@@ -115,11 +114,9 @@
     <Compile Include="Utilities\ParseHelper.cs" />
     <Compile Include="Utilities\StringToFontWeightConverter.cs" />
     <Compile Include="Utilities\StringToUriConverter.cs" />
+    <Compile Include="Utilities\TaskManager.cs" />
     <Compile Include="Utilities\TestDrive.xaml.cs">
       <DependentUpon>TestDrive.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\MapViewPage.xaml.cs">
-      <DependentUpon>MapViewPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Resources\AppResources1.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -127,6 +124,8 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utilities\ColorHexStringToBrushConverter.cs" />
+    <Compile Include="ViewModels\FileObjectViewItem.cs" />
+    <Compile Include="ViewModels\FileObjectViewModel.cs" />
     <Compile Include="ViewModels\SpaceViewItem.cs" />
     <Compile Include="Workers\CloudSkyDriveAccountWorker.cs" />
     <Compile Include="Models\Account.cs" />
@@ -159,10 +158,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\FileListPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\MapViewPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

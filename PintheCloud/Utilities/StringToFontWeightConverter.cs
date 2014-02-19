@@ -11,8 +11,8 @@ namespace PintheCloud.Utilities
 {
     public class StringToFontWeightConverter : IValueConverter
     {
-        public static string BOLD = "bold";
-        public static string LIGHT = "light";
+        public const string BOLD = "bold";
+        public const string LIGHT = "light";
 
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

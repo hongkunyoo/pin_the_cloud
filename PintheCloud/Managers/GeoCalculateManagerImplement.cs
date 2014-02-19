@@ -10,33 +10,24 @@ namespace PintheCloud.Managers
 {
     public class GeoCalculateManagerImplement : GeoCalculateManager
     {
-        // Get Geolocator to use GPS for getting location info.
-        public async Task<Geoposition> GetCurrentGeopositionAsync()
-        {
-            Geolocator geolocator = new Geolocator();
-            geolocator.DesiredAccuracyInMeters = 50;
-            Geoposition geoposition = null;
-            try
-            {
-                geoposition = await geolocator.GetGeopositionAsync(
-                    maximumAge: TimeSpan.FromMinutes(5),
-                    timeout: TimeSpan.FromSeconds(10)
-                    );
-            }
-            catch (Exception)
-            {
-            }
-            return geoposition;
-        }
+        // Instances
+        Geolocator geolocator = new Geolocator();
 
 
         public bool GetGeolocatorPositionStatus()
         {
-            Geolocator geolocator = new Geolocator();
-            if (geolocator.LocationStatus != PositionStatus.Disabled)
+            if (this.geolocator.LocationStatus != PositionStatus.Disabled)
                 return true;
             else
                 return false;
+        }
+
+
+        // Get Geolocator to use GPS for getting location info.
+        public async Task<Geoposition> GetCurrentGeopositionAsync()
+        {
+            Geoposition geoposition = await this.geolocator.GetGeopositionAsync();
+            return geoposition;
         }
     }
 }

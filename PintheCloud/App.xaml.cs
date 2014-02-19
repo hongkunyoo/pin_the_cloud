@@ -15,6 +15,8 @@ using PintheCloud.Models;
 using Microsoft.Live;
 using PintheCloud.Utilities;
 using Microsoft.Phone.Logging;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PintheCloud
 {
@@ -26,7 +28,31 @@ namespace PintheCloud
         /// <returns>전화 응용 프로그램의 루트 프레임입니다.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
 
-        // Root static instance variable.
+
+
+        /*** Public Const instance variable ***/
+
+        // Azure
+        public const string AZURE_CLIENT_ID = "0000000044110129";
+        private const string AZURE_MOBILE_SERVICE_ID = "MicrosoftAccount:2914cb486d0f9106050de9ad70564d53";
+        private const string AZURE_MOBILE_SERVICE_TOKEN
+            = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjAifQ.eyJleHAiOjEzOTQ5Nzg4NTcsImlzcyI6InVybjptaWNyb3NvZnQ6d2luZG93cy1henVyZTp6dW1vIiwidmVyIjoyLCJhdWQiOiJNaWNyb3NvZnRBY2NvdW50IiwidWlkIjoiTWljcm9zb2Z0QWNjb3VudDoyOTE0Y2I0ODZkMGY5MTA2MDUwZGU5YWQ3MDU2NGQ1MyIsInVybjptaWNyb3NvZnQ6Y3JlZGVudGlhbHMiOiJrc2VzY21WaXA1b2ZrZDhUenBQQ1h3PT0ifQ.cUrvBbXsHQOiz0ZRu8FxA5HxqpQbPRSQQb8_N0-6eAo";
+
+        // Platform Id
+        public static string[] PLATFORMS = { "SkyDrive", "Dropbox" };
+        public const string ACCOUNT_MAIN_PLATFORM_TYPE_KEY = "ACCOUNT_MAIN_PLATFORM_TYPE_KEY";
+
+        // Location
+        public const int SKY_DRIVE_KEY_INDEX = 0;
+        public const int DROPBOX_KEY_INDEX = 1;
+
+        // Current Usrer
+        public const string USER = "";
+
+
+        
+        /*** Root static instance variable ***/
+
         // App
         public static MobileServiceClient MobileService = null;
         public static IsolatedStorageSettings ApplicationSettings = null;
@@ -34,11 +60,15 @@ namespace PintheCloud
         // Manager
         public static SpaceManager SpaceManager = null;
         public static GeoCalculateManager GeoCalculateManager = null;
+        public static BlobStorageManager BlobStorageManager = null;
+        public static LocalStorageManager LocalStorageManager = null;
+        public static TaskManager TaskManager = null;
+
         public static IStorageManager IStorageManager = null;
         public static IStorageManager[] IStorageManagers = null;
         public static SkyDriveManager SkyDriveManager = null;
-        public static BlobStorageManager BlobStorageManager = null;
-        public static LocalStorageManager LocalStorageManager = null;
+
+
 
         /// <summary>
         /// Application 개체의 생성자입니다.
@@ -66,15 +96,17 @@ namespace PintheCloud
                 "https://pinthecloud.azure-mobile.net/",
                 "yvulzHAGRgNsGnPLHKcEFCPJcuyzKj23"
             );
-            MobileServiceUser mobileServiceUser = new MobileServiceUser(GlobalKeys.AZURE_MOBILE_SERVICE_ID);
-            mobileServiceUser.MobileServiceAuthenticationToken = GlobalKeys.AZURE_MOBILE_SERVICE_TOKEN;
+            MobileServiceUser mobileServiceUser = new MobileServiceUser(App.AZURE_MOBILE_SERVICE_ID);
+            mobileServiceUser.MobileServiceAuthenticationToken = App.AZURE_MOBILE_SERVICE_TOKEN;
             MobileService.CurrentUser = mobileServiceUser;
             ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
 
             // Manager
             SpaceManager = new SpaceManagerImplement();
             GeoCalculateManager = new GeoCalculateManagerImplement();
+            BlobStorageManager = new BlobStorageManager();
             LocalStorageManager = new LocalStorageManager();
+            TaskManager = new TaskManager();
 
             SkyDriveManager = new SkyDriveManager();
             IStorageManagers = new IStorageManager[] { SkyDriveManager };

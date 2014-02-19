@@ -18,6 +18,7 @@ using System.Collections.ObjectModel;
 using Microsoft.WindowsAzure.MobileServices;
 using PintheCloud.Models;
 using Newtonsoft.Json.Linq;
+using PintheCloud.Utilities;
 
 namespace PintheCloud.Pages
 {
@@ -26,58 +27,51 @@ namespace PintheCloud.Pages
         // Const Instances
         private const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
         private const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
-        private const int APPLICATION_PIVOT = 0;
-        private const int MY_SPOT_PIVOT = 1;
+
+        private const int APPLICATION_PIVOT_INDEX = 0;
+        private const int MY_SPOT_PIVOT_INDEX = 1;
 
         // Instances
-        private bool IsSignIning = false;
         public SpaceViewModel MySpotViewModel = new SpaceViewModel();
 
 
         public SettingsPage()
         {
             InitializeComponent();
-        }
-
-
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
-        {
-            base.OnNavigatedTo(e);
-
 
 
             /*** Application Pivot ***/
 
             // Set Nickname
             string nickName = null;
-            if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME, out nickName))
+            if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME_KEY, out nickName))
             {
-                App.ApplicationSettings[Account.ACCOUNT_NICK_NAME] = AppResources.AtHere;
+                nickName = AppResources.AtHere;
+                App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY] = AppResources.AtHere;
                 App.ApplicationSettings.Save();
             }
-            uiSpotNickNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME];
+            uiSpotNickNameTextBox.Text = nickName;
+
 
             // Set SkyDrive Sign button
             bool isSignIn = false;
-            App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY], out isSignIn);
+            App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_KEY_INDEX], out isSignIn);
             this.SetSkyDriveSignButton(isSignIn);
+
 
             // Set location access consent checkbox
             bool isLocationAccessConsent = false;
-            App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS_CONSENT, out isLocationAccessConsent);
+            App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS_CONSENT_KEY, out isLocationAccessConsent);
             if (isLocationAccessConsent)
                 uiLocationAccessConsentCheckBox.IsChecked = true;
             else
                 uiLocationAccessConsentCheckBox.IsChecked = false;
+        }
 
 
-
-            /*** My Spot Pivot ***/
-
-            // If Internet available, Set space list
-            if (NetworkInterface.GetIsNetworkAvailable())
-                if (!MySpotViewModel.IsDataLoaded)  // Mutex check
-                    await this.SetMySpotPivotAsync(AppResources.Loading);
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
         }
 
 
@@ -94,11 +88,26 @@ namespace PintheCloud.Pages
             // One time loading.
             switch (uiSettingPivot.SelectedIndex)
             {
-                case MY_SPOT_PIVOT:
+                case APPLICATION_PIVOT_INDEX:
+                    break;
+
+                case MY_SPOT_PIVOT_INDEX:
 
                     // Set My Spot stuff enable
                     uiMySpotEditViewButton.Visibility = Visibility.Visible;
                     ApplicationBar.IsVisible = true;
+
+
+                    // If Internet available, Set space list
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                    {
+                        if (!MySpotViewModel.IsDataLoaded)  // Mutex check
+                            this.SetMySpotPivotAsync(AppResources.Loading);
+                    }
+                    else
+                    {
+                        base.SetListUnableAndShowMessage(uiMySpotList, AppResources.InternetUnavailableMessage, uiMySpotMessage);
+                    }
                     break;
 
                 default:
@@ -116,21 +125,42 @@ namespace PintheCloud.Pages
 
         private async void uiSkyDriveSignInButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            // Set process indicator
-            this.IsSignIning = true;
-            uiApplicationGrid.Visibility = Visibility.Collapsed;
-            uiApplicationMessageGrid.Visibility = Visibility.Visible;
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                // Set process indicator
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    uiApplicationGrid.Visibility = Visibility.Collapsed;
+                    uiApplicationMessageGrid.Visibility = Visibility.Visible;
+                });
 
-            App.IStorageManager = App.IStorageManagers[GlobalKeys.SKY_DRIVE_LOCATION_KEY];
-            if (await App.IStorageManager.SignIn(this))
-                this.SetSkyDriveSignButton(true);
+                App.IStorageManager = App.IStorageManagers[App.SKY_DRIVE_KEY_INDEX];
+                Task signInTask = App.IStorageManager.SignIn();
+                App.TaskManager.AddSignInTask(signInTask, App.SKY_DRIVE_KEY_INDEX);
+                await App.TaskManager.WaitSignInTask(App.SKY_DRIVE_KEY_INDEX);
+                if (App.IStorageManager.GetCurrentAccount() != null)
+                {
+                    this.SetSkyDriveSignButton(true);
+                }
+                else
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+                    });
+                }
+
+                // Hide process indicator
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    uiApplicationGrid.Visibility = Visibility.Visible;
+                    uiApplicationMessageGrid.Visibility = Visibility.Collapsed;
+                });
+            }
             else
-                MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
-
-            // Hide process indicator
-            uiApplicationGrid.Visibility = Visibility.Visible;
-            uiApplicationMessageGrid.Visibility = Visibility.Collapsed;
-            this.IsSignIning = false;
+            {
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+            }
         }
 
 
@@ -140,10 +170,40 @@ namespace PintheCloud.Pages
             MessageBoxResult result = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
-                App.IStorageManager = App.IStorageManagers[GlobalKeys.SKY_DRIVE_LOCATION_KEY];
-                App.IStorageManager.SignOut();
-                this.SetSkyDriveSignButton(false);
+                Task signOutTask = this.SkyDriveSignOut();
+                App.TaskManager.AddTask(TaskManager.SIGN_OUT_TASK_KEY, signOutTask);
             }
+        }
+
+
+        private async Task SkyDriveSignOut()
+        {
+            // Set process indicator
+            base.Dispatcher.BeginInvoke(() =>
+            {
+                uiApplicationGrid.Visibility = Visibility.Collapsed;
+                uiApplicationMessageGrid.Visibility = Visibility.Visible;
+                uiApplicationMessage.Text = AppResources.DoingSignOut;
+            });
+
+
+            // Delete application settings before work for good UX and Wait signin task
+            App.ApplicationSettings.Remove(Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_KEY_INDEX]);    
+            await App.TaskManager.WaitSignInTask(App.SKY_DRIVE_KEY_INDEX);
+
+            // Signout
+            App.IStorageManager = App.IStorageManagers[App.SKY_DRIVE_KEY_INDEX];
+            App.IStorageManager.SignOut();
+
+
+            // Hide process indicator
+            base.Dispatcher.BeginInvoke(() =>
+            {
+                uiApplicationGrid.Visibility = Visibility.Visible;
+                uiApplicationMessageGrid.Visibility = Visibility.Collapsed;
+                uiApplicationMessage.Text = AppResources.DoingSignIn;
+                this.SetSkyDriveSignButton(false);
+            });
         }
 
 
@@ -179,37 +239,27 @@ namespace PintheCloud.Pages
 
         private void uiSpotNickNameSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_NICK_NAME] = uiSpotNickNameTextBox.Text;
+            App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY] = uiSpotNickNameTextBox.Text;
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.SetSpotNickNameMessage, AppResources.SetSpotNickNameCaption, MessageBoxButton.OK);
         }
 
 
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-        {
-            base.OnBackKeyPress(e);
-            // If it is in sign in, unable back key.
-            // Otherwise, do normal back key.
-            if (this.IsSignIning)
-                e.Cancel = true;
-        }
-
-
         private void uiLocationAccessConsentCheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT] = true;
+            App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = true;
             App.ApplicationSettings.Save();
         }
 
         private void uiLocationAccessConsentCheckBox_Unchecked(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings.Remove(Account.LOCATION_ACCESS_CONSENT);
+            App.ApplicationSettings.Remove(Account.LOCATION_ACCESS_CONSENT_KEY);
         }
 
 
         private void uiSkyDriveSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = GlobalKeys.PLATFORMS[GlobalKeys.SKY_DRIVE_LOCATION_KEY];
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = App.SKY_DRIVE_KEY_INDEX;
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
@@ -217,7 +267,7 @@ namespace PintheCloud.Pages
 
         private void uiDropboxSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE] = GlobalKeys.PLATFORMS[GlobalKeys.DROPBOX_LOCATION_KEY];
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = App.DROPBOX_KEY_INDEX;
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
@@ -238,28 +288,28 @@ namespace PintheCloud.Pages
             // If selected item isn't null, goto File list page.
             if (spaceViewItem != null)
             {
-                string parameters = App.SpaceManager.GetParameterStringFromSpaceViewItem(spaceViewItem);
-                NavigationService.Navigate(new Uri(PtcPage.FILE_LIST_PAGE + parameters, UriKind.Relative));
+                string parameters = base.GetParameterStringFromSpaceViewItem(spaceViewItem);
+                NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters, UriKind.Relative));
             }
         }
 
 
         // Refresh space list.
-        private async void uiAppBarRefreshMenuItem_Click(object sender, System.EventArgs e)
+        private void uiAppBarRefreshMenuItem_Click(object sender, System.EventArgs e)
         {
             // If Internet available, Set space list
             if (NetworkInterface.GetIsNetworkAvailable())
-                await this.SetMySpotPivotAsync(AppResources.Refreshing);
+                this.SetMySpotPivotAsync(AppResources.Refreshing);
             else
                 base.SetListUnableAndShowMessage(uiMySpotList, AppResources.InternetUnavailableMessage, uiMySpotMessage);
         }
 
 
-        private async Task SetMySpotPivotAsync(string message)
+        private async void SetMySpotPivotAsync(string message)
         {
             // Show progress indicator 
             base.SetListUnableAndShowMessage(uiMySpotList, message, uiMySpotMessage);
-            PtcPage.SetProgressIndicator(this, true);
+            base.SetProgressIndicator(true);
 
             // Before go load, set mutex to true.
             MySpotViewModel.IsDataLoaded = true;
@@ -270,10 +320,13 @@ namespace PintheCloud.Pages
 
             if (spaces != null)  // There are my spaces
             {
-                this.MySpotViewModel.SetItems(spaces);
-                uiMySpotList.DataContext = this.MySpotViewModel;
-                uiMySpotList.Visibility = Visibility.Visible;
-                uiMySpotMessage.Visibility = Visibility.Collapsed;
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    this.MySpotViewModel.SetItems(spaces);
+                    uiMySpotList.DataContext = this.MySpotViewModel;
+                    uiMySpotList.Visibility = Visibility.Visible;
+                    uiMySpotMessage.Visibility = Visibility.Collapsed;
+                });
             }
             else  // No my spaces
             {
@@ -281,7 +334,7 @@ namespace PintheCloud.Pages
             }
 
             // Hide progress indicator
-            PtcPage.SetProgressIndicator(this, false);
+            base.SetProgressIndicator(false);
         }
 
 

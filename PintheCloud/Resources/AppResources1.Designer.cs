@@ -142,6 +142,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Doing Sign Out...과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DoingSignOut {
+            get {
+                return ResourceManager.GetString("DoingSignOut", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Dropbox과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Dropbox {
@@ -313,11 +322,20 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   There is no files in your cloud.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   There is no files in this cloud.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoFileInCloudMessage {
             get {
                 return ResourceManager.GetString("NoFileInCloudMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   There is no files in this spot.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoFileInSpotMessage {
+            get {
+                return ResourceManager.GetString("NoFileInSpotMessage", resourceCulture);
             }
         }
         
@@ -385,6 +403,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   %과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Percentage {
+            get {
+                return ResourceManager.GetString("Percentage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Pick과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Pick {
@@ -399,6 +426,15 @@ namespace PintheCloud.Resources {
         public static string Pin {
             get {
                 return ResourceManager.GetString("Pin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Pining Spot...과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string PiningSpot {
+            get {
+                return ResourceManager.GetString("PiningSpot", resourceCulture);
             }
         }
         
@@ -561,6 +597,15 @@ namespace PintheCloud.Resources {
         public static string TermsOfService {
             get {
                 return ResourceManager.GetString("TermsOfService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Uploading과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Uploading {
+            get {
+                return ResourceManager.GetString("Uploading", resourceCulture);
             }
         }
     }

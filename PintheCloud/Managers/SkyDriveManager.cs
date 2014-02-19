@@ -29,10 +29,10 @@ namespace PintheCloud.Managers
         private Account CurrentAccount = null;
 
 
-        public async Task<bool> SignIn(DependencyObject context)
+        public async Task SignIn()
         {
-            bool result = false;
-            App.ApplicationSettings[Account.ACCOUNT_IS_SIGN_IN_KEYS[GlobalKeys.SKY_DRIVE_LOCATION_KEY]] = true;
+            // Add application settings before work for good UX
+            App.ApplicationSettings[Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_KEY_INDEX]] = true;
             App.ApplicationSettings.Save();
 
             // If it haven't registerd live client, register
@@ -40,37 +40,23 @@ namespace PintheCloud.Managers
             {
                 // If it success to register live connect session,
                 LiveConnectClient liveClient = await this.AccountWorker.GetLiveConnectClientAsync();
-                if (liveClient != null)
-                {
-                    // Show progress indicator, progress login
-                    // Register live client
-                    PtcPage.SetProgressIndicator(context, true);
+                if (liveClient == null)
+                    return;
+                else
                     this.LiveClient = liveClient;
-
-
-                    // Get profile result and Login.
-                    // If login succeed, Move to explorer page.
-                    // Otherwise, Hide indicator, Show login fail message box.
-                    dynamic profileResult = await this.AccountWorker.GetProfileResultAsync(liveClient);
-                    if (profileResult != null)
-                    {
-                        Account account = await this.AccountWorker.SignInSkyDriveAccountSingleSignOnAsync(liveClient, profileResult);
-                        if (account != null)
-                        {
-                            this.CurrentAccount = account;
-                            result = true;
-                        }
-                    }
-
-                    // Hide progress indicator
-                    PtcPage.SetProgressIndicator(context, false);
-                }
             }
-            else
+
+
+            // Get profile result and Login.
+            // If login succeed, Move to explorer page.
+            // Otherwise, Hide indicator, Show login fail message box.
+            dynamic profileResult = await this.AccountWorker.GetProfileResultAsync(this.LiveClient);
+            if (profileResult != null)
             {
-                return true;
+                Account account = await this.AccountWorker.SignInSkyDriveAccountSingleSignOnAsync(this.LiveClient, profileResult);
+                if (account != null)
+                    this.CurrentAccount = account;
             }
-            return result;
         }
 
 
@@ -144,19 +130,6 @@ namespace PintheCloud.Managers
 
 
         // Summary:
-        //     Get the file meta information from the root to the node of the file tree.
-        //
-        // Returns:
-        //     Root FileObject of SkyDrive.
-        public async Task<FileObject> Synchronize()
-        {
-            FileObject fo = await GetRootFolderAsync();
-            fo.FileList = await _GetChildAsync(fo);
-            return fo;
-        }
-
-
-        // Summary:
         //     Download a file by file id.
         //
         // Parameters:
@@ -200,28 +173,28 @@ namespace PintheCloud.Managers
         //
         // Returns:
         //     The input stream to download file.
-        public async Task<Stream> DownloadFileThroughStreamAsync(string sourceFileId)
+        public async Task<Stream> DownloadFileThroughStreamAsync(string sourceFileId, Progress<LiveOperationProgress> listener)
         {
-
-            ProgressBar progressBar = new ProgressBar();
-            progressBar.Value = 0;
-            var progressHandler = new Progress<LiveOperationProgress>(
-                (progress) => { progressBar.Value = progress.ProgressPercentage; });
-
             System.Threading.CancellationTokenSource ctsDownload = new System.Threading.CancellationTokenSource();
-
+            LiveDownloadOperationResult result = null;
             try
             {
-                LiveDownloadOperationResult result = await this.LiveClient.DownloadAsync(sourceFileId + "/content");
-
-                return result.Stream;
+                //result = await this.LiveClient.DownloadAsync(sourceFileId + "/content");
+                result = await this.LiveClient.DownloadAsync(sourceFileId + "/content", ctsDownload.Token, listener);
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
                 return null;
             }
+
+            if (result.Stream == null)
+                return null;
+            else
+                return result.Stream;
         }
+
+
         // Summary:
         //     Upload files by StorageFile.
         //
@@ -236,19 +209,17 @@ namespace PintheCloud.Managers
         //     The StorageFolder where you downloaded folder.
         public async Task<bool> UploadFileAsync(string folderIdToStore, StorageFile file)
         {
+            ProgressBar progressBar = new ProgressBar();
+            progressBar.Value = 0;
+            var progressHandler = new Progress<LiveOperationProgress>(
+                (progress) => { progressBar.Value = progress.ProgressPercentage; });
+
             System.Threading.CancellationTokenSource ctsUpload = new System.Threading.CancellationTokenSource();
             try
             {
-                ProgressBar progressBar = new ProgressBar();
-                progressBar.Value = 0;
-                var progressHandler = new Progress<LiveOperationProgress>(
-                    (progress) => { progressBar.Value = progress.ProgressPercentage; });
-
-                progressBar.Value = 0;
-
                 Stream input = await file.OpenStreamForReadAsync();
-                LiveOperationResult result = await this.LiveClient.UploadAsync(folderIdToStore, "plzdo.pdf", input, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
-
+                LiveOperationResult result = await this.LiveClient
+                    .UploadAsync(folderIdToStore, "plzdo.pdf", input, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
             }
             catch (System.Threading.Tasks.TaskCanceledException ex)
             {
@@ -270,6 +241,8 @@ namespace PintheCloud.Managers
             }
             return true;
         }
+
+
         // Summary:
         //     Upload files by output stream.
         //
@@ -284,15 +257,16 @@ namespace PintheCloud.Managers
         //     The StorageFolder where you downloaded folder.
         public async Task<bool> UploadFileThroughStreamAsync(string folderIdToStore, string fileName, Stream outstream)
         {
+            ProgressBar progressBar = new ProgressBar();
+            progressBar.Value = 0;
+            var progressHandler = new Progress<LiveOperationProgress>(
+                (progress) => { progressBar.Value = progress.ProgressPercentage; });
+
             System.Threading.CancellationTokenSource ctsUpload = new System.Threading.CancellationTokenSource();
             try
             {
-                ProgressBar progressBar = new ProgressBar();
-                progressBar.Value = 0;
-                var progressHandler = new Progress<LiveOperationProgress>(
-                    (progress) => { progressBar.Value = progress.ProgressPercentage; });
-                progressBar.Value = 0;
-                LiveOperationResult result = await this.LiveClient.UploadAsync(folderIdToStore, fileName, outstream, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
+                LiveOperationResult result = await this.LiveClient
+                    .UploadAsync(folderIdToStore, fileName, outstream, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
             }
             catch (System.Threading.Tasks.TaskCanceledException ex)
             {
@@ -370,12 +344,15 @@ namespace PintheCloud.Managers
             string name = (string)(dic["name"] ?? "");
             string parent_id = (string)(dic["parent_id"] ?? "/");
             int size = (int)dic["size"];
-            string type = (string)dic["type"] ?? "";
+            string type = id.Split('.').First();
+            string typeDetail = name.Split('.').Last();
             string createAt = (string)dic["created_time"] ?? DateTime.Now.ToString();
             string updateAt = (string)dic["updated_time"] ?? DateTime.Now.ToString();
 
-            return new FileObject(id, name, parent_id, size, id.Substring(0, id.IndexOf(".")), type, createAt, updateAt);
+            return new FileObject(id, name, parent_id, size, type, typeDetail, createAt, updateAt);
         }
+
+
         // Summary:
         //      List mapping method
         //
@@ -391,6 +368,8 @@ namespace PintheCloud.Managers
             }
             return list;
         }
+
+
         // Summary:
         //      Gets the children of the FileObject recursively.
         //
@@ -413,6 +392,19 @@ namespace PintheCloud.Managers
                 return null;
             }
 
+        }
+
+
+        // Summary:
+        //     Get the file meta information from the root to the node of the file tree.
+        //
+        // Returns:
+        //     Root FileObject of SkyDrive.
+        private async Task<FileObject> Synchronize()
+        {
+            FileObject fo = await GetRootFolderAsync();
+            fo.FileList = await _GetChildAsync(fo);
+            return fo;
         }
     }
 }
