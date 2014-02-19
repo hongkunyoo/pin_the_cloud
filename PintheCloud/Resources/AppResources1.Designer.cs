@@ -97,11 +97,20 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   GPS doesn&apos;t work well not. Please load it again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   GPS doesn&apos;t work. Please load it again.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string BadGpsMessage {
             get {
                 return ResourceManager.GetString("BadGpsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Pin spot process met error. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadPinSpotMessage {
+            get {
+                return ResourceManager.GetString("BadPinSpotMessage", resourceCulture);
             }
         }
         

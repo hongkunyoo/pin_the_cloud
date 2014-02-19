@@ -14,7 +14,7 @@ namespace PintheCloud.Models
     /// Model Class for storing file meta information from each kind of storages.
     /// Every files will be handled by this object to provide a abstraction.
     /// </summary>
-    public class FileObject : INotifyPropertyChanged
+    public class FileObject
     {
         // Instances
         public static string CHECK_NOT_IMAGE_PATH = "/Assets/pajeon/png/general_checkbox.png";
@@ -38,10 +38,6 @@ namespace PintheCloud.Models
         /// </summary>
         public double Size { get; set; }
         /// <summary>
-        /// The size unit of the file
-        /// </summary>
-        public string SizeUnit { get; set; }
-        /// <summary>
         /// file or folder
         /// </summary>
         public string Type { get; set; }
@@ -49,10 +45,6 @@ namespace PintheCloud.Models
         /// The file extension such as mp3, pdf
         /// </summary>
         public string TypeDetail { get; set; }
-        /// <summary>
-        /// Thumbnail type
-        /// </summary>
-        public string ThumnailType { get; set; }
         /// <summary>
         /// No need to use.
         /// </summary>
@@ -66,90 +58,17 @@ namespace PintheCloud.Models
         /// </summary>
         public List<FileObject> FileList { get; set; }
 
-        private string selectCheckImage;
-        public string SelectCheckImage
-        {
-            get
-            {
-                return selectCheckImage;
-            }
-            set
-            {
-                if (selectCheckImage != value)
-                {
-                    selectCheckImage = value;
-                    NotifyPropertyChanged("SelectCheckImage");
-                }
-            }
-        }
-
 
         public FileObject(string id, string name, string parentId, double size, string type, string typeDetail, string createAt, string updateAt)
         {
             this.Id = id;
             this.Name = name;
             this.ParentId = parentId;
-
-            // Set Size and Size Unit
-            double kbUnit = 1024.0;
-            double mbUnit = Math.Pow(kbUnit, 2);
-            double gbUnit = Math.Pow(kbUnit, 3);
-            if ((size / gbUnit) >= 1)  // GB
-            {
-                this.Size = Math.Round((size / gbUnit) * 10.0) / 10.0;
-                this.SizeUnit = AppResources.GB;
-            }
-            else if ((size / mbUnit) >= 1)  // MB
-            {
-                this.Size = Math.Round((size / mbUnit) * 10.0) / 10.0;
-                this.SizeUnit = AppResources.MB;
-            }
-            else if ((size / kbUnit) >= 1)  // KB
-            {
-                this.Size = Math.Round(size / kbUnit);
-                this.SizeUnit = AppResources.KB;
-            }
-            else  // Bytes
-            {
-                this.Size = size;
-                this.SizeUnit = AppResources.Bytes;
-            }
-
-            // Set Type
+            this.Size = size;
             this.Type = type;
             this.TypeDetail = typeDetail;
-            if (this.Type.Equals(AppResources.Folder))
-            {
-                 this.ThumnailType = this.Type;
-                 this.SelectCheckImage = TRANSPARENT_PATH;
-            }
-            else
-            {
-                this.ThumnailType = this.TypeDetail;
-                this.SelectCheckImage = CHECK_NOT_IMAGE_PATH;
-            }    
             this.CreateAt = createAt;
             this.UpdateAt = updateAt;
-        }
-
-
-        public void SetSelectCheckImage(bool isCheck)
-        {
-            if (isCheck)
-                this.SelectCheckImage = CHECK_IMAGE_PATH;
-            else
-                this.SelectCheckImage = CHECK_NOT_IMAGE_PATH;
-        }
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged(String propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
 
 

@@ -51,15 +51,15 @@
                         </Grid.RowDefinitions>
                         <Button x:Name="uiSpaceButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <Grid Margin="22,17.5,18,14">
-                        		<StackPanel Margin="0">
-                        			<TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,8" UseLayoutRounding="True" Foreground="Black"/>
-                        			<TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,8" FontWeight="Light"/>
-                        			<StackPanel Orientation="Horizontal">
-                        				<TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22" FontWeight="Light"/>
-                        				<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Meter, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22" FontWeight="Light"/>
-                        			</StackPanel>
-                        		</StackPanel>
-                        	</Grid>
+                                <StackPanel Margin="0">
+                                    <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,8" UseLayoutRounding="True" Foreground="Black"/>
+                                    <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,8" FontWeight="Light"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock x:Name="uiSpaceDistance" TextWrapping="Wrap" Text="{Binding SpaceDistance}" Foreground="#FFA7B6BE" FontSize="22" FontWeight="Light"/>
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Meter, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22" FontWeight="Light"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
                         </Button>
                         <Grid Grid.Row="1" Background="#FFCED7DD"/>
                     </Grid>
@@ -77,15 +77,15 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition Width="49"/>
                                 </Grid.ColumnDefinitions>
-                                <Image x:Name="uiInfoThumnail" Source="{Binding ThumnailType, Converter={StaticResource FileObjectConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="94" Height="94" Stretch="None"/>
+                                <Image x:Name="uiThumnail" Source="{Binding ThumnailType, Converter={StaticResource StringToThumnailUriConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="94" Height="94" Stretch="None"/>
                                 <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,20,0,0">
-                                    <TextBlock x:Name="uiFileName" Text="{Binding Name}" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="Black" FontSize="22"/>
+                                    <TextBlock x:Name="uiName" Text="{Binding Name}" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="Black" FontSize="22"/>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock x:Name="uiFileSize" Text="{Binding Size}" TextWrapping="Wrap" Foreground="#FF3ABDBE" FontSize="22" FontWeight="Light"/>
+                                        <TextBlock x:Name="uiSize" Text="{Binding Size}" TextWrapping="Wrap" Foreground="#FF3ABDBE" FontSize="22" FontWeight="Light"/>
                                         <TextBlock TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF3ABDBE" FontWeight="Light"/>
                                     </StackPanel>
                                 </StackPanel>
-                                <Image x:Name="uiInfoSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Stretch="None"/>
+                                <Image x:Name="uiSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Stretch="None"/>
                             </Grid>
                         </Button>
                         <Grid Grid.Row="1" Background="#FFCED7DD"/>
@@ -101,30 +101,30 @@
                 </phone:PivotItem>
                 <phone:PivotItem x:Name="uiPinInfoPivot" Header="{Binding LocalizedResources.Pin, Source={StaticResource LocalizedStrings}}" Margin="0">
                     <Grid>
-                		<Grid x:Name="uiPinInfoListGrid">
-                			<Grid.RowDefinitions>
-                				<RowDefinition Height="73"/>
-                				<RowDefinition/>
-                			</Grid.RowDefinitions>
-                			<Grid x:Name="uiPinInfoListUpButtonGrid">
-                				<Grid.RowDefinitions>
-                					<RowDefinition/>
-                					<RowDefinition Height="1"/>
-                				</Grid.RowDefinitions>
-                				<Button x:Name="uiPinInfoListUpButton" Foreground="Black" Margin="0" BorderBrush="Transparent" Click="uiPinInfoListUpButton_Click" Style="{StaticResource ListItemButtonStyle}" FontSize="22" HorizontalContentAlignment="Left">
-                					<Grid Margin="22,0,0,0">
-                						<TextBlock x:Name="uiPinInfoCurrentPath" TextWrapping="Wrap"/>
-                					</Grid>
-                				</Button>
-                				<Grid Grid.Row="1" Background="#FFCED7DD"/>
-                			</Grid>
-                			<TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Margin="22,28,18,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Visibility="Collapsed" FontSize="22" />
-                			<phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Grid.Row="1"/>
-                		</Grid>
-                		<Grid x:Name="uiPinInfoSignInGrid" Visibility="Collapsed">
-                			<Button x:Name="uiPinInfoSignInButton" Content="{Binding LocalizedResources.SignIn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black" Foreground="Black" Click="uiPinInfoSignInButton_Click"/>
-                		</Grid>
-                	</Grid>
+                        <Grid x:Name="uiPinInfoListGrid">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="73"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid x:Name="uiPinInfoListUpButtonGrid">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="1"/>
+                                </Grid.RowDefinitions>
+                                <Button x:Name="uiPinInfoListUpButton" Foreground="Black" Margin="0" BorderBrush="Transparent" Click="uiPinInfoListUpButton_Click" Style="{StaticResource ListItemButtonStyle}" FontSize="22" HorizontalContentAlignment="Left">
+                                    <Grid Margin="22,0,0,0">
+                                        <TextBlock x:Name="uiPinInfoCurrentPath" TextWrapping="Wrap"/>
+                                    </Grid>
+                                </Button>
+                                <Grid Grid.Row="1" Background="#FFCED7DD"/>
+                            </Grid>
+                            <TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Margin="22,28,18,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Visibility="Collapsed" FontSize="22" />
+                            <phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Grid.Row="1"/>
+                        </Grid>
+                        <Grid x:Name="uiPinInfoSignInGrid" Visibility="Collapsed">
+                            <Button x:Name="uiPinInfoSignInButton" Content="{Binding LocalizedResources.SignIn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black" Foreground="Black" Click="uiPinInfoSignInButton_Click"/>
+                        </Grid>
+                    </Grid>
                 </phone:PivotItem>
             </phone:Pivot>
         </Grid>

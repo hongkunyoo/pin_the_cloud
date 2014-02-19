@@ -98,6 +98,7 @@
     <Compile Include="Managers\IStorageManager.cs" />
     <Compile Include="Managers\BlobStorageManager.cs" />
     <Compile Include="Managers\LocalStorageManager.cs" />
+    <Compile Include="Managers\ShareManager.cs" />
     <Compile Include="Managers\SkyDriveManager.cs" />
     <Compile Include="Managers\GeoCalculateManager.cs" />
     <Compile Include="Managers\GeoCalculateManagerImplement.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="Managers\SpaceManagerImplement.cs" />
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Space.cs" />
+    <Compile Include="Utilities\FileObjectConverter.cs" />
     <Compile Include="Utilities\StringToThumnailUriConverter.cs" />
     <Compile Include="Pages\FileListPage.xaml.cs">
       <DependentUpon>FileListPage.xaml</DependentUpon>

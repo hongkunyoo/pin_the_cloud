@@ -329,7 +329,7 @@
     </Style>
     <Utilities:ColorHexStringToBrushConverter x:Key="ColorHexStringToBrushConverter"/>
     <Utilities:StringToUriConverter x:Key="StringToUriConverter"/>
-    <Utilities:StringToThumnailUriConverter x:Key="FileObjectConverter"/>
+    <Utilities:StringToThumnailUriConverter x:Key="StringToThumnailUriConverter"/>
     <Utilities:StringToFontWeightConverter x:Key="StringToFontWeightConverter"/>
     <Style x:Key="CustomLongListSelectorStyle" TargetType="phone:LongListSelector">
     	<Setter Property="Background" Value="Transparent"/>
