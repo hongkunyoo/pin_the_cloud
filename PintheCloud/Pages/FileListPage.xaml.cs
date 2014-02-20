@@ -33,6 +33,7 @@ namespace PintheCloud.Pages
         private string AccountId;
         private string AccountName;
 
+        private FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
         private Progress<LiveOperationProgress> ProgressHandler;
 
 
@@ -48,10 +49,13 @@ namespace PintheCloud.Pages
                 double percentage = Math.Round(uiFileListProgressBar.Value * 10.0) / 10.0;
                 uiFileListProgressPercentageText.Text = percentage.ToString();
             });
+
+            // Set datacontext
+            uiFileList.DataContext = this.FileObjectViewModel;
         }
 
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
@@ -90,7 +94,7 @@ namespace PintheCloud.Pages
                 }
             }
 
-            else if (pivot == ExplorerPage.PIN_INFO_PIVOT_INDEX)  // Pin state
+            else  // Pin state
             {
                 // Get parameters
                 Account account = App.IStorageManager.GetAccount();
@@ -109,13 +113,7 @@ namespace PintheCloud.Pages
                 // Otherwise, show internet unavailable message.
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
-                    uiFileList.Visibility = Visibility.Visible;
-                    uiFileListMessage.Visibility = Visibility.Collapsed;
-
-                    string spaceId = await this.PinSpot();
-                    if (spaceId != null)
-                        if (await this.UploadFilesAsync(spaceId))
-                            this.Refresh();
+                    Task task = this.InitialPinSpotAndUploadFileAsync();
                 }
                 else
                 {
@@ -163,19 +161,16 @@ namespace PintheCloud.Pages
             base.SetListUnableAndShowMessage(uiFileList, AppResources.Refreshing, uiFileListMessage);
             base.SetProgressIndicator(true);
 
-            // TODO Does it get all files every time?
-            ObservableCollection<FileObject> list = new ObservableCollection<FileObject>
-                (await App.BlobStorageManager.GetFilesFromSpotAsync(this.AccountId, this.SpaceId));
-
             // If file exists, show it.
             // Otherwise, show no file in spot message.
-            if (list.Count > 0)
+            List<FileObject> fileList = await App.BlobStorageManager.GetFilesFromSpotAsync(this.AccountId, this.SpaceId);
+            if (fileList.Count > 0)
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    uiFileList.DataContext = list;
                     uiFileList.Visibility = Visibility.Visible;
                     uiFileListMessage.Visibility = Visibility.Collapsed;
+                    this.FileObjectViewModel.SetItems(fileList);
                 });
             }
             else
@@ -187,6 +182,8 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(false);
         }
 
+
+        // Pin spot
         private async Task<string> PinSpot()
         {
             // Show Pining message and Progress Indicator
@@ -205,44 +202,74 @@ namespace PintheCloud.Pages
         }
 
 
-        private async Task<bool> UploadFilesAsync(string spaceId)
+        // Upload. have to wait it.
+        private async Task UploadFileAsync(FileObjectViewItem file)
         {
+            // Show Uploading message and reset percentage to 0.
             // Show Uploading message and progress bar
+            base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
+                uiFileListMessage.Text = AppResources.Uploading + "  " + file.Name + "...";
+                uiFileList.Visibility = Visibility.Visible;
+                uiFileListMessage.Visibility = Visibility.Visible;
+
+                uiFileListProgressPercentageText.Text = "0";
                 uiFileListProgressBar.Visibility = Visibility.Visible;
                 uiFileListProgressPercentagePanel.Visibility = Visibility.Visible;
             });
 
 
-            // Register space id and get selected files from previous page.
-            this.SpaceId = spaceId;
-            List<FileObject> list = (List<FileObject>)PhoneApplicationService.Current.State[ExplorerPage.SELECTED_FILE_KEY];
-
-            // Upload each files in order.
-            foreach (FileObject file in list)
+            // Upload.
+            Stream stream = await App.IStorageManager.DownloadFileStreamAsync(file.Id, this.ProgressHandler);
+            string uploadPath = null;
+            if (stream != null)
             {
-                // Show Uploading message and reset percentage to 0.
-                base.SetListUnableAndShowMessage(uiFileList, AppResources.Uploading + "  " + file.Name + "...", uiFileListMessage);
-                base.Dispatcher.BeginInvoke(() =>
+                uploadPath = await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpaceId, file.Name, stream);
+                if (uploadPath == null)
                 {
-                    uiFileListProgressPercentageText.Text = "0";
-                });
-
-                // TODO if it failed, show error message.
-                // Upload.
-                Stream stream = await App.IStorageManager.DownloadFileStreamAsync(file.Id, this.ProgressHandler);
-                await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpaceId, file.Name, stream);
+                    file.ThumnailType = FileObjectViewModel.NO_FILE;
+                    file.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                }
+            }
+            else
+            {
+                file.ThumnailType = FileObjectViewModel.NO_FILE;
+                file.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
             }
 
-
-            // Hide progress bar
+            // Show uploaded file and hide progress bar.
+            base.SetProgressIndicator(false);
             base.Dispatcher.BeginInvoke(() =>
             {
+                uiFileListMessage.Visibility = Visibility.Collapsed;
                 uiFileListProgressBar.Visibility = Visibility.Collapsed;
                 uiFileListProgressPercentagePanel.Visibility = Visibility.Collapsed;
+                file.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                this.FileObjectViewModel.Items.Add(file);
             });
-            return true;
+        }
+
+
+        private async Task InitialPinSpotAndUploadFileAsync()
+        {
+            string spaceId = await this.PinSpot();
+            if (spaceId != null)
+            {
+                // Register space id
+                this.SpaceId = spaceId;
+
+                // Get selected files from previous page, Upload each files in order.
+                List<FileObjectViewItem> list = (List<FileObjectViewItem>)PhoneApplicationService.Current.State[ExplorerPage.SELECTED_FILE_KEY];
+                foreach (FileObjectViewItem file in list)
+                {
+                    await this.UploadFileAsync(file);
+                }
+            }
+            else
+            {
+                base.SetListUnableAndShowMessage(uiFileList, AppResources.BadPinSpotMessage, uiFileListMessage);
+            }
         }
 
 

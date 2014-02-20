@@ -16,6 +16,7 @@ namespace PintheCloud.ViewModels
         public const string CHECK_NOT_IMAGE_URI = "/Assets/pajeon/png/general_checkbox.png";
         public const string CHECK_IMAGE_URI = "/Assets/pajeon/png/general_checkbox_p.png";
         public const string TRANSPARENT_IMAGE_URI = "/Assets/pajeon/png/general_transparent.png";
+        public const string NO_FILE = "NO_FILE";
 
 
         public ObservableCollection<FileObjectViewItem> Items { get; set; }
@@ -40,6 +41,7 @@ namespace PintheCloud.ViewModels
             {
                 // Set new file view item
                 FileObjectViewItem fileObjectViewItem = new FileObjectViewItem();
+                fileObjectViewItem.Id = fileObject.Id;
                 fileObjectViewItem.Name = fileObject.Name;
                 
 

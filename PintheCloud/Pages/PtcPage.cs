@@ -29,7 +29,8 @@ namespace PintheCloud.Pages
         protected const string SETTINGS_PAGE = "/Pages/SettingsPage.xaml";
         protected const string FILE_LIST_PAGE = "/Pages/FileListPage.xaml";
 
-        protected string PREVIOUS_PAGE;
+        protected const string PREV_PAGE = "PREV_PAGE";
+        protected string PREVIOUS_PAGE = null;
 
 
         public PtcPage()
@@ -41,9 +42,9 @@ namespace PintheCloud.Pages
         {
             base.OnNavigatedFrom(e);
 
-            if (PhoneApplicationService.Current.State.ContainsKey("PREV_PAGE"))
-                this.PREVIOUS_PAGE = (string)PhoneApplicationService.Current.State["PREV_PAGE"];
-            PhoneApplicationService.Current.State["PREV_PAGE"] = this.NavigationService.CurrentSource.ToString();
+            if (PhoneApplicationService.Current.State.ContainsKey(PREV_PAGE))
+                this.PREVIOUS_PAGE = (string)PhoneApplicationService.Current.State[PREV_PAGE];
+            PhoneApplicationService.Current.State[PREV_PAGE] = this.NavigationService.CurrentSource.ToString().Split('?')[0];
         }
 
 

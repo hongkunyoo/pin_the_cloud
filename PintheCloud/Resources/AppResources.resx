@@ -177,7 +177,7 @@
     <value>Loading...</value>
   </data>
   <data name="BadGpsMessage" xml:space="preserve">
-    <value>GPS doesn't work well not. Please load it again.</value>
+    <value>GPS doesn't work. Please load it again.</value>
   </data>
   <data name="NoGpsOnMessage" xml:space="preserve">
     <value>Location serivces are disabled. Please enable it at your system.</value>
@@ -301,5 +301,8 @@
   </data>
   <data name="DoingSignOut" xml:space="preserve">
     <value>Doing Sign Out...</value>
+  </data>
+  <data name="BadPinSpotMessage" xml:space="preserve">
+    <value>Pin spot process met error. Please try it again.</value>
   </data>
 </root>

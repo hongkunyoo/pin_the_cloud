@@ -46,9 +46,12 @@ namespace PintheCloud.Pages
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarMenuItem skyDriveAppBarButton = new ApplicationBarMenuItem();
         private ApplicationBarMenuItem dropboxAppBarButton = new ApplicationBarMenuItem();
+
         private SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
-        private Stack<FileObject> FolderTree = new Stack<FileObject>();
-        private List<FileObject> SelectedFile = new List<FileObject>();
+        private FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
+
+        private Stack<FileObjectViewItem> FolderTree = new Stack<FileObjectViewItem>();
+        public List<FileObjectViewItem> SelectedFile = new List<FileObjectViewItem>();
 
 
 
@@ -56,9 +59,6 @@ namespace PintheCloud.Pages
         public ExplorerPage()
         {
             InitializeComponent();
-
-
-            /*** Pin Pivot ***/
 
             // Set pin button
             this.PinInfoAppBarButton.Text = AppResources.Pin;
@@ -73,12 +73,15 @@ namespace PintheCloud.Pages
             this.dropboxAppBarButton.Text = AppResources.Dropbox;
             this.dropboxAppBarButton.Click += dropboxAppBarButton_Click;
 
-
             // Check main platform at frist login and set cloud mode
             int mainPlatformType = 0;
             App.ApplicationSettings.TryGetValue<int>(Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY, out mainPlatformType);
             uiCurrentPlatformText.Text = App.PLATFORMS[mainPlatformType];
             this.CurrentPlatformIndex = mainPlatformType;
+
+            // Set Datacontext
+            uiNearSpaceList.DataContext = this.NearSpaceViewModel;
+            uiPinInfoList.DataContext = this.FileObjectViewModel;
         }
 
 
@@ -128,9 +131,15 @@ namespace PintheCloud.Pages
                 /*** Pin Pivot ***/
 
                 if (NetworkInterface.GetIsNetworkAvailable())
+                {
+                    this.SelectedFile.Clear();
+                    this.PinInfoAppBarButton.IsEnabled = false;
                     this.SetPinInfoListAsync(this.FolderTree.First(), AppResources.Loading);
+                }  
                 else
+                {
                     base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
+                }
             }
         }
 
@@ -319,9 +328,9 @@ namespace PintheCloud.Pages
                         {
                             base.Dispatcher.BeginInvoke(() =>
                             {
-                                this.NearSpaceViewModel.SetItems(spaces);
                                 uiNearSpaceList.Visibility = Visibility.Visible;
                                 uiNearSpaceMessage.Visibility = Visibility.Collapsed;
+                                this.NearSpaceViewModel.SetItems(spaces);
                             });
                         }
                         else  // No near spaces
@@ -410,9 +419,7 @@ namespace PintheCloud.Pages
                 if (App.GeoCalculateManager.GetGeolocatorPositionStatus())  // GPS is on
                 {
                     PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.SelectedFile;
-                    this.SelectedFile.Clear();
-                    this.PinInfoAppBarButton.IsEnabled = false;
-                    NavigationService.Navigate(new Uri(FILE_LIST_PAGE + "&pivot=" + PIN_INFO_PIVOT_INDEX, UriKind.Relative));
+                    NavigationService.Navigate(new Uri(FILE_LIST_PAGE + "?pivot=" + PIN_INFO_PIVOT_INDEX, UriKind.Relative));
                 }
                 else  // GPS is off
                 {
@@ -457,37 +464,36 @@ namespace PintheCloud.Pages
         private void uiPinInfoList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected File Object
-            FileObject fileObject = uiPinInfoList.SelectedItem as FileObject;
+            FileObjectViewItem fileObjectViewItem = uiPinInfoList.SelectedItem as FileObjectViewItem;
 
             // Set selected item to null for next selection of list item. 
             uiPinInfoList.SelectedItem = null;
 
+
             // If selected item isn't null, Do something
-            if (fileObject != null)
+            if (fileObjectViewItem != null)
             {
                 // If user select folder, go in.
                 // Otherwise, add it to list.
-                //if (fileObject.ThumnailType.Equals(AppResources.Folder))
-                if ("".Equals(AppResources.Folder))
+                if (fileObjectViewItem.ThumnailType.Equals(AppResources.Folder))
                 {
                     this.SelectedFile.Clear();
                     this.PinInfoAppBarButton.IsEnabled = false;
-                    this.SetPinInfoListAsync(fileObject, AppResources.Loading);
+                    this.SetPinInfoListAsync(fileObjectViewItem, AppResources.Loading);
                 }
                 else  // Do selection if file
                 {
-                    //if (fileObject.SelectCheckImage.Equals(FileObject.CHECK_NOT_IMAGE_PATH))
-                    if(false)
+                    if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
                     {
-                        this.SelectedFile.Add(fileObject);
-                        //fileObject.SetSelectCheckImage(true);
+                        this.SelectedFile.Add(fileObjectViewItem);
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_IMAGE_URI;
                         this.PinInfoAppBarButton.IsEnabled = true;
                     }
 
                     else
                     {
-                        this.SelectedFile.Remove(fileObject);
-                        //fileObject.SetSelectCheckImage(false);
+                        this.SelectedFile.Remove(fileObjectViewItem);
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
                         if (this.SelectedFile.Count <= 0)
                             this.PinInfoAppBarButton.IsEnabled = false;
                     }
@@ -498,9 +504,9 @@ namespace PintheCloud.Pages
 
         private string GetCurrentPath()
         {
-            FileObject[] array = this.FolderTree.Reverse<FileObject>().ToArray<FileObject>();
+            FileObjectViewItem[] array = this.FolderTree.Reverse<FileObjectViewItem>().ToArray<FileObjectViewItem>();
             string str = "";
-            foreach (FileObject f in array)
+            foreach (FileObjectViewItem f in array)
                 str += f.Name + AppResources.RootPath;
             return str;
         }
@@ -554,7 +560,7 @@ namespace PintheCloud.Pages
         }
 
 
-        private async void SetPinInfoListAsync(FileObject folder, string message)
+        private async void SetPinInfoListAsync(FileObjectViewItem folder, string message)
         {
             // Set Mutex true and Show Process Indicator
             this.IsFileObjectLoaded = true;
@@ -577,9 +583,13 @@ namespace PintheCloud.Pages
                     {
                         uiPinInfoCurrentPath.Text = "";
                     });
+
                     this.FolderTree.Clear();
                     this.SelectedFile.Clear();
-                    folder = await App.IStorageManager.GetRootFolderAsync();
+
+                    FileObject rootFolder = await App.IStorageManager.GetRootFolderAsync();
+                    folder = new FileObjectViewItem();
+                    folder.Id = rootFolder.Id;
                 }
 
                 if (!this.FolderTree.Contains(folder))
@@ -591,12 +601,11 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        uiPinInfoCurrentPath.Text = this.GetCurrentPath();
-
                         // Set file tree to list.
-                        uiPinInfoList.DataContext = new ObservableCollection<FileObject>(files);
                         uiPinInfoList.Visibility = Visibility.Visible;
                         uiPinInfoMessage.Visibility = Visibility.Collapsed;
+                        uiPinInfoCurrentPath.Text = this.GetCurrentPath();
+                        this.FileObjectViewModel.SetItems(files);
                     });
                 }
                 else

@@ -9,6 +9,7 @@ namespace PintheCloud.ViewModels
 {
     public class FileObjectViewItem : INotifyPropertyChanged
     {
+        public string Id { get; set; }
         public string Name { get; set; }
         public double Size { get; set; }
         public string SizeUnit { get; set; }
