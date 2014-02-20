@@ -467,7 +467,8 @@ namespace PintheCloud.Pages
             {
                 // If user select folder, go in.
                 // Otherwise, add it to list.
-                if (fileObject.ThumnailType.Equals(AppResources.Folder))
+                //if (fileObject.ThumnailType.Equals(AppResources.Folder))
+                if ("".Equals(AppResources.Folder))
                 {
                     this.SelectedFile.Clear();
                     this.PinInfoAppBarButton.IsEnabled = false;
@@ -476,17 +477,18 @@ namespace PintheCloud.Pages
                 }
                 else  // Do selection if file
                 {
-                    if (fileObject.SelectCheckImage.Equals(FileObject.CHECK_NOT_IMAGE_PATH))
+                    //if (fileObject.SelectCheckImage.Equals(FileObject.CHECK_NOT_IMAGE_PATH))
+                    if(false)
                     {
                         this.SelectedFile.Add(fileObject);
-                        fileObject.SetSelectCheckImage(true);
+                        //fileObject.SetSelectCheckImage(true);
                         this.PinInfoAppBarButton.IsEnabled = true;
                     }
 
                     else
                     {
                         this.SelectedFile.Remove(fileObject);
-                        fileObject.SetSelectCheckImage(false);
+                        //fileObject.SetSelectCheckImage(false);
                         if (this.SelectedFile.Count <= 0)
                             this.PinInfoAppBarButton.IsEnabled = false;
                     }

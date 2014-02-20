@@ -95,6 +95,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="Managers\DropBoxManager.cs" />
+    <Compile Include="Managers\GoogleDriveManager.cs" />
     <Compile Include="Managers\IStorageManager.cs" />
     <Compile Include="Managers\BlobStorageManager.cs" />
     <Compile Include="Managers\LocalStorageManager.cs" />
@@ -105,6 +107,13 @@
     <Compile Include="Managers\SpaceManagerImplement.cs" />
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Space.cs" />
+    <Compile Include="Pages\MyPopup.xaml.cs">
+      <DependentUpon>MyPopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\FileObjectConverter.cs" />
+    <Compile Include="Utilities\MyWebBrowserResult.cs" />
+    <Compile Include="Utilities\MyWebBrowserTask.cs" />
+    <Compile Include="Utilities\StorageException.cs" />
     <Compile Include="Utilities\StringToThumnailUriConverter.cs" />
     <Compile Include="Pages\FileListPage.xaml.cs">
       <DependentUpon>FileListPage.xaml</DependentUpon>
@@ -160,6 +169,10 @@
     <Page Include="Pages\FileListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\MyPopup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\SettingsPage.xaml">
       <SubType>Designer</SubType>
@@ -301,6 +314,24 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Google.Apis">
+      <HintPath>..\packages\Google.Apis.1.8.0-rc\lib\wp8\Google.Apis.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth">
+      <HintPath>..\packages\Google.Apis.Auth.1.8.0-rc\lib\wp8\Google.Apis.Auth.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Auth.PlatformServices">
+      <HintPath>..\packages\Google.Apis.Auth.1.8.0-rc\lib\wp8\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Core">
+      <HintPath>..\packages\Google.Apis.Core.1.8.0-rc\lib\portable-net4+sl4+wp71+win8\Google.Apis.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.Drive.v2">
+      <HintPath>..\packages\Google.Apis.Drive.v2.1.8.0.1130-rc\lib\portable-net4+sl4+wp71+win8\Google.Apis.Drive.v2.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Apis.PlatformServices">
+      <HintPath>..\packages\Google.Apis.1.8.0-rc\lib\wp8\Google.Apis.PlatformServices.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Data.Edm.Portable">
       <HintPath>..\packages\Microsoft.Data.Edm.5.6.0\lib\portable-net40+sl5+wp8+win8\Microsoft.Data.Edm.Portable.dll</HintPath>
     </Reference>
@@ -317,6 +348,15 @@
     <Reference Include="Microsoft.Phone.Controls.Toolkit">
       <HintPath>..\packages\WPtoolkit.4.2013.08.16\lib\wp8\Microsoft.Phone.Controls.Toolkit.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Threading.Tasks">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.165\lib\wp8\Microsoft.Threading.Tasks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.165\lib\wp8\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Threading.Tasks.Extensions.Phone">
+      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.165\lib\wp8\Microsoft.Threading.Tasks.Extensions.Phone.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.WindowsAzure.Mobile">
       <HintPath>..\packages\WindowsAzure.MobileServices.1.1.2\lib\wp8\Microsoft.WindowsAzure.Mobile.dll</HintPath>
     </Reference>
@@ -332,6 +372,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\portable-net45+wp80+win8\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp.WindowsPhone">
+      <HintPath>..\..\..\..\Desktop\DropBoxBefore\packages\RestSharp.104.1\lib\sl4-wp71\RestSharp.WindowsPhone.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.18\lib\sl4-windowsphone71\System.Net.Http.dll</HintPath>
     </Reference>
@@ -344,6 +387,15 @@
     <Reference Include="System.Spatial.Portable">
       <HintPath>..\packages\System.Spatial.5.6.0\lib\portable-net40+sl5+wp8+win8\System.Spatial.Portable.dll</HintPath>
     </Reference>
+    <Reference Include="Zlib.Portable">
+      <HintPath>..\packages\Zlib.Portable.1.9.2\lib\portable-net4+sl4+wp71+win8\Zlib.Portable.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Desktop\DropNet-master\DropNet.WindowsPhone\DropNet.WindowsPhone.csproj">
+      <Project>{C73D4D29-41E9-4BB1-B70D-38E36187CF51}</Project>
+      <Name>DropNet.WindowsPhone</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

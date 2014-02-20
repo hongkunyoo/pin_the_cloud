@@ -73,12 +73,12 @@ namespace PintheCloud.ViewModels
                 // Set Type
                 if (fileObject.Type.Equals(AppResources.Folder))
                 {
-                    fileObjectViewItem.ThumnailType = fileObject.Type;
+                    //fileObjectViewItem.ThumnailType = fileObject.Type;
                     fileObjectViewItem.SelectCheckImage = TRANSPARENT_IMAGE_URI;
                 }
                 else
                 {
-                    fileObjectViewItem.ThumnailType = fileObject.TypeDetail;
+                    //fileObjectViewItem.ThumnailType = fileObject.TypeDetail;
                     fileObjectViewItem.SelectCheckImage = CHECK_NOT_IMAGE_URI;
                 }    
 

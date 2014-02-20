@@ -21,7 +21,7 @@ namespace PintheCloud.Utilities
         /// FULL_PATH if it includes file name</param>
         /// <param name="name">Pass the variable to store the file name of given path</param>
         /// <returns>Path tokens in string array</returns>
-        public static string[] Parse(string path, ParseHelper.Mode mode, out string name)
+        public static string[] ParsePathAndName(string path, ParseHelper.Mode mode, out string name)
         {
             List<string> list = new List<string>();
             path = ParseHelper.TrimSlash(path);
@@ -47,7 +47,7 @@ namespace PintheCloud.Utilities
         /// </summary>
         /// <param name="name">The name to parse</param>
         /// <returns>the name and the extension in string array</returns>
-        public static string[] SplitName(string name)
+        public static string[] SplitNameAndExtension(string name)
         {
             return name.Split(new char[] { '.' }, 2);
         }
@@ -64,6 +64,23 @@ namespace PintheCloud.Utilities
                 path = path.Substring(0, path.Length - 1);
 
             return path;
+        }
+        /*
+        public static string ParseParentId(string fullPath)
+        {
+            fullPath = ParseHelper.TrimSlash(fullPath);
+            return System.Text.RegularExpressions.Regex.Match(fullPath, ".*\/").Value;
+        }
+        */
+        /// <summary>
+        /// Parse the name from the full path
+        /// </summary>
+        /// <param name="fullPath">The full path to parse</param>
+        /// <returns>name in the path</returns>
+        public static string ParseName(string fullPath)
+        {
+            fullPath = ParseHelper.TrimSlash(fullPath);
+            return System.Text.RegularExpressions.Regex.Match(fullPath, "[^/]*$").Value;
         }
 
         // Private Method

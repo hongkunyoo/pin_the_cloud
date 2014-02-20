@@ -4,6 +4,7 @@ using PintheCloud.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,13 +15,9 @@ namespace PintheCloud.Models
     /// Model Class for storing file meta information from each kind of storages.
     /// Every files will be handled by this object to provide a abstraction.
     /// </summary>
-    public class FileObject : INotifyPropertyChanged
+    public class FileObject
     {
-        // Instances
-        public static string CHECK_NOT_IMAGE_PATH = "/Assets/pajeon/png/general_checkbox.png";
-        public static string CHECK_IMAGE_PATH = "/Assets/pajeon/png/general_checkbox_p.png";
-        public static string TRANSPARENT_PATH = "/Assets/pajeon/png/general_transparent.png";
-        
+        public enum FileObjectType { FILE, FOLDER, GOOGLE_DOC };
         /// <summary>
         /// The id to Get, Upload, Download
         /// </summary>
@@ -32,160 +29,80 @@ namespace PintheCloud.Models
         /// <summary>
         /// The parent Id to get back to the parent tree.
         /// </summary>
-        public string ParentId { get; set; }
+        //public string ParentId { get; set; }
         /// <summary>
         /// The size of the file
         /// </summary>
         public double Size { get; set; }
         /// <summary>
-        /// The size unit of the file
-        /// </summary>
-        public string SizeUnit { get; set; }
-        /// <summary>
         /// file or folder
         /// </summary>
-        public string Type { get; set; }
+        public FileObjectType Type { get; set; }
         /// <summary>
         /// The file extension such as mp3, pdf
         /// </summary>
-        public string TypeDetail { get; set; }
-        /// <summary>
-        /// Thumbnail type
-        /// </summary>
-        public string ThumnailType { get; set; }
-        /// <summary>
-        /// No need to use.
-        /// </summary>
-        public string CreateAt { get; set; }
+        public string Extension { get; set; }
         /// <summary>
         /// For created time & updated time.
         /// </summary>
         public string UpdateAt { get; set; }
         /// <summary>
+        /// Thumbnail information
+        /// </summary>
+        public string Thumbnail { get; set; }
+        /// <summary>
+        /// download Url for GoogleDrive.
+        /// </summary>
+        public string DownloadUrl { get; set; }
+        /// <summary>
+        /// MimeType for GoogleDrive.
+        /// </summary>
+        public string MimeType { get; set; }
+        /// <summary>
         /// The child list of the folder.
         /// </summary>
         public List<FileObject> FileList { get; set; }
-
-        private string selectCheckImage;
-        public string SelectCheckImage
+        public FileObject()
         {
-            get
-            {
-                return selectCheckImage;
-            }
-            set
-            {
-                if (selectCheckImage != value)
-                {
-                    selectCheckImage = value;
-                    NotifyPropertyChanged("SelectCheckImage");
-                }
-            }
         }
 
-
-        public FileObject(string id, string name, string parentId, double size, string type, string typeDetail, string createAt, string updateAt)
+        public FileObject(string Id, string Name, double Size, FileObjectType Type, string Extension, string UpdateAt, string Thumbnail = null, string DownloadUrl = null, string MimeType = null)
         {
-            this.Id = id;
-            this.Name = name;
-            this.ParentId = parentId;
-
-            // Set Size and Size Unit
-            double kbUnit = 1024.0;
-            double mbUnit = Math.Pow(kbUnit, 2);
-            double gbUnit = Math.Pow(kbUnit, 3);
-            if ((size / gbUnit) >= 1)  // GB
-            {
-                this.Size = Math.Round((size / gbUnit) * 10.0) / 10.0;
-                this.SizeUnit = AppResources.GB;
-            }
-            else if ((size / mbUnit) >= 1)  // MB
-            {
-                this.Size = Math.Round((size / mbUnit) * 10.0) / 10.0;
-                this.SizeUnit = AppResources.MB;
-            }
-            else if ((size / kbUnit) >= 1)  // KB
-            {
-                this.Size = Math.Round(size / kbUnit);
-                this.SizeUnit = AppResources.KB;
-            }
-            else  // Bytes
-            {
-                this.Size = size;
-                this.SizeUnit = AppResources.Bytes;
-            }
-
-            // Set Type
-            this.Type = type;
-            this.TypeDetail = typeDetail;
-            if (this.Type.Equals(AppResources.Folder))
-            {
-                 this.ThumnailType = this.Type;
-                 this.SelectCheckImage = TRANSPARENT_PATH;
-            }
-            else
-            {
-                this.ThumnailType = this.TypeDetail;
-                this.SelectCheckImage = CHECK_NOT_IMAGE_PATH;
-            }    
-            this.CreateAt = createAt;
-            this.UpdateAt = updateAt;
+            this.Id = Id;
+            this.Name = Name;
+            //this.ParentId = ParentId;
+            this.Size = Size;
+            this.Type = Type;
+            this.Extension = Extension;
+            this.UpdateAt = UpdateAt;
+            this.Thumbnail = Thumbnail;
+            this.DownloadUrl = DownloadUrl;
+            this.MimeType = MimeType;
         }
 
-
-        public void SetSelectCheckImage(bool isCheck)
+        public static void PrintFile(FileObject file)
         {
-            if (isCheck)
-                this.SelectCheckImage = CHECK_IMAGE_PATH;
-            else
-                this.SelectCheckImage = CHECK_NOT_IMAGE_PATH;
+            Debug.WriteLine("id : "+file.Id);
+            Debug.WriteLine("Name : " + file.Name);
+            Debug.WriteLine("Size : " + file.Size);
+            Debug.WriteLine("Type : " + file.Type);
+            Debug.WriteLine("Extension : " + file.Extension);
+            Debug.WriteLine("UpdateAt : " + file.UpdateAt);
+            Debug.WriteLine("Thumbnail : " + file.Thumbnail);
+            Debug.WriteLine("DownloadUrl : " + file.DownloadUrl);
+            Debug.WriteLine("MimeType : " + file.MimeType);
+
+            Debug.WriteLine("----child-----");
+            PrintFileList(file.FileList);
         }
 
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged(String propertyName)
+        public static void PrintFileList(List<FileObject> list)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
+            if (list == null) return;
+            foreach (FileObject file in list)
             {
-                handler(this, new PropertyChangedEventArgs(propertyName));
+                PrintFile(file);
             }
-        }
-
-
-        /// <summary>
-        /// Test Code for Printing FileObject easily.
-        /// </summary>
-        /// <param name="fo"></param>
-        public static void PrintFileObject(FileObject fo)
-        {
-            if (fo != null)
-            {
-                MyDebug.WriteLine("id : " + fo.Id);
-                MyDebug.WriteLine("Name : " + fo.Name);
-                MyDebug.WriteLine("ParentId : " + fo.ParentId);
-                MyDebug.WriteLine("Size : " + fo.Size);
-                MyDebug.WriteLine("Type : " + fo.Type);
-                MyDebug.WriteLine("TypeDetail : " + fo.TypeDetail);
-                MyDebug.WriteLine("CreateAt : " + fo.CreateAt);
-                MyDebug.WriteLine("UpdateAt : " + fo.UpdateAt);
-
-                MyDebug.WriteLine("-----------------------------------------");
-                if (fo.FileList != null)
-                    FileObject.PrintFileObjectList(fo.FileList);
-            }
-            else
-            {
-                MyDebug.WriteLine("FileObject Null!");
-                if (System.Diagnostics.Debugger.IsAttached)
-                    System.Diagnostics.Debugger.Break();
-            }
-
-        }
-        public static void PrintFileObjectList(List<FileObject> list)
-        {
-            foreach (FileObject fo in list)
-                FileObject.PrintFileObject(fo);
         }
     }
 }

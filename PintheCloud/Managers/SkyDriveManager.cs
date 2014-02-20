@@ -82,7 +82,7 @@ namespace PintheCloud.Managers
         //     Root Folder of SkyDrive.
         public async Task<FileObject> GetRootFolderAsync()
         {
-            FileObject root = _GetData((await this.LiveClient.GetAsync("me/skydrive")).Result);
+            FileObject root = FileObjectConverter.ConvertToFileObject((await this.LiveClient.GetAsync("me/skydrive")).Result);
             root.Name = "";
             return root;
         }
@@ -110,7 +110,7 @@ namespace PintheCloud.Managers
         //     FileObject of the certain file id.
         public async Task<FileObject> GetFileAsync(string fileId)
         {
-            return _GetData((await this.LiveClient.GetAsync(fileId)).Result);
+            return FileObjectConverter.ConvertToFileObject((await this.LiveClient.GetAsync(fileId)).Result);
         }
 
 
@@ -338,6 +338,7 @@ namespace PintheCloud.Managers
         //
         // Returns:
         //      FileObject from a dictionary.
+        /*
         private FileObject _GetData(IDictionary<string, object> dic)
         {
             string id = (string)(dic["id"] ?? "");
@@ -351,7 +352,7 @@ namespace PintheCloud.Managers
 
             return new FileObject(id, name, parent_id, size, type, typeDetail, createAt, updateAt);
         }
-
+        */
 
         // Summary:
         //      List mapping method
@@ -364,11 +365,10 @@ namespace PintheCloud.Managers
             List<FileObject> list = new List<FileObject>();
             foreach (IDictionary<string, object> content in data)
             {
-                list.Add(this._GetData(content));
+                list.Add(FileObjectConverter.ConvertToFileObject(content));
             }
             return list;
         }
-
 
         // Summary:
         //      Gets the children of the FileObject recursively.

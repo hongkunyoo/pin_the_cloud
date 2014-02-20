@@ -85,7 +85,7 @@ namespace PintheCloud.Managers
         public async Task<StorageFile> GetSkyDriveStorageFileAsync(string path)
         {
             string name;
-            string[] _path = ParseHelper.Parse(path, ParseHelper.Mode.FULL_PATH, out name);
+            string[] _path = ParseHelper.ParsePathAndName(path, ParseHelper.Mode.FULL_PATH, out name);
             StorageFolder folder = await this.GetSkyDriveStorageFolderAsync();
             foreach (string p in _path)
             {
@@ -101,7 +101,7 @@ namespace PintheCloud.Managers
         {
             string name;
             string ori_path = path;
-            string[] list = ParseHelper.Parse(path, ParseHelper.Mode.FULL_PATH, out name);
+            string[] list = ParseHelper.ParsePathAndName(path, ParseHelper.Mode.FULL_PATH, out name);
             StorageFolder folder = await this.GetSkyDriveStorageFolderAsync();
             foreach (string s in list)
             {
@@ -117,7 +117,7 @@ namespace PintheCloud.Managers
         private async Task<StorageFile> CreateFileToLocalStorageAsync(string path, StorageFolder folder)
         {
             string name;
-            string[] list = ParseHelper.Parse(path, ParseHelper.Mode.FULL_PATH, out name); // changed DIRECTORY to FULL_PATH
+            string[] list = ParseHelper.ParsePathAndName(path, ParseHelper.Mode.FULL_PATH, out name); // changed DIRECTORY to FULL_PATH
 
             foreach (string s in list)
             {
@@ -128,7 +128,7 @@ namespace PintheCloud.Managers
         private async Task<StorageFolder> CreateFolderToLocalStorageAsync(string path, StorageFolder folder)
         {
             string name;
-            string[] list = ParseHelper.Parse(path, ParseHelper.Mode.DIRECTORY, out name);
+            string[] list = ParseHelper.ParsePathAndName(path, ParseHelper.Mode.DIRECTORY, out name);
 
             foreach (string s in list)
             {

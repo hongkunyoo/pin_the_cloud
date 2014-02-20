@@ -50,7 +50,7 @@ namespace PintheCloud.Managers
         public async Task<FileObject> GetFileAsync(string id)
         {
             CloudBlockBlob blockBlob = (CloudBlockBlob)await container.GetBlobReferenceFromServerAsync(id);
-            return this._GetFileObjectFromBlob(blockBlob);
+            return FileObjectConverter.ConvertToFileObject(blockBlob);
         }
         /// <summary>
         /// Gets file meta information from the spot, using account id, spot id and path.
@@ -250,6 +250,7 @@ namespace PintheCloud.Managers
             }
             return id;
         }
+        /*
         private void _GetParentId(string fullPath, out string name, out string prefix, out string parentId)
         {
             if (fullPath.EndsWith("/"))
@@ -266,12 +267,14 @@ namespace PintheCloud.Managers
                 parentId = prefix;
             }
         }
+        */
+        /*
         private FileObject _GetFileObjectFromBlob(CloudBlockBlob blob)
         {
             string id = blob.Name;
-            string name, parentId, prefix;
+            string name = ParseHelper.ParseName(id);
 
-            this._GetParentId(id, out name, out prefix, out parentId);
+            //this._GetParentId(id, out name, out prefix, out parentId);
             
             int size = (int)blob.Properties.Length;
             string type;
@@ -290,6 +293,7 @@ namespace PintheCloud.Managers
 
             return (new FileObject(id, name, parentId, size, type, typeDetail, createAt, updateAt));
         }
+         */
         private async Task<List<FileObject>> _GetFileObjectListFromBlobClient(string prefix)
         {
             List<FileObject> list = new List<FileObject>();
@@ -308,23 +312,11 @@ namespace PintheCloud.Managers
         {
             if (item.GetType() == typeof(CloudBlockBlob))
             {
-                return this._GetFileObjectFromBlob((CloudBlockBlob)item);
+                return FileObjectConverter.ConvertToFileObject((CloudBlockBlob)item);
             }
             else if (item.GetType() == typeof(CloudBlobDirectory))
             {
-                CloudBlobDirectory directory = (CloudBlobDirectory)item;
-
-                string id = directory.Prefix;
-                string name, parentId, prefix;
-
-                this._GetParentId(id, out name, out prefix, out parentId);
-                int size = 0;
-                string type = "folder";
-                string typeDetail = "folder";
-                string createAt = null;
-                string updateAt = null;
-
-                return (new FileObject(id, name, parentId, size, type, typeDetail, createAt, updateAt));
+                return FileObjectConverter.ConvertToFileObject((CloudBlobDirectory)item);
             }
             return null;
         }
