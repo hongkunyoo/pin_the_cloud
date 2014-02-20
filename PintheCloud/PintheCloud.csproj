@@ -119,7 +119,6 @@
       <DependentUpon>FileListPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\MyEncoder.cs" />
-    <Compile Include="Utilities\MyDebug.cs" />
     <Compile Include="Utilities\ParseHelper.cs" />
     <Compile Include="Utilities\StringToFontWeightConverter.cs" />
     <Compile Include="Utilities\StringToUriConverter.cs" />

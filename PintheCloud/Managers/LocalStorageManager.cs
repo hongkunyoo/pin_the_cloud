@@ -1,6 +1,7 @@
 ﻿using PintheCloud.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -149,7 +150,7 @@ namespace PintheCloud.Managers
             if (file != null)
             {
                 count++;
-                MyDebug.WriteLine(this.getCount() + MyEncoder.Decode(file.Name) + "(" + file.Path + ")");
+                Debug.WriteLine(this.getCount() + MyEncoder.Decode(file.Name) + "(" + file.Path + ")");
                 count--;
             }
         }
@@ -182,7 +183,7 @@ namespace PintheCloud.Managers
             if (folder != null)
             {
                 count++;
-                MyDebug.WriteLine(this.getCount() + "folder : " + MyEncoder.Decode(folder.Name) + "(" + folder.Path + ")");
+                Debug.WriteLine(this.getCount() + "folder : " + MyEncoder.Decode(folder.Name) + "(" + folder.Path + ")");
                 IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
                 IReadOnlyList<StorageFolder> folderList = await folder.GetFoldersAsync();
                 foreach (StorageFile file in fileList)

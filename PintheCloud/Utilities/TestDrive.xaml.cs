@@ -38,91 +38,23 @@ namespace PintheCloud.Utilities
         public async Task TestStorages()
         {
             GoogleDriveManager manager = new GoogleDriveManager();
-
+            
             await manager.SignIn();
-            FileObject root = await manager.GetRootFolderAsync();
-            Debug.WriteLine("============================================================");
-            Debug.WriteLine("============================================================");
-            FileObject.PrintFile(root);
+            //manager.SignOut();
+            //FileObject root = await manager.GetRootFolderAsync();
+            //Debug.WriteLine("============================================================");
+            //Debug.WriteLine("============================================================");
+            ////FileObject.PrintFile(root);
+            //List<FileObject> list = await manager.GetFilesFromFolderAsync("0B2cUhw6EfHrOVXJvZFBCR0dQZnM");
+            //FileObject.PrintFileList(list);
+            
         }
 
         protected  override void OnNavigatedFrom(NavigationEventArgs e)
         {
             
         }
-        public async Task downfromBlob()
-        {
-            string folderIdToStore = "folder.b96a113f78eb1c6f.B96A113F78EB1C6F!1856";
-            string fileName = "myfileName.pdf";
-            string downId = "https://rfrost77.blob.core.windows.net/images/MicrosoftAccount:2914cb486d0f9106050de9ad70564d53/6c9bb150-d1c1-44be-a687-21607cb5b523/1204241122_BH6520TW_OM_KOR.pdf";
-            MyDebug.WriteLine("start down");
-            Stream strem = await App.BlobStorageManager.DownloadFileThroughStreamAsync(downId);
-            MyDebug.WriteLine("end down / start upload");
-            await App.SkyDriveManager.UploadFileThroughStreamAsync(folderIdToStore, fileName, strem);
-            MyDebug.WriteLine("end upload");
-
-        }
-
-        int method = 1;
-        public async Task doit(List<FileObject> select_files)
-        {
-            Stopwatch s = new Stopwatch();
-            long downloadTime;
-            long uploadTime;
-            foreach (FileObject f in select_files)
-            {
-                MyDebug.WriteLine(f.Name + " / ");
-            }
-            //Space space = App.SpaceManager.GetSpace("ee");
-            Space space = new Space("", 0, 0, "", "", 0);
-
-            foreach (FileObject f in select_files)
-            {
-                if (method == 0)
-                {
-                    Uri temp = await App.LocalStorageManager.GetSkyDriveDownloadUriFromPath("temp/" + f.Name);
-                    MyDebug.WriteLine("Start Download - size : " + (f.Size / 1000000.0) + "MB");
-
-                    s.Start();
-                    downloadTime = s.ElapsedMilliseconds;
-                    StorageFile fromSkyToLocal = await App.SkyDriveManager.DownloadFileAsync(f.Id, temp);
-                    downloadTime = s.ElapsedMilliseconds - downloadTime;
-                    MyDebug.WriteLine("End Download : " + downloadTime / 1000.0 + "sec");
-
-                    uploadTime = s.ElapsedMilliseconds;
-                    //string id = await App.BlobStorageManager.UploadFileAsync(space.id, fromSkyToLocal);
-                    uploadTime = (s.ElapsedMilliseconds - uploadTime);
-                    MyDebug.WriteLine("End Upload : " + uploadTime / 1000.0 + "sec");
-                    MyDebug.WriteLine("down   byte per sec : " + (((long)f.Size) / downloadTime) / 60.0);
-                    MyDebug.WriteLine("upload byte per sec : " + (((long)f.Size) / uploadTime) / 60.0);
-
-                    s.Stop();
-                }
-                else
-                {
-                    MyDebug.WriteLine("Start Download - size : " + (f.Size / 1000000.0) + "MB");
-
-                    s.Start();
-                    downloadTime = s.ElapsedMilliseconds;
-                    //Stream isr = await App.SkyDriveManager.DownloadFileThroughStreamAsync(f.Id);
-                    downloadTime = s.ElapsedMilliseconds - downloadTime;
-                    MyDebug.WriteLine("End Download : " + downloadTime / 1000.0 + "sec");
-                    uploadTime = s.ElapsedMilliseconds;
-                    //await App.BlobStorageManager.UploadFileThroughStreamAsync(space.id + "/" + f.Name, isr);
-                    uploadTime = (s.ElapsedMilliseconds - uploadTime);
-
-                    MyDebug.WriteLine("End Upload : " + uploadTime / 1000.0 + "sec");
-                    MyDebug.WriteLine("down   byte per sec : " + (((long)f.Size) / downloadTime) / 60.0);
-                    MyDebug.WriteLine("upload byte per sec : " + (((long)f.Size) / uploadTime) / 60.0);
-
-                    s.Stop();
-                }
-            }
-            
-            
-            MyDebug.WriteLine("end do it");
-            
-        }
+        
 
 
         public void Test()
@@ -175,7 +107,7 @@ namespace PintheCloud.Utilities
             }
             catch(Exception e)
             {
-                MyDebug.WriteLine(e.ToString());
+                Debug.WriteLine(e.ToString());
             } 
         }
 
@@ -193,7 +125,7 @@ namespace PintheCloud.Utilities
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
         {
-            MyDebug.WriteLine("Chooser Done");
+            Debug.WriteLine("Chooser Done");
         }
     }
 }

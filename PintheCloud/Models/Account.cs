@@ -9,6 +9,11 @@ namespace PintheCloud.Models
 {
     public class Account
     {
+        public enum StorageAccountType { SKY_DRIVE, DROP_BOX, GOOGLE_DRIVE }
+        public StorageAccountType AccountType;
+        public object RawAccount;
+
+
         // Application Account Setting Key
         public static string[] ACCOUNT_IS_SIGN_IN_KEYS = { "ACCOUNT_SKY_DRIVE_IS_SIGN_IN_KEY", "ACCOUNT_DROPBOX_IS_SIGN_IN_KEY" };
         public static string[] ACCOUNT_ID_KEYS = { "ACCOUNT_SKY_DRIVE_ID_KEY", "ACCOUNT_DROPBOX_ID_KEY" };
@@ -54,7 +59,9 @@ namespace PintheCloud.Models
         [JsonProperty(PropertyName = "account_type_name")]
         public string account_type_name { get; set; }
 
-
+        public Account()
+        {
+        }
         public Account(string account_platform_id, string account_platform_id_type, string account_name, 
             string account_first_name, string account_last_name, string account_locale,
             string account_token, double account_used_size, string account_type_name)

@@ -106,7 +106,7 @@ namespace PintheCloud.Utilities
             string DownloadUrl;
             if (file.ExportLinks != null && file.MimeType != null && file.MimeType.Contains("application/vnd.google-apps"))
             {
-                DownloadUrl = file.ExportLinks[GoogleDriveManager.googleDocMapper[file.MimeType]];
+                DownloadUrl = file.ExportLinks[GoogleDriveManager.GoogleDocMapper[file.MimeType]];
             }
             else
             {

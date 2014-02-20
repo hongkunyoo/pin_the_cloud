@@ -17,6 +17,7 @@ namespace PintheCloud.Models
     /// </summary>
     public class FileObject
     {
+        #region Variables
         public enum FileObjectType { FILE, FOLDER, GOOGLE_DOC };
         /// <summary>
         /// The id to Get, Upload, Download
@@ -62,6 +63,8 @@ namespace PintheCloud.Models
         /// The child list of the folder.
         /// </summary>
         public List<FileObject> FileList { get; set; }
+        #endregion
+
         public FileObject()
         {
         }
@@ -80,6 +83,8 @@ namespace PintheCloud.Models
             this.MimeType = MimeType;
         }
 
+
+        #region Test Methods
         public static void PrintFile(FileObject file)
         {
             Debug.WriteLine("id : "+file.Id);
@@ -104,5 +109,6 @@ namespace PintheCloud.Models
                 PrintFile(file);
             }
         }
+        #endregion
     }
 }

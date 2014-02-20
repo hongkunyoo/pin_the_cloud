@@ -15,10 +15,13 @@ namespace PintheCloud.Managers
 {
     public class DropBoxManager
     {
+        #region Variables
         private DropNetClient _client;
         private string APP_KEY = "gxjfureco8noyle";
         private string APP_SECRET = "iskekcebjky6vbm";
         private string DROP_BOX_USER = "DROP_BOX_USER";
+        private Account CurrentAccount;
+        #endregion
 
         public Task<bool> SignIn()
         {
@@ -40,6 +43,10 @@ namespace PintheCloud.Managers
                         user.Token = accessToken.Token;
                         user.Secret = accessToken.Secret;
                         App.ApplicationSettings[DROP_BOX_USER] = user;
+                        App.ApplicationSettings.Save();
+                        this.CurrentAccount = new Account();
+                        this.CurrentAccount.RawAccount = user;
+                        this.CurrentAccount.AccountType = Account.StorageAccountType.DROP_BOX;
                         _client.UserLogin = user;
                         tcs.SetResult(true);
                     },
@@ -63,6 +70,11 @@ namespace PintheCloud.Managers
         public void SignOut()
         {
             App.ApplicationSettings.Remove(DROP_BOX_USER);
+            this.CurrentAccount = null;
+        }
+        public Account GetAccount()
+        {
+            return this.CurrentAccount;
         }
         public Task<FileObject> GetRootFolderAsync()
         {
@@ -91,27 +103,7 @@ namespace PintheCloud.Managers
 
             return list;
         }
-        //public async Task<FileObject> Synchronize()
-        //{
-        //}
-        public async Task<StorageFile> DownloadFileAsync(string sourceFileId, StorageFile targetFile)
-        {
-            TaskCompletionSource<StorageFile> tcs = new TaskCompletionSource<StorageFile>();
-            Stream output = await targetFile.OpenStreamForWriteAsync();
-
-            _client.GetFileAsync(sourceFileId, new Action<IRestResponse>((response) =>
-            {
-                MemoryStream input = new MemoryStream(response.RawBytes);
-                this._Streaming(input, output);
-                tcs.SetResult(targetFile);
-            }), new Action<DropNet.Exceptions.DropboxException>((ex) =>
-            {
-                tcs.SetException(new Exception("failed"));
-            }));
-
-            return await tcs.Task;
-        }
-        public Task<Stream> DownloadFileThroughStreamAsync(string sourceFileId)
+        public Task<Stream> DownloadFileStreamAsync(string sourceFileId)
         {
             TaskCompletionSource<Stream> tcs = new TaskCompletionSource<Stream>();
             _client.GetFileAsync(sourceFileId, new Action<IRestResponse>((response) =>
@@ -125,19 +117,7 @@ namespace PintheCloud.Managers
 
             return tcs.Task;
         }
-        public async Task<bool> UploadFileAsync(string folderIdToStore, StorageFile file)
-        {
-            try
-            {
-                MetaData d = await _client.UploadFileTask(folderIdToStore, file.Name, await file.OpenStreamForReadAsync());
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-        public async Task<bool> UploadFileThroughStreamAsync(string folderIdToStore, string fileName, Stream outstream)
+        public async Task<bool> UploadFileStreamAsync(string folderIdToStore, string fileName, Stream outstream)
         {
             try
             {
@@ -150,6 +130,8 @@ namespace PintheCloud.Managers
                 return false;
             }
         }
+
+        #region Private Methods
         private bool _Streaming(Stream input, Stream output)
         {
             byte[] buffer = new byte[1024000];
@@ -169,27 +151,61 @@ namespace PintheCloud.Managers
                 throw new Exception("Create Streaming Failed");
             }
         }
-        /*
-        public FileObject ConvertToFileObject(MetaData metaTask)
-        {
-            FileObject file = new FileObject();
+        #endregion
 
-            file.Name = metaTask.Name;
-            file.CreateAt = metaTask.ModifiedDate.ToString(); //14/02/2014 15:48:13
-            file.UpdateAt = metaTask.ModifiedDate.ToString(); //14/02/2014 15:48:13
-            file.Id = metaTask.Path; // Full path
-            file.ParentId = metaTask.Path;
-            //file.Size = Convert.ToInt32(metaTask.Size);
-            //file.Size = metaTask.bytes <- int
-            //file.Size = metaTask.Size <- string
-            file.SizeUnit = "GB";
-            file.ThumnailType = "";
-            file.Type = ""; // Is_Dir = true | false
-            file.TypeDetail = metaTask.Extension; // .png
-            file.UpdateAt = metaTask.ModifiedDate.ToString();
+        #region Not Using Methods
+        //public FileObject ConvertToFileObject(MetaData metaTask)
+        //{
+        //    FileObject file = new FileObject();
 
-            return file;
-        }
-        */
+        //    file.Name = metaTask.Name;
+        //    file.CreateAt = metaTask.ModifiedDate.ToString(); //14/02/2014 15:48:13
+        //    file.UpdateAt = metaTask.ModifiedDate.ToString(); //14/02/2014 15:48:13
+        //    file.Id = metaTask.Path; // Full path
+        //    file.ParentId = metaTask.Path;
+        //    //file.Size = Convert.ToInt32(metaTask.Size);
+        //    //file.Size = metaTask.bytes <- int
+        //    //file.Size = metaTask.Size <- string
+        //    file.SizeUnit = "GB";
+        //    file.ThumnailType = "";
+        //    file.Type = ""; // Is_Dir = true | false
+        //    file.TypeDetail = metaTask.Extension; // .png
+        //    file.UpdateAt = metaTask.ModifiedDate.ToString();
+
+        //    return file;
+        //}
+        
+
+        //public async Task<StorageFile> DownloadFileAsync(string sourceFileId, StorageFile targetFile)
+        //{
+        //    TaskCompletionSource<StorageFile> tcs = new TaskCompletionSource<StorageFile>();
+        //    Stream output = await targetFile.OpenStreamForWriteAsync();
+
+        //    _client.GetFileAsync(sourceFileId, new Action<IRestResponse>((response) =>
+        //    {
+        //        MemoryStream input = new MemoryStream(response.RawBytes);
+        //        this._Streaming(input, output);
+        //        tcs.SetResult(targetFile);
+        //    }), new Action<DropNet.Exceptions.DropboxException>((ex) =>
+        //    {
+        //        tcs.SetException(new Exception("failed"));
+        //    }));
+
+        //    return await tcs.Task;
+        //}
+
+        //public async Task<bool> UploadFileAsync(string folderIdToStore, StorageFile file)
+        //{
+        //    try
+        //    {
+        //        MetaData d = await _client.UploadFileTask(folderIdToStore, file.Name, await file.OpenStreamForReadAsync());
+        //        return true;
+        //    }
+        //    catch
+        //    {
+        //        return false;
+        //    }
+        //}
+        #endregion
     }
 }

@@ -15,27 +15,19 @@ namespace PintheCloud.Managers
     public interface IStorageManager
     {
         Task SignIn();
-
         void SignOut();
-
-        Account GetCurrentAccount();
-
+        Account GetAccount();
         Task<FileObject> GetRootFolderAsync();
-
         Task<List<FileObject>> GetRootFilesAsync();
-
         Task<FileObject> GetFileAsync(string fileId);
-
         Task<List<FileObject>> GetFilesFromFolderAsync(string folderId);
+        Task<Stream> DownloadFileStreamAsync(string sourceFileId, Progress<LiveOperationProgress> listener);
+        Task<bool> UploadFileStreamAsync(string folderIdToStore, string fileName, Stream outstream);
 
-        Task<StorageFile> DownloadFileAsync(string sourceFileId, Uri destinationUri);
-
-        Task<Stream> DownloadFileThroughStreamAsync(string sourceFileId, Progress<LiveOperationProgress> listener);
-
-        Task<bool> UploadFileAsync(string folderIdToStore, StorageFile file);
-
-        Task<bool> UploadFileThroughStreamAsync(string folderIdToStore, string fileName, Stream outstream);
-
-        Task<StorageFolder> DownloadFolderAsync(string sourceFolderId, StorageFolder folder);
+        # region Not Using Methos
+        //Task<StorageFile> DownloadFileAsync(string sourceFileId, Uri destinationUri);
+        //Task<StorageFolder> DownloadFolderAsync(string sourceFolderId, StorageFolder folder);
+        //Task<bool> UploadFileAsync(string folderIdToStore, StorageFile file);
+        # endregion
     }
 }

@@ -138,7 +138,7 @@ namespace PintheCloud.Pages
                 Task signInTask = App.IStorageManager.SignIn();
                 App.TaskManager.AddSignInTask(signInTask, App.SKY_DRIVE_KEY_INDEX);
                 await App.TaskManager.WaitSignInTask(App.SKY_DRIVE_KEY_INDEX);
-                if (App.IStorageManager.GetCurrentAccount() != null)
+                if (App.IStorageManager.GetAccount() != null)
                 {
                     this.SetSkyDriveSignButton(true);
                 }

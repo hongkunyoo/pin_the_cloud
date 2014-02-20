@@ -93,7 +93,7 @@ namespace PintheCloud.Pages
             else if (pivot == ExplorerPage.PIN_INFO_PIVOT_INDEX)  // Pin state
             {
                 // Get parameters
-                Account account = App.IStorageManager.GetCurrentAccount();
+                Account account = App.IStorageManager.GetAccount();
                 this.SpaceName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
                 this.AccountId = account.account_platform_id;
                 this.AccountName = account.account_name;
@@ -165,7 +165,7 @@ namespace PintheCloud.Pages
 
             // TODO Does it get all files every time?
             ObservableCollection<FileObject> list = new ObservableCollection<FileObject>
-                (await App.BlobStorageManager.GetFilesFromFolderAsync(this.AccountId, this.SpaceId));
+                (await App.BlobStorageManager.GetFilesFromSpotAsync(this.AccountId, this.SpaceId));
 
             // If file exists, show it.
             // Otherwise, show no file in spot message.
@@ -231,8 +231,8 @@ namespace PintheCloud.Pages
 
                 // TODO if it failed, show error message.
                 // Upload.
-                Stream stream = await App.IStorageManager.DownloadFileThroughStreamAsync(file.Id, this.ProgressHandler);
-                await App.BlobStorageManager.UploadFileThroughStreamAsync(this.AccountId, this.SpaceId, file.Name, stream);
+                Stream stream = await App.IStorageManager.DownloadFileStreamAsync(file.Id, this.ProgressHandler);
+                await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpaceId, file.Name, stream);
             }
 
 
@@ -249,8 +249,8 @@ namespace PintheCloud.Pages
         private async Task<bool> DownloadFilesAsync(string fildObjectId, string fileObjectName)
         {
             FileObject rootFolder = await App.IStorageManager.GetRootFolderAsync();
-            if (!await App.IStorageManager.UploadFileThroughStreamAsync
-                    (rootFolder.Id, fileObjectName, await App.BlobStorageManager.DownloadFileThroughStreamAsync(fildObjectId)))
+            if (!await App.IStorageManager.UploadFileStreamAsync
+                    (rootFolder.Id, fileObjectName, await App.BlobStorageManager.DownloadFileStreamAsync(fildObjectId)))
                 return false;
             else
                 return true;

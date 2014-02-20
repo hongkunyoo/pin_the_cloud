@@ -473,7 +473,6 @@ namespace PintheCloud.Pages
                     this.SelectedFile.Clear();
                     this.PinInfoAppBarButton.IsEnabled = false;
                     this.SetPinInfoListAsync(fileObject, AppResources.Loading);
-                    MyDebug.WriteLine(fileObject.Name);
                 }
                 else  // Do selection if file
                 {
@@ -492,7 +491,6 @@ namespace PintheCloud.Pages
                         if (this.SelectedFile.Count <= 0)
                             this.PinInfoAppBarButton.IsEnabled = false;
                     }
-                    MyDebug.WriteLine(fileObject.Name);
                 }
             }
         }
@@ -535,7 +533,7 @@ namespace PintheCloud.Pages
                 Task signInTask = App.IStorageManager.SignIn();
                 App.TaskManager.AddSignInTask(signInTask, this.CurrentPlatformIndex);
                 await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);
-                if (App.IStorageManager.GetCurrentAccount() != null)
+                if (App.IStorageManager.GetAccount() != null)
                 {
                     this.SetPinInfoListAsync(null, AppResources.Loading);
                 }
@@ -570,7 +568,7 @@ namespace PintheCloud.Pages
 
 
             // If it haven't signed out before working below code, do it.
-            if (App.SkyDriveManager.GetCurrentAccount() != null)
+            if (App.SkyDriveManager.GetAccount() != null)
             {
                 // If folder null, set root.
                 if (folder == null)
