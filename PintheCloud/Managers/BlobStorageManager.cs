@@ -84,12 +84,19 @@ namespace PintheCloud.Managers
         /// <returns>The downloaded file</returns>
         public async Task<StorageFile> DownloadFileAsync(string id, StorageFile downloadFile)
         {
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(id);
-            using (Stream s = await downloadFile.OpenStreamForWriteAsync())
+            try
             {
-                await blockBlob.DownloadToStreamAsync(s);
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(id);
+                using (Stream s = await downloadFile.OpenStreamForWriteAsync())
+                {
+                    await blockBlob.DownloadToStreamAsync(s);
+                }
+                return downloadFile;
             }
-            return downloadFile;
+            catch
+            {
+                throw new ShareException(id, ShareException.ShareType.DOWNLOAD);
+            }
         }
         /// <summary>
         /// Downloads file to the given StorageFile using directory.
@@ -110,8 +117,16 @@ namespace PintheCloud.Managers
         /// <returns>The input stream for downloading file</returns>
         public async Task<Stream> DownloadFileStreamAsync(string id)
         {
-            CloudBlockBlob blockBlob = container.GetBlockBlobReference(id);
-            return await blockBlob.OpenReadAsync();
+            try
+            {
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(id);
+                return await blockBlob.OpenReadAsync();
+            }
+            catch
+            {
+                throw new ShareException(id, ShareException.ShareType.DOWNLOAD);
+            }
+            
         }
         /// <summary>
         /// Upload File to a given stream.
@@ -133,7 +148,7 @@ namespace PintheCloud.Managers
             }
             catch
             {
-                return null;
+                throw new ShareException(account + "/" + spaceId + "/" + fileName, ShareException.ShareType.UPLOAD);
             }
             return account + "/" + spaceId + "/" + fileName;
         }

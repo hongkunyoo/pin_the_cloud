@@ -4,6 +4,8 @@ using Google.Apis.Drive.v2;
 using Google.Apis.Drive.v2.Data;
 using Google.Apis.Services;
 using Google.Apis.Upload;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PintheCloud.Models;
 using PintheCloud.Utilities;
 using System;
@@ -14,16 +16,18 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel;
 using Windows.Storage;
 
 namespace PintheCloud.Managers
 {
-    public class GoogleDriveManager
+    public class GoogleDriveManager : IStorageManager
     {
         #region Variables
         private DriveService service;
         private Account CurrentAccount;
         public static Dictionary<string, string> GoogleDocMapper;
+        public static Dictionary<string, string> MimeTypeMapper;
         public static Dictionary<string, string> ExtensionMapper;
         private string GOOGLE_DRIVE_USER = "GOOGLE_DRIVE_USER";
 
@@ -33,48 +37,30 @@ namespace PintheCloud.Managers
         public GoogleDriveManager()
         {
             // Converting strings from google-docs to office files
-            GoogleDocMapper = new Dictionary<string, string>();
+            GoogleDriveManager.GoogleDocMapper = new Dictionary<string, string>();
+            GoogleDriveManager.ExtensionMapper = new Dictionary<string, string>();
 
             //GoogleDocMapper.Add("application/vnd.google-apps.form", "Not Supported");
             //GoogleDocMapper.Add("application/vnd.google-apps.folder", "Folder");
 
             // Document file
-            GoogleDocMapper.Add("application/vnd.google-apps.document", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+            GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.document", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
             // SpreadSheet file
-            GoogleDocMapper.Add("application/vnd.google-apps.spreadsheet", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.spreadsheet", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             // Image file
-            GoogleDocMapper.Add("application/vnd.google-apps.drawing", "image/png");
+            GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.drawing", "image/png");
             // Presentation file
-            GoogleDocMapper.Add("application/vnd.google-apps.presentation", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
+            GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.presentation", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
 
-            /*
-            // Convert from extension to mimeType
-            ExtensionMapper = new Dictionary<string, string>();
-            // MP3
-            ExtensionMapper.Add("","");
-            // PDF
-            ExtensionMapper.Add("", "");
-            // PPT
-            ExtensionMapper.Add("", "");
-            // XLS
-            ExtensionMapper.Add("", "");
-            // DOC
-            ExtensionMapper.Add("", "");
-            // PNG
-            ExtensionMapper.Add("", "");
-            // JPG
-            ExtensionMapper.Add("", "");
-            // MP4
-            ExtensionMapper.Add("", "");
-            // HWP
-            ExtensionMapper.Add("", "");
-            // WMA
-            ExtensionMapper.Add("", "");
-             * */
+            GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.document", ".doc");
+            GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.spreadsheet", ".xls");
+            GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.drawing", ".png");
+            GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.presentation", ".ppt");
+
+            SetMimeTypeMapper();
         }
         public async Task SignIn()
         {
-            
             try
             {
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
@@ -152,27 +138,12 @@ namespace PintheCloud.Managers
             }
             return list;
         }
-
-        public async Task<Stream> DownloadFileStreamAsnyc(string fileId)
+        public async Task<Stream> DownloadFileStreamAsync(string fileId)
         {
             byte[] inarray = await service.HttpClient.GetByteArrayAsync(fileId);
             return new MemoryStream(inarray);
         }
-        private async Task<Stream> DownloadFileStreamAsnyc2(string downloadUrl)
-        {
-            var downloader = new MediaDownloader(this.service);
-            MemoryStream ms = new MemoryStream();
-            var progress = await downloader.DownloadAsync(downloadUrl, ms);
-            if (progress.Status == DownloadStatus.Completed)
-            {
-                return ms;
-            }
-            else
-            {
-                return null;
-            }
-        }
-        private async Task<bool> UploadFileAsync(string folderId, string fileName, Stream inputStream)
+        public async Task<bool> UploadFileStreamAsync(string folderId, string fileName, Stream inputStream)
         {
             try
             {
@@ -181,10 +152,11 @@ namespace PintheCloud.Managers
 
                 ParentReference p = new ParentReference();
                 p.Id = folderId;
+                file.Parents = new List<ParentReference>();
                 file.Parents.Add(p);
-
+                
                 string extension = ParseHelper.SplitNameAndExtension(fileName)[1];
-                var insert = service.Files.Insert(file, inputStream, GoogleDriveManager.ExtensionMapper[extension]);
+                var insert = service.Files.Insert(file, inputStream, GoogleDriveManager.MimeTypeMapper[extension]);
                 var task = await insert.UploadAsync();
             }
             catch
@@ -195,8 +167,14 @@ namespace PintheCloud.Managers
         }
         
 
-
         #region Private Methods
+        private async Task SetMimeTypeMapper()
+        {
+            StorageFile js = await (await Package.Current.InstalledLocation.GetFolderAsync("Assets")).GetFileAsync("mimeType.js");
+            JsonTextReader jtr = new JsonTextReader(new StreamReader(await js.OpenStreamForReadAsync()));
+            Newtonsoft.Json.JsonSerializer s = new JsonSerializer();
+            GoogleDriveManager.MimeTypeMapper = s.Deserialize<Dictionary<string, string>>(jtr);
+        }
         private string _GetUserSession()
         {
             if (App.ApplicationSettings.Contains(GOOGLE_DRIVE_USER))
@@ -317,10 +295,24 @@ namespace PintheCloud.Managers
         #endregion
 
         #region Not Using Methods
-        private async Task DeleteFile(string fileId)
-        {
-            await service.Files.Delete(fileId).ExecuteAsync();
-        }
+        //private async Task DeleteFile(string fileId)
+        //{
+        //    await service.Files.Delete(fileId).ExecuteAsync();
+        //}
+        //public async Task<Stream> DownloadFileStreamAsync2(string downloadUrl)
+        //{
+        //    var downloader = new MediaDownloader(this.service);
+        //    MemoryStream ms = new MemoryStream();
+        //    var progress = await downloader.DownloadAsync(downloadUrl, ms);
+        //    if (progress.Status == DownloadStatus.Completed)
+        //    {
+        //        return ms;
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //}
         #endregion
     }
 }

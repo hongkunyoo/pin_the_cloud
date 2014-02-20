@@ -21,7 +21,7 @@ namespace PintheCloud.Managers
         Task<List<FileObject>> GetRootFilesAsync();
         Task<FileObject> GetFileAsync(string fileId);
         Task<List<FileObject>> GetFilesFromFolderAsync(string folderId);
-        Task<Stream> DownloadFileStreamAsync(string sourceFileId, Progress<LiveOperationProgress> listener);
+        Task<Stream> DownloadFileStreamAsync(string sourceFileId);
         Task<bool> UploadFileStreamAsync(string folderIdToStore, string fileName, Stream outstream);
 
         # region Not Using Methos

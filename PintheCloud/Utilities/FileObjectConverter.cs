@@ -97,7 +97,7 @@ namespace PintheCloud.Utilities
         public static FileObject ConvertToFileObject(Google.Apis.Drive.v2.Data.File file)
         {
             String Id = file.Id ?? "No Id";
-            string Name = file.Title ?? "No Name";
+            
             double Size = (file.FileSize == null ? 0.0 : file.FileSize.Value * 1.0);
             FileObject.FileObjectType Type = (file.MimeType.Contains("application/vnd.google-apps.folder")) ? FileObject.FileObjectType.FOLDER : (file.MimeType.Contains("application/vnd.google-apps") ? FileObject.FileObjectType.GOOGLE_DOC : FileObject.FileObjectType.FILE);
             string Extension = file.FileExtension ?? "No Extension";
@@ -114,7 +114,15 @@ namespace PintheCloud.Utilities
             }
             
             string MimeType = file.MimeType ?? "No MimeType";
-            
+            string Name = "";
+            if (!"application/vnd.google-apps.folder".Equals(file.MimeType) && file.MimeType.Contains("application/vnd.google-apps"))
+            {
+                Name = file.Title + GoogleDriveManager.ExtensionMapper[file.MimeType];
+            }
+            else
+            {
+                Name = file.Title;
+            }
             return new FileObject(Id,Name,Size,Type, Extension,UpdateAt,Thumbnail,DownloadUrl,MimeType);
         }
     }

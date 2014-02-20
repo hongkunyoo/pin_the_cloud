@@ -113,7 +113,7 @@
     <Compile Include="Utilities\FileObjectConverter.cs" />
     <Compile Include="Utilities\MyWebBrowserResult.cs" />
     <Compile Include="Utilities\MyWebBrowserTask.cs" />
-    <Compile Include="Utilities\StorageException.cs" />
+    <Compile Include="Utilities\ShareException.cs" />
     <Compile Include="Utilities\StringToThumnailUriConverter.cs" />
     <Compile Include="Pages\FileListPage.xaml.cs">
       <DependentUpon>FileListPage.xaml</DependentUpon>
@@ -195,6 +195,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\mimeType.js" />
     <Content Include="Assets\pajeon\png%402x\filelist_edit.png" />
     <Content Include="Assets\pajeon\png%402x\filelist_like.png" />
     <Content Include="Assets\pajeon\png%402x\filelist_like_p.png" />

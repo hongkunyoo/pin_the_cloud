@@ -129,19 +129,19 @@ namespace PintheCloud.Managers
         //
         // Returns:
         //     The input stream to download file.
-        public async Task<Stream> DownloadFileStreamAsync(string sourceFileId, Progress<LiveOperationProgress> listener)
+        public async Task<Stream> DownloadFileStreamAsync(string sourceFileId)
         {
             System.Threading.CancellationTokenSource ctsDownload = new System.Threading.CancellationTokenSource();
             LiveDownloadOperationResult result = null;
+            Progress<LiveOperationProgress> listener = null;
             try
             {
-                //result = await this.LiveClient.DownloadAsync(sourceFileId + "/content");
-                result = await this.LiveClient.DownloadAsync(sourceFileId + "/content", ctsDownload.Token, listener);
+                result = await this.LiveClient.DownloadAsync(sourceFileId + "/content");
+                //result = await this.LiveClient.DownloadAsync(sourceFileId + "/content", ctsDownload.Token, listener);
             }
-            catch (Exception ex)
+            catch
             {
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
-                return null;
+                throw new ShareException(sourceFileId, ShareException.ShareType.DOWNLOAD);
             }
 
             if (result.Stream == null)
@@ -174,23 +174,11 @@ namespace PintheCloud.Managers
                 LiveOperationResult result = await this.LiveClient
                     .UploadAsync(folderIdToStore, fileName, outstream, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
             }
-            catch (System.Threading.Tasks.TaskCanceledException ex)
+            catch
             {
                 ctsUpload.Cancel();
-                System.Diagnostics.Debug.WriteLine("taskcancel : " + ex.ToString());
-                return false;
-            }
-            catch (LiveConnectException exception)
-            {
-                ctsUpload.Cancel();
-                System.Diagnostics.Debug.WriteLine("LiveConnection : " + exception.ToString());
-                return false;
-            }
-            catch (Exception e)
-            {
-                ctsUpload.Cancel();
-                System.Diagnostics.Debug.WriteLine("exception : " + e.ToString());
-                return false;
+                throw new ShareException(fileName, ShareException.ShareType.UPLOAD);
+                
             }
             return true;
         }

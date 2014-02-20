@@ -48,7 +48,7 @@ namespace PintheCloud.Pages
             // SIgn in
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                //NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
+                NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
                 for (int i = 0; i < App.IStorageManagers.Length; i++)
                 {
                     App.IStorageManager = App.IStorageManagers[i];

@@ -40,14 +40,31 @@ namespace PintheCloud.Utilities
             GoogleDriveManager manager = new GoogleDriveManager();
             
             await manager.SignIn();
-            //manager.SignOut();
-            //FileObject root = await manager.GetRootFolderAsync();
-            //Debug.WriteLine("============================================================");
-            //Debug.WriteLine("============================================================");
-            ////FileObject.PrintFile(root);
-            //List<FileObject> list = await manager.GetFilesFromFolderAsync("0B2cUhw6EfHrOVXJvZFBCR0dQZnM");
+
+            List<FileObject> list = await manager.GetRootFilesAsync();
+            FileObject rootFie = await manager.GetRootFolderAsync();
+            FileObject fo = list[0];
+            Stream input = await manager.DownloadFileStreamAsync(fo.DownloadUrl);
+            //StorageFile file = await GetStreamGiveFile(input, fo.Name);
+            //Debug.WriteLine(file.Name);
+            //await Launcher.LaunchFileAsync(file);
+            bool re = await manager.UploadFileStreamAsync(rootFie.Id, "myplz.xls", input);
             //FileObject.PrintFileList(list);
-            
+        }
+
+        private async Task<StorageFile> GetStreamGiveFile(Stream input, string fileName)
+        {
+            byte[] buffer = new byte[1024000];
+            int count = 0;
+            StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            Stream ouput = await file.OpenStreamForWriteAsync();
+            while ((count = input.Read(buffer, 0, buffer.Length)) != 0)
+            {
+                ouput.Write(buffer, 0, count);
+            }
+            input.Close();
+            ouput.Close();
+            return file;
         }
 
         protected  override void OnNavigatedFrom(NavigationEventArgs e)
@@ -113,9 +130,14 @@ namespace PintheCloud.Utilities
 
         private void button_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            PhotoChooserTask photoChooserTask = new PhotoChooserTask();
-            photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
-            photoChooserTask.Show();
+            //PhotoChooserTask photoChooserTask = new PhotoChooserTask();
+            //photoChooserTask.Completed += new EventHandler<PhotoResult>(photoChooserTask_Completed);
+            //photoChooserTask.Show();
+            //Debug.WriteLine(GoogleDriveManager.ExtensionMapper.Keys);
+            foreach (string key in GoogleDriveManager.ExtensionMapper.Keys)
+            {
+                Debug.WriteLine(key + " : " + GoogleDriveManager.ExtensionMapper[key]);
+            }
         }
 
         private void button_Click2(object sender, System.Windows.RoutedEventArgs e)

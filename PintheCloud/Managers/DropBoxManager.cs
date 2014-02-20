@@ -13,7 +13,7 @@ using Windows.Storage;
 
 namespace PintheCloud.Managers
 {
-    public class DropBoxManager
+    public class DropBoxManager : IStorageManager
     {
         #region Variables
         private DropNetClient _client;
@@ -23,9 +23,9 @@ namespace PintheCloud.Managers
         private Account CurrentAccount;
         #endregion
 
-        public Task<bool> SignIn()
+        public async Task SignIn()
         {
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            //TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             _client = new DropNetClient(APP_KEY, APP_SECRET);
 
             if (App.ApplicationSettings.Contains(DROP_BOX_USER))
@@ -48,24 +48,24 @@ namespace PintheCloud.Managers
                         this.CurrentAccount.RawAccount = user;
                         this.CurrentAccount.AccountType = Account.StorageAccountType.DROP_BOX;
                         _client.UserLogin = user;
-                        tcs.SetResult(true);
+                        //tcs.SetResult(true);
                     },
                     (error) =>
                     {
-                        tcs.SetResult(false);
+                        //tcs.SetResult(false);
                     });
                 },
                 (error) =>
                 {
-                    tcs.SetResult(false);
+                    //tcs.SetResult(false);
                 });
             }
             else
             {
                 _client.UserLogin = (UserLogin)App.ApplicationSettings[DROP_BOX_USER];
-                tcs.SetResult(true);
+                //tcs.SetResult(true);
             }
-            return tcs.Task;
+            //return tcs.Task;
         }
         public void SignOut()
         {
@@ -113,6 +113,7 @@ namespace PintheCloud.Managers
             }), new Action<DropNet.Exceptions.DropboxException>((ex) =>
             {
                 tcs.SetException(new Exception("failed"));
+                throw new ShareException(sourceFileId, ShareException.ShareType.DOWNLOAD);
             }));
 
             return tcs.Task;
@@ -127,7 +128,7 @@ namespace PintheCloud.Managers
             }
             catch
             {
-                return false;
+                throw new ShareException(fileName, ShareException.ShareType.UPLOAD);
             }
         }
 

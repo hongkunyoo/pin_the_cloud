@@ -221,7 +221,8 @@ namespace PintheCloud.Pages
 
 
             // Upload.
-            Stream stream = await App.IStorageManager.DownloadFileStreamAsync(file.Id, this.ProgressHandler);
+            //Stream stream = await App.IStorageManager.DownloadFileStreamAsync(file.Id, this.ProgressHandler);
+            Stream stream = await App.IStorageManager.DownloadFileStreamAsync(file.Id);
             string uploadPath = null;
             if (stream != null)
             {
