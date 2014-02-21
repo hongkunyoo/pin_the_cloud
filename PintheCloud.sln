@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PintheCloud", "PintheCloud\PintheCloud.csproj", "{76C7756F-1A04-4893-9B4F-378BE731EBDF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DropNet.WindowsPhone", "..\..\..\Desktop\DropNet-master\DropNet.WindowsPhone\DropNet.WindowsPhone.csproj", "{C73D4D29-41E9-4BB1-B70D-38E36187CF51}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DropNet.WindowsPhone", "DropNet.WindowsPhone\DropNet.WindowsPhone.csproj", "{C73D4D29-41E9-4BB1-B70D-38E36187CF51}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

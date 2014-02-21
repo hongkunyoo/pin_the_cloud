@@ -392,7 +392,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Desktop\DropNet-master\DropNet.WindowsPhone\DropNet.WindowsPhone.csproj">
+    <ProjectReference Include="..\DropNet.WindowsPhone\DropNet.WindowsPhone.csproj">
       <Project>{C73D4D29-41E9-4BB1-B70D-38E36187CF51}</Project>
       <Name>DropNet.WindowsPhone</Name>
     </ProjectReference>
