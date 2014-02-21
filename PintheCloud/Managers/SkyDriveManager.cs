@@ -143,11 +143,7 @@ namespace PintheCloud.Managers
             {
                 throw new ShareException(sourceFileId, ShareException.ShareType.DOWNLOAD);
             }
-
-            if (result.Stream == null)
-                return null;
-            else
-                return result.Stream;
+            return result.Stream;
         }
         // Summary:
         //     Upload files by output stream.
