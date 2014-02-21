@@ -11,7 +11,7 @@ using System.Windows.Data;
 
 namespace PintheCloud.Utilities
 {
-    public static class FileObjectConverter
+    public class FileObjectConverter
     {
         /// <summary>
         /// Converting SkyDrive Model to FileObject.

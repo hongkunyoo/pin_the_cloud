@@ -42,6 +42,9 @@ namespace PintheCloud.Pages
         private int CurrentPlatformIndex = 0;
 
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
+        private ApplicationBarMenuItem SkyDriveAppBarMenuItem= new ApplicationBarMenuItem();
+        private ApplicationBarMenuItem DropboxAppBarMenuItem = new ApplicationBarMenuItem();
+        private ApplicationBarMenuItem GoogleDriveAppBarMenuItem = new ApplicationBarMenuItem();
         private ApplicationBarMenuItem[] AppBarMenuItems = null;
 
         private SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
@@ -63,11 +66,11 @@ namespace PintheCloud.Pages
             this.PinInfoAppBarButton.Click += pinInfoAppBarButton_Click;
 
             // Set Cloud Setting selection.
-            this.AppBarMenuItems = new ApplicationBarMenuItem[App.IStorageManagers.Length];
+            this.AppBarMenuItems = new ApplicationBarMenuItem[] 
+                { this.SkyDriveAppBarMenuItem, this.DropboxAppBarMenuItem, this.GoogleDriveAppBarMenuItem };
             for (int i = 0; i < this.AppBarMenuItems.Length; i++)
             {
-                this.AppBarMenuItems[i] = new ApplicationBarMenuItem();
-                this.AppBarMenuItems[i].Text = Account.PLATFORM_NAMES[i];
+                this.AppBarMenuItems[i].Text = Account.PLATFORMS[i];
                 this.AppBarMenuItems[i].Click += AppBarMenuItem_Click;
             }
 
@@ -75,7 +78,7 @@ namespace PintheCloud.Pages
             // Check main platform at frist login and set cloud mode
             int mainPlatformType = 0;
             App.ApplicationSettings.TryGetValue<int>(Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY, out mainPlatformType);
-            uiCurrentPlatformText.Text = Account.PLATFORM_NAMES[mainPlatformType];
+            uiCurrentPlatformText.Text = App.PLATFORMS[mainPlatformType];
             this.CurrentPlatformIndex = mainPlatformType;
 
             // Set Datacontext
@@ -105,9 +108,7 @@ namespace PintheCloud.Pages
 
                 // If it is already signin skydrive, load files.
                 // Otherwise, show signin button.
-                bool isSignIn = false;
-                App.ApplicationSettings.TryGetValue<bool>(App.IStorageManager.GetAccountIsSignInKey(), out isSignIn);
-                if (!isSignIn)  // wasn't signed in.
+                if (!this.GetIsSignIn())
                 {
                     if (uiPinInfoSignInGrid.Visibility == Visibility.Collapsed)
                     {
@@ -196,10 +197,7 @@ namespace PintheCloud.Pages
 
                     // If it wasn't already signed in, show signin button.
                     // Otherwise, load files
-                    bool isSignIn = false;
-                    App.IStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
-                    App.ApplicationSettings.TryGetValue<bool>(App.IStorageManager.GetAccountIsSignInKey(), out isSignIn);
-                    if (!isSignIn)  // wasn't signed in.
+                    if (!this.GetIsSignIn())  // wasn't signed in.
                     {
                         uiPinInfoListGrid.Visibility = Visibility.Collapsed;
                         uiPinInfoSignInGrid.Visibility = Visibility.Visible;
@@ -212,7 +210,10 @@ namespace PintheCloud.Pages
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
                             if (!this.IsFileObjectLoaded)
+                            {
+                                App.IStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
                                 this.SetPinInfoListAsync(null, AppResources.Loading);
+                            }
                         }
                         else
                         {
@@ -373,9 +374,17 @@ namespace PintheCloud.Pages
 
         private void AppBarMenuItem_Click(object sender, EventArgs e)
         {
-            // Get index
+            // Set index
             ApplicationBarMenuItem appBarMenuItem = (ApplicationBarMenuItem)sender;
-            int platformIndex = base.GetPlatformIndex(appBarMenuItem.Text);
+            int platformIndex = 0;
+            for(int i=0 ; i<App.PLATFORMS.Length ; i++)
+            {
+                if(appBarMenuItem.Text.Equals(App.PLATFORMS[i]))
+                {
+                    platformIndex = i;
+                    break;
+                }
+            }
 
 
             // If it is not in sky drive mode, change it.
@@ -384,14 +393,14 @@ namespace PintheCloud.Pages
                 if (!this.IsFileObjectLoading)
                 {
                     App.IStorageManager = App.IStorageManagers[platformIndex];
-                    uiCurrentPlatformText.Text = Account.PLATFORM_NAMES[platformIndex];
+                    uiCurrentPlatformText.Text = App.PLATFORMS[platformIndex];
                     this.CurrentPlatformIndex = platformIndex;
 
                     // If it is already signin skydrive, load files.
                     // Otherwise, show signin button.
-                    bool isSignIn = false;
-                    App.ApplicationSettings.TryGetValue<bool>(App.IStorageManager.GetAccountIsSignInKey(), out isSignIn);
-                    if (!isSignIn)
+                    bool isSkyDriveLogin = false;
+                    App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[platformIndex], out isSkyDriveLogin);
+                    if (!isSkyDriveLogin)
                     {
                         uiPinInfoListGrid.Visibility = Visibility.Collapsed;
                         uiPinInfoSignInGrid.Visibility = Visibility.Visible;
@@ -538,7 +547,8 @@ namespace PintheCloud.Pages
                 });
 
                 App.IStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
-                App.TaskManager.AddSignInTask(App.IStorageManager.SignIn(), this.CurrentPlatformIndex);
+                Task signInTask = App.IStorageManager.SignIn();
+                App.TaskManager.AddSignInTask(signInTask, this.CurrentPlatformIndex);
                 await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);
                 if (App.IStorageManager.GetAccount() != null)
                 {
@@ -571,7 +581,7 @@ namespace PintheCloud.Pages
 
             // Wait tasks
             await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);
-            await App.TaskManager.WaitSignOutTask(this.CurrentPlatformIndex);
+            await App.TaskManager.WaitTask(TaskManager.SIGN_OUT_TASK_KEY);
 
 
             // If it haven't signed out before working below code, do it.
@@ -619,6 +629,15 @@ namespace PintheCloud.Pages
             // Set Mutex false and Hide Process Indicator
             base.SetProgressIndicator(false);
             this.IsFileObjectLoading = false;
+        }
+
+
+        private bool GetIsSignIn()
+        {
+            bool isSignIn = false;
+            if (!App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[CurrentPlatformIndex], out isSignIn))
+                return false;
+            return isSignIn;
         }
     }
 }

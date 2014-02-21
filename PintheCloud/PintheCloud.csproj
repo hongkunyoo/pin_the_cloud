@@ -135,7 +135,7 @@
     <Compile Include="ViewModels\FileObjectViewItem.cs" />
     <Compile Include="ViewModels\FileObjectViewModel.cs" />
     <Compile Include="ViewModels\SpaceViewItem.cs" />
-    <Compile Include="Workers\CloudSkyDriveAccountWorker.cs" />
+    <Compile Include="Workers\SkyDriveAccountWorker.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountType.cs" />
     <Compile Include="Pages\PtcPage.cs" />

@@ -89,5 +89,18 @@ namespace PintheCloud.Pages
             string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountId=" + accountId + "&accountName=" + accountName;
             return parameters;
         }
+
+
+        public int GetPlatformIndex(string platform)
+        {
+            for (int i = 0; i < App.IStorageManagers.Length; i++)
+            {
+                if (platform.Equals(Account.PLATFORM_NAMES[i]))
+                {
+                    return i;
+                }
+            }
+            return (int)Account.StorageAccountType.SKY_DRIVE;
+        }
     }
 }

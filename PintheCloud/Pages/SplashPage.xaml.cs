@@ -40,7 +40,15 @@ namespace PintheCloud.Pages
             int mainPlatformType = 0;
             if (!App.ApplicationSettings.TryGetValue<int>(Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY, out mainPlatformType))
             {
-                App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = App.SKY_DRIVE_KEY_INDEX;
+                App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (int)Account.StorageAccountType.SKY_DRIVE;
+                App.ApplicationSettings.Save();
+            }
+
+            // Check nick name at frist login.
+            string nickName = null;
+            if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME_KEY, out nickName))
+            {
+                App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY] = AppResources.AtHere;
                 App.ApplicationSettings.Save();
             }
 
@@ -56,7 +64,7 @@ namespace PintheCloud.Pages
                     // If main platform is signed in, process it.
                     // Otherwise, ignore and go to explorer page.
                     bool isSignIn = false;
-                    App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[i], out isSignIn);
+                    App.ApplicationSettings.TryGetValue<bool>(App.IStorageManager.GetAccountIsSignInKey(), out isSignIn);
                     if (isSignIn)
                         App.TaskManager.AddSignInTask(App.IStorageManager.SignIn(), i);
                 }

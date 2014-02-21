@@ -140,9 +140,6 @@
   <data name="Pin" xml:space="preserve">
     <value>Pin</value>
   </data>
-  <data name="SkyDriveSignOut" xml:space="preserve">
-    <value>SkyDrive Sign Out</value>
-  </data>
   <data name="MySpot" xml:space="preserve">
     <value>My Spot</value>
   </data>
@@ -242,12 +239,6 @@
   <data name="AtHere" xml:space="preserve">
     <value>At Here</value>
   </data>
-  <data name="DropboxSignIn" xml:space="preserve">
-    <value>Dropbox Sign In</value>
-  </data>
-  <data name="DropboxSignOut" xml:space="preserve">
-    <value>Dropbox Sign Out</value>
-  </data>
   <data name="SpotNickName" xml:space="preserve">
     <value>Spot Nick Name</value>
   </data>
@@ -259,9 +250,6 @@
   </data>
   <data name="NoLocationAcessConsentCaption" xml:space="preserve">
     <value>Location Acess Consent</value>
-  </data>
-  <data name="SkyDriveSignIn" xml:space="preserve">
-    <value>SkyDrive Sign In</value>
   </data>
   <data name="DoingSignIn" xml:space="preserve">
     <value>Doing sign in...</value>
@@ -281,12 +269,6 @@
   <data name="MainCloudChangeMessage" xml:space="preserve">
     <value>Main Cloud is changed successfully.</value>
   </data>
-  <data name="Dropbox" xml:space="preserve">
-    <value>Dropbox</value>
-  </data>
-  <data name="SkyDrive" xml:space="preserve">
-    <value>SkyDrive</value>
-  </data>
   <data name="NoFileInSpotMessage" xml:space="preserve">
     <value>There is no files in this spot.</value>
   </data>
@@ -304,5 +286,14 @@
   </data>
   <data name="BadPinSpotMessage" xml:space="preserve">
     <value>Pin spot process met error. Please try it again.</value>
+  </data>
+  <data name="Dropbox" xml:space="preserve">
+    <value>Dropbox</value>
+  </data>
+  <data name="GoogleDrive" xml:space="preserve">
+    <value>GoogleDrive</value>
+  </data>
+  <data name="SkyDrive" xml:space="preserve">
+    <value>SkyDrive</value>
   </data>
 </root>

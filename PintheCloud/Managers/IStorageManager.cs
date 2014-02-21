@@ -17,6 +17,7 @@ namespace PintheCloud.Managers
         Task SignIn();
         void SignOut();
         Account GetAccount();
+        string GetAccountIsSignInKey();
         Task<FileObject> GetRootFolderAsync();
         Task<List<FileObject>> GetRootFilesAsync();
         Task<FileObject> GetFileAsync(string fileId);

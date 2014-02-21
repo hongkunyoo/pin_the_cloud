@@ -25,15 +25,20 @@ namespace PintheCloud.Managers
         #region Variables
         // Summary:
         //     Object to communicate with SkyDrive.
-        private CloudSkyDriveAccountWorker AccountWorker = new CloudSkyDriveAccountWorker();
+        private const string ACCOUNT_IS_SIGN_IN_KEY = "ACCOUNT_SKY_DRIVE_SIGN_IN_KEY";
+        public const string ACCOUNT_USED_SIZE_KEY = "ACCOUNT_SKY_DRIVE_USED_SIZE_KEY";
+        public const string ACCOUNT_BUSINESS_TYPE_KEY = "ACCOUNT_SKY_DRIVE_BUSINESS_TYPE_KEY";
+
+        private SkyDriveAccountWorker AccountWorker = new SkyDriveAccountWorker();
         private LiveConnectClient LiveClient = null;
         private Account CurrentAccount = null;
         #endregion
 
+
         public async Task SignIn()
         {
             // Add application settings before work for good UX
-            App.ApplicationSettings[Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_KEY_INDEX]] = true;
+            App.ApplicationSettings[ACCOUNT_IS_SIGN_IN_KEY] = true;
             App.ApplicationSettings.Save();
 
             // If it haven't registerd live client, register
@@ -41,10 +46,15 @@ namespace PintheCloud.Managers
             {
                 // If it success to register live connect session,
                 LiveConnectClient liveClient = await this.AccountWorker.GetLiveConnectClientAsync();
-                if (liveClient == null)
-                    return;
-                else
+                if (liveClient != null)
+                {
                     this.LiveClient = liveClient;
+                }
+                else
+                {
+                    this.SignOut();
+                    return;
+                }
             }
 
 
@@ -54,25 +64,48 @@ namespace PintheCloud.Managers
             dynamic profileResult = await this.AccountWorker.GetProfileResultAsync(this.LiveClient);
             if (profileResult != null)
             {
-                Account account = await this.AccountWorker.SignInSkyDriveAccountSingleSignOnAsync(this.LiveClient, profileResult);
+                Account account = await this.AccountWorker.SkyDriveSignInAsync(this.LiveClient, profileResult);
                 if (account != null)
-                {
                     this.CurrentAccount = account;
-                    this.CurrentAccount.AccountType = Account.StorageAccountType.SKY_DRIVE;
-                }
-                    
+                else
+                    this.SignOut();
+            }
+            else
+            {
+                this.SignOut();
             }
         }
+
+
         public void SignOut()
         {
+            // Remove user record
+            LiveAuthClient liveAuthClient = new LiveAuthClient(App.AZURE_CLIENT_ID);
+            liveAuthClient.Logout();
+
+            // Remove user is signed in record
+            App.ApplicationSettings.Remove(ACCOUNT_IS_SIGN_IN_KEY);
+            App.ApplicationSettings.Remove(ACCOUNT_USED_SIZE_KEY);
+            App.ApplicationSettings.Remove(ACCOUNT_BUSINESS_TYPE_KEY);
+
+            // Set null account
             this.LiveClient = null;
             this.CurrentAccount = null;
-            this.AccountWorker.SignOut();
         }
+
+
         public Account GetAccount()
         {
             return this.CurrentAccount;
         }
+
+
+        public string GetAccountIsSignInKey()
+        {
+            return ACCOUNT_IS_SIGN_IN_KEY;
+        }
+
+
         // Summary:
         //     Gets Root Folder of SkyDrive storage.
         //     It will be used to access the storage in the begining.
@@ -133,11 +166,9 @@ namespace PintheCloud.Managers
         {
             System.Threading.CancellationTokenSource ctsDownload = new System.Threading.CancellationTokenSource();
             LiveDownloadOperationResult result = null;
-            Progress<LiveOperationProgress> listener = null;
             try
             {
                 result = await this.LiveClient.DownloadAsync(sourceFileId + "/content");
-                //result = await this.LiveClient.DownloadAsync(sourceFileId + "/content", ctsDownload.Token, listener);
             }
             catch
             {

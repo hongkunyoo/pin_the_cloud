@@ -34,21 +34,12 @@ namespace PintheCloud.Pages
         private string AccountName;
 
         private FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
-        private Progress<LiveOperationProgress> ProgressHandler;
 
 
         public FileListPage()
         {
             InitializeComponent();
 
-
-            // Make progress handler
-            this.ProgressHandler = new Progress<LiveOperationProgress>((progress) =>
-            {
-                uiFileListProgressBar.Value = progress.ProgressPercentage;
-                double percentage = Math.Round(uiFileListProgressBar.Value * 10.0) / 10.0;
-                uiFileListProgressPercentageText.Text = percentage.ToString();
-            });
 
             // Set datacontext
             uiFileList.DataContext = this.FileObjectViewModel;

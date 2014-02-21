@@ -33,6 +33,7 @@ namespace PintheCloud.Pages
 
         // Instances
         public SpaceViewModel MySpotViewModel = new SpaceViewModel();
+        private Button[] SignButtons = null;
 
 
         public SettingsPage()
@@ -43,20 +44,20 @@ namespace PintheCloud.Pages
             /*** Application Pivot ***/
 
             // Set Nickname
-            string nickName = null;
-            if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME_KEY, out nickName))
-            {
-                nickName = AppResources.AtHere;
-                App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY] = AppResources.AtHere;
-                App.ApplicationSettings.Save();
-            }
-            uiSpotNickNameTextBox.Text = nickName;
+            uiSpotNickNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
 
 
             // Set SkyDrive Sign button
+            this.SignButtons[(int)Account.StorageAccountType.SKY_DRIVE] = uiSkyDriveSetMainButton;
+            this.SignButtons[(int)Account.StorageAccountType.DROPBOX] = uiDropboxSignButton;
+            this.SignButtons[(int)Account.StorageAccountType.GOOGLE_DRIVE] = uiGoogleDriveSignButton;
             bool isSignIn = false;
-            App.ApplicationSettings.TryGetValue<bool>(Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_KEY_INDEX], out isSignIn);
-            this.SetSkyDriveSignButton(isSignIn);
+            for(int i=0 ; i<App.IStorageManagers.Length ; i++)
+            {
+                App.IStorageManager = App.IStorageManagers[i];
+                App.ApplicationSettings.TryGetValue<bool>(App.IStorageManager.GetAccountIsSignInKey(), out isSignIn);
+                this.SetSignButton(i, isSignIn);
+            }
 
 
             // Set location access consent checkbox
@@ -120,10 +121,15 @@ namespace PintheCloud.Pages
 
         /*** Application ***/
 
-        private async void uiSkyDriveSignInButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private async void SignInButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
+                // Get index
+                Button signoutButton = (Button)sender;
+                int platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
+
+
                 // Set process indicator
                 base.Dispatcher.BeginInvoke(() =>
                 {
@@ -131,13 +137,12 @@ namespace PintheCloud.Pages
                     uiApplicationMessageGrid.Visibility = Visibility.Visible;
                 });
 
-                App.IStorageManager = App.IStorageManagers[App.SKY_DRIVE_KEY_INDEX];
-                Task signInTask = App.IStorageManager.SignIn();
-                App.TaskManager.AddSignInTask(signInTask, App.SKY_DRIVE_KEY_INDEX);
-                await App.TaskManager.WaitSignInTask(App.SKY_DRIVE_KEY_INDEX);
+                App.IStorageManager = App.IStorageManagers[platformIndex];
+                App.TaskManager.AddSignInTask(App.IStorageManager.SignIn(), platformIndex);
+                await App.TaskManager.WaitSignInTask(platformIndex);
                 if (App.IStorageManager.GetAccount() != null)
                 {
-                    this.SetSkyDriveSignButton(true);
+                    this.SetSignButton(platformIndex, true);
                 }
                 else
                 {
@@ -161,19 +166,23 @@ namespace PintheCloud.Pages
         }
 
 
-        private void uiSkyDriveSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void SignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             // Sign out
             MessageBoxResult result = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
-                Task signOutTask = this.SkyDriveSignOut();
-                App.TaskManager.AddTask(TaskManager.SIGN_OUT_TASK_KEY, signOutTask);
+                // Get index
+                Button signoutButton = (Button)sender;
+                int platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
+
+                App.IStorageManager = App.IStorageManagers[platformIndex];
+                App.TaskManager.AddSignOutTask(this.SignOut(platformIndex), platformIndex);
             }
         }
 
 
-        private async Task SkyDriveSignOut()
+        private async Task SignOut(int platformIndex)
         {
             // Set process indicator
             base.Dispatcher.BeginInvoke(() =>
@@ -185,11 +194,10 @@ namespace PintheCloud.Pages
 
 
             // Delete application settings before work for good UX and Wait signin task
-            App.ApplicationSettings.Remove(Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_KEY_INDEX]);    
-            await App.TaskManager.WaitSignInTask(App.SKY_DRIVE_KEY_INDEX);
+            App.ApplicationSettings.Remove(App.IStorageManager.GetAccountIsSignInKey());
+            await App.TaskManager.WaitSignInTask(platformIndex);
 
             // Signout
-            App.IStorageManager = App.IStorageManagers[App.SKY_DRIVE_KEY_INDEX];
             App.IStorageManager.SignOut();
 
 
@@ -199,24 +207,24 @@ namespace PintheCloud.Pages
                 uiApplicationGrid.Visibility = Visibility.Visible;
                 uiApplicationMessageGrid.Visibility = Visibility.Collapsed;
                 uiApplicationMessage.Text = AppResources.DoingSignIn;
-                this.SetSkyDriveSignButton(false);
+                this.SetSignButton(platformIndex, false);
             });
         }
 
 
-        private void SetSkyDriveSignButton(bool isSignIn)
+        private void SetSignButton(int platformIndex, bool isSignIn)
         {
             if (isSignIn)  // It is signed in
             {
-                uiSkyDriveSignButton.Content = AppResources.SkyDriveSignOut;
-                uiSkyDriveSignButton.Click += uiSkyDriveSignOutButton_Click;
-                uiSkyDriveSignButton.Click -= uiSkyDriveSignInButton_Click;
+                this.SignButtons[platformIndex].Content = Account.PLATFORM_NAMES[platformIndex] + " " + AppResources.SignOutCaption;
+                this.SignButtons[platformIndex].Click += SignOutButton_Click;
+                this.SignButtons[platformIndex].Click -= SignInButton_Click;
             }
             else  // It haven't signed in
             {
-                uiSkyDriveSignButton.Content = AppResources.SkyDriveSignIn;
-                uiSkyDriveSignButton.Click -= uiSkyDriveSignOutButton_Click;
-                uiSkyDriveSignButton.Click += uiSkyDriveSignInButton_Click;
+                this.SignButtons[platformIndex].Content = Account.PLATFORM_NAMES[platformIndex] + " " + AppResources.SignIn;
+                this.SignButtons[platformIndex].Click -= SignOutButton_Click;
+                this.SignButtons[platformIndex].Click += SignInButton_Click;
             }
         }
 
@@ -256,7 +264,7 @@ namespace PintheCloud.Pages
 
         private void uiSkyDriveSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = App.SKY_DRIVE_KEY_INDEX;
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (int)Account.StorageAccountType.SKY_DRIVE;
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
@@ -264,7 +272,15 @@ namespace PintheCloud.Pages
 
         private void uiDropboxSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = App.DROPBOX_KEY_INDEX;
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (int)Account.StorageAccountType.DROPBOX;
+            App.ApplicationSettings.Save();
+            MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+        }
+
+
+        private void uiGoogleDriveSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (int)Account.StorageAccountType.GOOGLE_DRIVE;
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PintheCloud.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,9 +11,8 @@ namespace PintheCloud.Utilities
     {
         // Tasks
         public IDictionary<string, Task> Tasks = new Dictionary<string, Task>();
-        public Task[] SignInTasks = new Task[App.PLATFORMS.Length];
-
-        public const string SIGN_OUT_TASK_KEY = "SIGN_OUT_TASK_KEY";
+        public Task[] SignInTasks = new Task[App.IStorageManagers.Length];
+        public Task[] SignOutTasks = new Task[App.IStorageManagers.Length];
 
 
         public void AddTask(string name, Task task)
@@ -46,6 +46,23 @@ namespace PintheCloud.Utilities
             {
                 await this.SignInTasks[platform];
                 this.SignInTasks[platform] = null;
+            }
+        }
+
+
+        public void AddSignOutTask(Task task, int platform)
+        {
+            if (this.SignOutTasks[platform] == null)
+                this.SignOutTasks[platform] = task;
+        }
+
+
+        public async Task WaitSignOutTask(int platform)
+        {
+            if (this.SignOutTasks[platform] != null)
+            {
+                await this.SignOutTasks[platform];
+                this.SignOutTasks[platform] = null;
             }
         }
     }

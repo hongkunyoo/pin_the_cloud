@@ -1,5 +1,6 @@
 ﻿using Microsoft.Live;
 using Microsoft.WindowsAzure.MobileServices;
+using PintheCloud.Managers;
 using PintheCloud.Models;
 using PintheCloud.Resources;
 using System;
@@ -11,12 +12,12 @@ using System.Windows;
 
 namespace PintheCloud.Workers
 {
-    public class CloudSkyDriveAccountWorker
+    public class SkyDriveAccountWorker
     {
         /*** Public ***/
 
         // Login with single sign on way.
-        public async Task<Account> SignInSkyDriveAccountSingleSignOnAsync(LiveConnectClient liveClient, dynamic profileResult)
+        public async Task<Account> SkyDriveSignInAsync(LiveConnectClient liveClient, dynamic profileResult)
         {
             Account account = null;
             try
@@ -26,7 +27,6 @@ namespace PintheCloud.Workers
             }
             catch (InvalidOperationException)
             {
-                this.SignOut();
                 return null;
             }
 
@@ -41,8 +41,7 @@ namespace PintheCloud.Workers
 
                 if (account == null)  // First Login.
                 {
-                    account = new Account(App.MobileService.CurrentUser.UserId, App.PLATFORMS[App.SKY_DRIVE_KEY_INDEX], "" + profileResult.name,
-                        "" + profileResult.first_name, "" + profileResult.last_name, "" + profileResult.locale,
+                    account = new Account(App.MobileService.CurrentUser.UserId, Account.PLATFORM_NAMES[(int)Account.StorageAccountType.SKY_DRIVE], "" + profileResult.name,
                         App.MobileService.CurrentUser.MobileServiceAuthenticationToken, 0, AccountType.NORMAL_ACCOUNT_TYPE);
                     try
                     {
@@ -50,7 +49,6 @@ namespace PintheCloud.Workers
                     }
                     catch (InvalidOperationException)
                     {
-                        this.SignOut();
                         return null;
                     }
                 }
@@ -60,9 +58,6 @@ namespace PintheCloud.Workers
                     // Get new account information.
                     account.account_platform_id = App.MobileService.CurrentUser.UserId;
                     account.account_name = profileResult.name;
-                    account.account_first_name = profileResult.first_name;
-                    account.account_last_name = profileResult.last_name;
-                    account.account_locale = profileResult.locale;
                     account.account_token = App.MobileService.CurrentUser.MobileServiceAuthenticationToken;
                     try
                     {
@@ -70,14 +65,15 @@ namespace PintheCloud.Workers
                     }
                     catch (InvalidOperationException)
                     {
-                        this.SignOut();
                         return null;
                     }
                 }
 
-                // If it success to insert account to DB,
-                // Save it's information to isolated storage.
-                this.SaveProfileReslutToAppSettings(account);
+                // Save profile information to local isolated App settings.
+                App.ApplicationSettings[Account.ACCOUNT_ID_KEYS[(int)Account.StorageAccountType.SKY_DRIVE]] = account.account_platform_id;
+                App.ApplicationSettings[SkyDriveManager.ACCOUNT_USED_SIZE_KEY] = account.account_used_size;
+                App.ApplicationSettings[SkyDriveManager.ACCOUNT_BUSINESS_TYPE_KEY] = account.account_business_type;
+                App.ApplicationSettings.Save();
             }
             return account;
         }
@@ -97,7 +93,6 @@ namespace PintheCloud.Workers
             }
             catch (LiveAuthException)
             {
-                this.SignOut();
                 return null;
             }
 
@@ -111,21 +106,15 @@ namespace PintheCloud.Workers
                 }
                 catch (LiveAuthException)
                 {
-                    this.SignOut();
                     return null;
                 }
             }
 
             // Get Client using session which we get above
             if (liveLoginResult.Session == null)
-            {
-                this.SignOut();
                 return null;
-            }
             else
-            {
                 return new LiveConnectClient(liveLoginResult.Session);
-            }
         }
 
 
@@ -139,29 +128,13 @@ namespace PintheCloud.Workers
             }
             catch (LiveConnectException)
             {
-                this.SignOut();
                 return null;
             }
 
             if (operationResult.Result == null)
-            {
-                this.SignOut();
                 return null;
-            }
             else 
-            {
                 return operationResult.Result;
-            }
-        }
-
-
-        // Get out connection session
-        public void SignOut()
-        {
-            App.ApplicationSettings.Remove(Account.ACCOUNT_IS_SIGN_IN_KEYS[App.SKY_DRIVE_KEY_INDEX]);
-            LiveAuthClient liveAuthClient = new LiveAuthClient(App.AZURE_CLIENT_ID);
-            liveAuthClient.Logout();
-            this.RemoveProfileReslutFromAppSettings();
         }
 
 
@@ -186,29 +159,6 @@ namespace PintheCloud.Workers
                 return accounts.First();
             else
                 return null;
-        }
-
-        // Save profile information to local isolated App settings.
-        private void SaveProfileReslutToAppSettings(Account account)
-        {
-            App.ApplicationSettings[Account.ACCOUNT_ID_KEYS[App.SKY_DRIVE_KEY_INDEX]] = account.account_platform_id;
-            App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_USED_SIZE_KEY] = account.account_used_size;
-            App.ApplicationSettings[Account.ACCOUNT_SKY_DRIVE_TYPE_NAME_KEY] = account.account_type_name;
-
-            string nickName = null;
-            if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME_KEY, out nickName))
-                App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY] = AppResources.AtHere;
-
-            App.ApplicationSettings.Save();
-        }
-
-
-        // Save profile information to local isolated App settings.
-        private void RemoveProfileReslutFromAppSettings()
-        {
-            App.ApplicationSettings.Remove(Account.ACCOUNT_ID_KEYS[App.SKY_DRIVE_KEY_INDEX]);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_USED_SIZE_KEY);
-            App.ApplicationSettings.Remove(Account.ACCOUNT_SKY_DRIVE_TYPE_NAME_KEY);
         }
     }
 }

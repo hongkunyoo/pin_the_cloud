@@ -24,14 +24,21 @@ namespace PintheCloud.Managers
     public class GoogleDriveManager : IStorageManager
     {
         #region Variables
-        private DriveService service;
-        private Account CurrentAccount;
+        private const string CLIENT_ID = "109786198225-m8fihmv82b2fmf5k4d69u9039ebn68fn.apps.googleusercontent.com";
+        private const string CLIENT_SECRET = "Tk8M01zlkBRlIsv-1fa9BKiS";
+        private const string GOOGLE_DRIVE_USER_KEY = "GOOGLE_DRIVE_USER_KEY";
+
+        private const string ACCOUNT_IS_SIGN_IN_KEY = "ACCOUNT_GOOGLE_DRIVE_SIGN_IN_KEY";
+        private const string ACCOUNT_USED_SIZE_KEY = "ACCOUNT_GOOGLE_DRIVE_USED_SIZE_KEY";
+        private const string ACCOUNT_BUSINESS_TYPE_KEY = "ACCOUNT_GOOGLE_DRIVE_BUSINESS_TYPE_KEY";
+
         public static Dictionary<string, string> GoogleDocMapper;
         public static Dictionary<string, string> MimeTypeMapper;
         public static Dictionary<string, string> ExtensionMapper;
-        private string GOOGLE_DRIVE_USER = "GOOGLE_DRIVE_USER";
 
-        UserCredential credential;
+        private DriveService service;
+        private UserCredential credential;
+        private Account CurrentAccount;
         #endregion
 
         public GoogleDriveManager()
@@ -56,9 +63,11 @@ namespace PintheCloud.Managers
             GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.spreadsheet", ".xls");
             GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.drawing", ".png");
             GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.presentation", ".ppt");
-
-            SetMimeTypeMapper();
+            
+            Task setMimeTypeMapperTask = this.SetMimeTypeMapper();
         }
+
+
         public async Task SignIn()
         {
             try
@@ -66,8 +75,8 @@ namespace PintheCloud.Managers
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                       new ClientSecrets
                       {
-                          ClientId = "109786198225-m8fihmv82b2fmf5k4d69u9039ebn68fn.apps.googleusercontent.com",
-                          ClientSecret = "Tk8M01zlkBRlIsv-1fa9BKiS"
+                          ClientId = CLIENT_ID,
+                          ClientSecret = CLIENT_SECRET
                       },
                       new[] { DriveService.Scope.Drive },
                       this._GetUserSession(),
@@ -77,31 +86,48 @@ namespace PintheCloud.Managers
                     HttpClientInitializer = credential,
                     ApplicationName = "athere",
                 });
+
                 AboutResource aboutResource = service.About;
                 About about = await aboutResource.Get().ExecuteAsync();
-                this.CurrentAccount = new Account();
-                this.CurrentAccount.RawAccount = about.User;
-                this.CurrentAccount.AccountType = Account.StorageAccountType.GOOGLE_DRIVE;
+
+                // TODO Make Account
+                // TODO Insert Account
+                // TODO Save Account to this.Account
             }
             catch (Microsoft.Phone.Controls.WebBrowserNavigationException ex)
             {
+                this.SignOut();
                 Debug.WriteLine(ex.ToString());
             }
             catch (Google.GoogleApiException e)
             {
+                this.SignOut();
                 Debug.WriteLine(e.ToString());
             }
         }
         
+
         public void SignOut()
         {
-            App.ApplicationSettings.Remove(GOOGLE_DRIVE_USER);
+            App.ApplicationSettings.Remove(ACCOUNT_IS_SIGN_IN_KEY);
+            App.ApplicationSettings.Remove(ACCOUNT_USED_SIZE_KEY);
+            App.ApplicationSettings.Remove(ACCOUNT_BUSINESS_TYPE_KEY);
+            this.CurrentAccount = null;
         }
+
 
         public Account GetAccount()
         {
             return this.CurrentAccount;
         }
+
+
+        public string GetAccountIsSignInKey()
+        {
+            return ACCOUNT_IS_SIGN_IN_KEY;
+        }
+
+
         public async Task<FileObject> GetRootFolderAsync()
         {
             FileObject rootFile = new FileObject();
@@ -111,6 +137,8 @@ namespace PintheCloud.Managers
             rootFile.Name = "/";
             return rootFile;
         }
+
+
         public async Task<List<FileObject>> GetRootFilesAsync()
         {
             FileList fileList = await this.service.Files.List().ExecuteAsync();
@@ -124,11 +152,15 @@ namespace PintheCloud.Managers
             }
             return childList;
         }
+
+
         public async Task<FileObject> GetFileAsync(string fileId)
         {
             Google.Apis.Drive.v2.Data.File file = await service.Files.Get(fileId).ExecuteAsync();
             return FileObjectConverter.ConvertToFileObject(file);
         }
+
+
         public async Task<List<FileObject>> GetFilesFromFolderAsync(string folderId)
         {
             List<FileObject> list = new List<FileObject>();
@@ -138,11 +170,15 @@ namespace PintheCloud.Managers
             }
             return list;
         }
+
+
         public async Task<Stream> DownloadFileStreamAsync(string fileId)
         {
             byte[] inarray = await service.HttpClient.GetByteArrayAsync(fileId);
             return new MemoryStream(inarray);
         }
+
+
         public async Task<bool> UploadFileStreamAsync(string folderId, string fileName, Stream inputStream)
         {
             try
@@ -175,11 +211,13 @@ namespace PintheCloud.Managers
             Newtonsoft.Json.JsonSerializer s = new JsonSerializer();
             GoogleDriveManager.MimeTypeMapper = s.Deserialize<Dictionary<string, string>>(jtr);
         }
+
+
         private string _GetUserSession()
         {
-            if (App.ApplicationSettings.Contains(GOOGLE_DRIVE_USER))
+            if (App.ApplicationSettings.Contains(GOOGLE_DRIVE_USER_KEY))
             {
-                return (string)App.ApplicationSettings[GOOGLE_DRIVE_USER];
+                return (string)App.ApplicationSettings[GOOGLE_DRIVE_USER_KEY];
             }
             else
             {
@@ -189,7 +227,7 @@ namespace PintheCloud.Managers
                     Enumerable.Repeat(chars, 8)
                               .Select(s => s[random.Next(s.Length)])
                               .ToArray());
-                App.ApplicationSettings.Add(GOOGLE_DRIVE_USER, result);
+                App.ApplicationSettings.Add(GOOGLE_DRIVE_USER_KEY, result);
                 App.ApplicationSettings.Save();
                 return result;
             }
@@ -216,7 +254,8 @@ namespace PintheCloud.Managers
             
             foreach (User user in owners)
             {
-                result &= ((((User)this.CurrentAccount.RawAccount).DisplayName.Equals(user.DisplayName)) && user.IsAuthenticatedUser.Value);
+                // TODO Get that values from converted account.
+                //result &= ((((User)this.CurrentAccount.RawAccount).DisplayName.Equals(user.DisplayName)) && user.IsAuthenticatedUser.Value);
             }
             return result;
         }

@@ -38,19 +38,7 @@ namespace PintheCloud
         private const string AZURE_MOBILE_SERVICE_TOKEN
             = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjAifQ.eyJleHAiOjEzOTQ5Nzg4NTcsImlzcyI6InVybjptaWNyb3NvZnQ6d2luZG93cy1henVyZTp6dW1vIiwidmVyIjoyLCJhdWQiOiJNaWNyb3NvZnRBY2NvdW50IiwidWlkIjoiTWljcm9zb2Z0QWNjb3VudDoyOTE0Y2I0ODZkMGY5MTA2MDUwZGU5YWQ3MDU2NGQ1MyIsInVybjptaWNyb3NvZnQ6Y3JlZGVudGlhbHMiOiJrc2VzY21WaXA1b2ZrZDhUenBQQ1h3PT0ifQ.cUrvBbXsHQOiz0ZRu8FxA5HxqpQbPRSQQb8_N0-6eAo";
 
-        // Platform Id
-        public static string[] PLATFORMS = { "SkyDrive", "Dropbox" };
-        public const string ACCOUNT_MAIN_PLATFORM_TYPE_KEY = "ACCOUNT_MAIN_PLATFORM_TYPE_KEY";
 
-        // Location
-        public const int SKY_DRIVE_KEY_INDEX = 0;
-        public const int DROPBOX_KEY_INDEX = 1;
-
-        // Current Usrer
-        public const string USER = "";
-
-
-        
         /*** Root static instance variable ***/
 
         // App
@@ -67,6 +55,8 @@ namespace PintheCloud
         public static IStorageManager IStorageManager = null;
         public static IStorageManager[] IStorageManagers = null;
         public static SkyDriveManager SkyDriveManager = null;
+        public static DropBoxManager DropBoxManager = null;
+        public static GoogleDriveManager GoogleDriveManger = null;
 
 
 
@@ -109,7 +99,9 @@ namespace PintheCloud
             TaskManager = new TaskManager();
 
             SkyDriveManager = new SkyDriveManager();
-            IStorageManagers = new IStorageManager[] { SkyDriveManager };
+            DropBoxManager = new DropBoxManager();
+            GoogleDriveManger = new GoogleDriveManager();
+            IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
  
 
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.
@@ -184,9 +176,6 @@ namespace PintheCloud
                 System.Diagnostics.Debug.WriteLine("-------------------------");
                 System.Diagnostics.Debug.WriteLine(new StackFrame(1, true));
                 System.Diagnostics.Debug.WriteLine("-------------------------");
-                
-                for(int i=0 ; i<Account.ACCOUNT_IS_SIGN_IN_KEYS.Length ; i++)
-                    App.ApplicationSettings.Remove(Account.ACCOUNT_IS_SIGN_IN_KEYS[i]);
 
                 // 처리되지 않은 예외가 발생했습니다. 중단하고 디버거를 실행합니다.
                 Debugger.Break();

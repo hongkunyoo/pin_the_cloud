@@ -169,24 +169,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Dropbox Sign In과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string DropboxSignIn {
-            get {
-                return ResourceManager.GetString("DropboxSignIn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Dropbox Sign Out과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string DropboxSignOut {
-            get {
-                return ResourceManager.GetString("DropboxSignOut", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   folder과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Folder {
@@ -201,6 +183,15 @@ namespace PintheCloud.Resources {
         public static string GB {
             get {
                 return ResourceManager.GetString("GB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   GoogleDrive과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string GoogleDrive {
+            get {
+                return ResourceManager.GetString("GoogleDrive", resourceCulture);
             }
         }
         
@@ -561,24 +552,6 @@ namespace PintheCloud.Resources {
         public static string SkyDrive {
             get {
                 return ResourceManager.GetString("SkyDrive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   SkyDrive Sign In과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string SkyDriveSignIn {
-            get {
-                return ResourceManager.GetString("SkyDriveSignIn", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   SkyDrive Sign Out과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string SkyDriveSignOut {
-            get {
-                return ResourceManager.GetString("SkyDriveSignOut", resourceCulture);
             }
         }
         

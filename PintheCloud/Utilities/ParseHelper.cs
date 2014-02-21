@@ -9,7 +9,7 @@ namespace PintheCloud.Utilities
     /// <summary>
     /// Helps parsing strings
     /// </summary>
-    class ParseHelper
+    public class ParseHelper
     {
         public enum Mode { DIRECTORY, FULL_PATH };
         /// <summary>

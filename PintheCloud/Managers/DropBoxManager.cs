@@ -16,25 +16,37 @@ namespace PintheCloud.Managers
     public class DropBoxManager : IStorageManager
     {
         #region Variables
-        private DropNetClient _client;
-        private string APP_KEY = "gxjfureco8noyle";
-        private string APP_SECRET = "iskekcebjky6vbm";
-        private string DROP_BOX_USER = "DROP_BOX_USER";
-        private Account CurrentAccount;
+        private const string APP_KEY = "gxjfureco8noyle";
+        private const string APP_SECRET = "iskekcebjky6vbm";
+        private const string APP_AUTH_URI = "http://54.214.19.198";
+        private const string DROPBOX_USER_KEY = "DROPBOX_USER_KEY";
+
+        private const string ACCOUNT_IS_SIGN_IN_KEY = "ACCOUNT_DROPBOX_SIGN_IN_KEY";
+        private const string ACCOUNT_USED_SIZE_KEY = "ACCOUNT_DROPBOX_USED_SIZE_KEY";
+        private const string ACCOUNT_BUSINESS_TYPE_KEY = "ACCOUNT_DROPBOX_BUSINESS_TYPE_KEY";
+
+        private DropNetClient _client = null;
+        private Account CurrentAccount = null;
         #endregion
+
 
         public async Task SignIn()
         {
+            // Add application settings before work for good UX
+            App.ApplicationSettings[ACCOUNT_IS_SIGN_IN_KEY] = true;
+            App.ApplicationSettings.Save();
+
             //TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             _client = new DropNetClient(APP_KEY, APP_SECRET);
 
-            if (App.ApplicationSettings.Contains(DROP_BOX_USER))
+            UserLogin dropboxUser = null;
+            App.ApplicationSettings.TryGetValue<UserLogin>(DROPBOX_USER_KEY, out dropboxUser);
+            if (dropboxUser == null)
             {
                 _client.GetTokenAsync(async (userLogin) =>
                 {
-
-                    var url = _client.BuildAuthorizeUrl("http://54.214.19.198");
-                    MyWebBrowserTask webBrowser = new MyWebBrowserTask(url);
+                    string authUri = _client.BuildAuthorizeUrl(APP_AUTH_URI);
+                    MyWebBrowserTask webBrowser = new MyWebBrowserTask(authUri);
                     await webBrowser.ShowAsync();
 
                     _client.GetAccessTokenAsync((accessToken) =>
@@ -42,40 +54,68 @@ namespace PintheCloud.Managers
                         UserLogin user = new UserLogin();
                         user.Token = accessToken.Token;
                         user.Secret = accessToken.Secret;
-                        App.ApplicationSettings[DROP_BOX_USER] = user;
-                        App.ApplicationSettings.Save();
-                        this.CurrentAccount = new Account();
-                        this.CurrentAccount.RawAccount = user;
-                        this.CurrentAccount.AccountType = Account.StorageAccountType.DROP_BOX;
                         _client.UserLogin = user;
+
+                        App.ApplicationSettings[DROPBOX_USER_KEY] = user;
+                        App.ApplicationSettings.Save();
+
+                        // TODO Make Account
+                        // TODO Insert Account
+                        // TODO Save Account to this.Account
+
                         //tcs.SetResult(true);
                     },
                     (error) =>
                     {
+                        this.SignOut();
                         //tcs.SetResult(false);
                     });
                 },
                 (error) =>
                 {
+                    this.SignOut();
                     //tcs.SetResult(false);
                 });
             }
             else
             {
-                _client.UserLogin = (UserLogin)App.ApplicationSettings[DROP_BOX_USER];
+                _client.UserLogin = dropboxUser;
+
+                // TODO Make Account
+                // TODO Update Account
+                // TODO Save Account to this.Account
+
                 //tcs.SetResult(true);
             }
             //return tcs.Task;
         }
+
         public void SignOut()
         {
-            App.ApplicationSettings.Remove(DROP_BOX_USER);
+            // Remove user record
+            App.ApplicationSettings.Remove(DROPBOX_USER_KEY);
+
+            // Remove user is signed in record
+            App.ApplicationSettings.Remove(ACCOUNT_IS_SIGN_IN_KEY);
+            App.ApplicationSettings.Remove(ACCOUNT_USED_SIZE_KEY);
+            App.ApplicationSettings.Remove(ACCOUNT_BUSINESS_TYPE_KEY);
+
+            // Set null account
+            this._client = null;
             this.CurrentAccount = null;
         }
+
         public Account GetAccount()
         {
             return this.CurrentAccount;
         }
+
+        public string GetAccountIsSignInKey()
+        {
+            return ACCOUNT_IS_SIGN_IN_KEY;
+        }
+
+
         public Task<FileObject> GetRootFolderAsync()
         {
             return this.GetFileAsync("/");
@@ -175,7 +215,7 @@ namespace PintheCloud.Managers
 
         //    return file;
         //}
-        
+
 
         //public async Task<StorageFile> DownloadFileAsync(string sourceFileId, StorageFile targetFile)
         //{

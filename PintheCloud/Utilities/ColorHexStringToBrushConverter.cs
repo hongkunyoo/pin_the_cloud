@@ -10,7 +10,7 @@ using System.Windows.Media;
 
 namespace PintheCloud.Utilities
 {
-    public  class ColorHexStringToBrushConverter : IValueConverter
+    public class ColorHexStringToBrushConverter : IValueConverter
     {
         public const string LIKE_COLOR = "3ABDBE";
         public const string LIKE_NOT_COLOR = "A7B6BE";
