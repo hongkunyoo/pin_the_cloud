@@ -71,9 +71,9 @@
                     <TextBlock x:Name="uiSpaceName" Foreground="Black" FontSize="50" LineHeight="58" TextTrimming="WordEllipsis" Margin="0,0,0,20" />
                     <TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" FontWeight="Light" />
                 </StackPanel>
-                <StackPanel Grid.Row="1">
+                <StackPanel Grid.Row="1" Margin="0">
                     <TextBlock x:Name="uiFileListMessage" TextWrapping="Wrap" Margin="22,28,18,0" Foreground="Black" FontSize="22" Visibility="Collapsed"/>
-                    <phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiFileListItemTemplate}" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed"/>
+                    <phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiFileListItemTemplate}" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed" Margin="0,28,0,0"/>
                 </StackPanel>
             </Grid>
         </Grid>

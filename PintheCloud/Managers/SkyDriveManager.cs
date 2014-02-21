@@ -187,11 +187,7 @@ namespace PintheCloud.Managers
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
                 return null;
             }
-
-            if (result.Stream == null)
-                return null;
-            else
-                return result.Stream;
+            return result.Stream;
         }
 
 
