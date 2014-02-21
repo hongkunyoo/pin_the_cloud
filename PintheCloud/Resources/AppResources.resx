@@ -267,7 +267,7 @@
     <value>Main Cloud</value>
   </data>
   <data name="MainCloudChangeMessage" xml:space="preserve">
-    <value>Main Cloud is changed successfully.</value>
+    <value> is set to main cloud.</value>
   </data>
   <data name="NoFileInSpotMessage" xml:space="preserve">
     <value>There is no files in this spot.</value>

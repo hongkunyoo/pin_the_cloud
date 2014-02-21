@@ -50,13 +50,14 @@ namespace PintheCloud
         public static GeoCalculateManager GeoCalculateManager = null;
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
-        public static TaskManager TaskManager = null;
 
         public static IStorageManager IStorageManager = null;
         public static IStorageManager[] IStorageManagers = null;
-        public static SkyDriveManager SkyDriveManager = null;
-        public static DropBoxManager DropBoxManager = null;
-        public static GoogleDriveManager GoogleDriveManger = null;
+        public static TaskManager TaskManager = null;
+
+        private static SkyDriveManager SkyDriveManager = null;
+        private static DropBoxManager DropBoxManager = null;
+        private static GoogleDriveManager GoogleDriveManger = null;
 
 
 
@@ -96,12 +97,12 @@ namespace PintheCloud
             GeoCalculateManager = new GeoCalculateManagerImplement();
             BlobStorageManager = new BlobStorageManager();
             LocalStorageManager = new LocalStorageManager();
-            TaskManager = new TaskManager();
 
             SkyDriveManager = new SkyDriveManager();
             DropBoxManager = new DropBoxManager();
             GoogleDriveManger = new GoogleDriveManager();
             IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
+            TaskManager = new TaskManager();
  
 
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.

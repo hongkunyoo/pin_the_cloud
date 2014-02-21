@@ -72,9 +72,8 @@ namespace PintheCloud.Pages
             }
 
 
-            // Check main platform at frist login and set cloud mode
-            int mainPlatformType = 0;
-            App.ApplicationSettings.TryGetValue<int>(Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY, out mainPlatformType);
+            // Check main platform and set current platform index.
+            int mainPlatformType = (int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY];
             uiCurrentPlatformText.Text = Account.PLATFORM_NAMES[mainPlatformType];
             this.CurrentPlatformIndex = mainPlatformType;
 
@@ -106,6 +105,7 @@ namespace PintheCloud.Pages
                 // If it is already signin skydrive, load files.
                 // Otherwise, show signin button.
                 bool isSignIn = false;
+                App.IStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
                 App.ApplicationSettings.TryGetValue<bool>(App.IStorageManager.GetAccountIsSignInKey(), out isSignIn);
                 if (!isSignIn)  // wasn't signed in.
                 {
@@ -115,7 +115,7 @@ namespace PintheCloud.Pages
                         uiPinInfoSignInGrid.Visibility = Visibility.Visible;
                     }
                 }
-                else
+                else  // was signed in.
                 {
                     if (uiPinInfoSignInGrid.Visibility == Visibility.Visible)
                     {
@@ -379,34 +379,31 @@ namespace PintheCloud.Pages
 
 
             // If it is not in sky drive mode, change it.
-            if (this.CurrentPlatformIndex != platformIndex)
+            if (this.CurrentPlatformIndex != platformIndex && !this.IsFileObjectLoading)
             {
-                if (!this.IsFileObjectLoading)
+                App.IStorageManager = App.IStorageManagers[platformIndex];
+                uiCurrentPlatformText.Text = Account.PLATFORM_NAMES[platformIndex];
+                this.CurrentPlatformIndex = platformIndex;
+
+                // If it is already signin skydrive, load files.
+                // Otherwise, show signin button.
+                bool isSignIn = false;
+                App.ApplicationSettings.TryGetValue<bool>(App.IStorageManager.GetAccountIsSignInKey(), out isSignIn);
+                if (!isSignIn)
                 {
-                    App.IStorageManager = App.IStorageManagers[platformIndex];
-                    uiCurrentPlatformText.Text = Account.PLATFORM_NAMES[platformIndex];
-                    this.CurrentPlatformIndex = platformIndex;
+                    uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                    uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    // Show Loading message and save is login true for pivot moving action while sign in.
+                    uiPinInfoListGrid.Visibility = Visibility.Visible;
+                    uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
 
-                    // If it is already signin skydrive, load files.
-                    // Otherwise, show signin button.
-                    bool isSignIn = false;
-                    App.ApplicationSettings.TryGetValue<bool>(App.IStorageManager.GetAccountIsSignInKey(), out isSignIn);
-                    if (!isSignIn)
-                    {
-                        uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                        uiPinInfoSignInGrid.Visibility = Visibility.Visible;
-                    }
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                        this.SetPinInfoListAsync(null, AppResources.Loading);
                     else
-                    {
-                        // Show Loading message and save is login true for pivot moving action while sign in.
-                        uiPinInfoListGrid.Visibility = Visibility.Visible;
-                        uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
-
-                        if (NetworkInterface.GetIsNetworkAvailable())
-                            this.SetPinInfoListAsync(null, AppResources.Loading);
-                        else
-                            base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
-                    }
+                        base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
                 }
             }
         }
@@ -575,7 +572,7 @@ namespace PintheCloud.Pages
 
 
             // If it haven't signed out before working below code, do it.
-            if (App.SkyDriveManager.GetAccount() != null)
+            if (App.IStorageManager.GetAccount() != null)
             {
                 // If folder null, set root.
                 if (folder == null)

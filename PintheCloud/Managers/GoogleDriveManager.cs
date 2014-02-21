@@ -70,6 +70,10 @@ namespace PintheCloud.Managers
 
         public async Task SignIn()
         {
+            // Add application settings before work for good UX
+            App.ApplicationSettings[ACCOUNT_IS_SIGN_IN_KEY] = true;
+            App.ApplicationSettings.Save();
+
             try
             {
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(

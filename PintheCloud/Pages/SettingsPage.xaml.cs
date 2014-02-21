@@ -48,12 +48,10 @@ namespace PintheCloud.Pages
 
 
             // Set SkyDrive Sign button
-            this.SignButtons[(int)Account.StorageAccountType.SKY_DRIVE] = uiSkyDriveSetMainButton;
-            this.SignButtons[(int)Account.StorageAccountType.DROPBOX] = uiDropboxSignButton;
-            this.SignButtons[(int)Account.StorageAccountType.GOOGLE_DRIVE] = uiGoogleDriveSignButton;
-            bool isSignIn = false;
+            this.SignButtons = new Button[] { uiSkyDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
             for(int i=0 ; i<App.IStorageManagers.Length ; i++)
             {
+                bool isSignIn = false;
                 App.IStorageManager = App.IStorageManagers[i];
                 App.ApplicationSettings.TryGetValue<bool>(App.IStorageManager.GetAccountIsSignInKey(), out isSignIn);
                 this.SetSignButton(i, isSignIn);
@@ -266,7 +264,7 @@ namespace PintheCloud.Pages
         {
             App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (int)Account.StorageAccountType.SKY_DRIVE;
             App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+            MessageBox.Show(AppResources.SkyDrive + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
 
 
@@ -274,7 +272,7 @@ namespace PintheCloud.Pages
         {
             App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (int)Account.StorageAccountType.DROPBOX;
             App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+            MessageBox.Show(AppResources.Dropbox + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
 
 
@@ -282,7 +280,7 @@ namespace PintheCloud.Pages
         {
             App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (int)Account.StorageAccountType.GOOGLE_DRIVE;
             App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+            MessageBox.Show(AppResources.GoogleDrive + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
 
 

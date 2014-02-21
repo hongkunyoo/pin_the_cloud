@@ -67,7 +67,7 @@
             						<ColumnDefinition/>
             						<ColumnDefinition Width="110"/>
             					</Grid.ColumnDefinitions>
-            					<Button x:Name="uiSkyDriveSignButton" Content="{Binding LocalizedResources.SkyDriveSignIn, Source={StaticResource LocalizedStrings}}" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
+            					<Button x:Name="uiSkyDriveSignButton" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
             					<Button x:Name="uiSkyDriveSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" Grid.Column="1" Click="uiSkyDriveSetMainButton_Click"/>
             				</Grid>
             				<Grid>
@@ -75,7 +75,7 @@
             						<ColumnDefinition/>
             						<ColumnDefinition Width="110"/>
             					</Grid.ColumnDefinitions>
-            					<Button x:Name="uiDropboxSignButton" Content="{Binding LocalizedResources.DropboxSignIn, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
+            					<Button x:Name="uiDropboxSignButton" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
             					<Button x:Name="uiDropboxSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" Grid.Column="1" BorderBrush="Black" Foreground="Black" Click="uiDropboxSetMainButton_Click"/>
             				</Grid>
 							<Grid>
@@ -83,7 +83,7 @@
             						<ColumnDefinition/>
             						<ColumnDefinition Width="110"/>
             					</Grid.ColumnDefinitions>
-            					<Button x:Name="uiGoogleDriveSignButton" Content="{Binding LocalizedResources.DropboxSignIn, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
+            					<Button x:Name="uiGoogleDriveSignButton" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
             					<Button x:Name="uiGoogleDriveSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" Grid.Column="1" BorderBrush="Black" Foreground="Black" Click="uiGoogleDriveSetMainButton_Click"/>
             				</Grid>
             			</StackPanel>

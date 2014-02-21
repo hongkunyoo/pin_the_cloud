@@ -286,7 +286,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Main Cloud is changed successfully.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///    is set to main cloud.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MainCloudChangeMessage {
             get {
