@@ -22,6 +22,7 @@ namespace PintheCloud.Managers
         private const string DROPBOX_USER_KEY = "DROPBOX_USER_KEY";
 
         private const string ACCOUNT_IS_SIGN_IN_KEY = "ACCOUNT_DROPBOX_SIGN_IN_KEY";
+        private const string ACCOUNT_ID_KEY = "ACCOUNT_DROPBOX_ID_KEY";
         private const string ACCOUNT_USED_SIZE_KEY = "ACCOUNT_DROPBOX_USED_SIZE_KEY";
         private const string ACCOUNT_BUSINESS_TYPE_KEY = "ACCOUNT_DROPBOX_BUSINESS_TYPE_KEY";
 
@@ -80,7 +81,7 @@ namespace PintheCloud.Managers
             else
             {
                 _client.UserLogin = dropboxUser;
-
+                
                 // TODO Make Account
                 // TODO Update Account
                 // TODO Save Account to this.Account
@@ -89,6 +90,7 @@ namespace PintheCloud.Managers
             }
             //return tcs.Task;
         }
+
 
         public void SignOut()
         {
@@ -113,6 +115,12 @@ namespace PintheCloud.Managers
         public string GetAccountIsSignInKey()
         {
             return ACCOUNT_IS_SIGN_IN_KEY;
+        }
+
+
+        public string GetAccountIdKey()
+        {
+            return ACCOUNT_ID_KEY;
         }
 
 

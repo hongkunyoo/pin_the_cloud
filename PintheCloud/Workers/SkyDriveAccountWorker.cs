@@ -41,8 +41,8 @@ namespace PintheCloud.Workers
 
                 if (account == null)  // First Login.
                 {
-                    account = new Account(App.MobileService.CurrentUser.UserId, Account.PLATFORM_NAMES[(int)Account.StorageAccountType.SKY_DRIVE], "" + profileResult.name,
-                        App.MobileService.CurrentUser.MobileServiceAuthenticationToken, 0, AccountType.NORMAL_ACCOUNT_TYPE);
+                    account = new Account(App.MobileService.CurrentUser.UserId, Account.PLATFORM_NAMES[(int)Account.StorageAccountType.SKY_DRIVE], 
+                        "" + profileResult.name, 0, AccountType.NORMAL_ACCOUNT_TYPE);
                     try
                     {
                         await App.MobileService.GetTable<Account>().InsertAsync(account);
@@ -58,7 +58,6 @@ namespace PintheCloud.Workers
                     // Get new account information.
                     account.account_platform_id = App.MobileService.CurrentUser.UserId;
                     account.account_name = profileResult.name;
-                    account.account_token = App.MobileService.CurrentUser.MobileServiceAuthenticationToken;
                     try
                     {
                         await App.MobileService.GetTable<Account>().UpdateAsync(account);
@@ -69,8 +68,9 @@ namespace PintheCloud.Workers
                     }
                 }
 
+
                 // Save profile information to local isolated App settings.
-                App.ApplicationSettings[Account.ACCOUNT_ID_KEYS[(int)Account.StorageAccountType.SKY_DRIVE]] = account.account_platform_id;
+                App.ApplicationSettings[SkyDriveManager.ACCOUNT_ID_KEY] = account.account_platform_id;
                 App.ApplicationSettings[SkyDriveManager.ACCOUNT_USED_SIZE_KEY] = account.account_used_size;
                 App.ApplicationSettings[SkyDriveManager.ACCOUNT_BUSINESS_TYPE_KEY] = account.account_business_type;
                 App.ApplicationSettings.Save();

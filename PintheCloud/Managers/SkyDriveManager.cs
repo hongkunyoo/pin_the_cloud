@@ -26,6 +26,7 @@ namespace PintheCloud.Managers
         // Summary:
         //     Object to communicate with SkyDrive.
         private const string ACCOUNT_IS_SIGN_IN_KEY = "ACCOUNT_SKY_DRIVE_SIGN_IN_KEY";
+        public const string ACCOUNT_ID_KEY = "ACCOUNT_SKY_DRIVE_ID_KEY";
         public const string ACCOUNT_USED_SIZE_KEY = "ACCOUNT_SKY_DRIVE_USED_SIZE_KEY";
         public const string ACCOUNT_BUSINESS_TYPE_KEY = "ACCOUNT_SKY_DRIVE_BUSINESS_TYPE_KEY";
 
@@ -105,6 +106,11 @@ namespace PintheCloud.Managers
             return ACCOUNT_IS_SIGN_IN_KEY;
         }
 
+
+        public string GetAccountIdKey()
+        {
+            return ACCOUNT_ID_KEY;
+        }
 
         // Summary:
         //     Gets Root Folder of SkyDrive storage.

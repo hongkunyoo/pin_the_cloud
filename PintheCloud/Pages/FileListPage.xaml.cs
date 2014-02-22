@@ -33,6 +33,7 @@ namespace PintheCloud.Pages
         private string AccountId;
         private string AccountName;
 
+        private int PlatformIndex = (int)Account.StorageAccountType.SKY_DRIVE;
         private FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
 
 
@@ -50,10 +51,12 @@ namespace PintheCloud.Pages
         {
             base.OnNavigatedTo(e);
 
-            // Get pivot state
+            // Get platform and pivot from previous page.
+            this.PlatformIndex = Convert.ToInt32(NavigationContext.QueryString["platform"]);
             int pivot = ExplorerPage.PICK_PIVOT_INDEX;
             if (PREVIOUS_PAGE.Equals(EXPLORER_PAGE))
                 pivot = Convert.ToInt32(NavigationContext.QueryString["pivot"]);
+            
 
             // Set diffetent by pivot state
             if (pivot == ExplorerPage.PICK_PIVOT_INDEX)  // Pick state
@@ -88,7 +91,8 @@ namespace PintheCloud.Pages
             else  // Pin state
             {
                 // Get parameters
-                Account account = App.IStorageManager.GetAccount();
+                IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
+                Account account = iStorageManager.GetAccount();
                 this.SpaceName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
                 this.AccountId = account.account_platform_id;
                 this.AccountName = account.account_name;
@@ -211,9 +215,9 @@ namespace PintheCloud.Pages
             });
 
 
-            // Upload.
-            //Stream stream = await App.IStorageManager.DownloadFileStreamAsync(file.Id, this.ProgressHandler);
-            Stream stream = await App.IStorageManager.DownloadFileStreamAsync(file.Id);
+            // Upload
+            IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
+            Stream stream = await iStorageManager.DownloadFileStreamAsync(file.Id);
             string uploadPath = null;
             if (stream != null)
             {
@@ -267,9 +271,9 @@ namespace PintheCloud.Pages
 
         private async Task<bool> DownloadFilesAsync(string fildObjectId, string fileObjectName)
         {
-            FileObject rootFolder = await App.IStorageManager.GetRootFolderAsync();
-            if (!await App.IStorageManager.UploadFileStreamAsync
-                    (rootFolder.Id, fileObjectName, await App.BlobStorageManager.DownloadFileStreamAsync(fildObjectId)))
+            IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
+            FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
+            if (!await iStorageManager.UploadFileStreamAsync(rootFolder.Id, fileObjectName, await App.BlobStorageManager.DownloadFileStreamAsync(fildObjectId)))
                 return false;
             else
                 return true;

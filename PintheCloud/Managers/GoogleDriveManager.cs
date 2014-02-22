@@ -29,6 +29,7 @@ namespace PintheCloud.Managers
         private const string GOOGLE_DRIVE_USER_KEY = "GOOGLE_DRIVE_USER_KEY";
 
         private const string ACCOUNT_IS_SIGN_IN_KEY = "ACCOUNT_GOOGLE_DRIVE_SIGN_IN_KEY";
+        private const string ACCOUNT_ID_KEY = "ACCOUNT_GOOGLE_DRIVE_ID_KEY";
         private const string ACCOUNT_USED_SIZE_KEY = "ACCOUNT_GOOGLE_DRIVE_USED_SIZE_KEY";
         private const string ACCOUNT_BUSINESS_TYPE_KEY = "ACCOUNT_GOOGLE_DRIVE_BUSINESS_TYPE_KEY";
 
@@ -129,6 +130,12 @@ namespace PintheCloud.Managers
         public string GetAccountIsSignInKey()
         {
             return ACCOUNT_IS_SIGN_IN_KEY;
+        }
+
+
+        public string GetAccountIdKey()
+        {
+            return ACCOUNT_ID_KEY;
         }
 
 

@@ -51,7 +51,6 @@ namespace PintheCloud
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
 
-        public static IStorageManager IStorageManager = null;
         public static IStorageManager[] IStorageManagers = null;
         public static TaskManager TaskManager = null;
 

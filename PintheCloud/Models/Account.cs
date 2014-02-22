@@ -13,7 +13,6 @@ namespace PintheCloud.Models
         // Application Account Setting Key
         public enum StorageAccountType { SKY_DRIVE, DROPBOX, GOOGLE_DRIVE }
         public static string[] PLATFORM_NAMES = { AppResources.SkyDrive, AppResources.Dropbox, AppResources.GoogleDrive };
-        public static string[] ACCOUNT_ID_KEYS = { "ACCOUNT_SKY_DRIVE_ID_KEY", "ACCOUNT_DROPBOX_ID_KEY", "ACCOUNT_GOOGLE_DRIVE_ID_KEY" };
 
         public const string ACCOUNT_MAIN_PLATFORM_TYPE_KEY = "ACCOUNT_MAIN_PLATFORM_TYPE_KEY";
         public const string LOCATION_ACCESS_CONSENT_KEY = "LOCATION_ACCESS_CONSENT_KEY";
@@ -31,9 +30,6 @@ namespace PintheCloud.Models
         [JsonProperty(PropertyName = "account_name")]
         public string account_name { get; set; }
 
-        [JsonProperty(PropertyName = "account_token")]
-        public string account_token { get; set; }
-
         [JsonProperty(PropertyName = "account_used_size")]
         public double account_used_size { get; set; }
 
@@ -41,13 +37,12 @@ namespace PintheCloud.Models
         public string account_business_type { get; set; }
 
 
-        public Account(string account_platform_id, string account_platform_id_type, string account_name,
-            string account_token, double account_used_size, string account_business_type)
+        public Account(string account_platform_id, string account_platform_id_type, string account_name, 
+            double account_used_size, string account_business_type)
         {
             this.account_platform_id = account_platform_id;
             this.account_platform_id_type = account_platform_id_type;
             this.account_name = account_name;
-            this.account_token = account_token;
             this.account_used_size = account_used_size;
             this.account_business_type = account_business_type;
         }

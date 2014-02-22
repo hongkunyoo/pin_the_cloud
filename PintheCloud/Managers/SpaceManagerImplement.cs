@@ -48,11 +48,13 @@ namespace PintheCloud.Managers
         {
             // Get My spaces
             List<string> ids = new List<string>();
-            string id = null;
             for (int i = 0; i < App.IStorageManagers.Length; i++)
-                if (App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_ID_KEYS[i], out id))
+            {
+                string id = null;
+                IStorageManager iStorageManager = App.IStorageManagers[i];
+                if (App.ApplicationSettings.TryGetValue<string>(iStorageManager.GetAccountIdKey(), out id))
                     ids.Add(id);
-
+            }
             if (ids.Count <= 0)
                 return null;
             else

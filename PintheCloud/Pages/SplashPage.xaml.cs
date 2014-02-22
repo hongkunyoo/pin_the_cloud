@@ -59,14 +59,13 @@ namespace PintheCloud.Pages
                 //NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
                 for (int i = 0; i < App.IStorageManagers.Length; i++)
                 {
-                    App.IStorageManager = App.IStorageManagers[i];
-                    
                     // If main platform is signed in, process it.
                     // Otherwise, ignore and go to explorer page.
                     bool isSignIn = false;
-                    App.ApplicationSettings.TryGetValue<bool>(App.IStorageManager.GetAccountIsSignInKey(), out isSignIn);
+                    IStorageManager iStorageManager = App.IStorageManagers[i];
+                    App.ApplicationSettings.TryGetValue<bool>(iStorageManager.GetAccountIsSignInKey(), out isSignIn);
                     if (isSignIn)
-                        App.TaskManager.AddSignInTask(App.IStorageManager.SignIn(), i);
+                        App.TaskManager.AddSignInTask(iStorageManager.SignIn(), i);
                 }
             }
             NavigationService.Navigate(new Uri(EXPLORER_PAGE, UriKind.Relative));
