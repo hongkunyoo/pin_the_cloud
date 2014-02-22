@@ -169,15 +169,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   folder과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Folder {
-            get {
-                return ResourceManager.GetString("Folder", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///    GB과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string GB {
@@ -583,7 +574,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Uploading과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Uploading...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Uploading {
             get {

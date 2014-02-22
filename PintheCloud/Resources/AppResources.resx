@@ -206,9 +206,6 @@
   <data name="Path" xml:space="preserve">
     <value>Path : </value>
   </data>
-  <data name="Folder" xml:space="preserve">
-    <value>folder</value>
-  </data>
   <data name="RootPath" xml:space="preserve">
     <value>/</value>
   </data>
@@ -279,7 +276,7 @@
     <value>Pining Spot...</value>
   </data>
   <data name="Uploading" xml:space="preserve">
-    <value>Uploading</value>
+    <value>Uploading...</value>
   </data>
   <data name="DoingSignOut" xml:space="preserve">
     <value>Doing Sign Out...</value>

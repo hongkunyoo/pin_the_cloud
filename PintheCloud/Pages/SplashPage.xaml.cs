@@ -37,10 +37,10 @@ namespace PintheCloud.Pages
             base.OnNavigatedTo(e);
 
             // Check main platform at frist login.
-            int mainPlatformType = 0;
-            if (!App.ApplicationSettings.TryGetValue<int>(Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY, out mainPlatformType))
+            Account.StorageAccountType mainPlatformType = 0;
+            if (!App.ApplicationSettings.TryGetValue<Account.StorageAccountType>(Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY, out mainPlatformType))
             {
-                App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (int)Account.StorageAccountType.SKY_DRIVE;
+                App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.SKY_DRIVE;
                 App.ApplicationSettings.Save();
             }
 

@@ -27,13 +27,20 @@ namespace PintheCloud.Pages
 {
     public partial class FileListPage : PtcPage
     {
-        // Instances
-        private string SpaceId;
-        private string SpaceName;
-        private string AccountId;
-        private string AccountName;
+        // Const Instances
+        private const string UPLOAD_FAIL_IMAGE_URI = "UPLOAD_FAIL_IMAGE_URI";
+        private const string UPLOADING_FILE_IMAGE_URI = "UPLOADING_FILE_IMAGE_URI";
+        private const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
+        private const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
 
-        private int PlatformIndex = (int)Account.StorageAccountType.SKY_DRIVE;
+        // Instances
+        private string SpaceId = null;
+        private string SpaceName = null;
+        private string AccountId = null;
+        private string AccountName = null;
+        private int PlatformIndex = 0;
+        private bool PiningSpot = false;
+
         private FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
 
 
@@ -80,7 +87,7 @@ namespace PintheCloud.Pages
                 {
                     uiFileList.Visibility = Visibility.Visible;
                     uiFileListMessage.Visibility = Visibility.Collapsed;
-                    this.Refresh();
+                    this.Refresh(AppResources.Loading);
                 }
                 else
                 {
@@ -107,13 +114,9 @@ namespace PintheCloud.Pages
                 // If internet is on, upload file given from previous page.
                 // Otherwise, show internet unavailable message.
                 if (NetworkInterface.GetIsNetworkAvailable())
-                {
-                    Task task = this.InitialPinSpotAndUploadFileAsync();
-                }
+                    App.TaskManager.AddTask(TaskManager.INITIAL_PIN_SPOT_AND_UPLOAD_FILE_TASK, this.InitialPinSpotAndUploadFileAsync());
                 else
-                {
                     base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
-                }
             }
         }
 
@@ -126,6 +129,13 @@ namespace PintheCloud.Pages
 
 
         /*** Self Methods ***/
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+            e.Cancel = this.PiningSpot;
+        }
+
 
         private async void uiFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -150,10 +160,10 @@ namespace PintheCloud.Pages
         }
 
 
-        private async void Refresh()
+        private async void Refresh(string message)
         {
             // Show Refresh message and Progress Indicator
-            base.SetListUnableAndShowMessage(uiFileList, AppResources.Refreshing, uiFileListMessage);
+            base.SetListUnableAndShowMessage(uiFileList, message, uiFileListMessage);
             base.SetProgressIndicator(true);
 
             // If file exists, show it.
@@ -184,6 +194,8 @@ namespace PintheCloud.Pages
             // Show Pining message and Progress Indicator
             base.SetListUnableAndShowMessage(uiFileList, AppResources.PiningSpot, uiFileListMessage);
             base.SetProgressIndicator(true);
+            this.PiningSpot = true;
+
 
             Geoposition geo = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
             Space space = new Space(DateTime.Now.ToString(), geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
@@ -191,7 +203,9 @@ namespace PintheCloud.Pages
             if (await App.SpaceManager.PinSpaceAsync(space))
                 spaceId = space.id;
 
+
             // Hide Progress Indicator and return
+            this.PiningSpot = false;
             base.SetProgressIndicator(false);
             return spaceId;
         }
@@ -200,49 +214,53 @@ namespace PintheCloud.Pages
         // Upload. have to wait it.
         private async Task UploadFileAsync(FileObjectViewItem file)
         {
-            // Show Uploading message and reset percentage to 0.
-            // Show Uploading message and progress bar
+            // Show Uploading message and file for good UX
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                uiFileListMessage.Text = AppResources.Uploading + "  " + file.Name + "...";
+                file.SelectCheckImage = UPLOADING_FILE_IMAGE_URI;
+                this.FileObjectViewModel.Items.Add(file);
+
+                uiFileListMessage.Text = AppResources.Uploading;
                 uiFileList.Visibility = Visibility.Visible;
                 uiFileListMessage.Visibility = Visibility.Visible;
-
-                uiFileListProgressPercentageText.Text = "0";
-                uiFileListProgressBar.Visibility = Visibility.Visible;
-                uiFileListProgressPercentagePanel.Visibility = Visibility.Visible;
             });
 
 
             // Upload
             IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
             Stream stream = await iStorageManager.DownloadFileStreamAsync(file.Id);
-            string uploadPath = null;
             if (stream != null)
             {
-                uploadPath = await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpaceId, file.Name, stream);
-                if (uploadPath == null)
+                string uploadPath = await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpaceId, file.Name, stream);
+                if (uploadPath != null)
                 {
-                    file.ThumnailType = FileObjectViewModel.NO_FILE;
-                    file.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        file.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                    });
+                }
+                else
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        file.SelectCheckImage = UPLOAD_FAIL_IMAGE_URI;
+                    });
                 }
             }
             else
             {
-                file.ThumnailType = FileObjectViewModel.NO_FILE;
-                file.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    file.SelectCheckImage = UPLOAD_FAIL_IMAGE_URI;
+                });
             }
 
-            // Show uploaded file and hide progress bar.
+            // Hide progress message
             base.SetProgressIndicator(false);
             base.Dispatcher.BeginInvoke(() =>
             {
                 uiFileListMessage.Visibility = Visibility.Collapsed;
-                uiFileListProgressBar.Visibility = Visibility.Collapsed;
-                uiFileListProgressPercentagePanel.Visibility = Visibility.Collapsed;
-                file.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
-                this.FileObjectViewModel.Items.Add(file);
             });
         }
 
@@ -259,7 +277,7 @@ namespace PintheCloud.Pages
                 List<FileObjectViewItem> list = (List<FileObjectViewItem>)PhoneApplicationService.Current.State[ExplorerPage.SELECTED_FILE_KEY];
                 foreach (FileObjectViewItem file in list)
                 {
-                    await this.UploadFileAsync(file);
+                    Task uploadTask = this.UploadFileAsync(file);
                 }
             }
             else
@@ -277,6 +295,25 @@ namespace PintheCloud.Pages
                 return false;
             else
                 return true;
+        }
+
+        private void uiFileListEditViewButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            string currentEditViewMode = ((BitmapImage)uiFileListEditViewButtonImage.Source).UriSource.ToString();
+            if (currentEditViewMode.Equals(EDIT_IMAGE_URI))
+                uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_URI, UriKind.Relative));
+            else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))
+                uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_URI, UriKind.Relative));
+        }
+
+        private void uiAppBarRefreshMenuItem_Click(object sender, System.EventArgs e)
+        {
+        	// TODO: 여기에 구현된 이벤트 처리기를 추가하십시오.
+        }
+
+        private void uiAppBarPinInfoButton_Click(object sender, System.EventArgs e)
+        {
+        	// TODO: 여기에 구현된 이벤트 처리기를 추가하십시오.
         }
     }
 }

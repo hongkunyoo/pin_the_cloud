@@ -9,7 +9,7 @@ namespace PintheCloud.Utilities
     /// <summary>
     /// For Encoding Korean & other Escape characters.
     /// </summary>
-    public class MyEncoder
+    public class PtcEncoder
     {
         /// <summary>
         /// Encodes the given string

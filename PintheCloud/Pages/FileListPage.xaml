@@ -15,6 +15,15 @@
 	Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
+	
+    <local:PtcPage.ApplicationBar>
+        <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
+            <shell:ApplicationBar.MenuItems>
+                <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshMenuItem" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshMenuItem_Click"/>
+            </shell:ApplicationBar.MenuItems>
+            <shell:ApplicationBarIconButton x:Name="uiAppBarPinInfoButton" IconUri="/Assets/pajeon/png/general_bar_upload.png" IsEnabled="True" Text="pin" Click="uiAppBarPinInfoButton_Click"/>
+        </shell:ApplicationBar>
+    </local:PtcPage.ApplicationBar>
 
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
@@ -23,17 +32,15 @@
         </Grid.RowDefinitions>
 
         <Grid Background="#FF00A4BF">
-            <ProgressBar x:Name="uiFileListProgressBar" VerticalAlignment="Top" Visibility="Collapsed" Style="{StaticResource CustomProgressBarStyle}"/>
-            <StackPanel x:Name="uiFileListProgressPercentagePanel" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0,5,0,0" Visibility="Collapsed">
-                <TextBlock x:Name="uiFileListProgressPercentageText" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="17.333" Text="0"/>
-                <TextBlock Text="{Binding LocalizedResources.Percentage, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="17.333"/>
-            </StackPanel>
             <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+			            <Button x:Name="uiFileListEditViewButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Click="uiFileListEditViewButton_Click">
+            	<Image x:Name="uiFileListEditViewButtonImage" Source="/Assets/pajeon/png/general_edit.png" Stretch="None"/>
+            </Button>
         </Grid>
 
-        <!--ContentPanel - 여기에 추가 내용을 배치합니다.-->
-        <Grid x:Name="ContentPanel" Grid.Row="1">
-            <Grid.Resources>
+		<!--ContentPanel - 여기에 추가 내용을 배치합니다.-->
+        <Grid x:Name="ContentPanel" Margin="0,28,0,0" Grid.Row="1">
+			          <Grid.Resources>
                 <DataTemplate x:Key="uiFileListItemTemplate">
                     <Grid x:Name="uiFileListItem">
                         <Grid.RowDefinitions>
@@ -62,20 +69,19 @@
                     </Grid>
                 </DataTemplate>
             </Grid.Resources>
-            <Grid Margin="0,28,0,0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <StackPanel Margin="22,0,18,0">
-                    <TextBlock x:Name="uiSpaceName" Foreground="Black" FontSize="50" LineHeight="58" TextTrimming="WordEllipsis" Margin="0,0,0,20" />
-                    <TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" FontWeight="Light" />
-                </StackPanel>
-                <StackPanel Grid.Row="1" Margin="0">
-                    <TextBlock x:Name="uiFileListMessage" TextWrapping="Wrap" Margin="22,28,18,0" Foreground="Black" FontSize="22" Visibility="Collapsed"/>
-                    <phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiFileListItemTemplate}" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed" Margin="0,28,0,0"/>
-                </StackPanel>
-            </Grid>
+        	<Grid.RowDefinitions>
+        		<RowDefinition Height="Auto"/>
+        		<RowDefinition/>
+        		<RowDefinition Height="72"/>
+        	</Grid.RowDefinitions>
+        	<StackPanel Margin="22,0,18,0">
+        		<TextBlock x:Name="uiSpaceName" Foreground="Black" FontSize="50" LineHeight="58" TextTrimming="WordEllipsis" Margin="0,0,0,20" />
+        		<TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" FontWeight="Light" />
+        	</StackPanel>
+        	<StackPanel Grid.Row="1" Margin="0">
+        		<TextBlock x:Name="uiFileListMessage" TextWrapping="Wrap" Margin="22,28,18,0" Foreground="Black" FontSize="22" Visibility="Collapsed"/>
+        		<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiFileListItemTemplate}" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed" Margin="0,28,0,0"/>
+        	</StackPanel>
         </Grid>
     </Grid>
 

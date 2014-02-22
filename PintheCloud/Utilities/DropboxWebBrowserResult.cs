@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.Utilities
 {
-    public class MyWebBrowserResult : TaskEventArgs
+    public class DropboxWebBrowserResult : TaskEventArgs
     {
-        public MyWebBrowserResult()
+        public DropboxWebBrowserResult()
         {
         }
     }

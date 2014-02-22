@@ -73,7 +73,6 @@ namespace PintheCloud.Models
         {
             this.Id = Id;
             this.Name = Name;
-            //this.ParentId = ParentId;
             this.Size = Size;
             this.Type = Type;
             this.Extension = Extension;

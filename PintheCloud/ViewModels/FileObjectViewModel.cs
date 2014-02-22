@@ -16,14 +16,15 @@ namespace PintheCloud.ViewModels
         public const string CHECK_NOT_IMAGE_URI = "/Assets/pajeon/png/general_checkbox.png";
         public const string CHECK_IMAGE_URI = "/Assets/pajeon/png/general_checkbox_p.png";
         public const string TRANSPARENT_IMAGE_URI = "/Assets/pajeon/png/general_transparent.png";
-        public const string NO_FILE = "NO_FILE";
+
+        public const string FOLDER = "FOLDER";
 
 
         public ObservableCollection<FileObjectViewItem> Items { get; set; }
 
         // Mutex
         public bool IsDataLoaded { get; set; }
-
+        public bool IsDataLoading { get; set; }
 
         public FileObjectViewModel()
         {
@@ -73,14 +74,14 @@ namespace PintheCloud.ViewModels
 
 
                 // Set Type
-                if (fileObject.Type.Equals(AppResources.Folder))
+                if (fileObject.Type == FileObject.FileObjectType.FOLDER)
                 {
-                    //fileObjectViewItem.ThumnailType = fileObject.Type;
+                    fileObjectViewItem.ThumnailType = FOLDER;
                     fileObjectViewItem.SelectCheckImage = TRANSPARENT_IMAGE_URI;
                 }
                 else
                 {
-                    //fileObjectViewItem.ThumnailType = fileObject.TypeDetail;
+                    fileObjectViewItem.ThumnailType = fileObject.Extension;
                     fileObjectViewItem.SelectCheckImage = CHECK_NOT_IMAGE_URI;
                 }    
 

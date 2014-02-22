@@ -23,14 +23,12 @@ namespace PintheCloud.Utilities
 
             string id = (string)(dic["id"] ?? "");
             string name = (string)(dic["name"] ?? "");
-            //string parent_id = (string)(dic["parent_id"] ?? "/");
-            double size = (double)dic["size"];
+            double size = Convert.ToDouble(dic["size"] + ".0");
             FileObject.FileObjectType type = ("file".Equals(id.Split('.').First()) ? FileObject.FileObjectType.FILE : FileObject.FileObjectType.FOLDER);
             string extension = name.Split('.').Last();
             string updateAt = (string)dic["updated_time"] ?? DateTime.Now.ToString();
 
             return new FileObject(id, name, size, type, extension, updateAt);
-            
         }
         /// <summary>
         /// Converting Windows Azure Blob Storage Model to FileObject.

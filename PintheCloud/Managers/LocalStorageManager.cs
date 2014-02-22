@@ -109,7 +109,7 @@ namespace PintheCloud.Managers
                 folder = await folder.CreateFolderAsync(s, CreationCollisionOption.OpenIfExists);
             }
 
-            return new Uri(MyEncoder.Encode("/" + LocalStorageManager.SKYDRIVE_DIRECTORY + LocalStorageManager.SKYDRIVE_FOLDER + (ori_path.StartsWith("/") ? ori_path : "/" + ori_path)), UriKind.Relative);
+            return new Uri(PtcEncoder.Encode("/" + LocalStorageManager.SKYDRIVE_DIRECTORY + LocalStorageManager.SKYDRIVE_FOLDER + (ori_path.StartsWith("/") ? ori_path : "/" + ori_path)), UriKind.Relative);
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace PintheCloud.Managers
             if (file != null)
             {
                 count++;
-                Debug.WriteLine(this.getCount() + MyEncoder.Decode(file.Name) + "(" + file.Path + ")");
+                Debug.WriteLine(this.getCount() + PtcEncoder.Decode(file.Name) + "(" + file.Path + ")");
                 count--;
             }
         }
@@ -183,7 +183,7 @@ namespace PintheCloud.Managers
             if (folder != null)
             {
                 count++;
-                Debug.WriteLine(this.getCount() + "folder : " + MyEncoder.Decode(folder.Name) + "(" + folder.Path + ")");
+                Debug.WriteLine(this.getCount() + "folder : " + PtcEncoder.Decode(folder.Name) + "(" + folder.Path + ")");
                 IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
                 IReadOnlyList<StorageFolder> folderList = await folder.GetFoldersAsync();
                 foreach (StorageFile file in fileList)

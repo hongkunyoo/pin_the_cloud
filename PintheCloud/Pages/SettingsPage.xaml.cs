@@ -266,7 +266,7 @@ namespace PintheCloud.Pages
 
         private void uiSkyDriveSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (int)Account.StorageAccountType.SKY_DRIVE;
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.SKY_DRIVE;
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.SkyDrive + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
@@ -274,7 +274,7 @@ namespace PintheCloud.Pages
 
         private void uiDropboxSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (int)Account.StorageAccountType.DROPBOX;
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.DROPBOX;
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.Dropbox + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
@@ -282,7 +282,7 @@ namespace PintheCloud.Pages
 
         private void uiGoogleDriveSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (int)Account.StorageAccountType.GOOGLE_DRIVE;
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.GOOGLE_DRIVE;
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.GoogleDrive + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }

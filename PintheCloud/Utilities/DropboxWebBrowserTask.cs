@@ -12,7 +12,7 @@ using System.Windows.Controls.Primitives;
 
 namespace PintheCloud.Utilities
 {
-    public class MyWebBrowserTask : ChooserBase<MyWebBrowserResult>
+    public class DropboxWebBrowserTask : ChooserBase<DropboxWebBrowserResult>
     {
         private UserControl _this;
         private string uri;
@@ -29,15 +29,15 @@ namespace PintheCloud.Utilities
                 uri = value;
             }
         }
-        public MyWebBrowserTask()
+        public DropboxWebBrowserTask()
         {
 
         }
-        public MyWebBrowserTask(string uri)
+        public DropboxWebBrowserTask(string uri)
         {
             this.uri = uri;
         }
-        public MyWebBrowserTask(string uri, UserControl _this)
+        public DropboxWebBrowserTask(string uri, UserControl _this)
         {
             this.uri = uri;
             this._this = _this;
@@ -55,13 +55,13 @@ namespace PintheCloud.Utilities
 
             p.Closed += (sender, args) =>
             {
-                this.FireCompleted(this, new MyWebBrowserResult(), null);
+                this.FireCompleted(this, new DropboxWebBrowserResult(), null);
             };
         }
-        public Task<MyWebBrowserResult> ShowAsync()
+        public Task<DropboxWebBrowserResult> ShowAsync()
         {
             
-            TaskCompletionSource<MyWebBrowserResult> tcs = new TaskCompletionSource<MyWebBrowserResult>();
+            TaskCompletionSource<DropboxWebBrowserResult> tcs = new TaskCompletionSource<DropboxWebBrowserResult>();
             this.Completed += (sender, e) =>
             {
                 if (e.Error != null)

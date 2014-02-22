@@ -28,8 +28,8 @@ namespace PintheCloud.Pages
         protected const string EXPLORER_PAGE = "/Pages/ExplorerPage.xaml";
         protected const string SETTINGS_PAGE = "/Pages/SettingsPage.xaml";
         protected const string FILE_LIST_PAGE = "/Pages/FileListPage.xaml";
-
         protected const string PREV_PAGE = "PREV_PAGE";
+
         protected string PREVIOUS_PAGE = null;
 
 

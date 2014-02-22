@@ -1,4 +1,5 @@
 ﻿using PintheCloud.Resources;
+using PintheCloud.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,9 @@ namespace PintheCloud.Utilities
         private const string XLS_IMAGE_PATH = "/Assets/pajeon/png/icon_file_xls.png";
         private const string ZIP_IMAGE_PATH = "/Assets/pajeon/png/icon_file_zip.png";
 
+        // Folder
+        private const string FOLDER = "folder";
+
         // Sound
         private const string MP3 = "mp3";
         private const string WMA = "wma";
@@ -34,12 +38,14 @@ namespace PintheCloud.Utilities
         private const string AVI = "avi";
         private const string MKV = "mkv";
         private const string FLV = "flv";
+        private const string MOV = "mov";
 
         // Image
         private const string JPG = "jpg";
         private const string JPEG = "jpeg";
         private const string PNG = "png";
         private const string GIF = "gif";
+        private const string BMP = "bmp";
 
         // Document
         private const string PPT = "ppt";
@@ -58,16 +64,16 @@ namespace PintheCloud.Utilities
         {
             string type = ((string)value).ToLower();
 
-            if (type.Equals(AppResources.Folder))  // Folder
+            if (type.Equals(FOLDER))  // Folder
                 return new Uri(FOLDER_IMAGE_PATH, UriKind.Relative);
 
             else if (type.Equals(MP3) || type.Equals(WMA))  // Sound
                 return new Uri(SOUND_IMAGE_PATH, UriKind.Relative);
 
-            else if (type.Equals(MP4) || type.Equals(WMV) || type.Equals(MPEG) || type.Equals(AVI) || type.Equals(MKV) || type.Equals(FLV))  // video
+            else if (type.Equals(MP4) || type.Equals(WMV) || type.Equals(MPEG) || type.Equals(AVI) || type.Equals(MKV) || type.Equals(FLV) || type.Equals(MOV))  // video
                 return new Uri(VIDEO_IMAGE_PATH, UriKind.Relative);
 
-            else if (type.Equals(JPG) || type.Equals(JPEG) || type.Equals(PNG) || type.Equals(GIF))  // Image
+            else if (type.Equals(JPG) || type.Equals(JPEG) || type.Equals(PNG) || type.Equals(GIF) || type.Equals(BMP))  // Image
                 return new Uri(IMG_IMAGE_PATH, UriKind.Relative);
 
             else if (type.Equals(PPT) || type.Equals(PPTX))  // PPT

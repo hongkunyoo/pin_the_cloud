@@ -47,7 +47,7 @@ namespace PintheCloud.Managers
                 _client.GetTokenAsync(async (userLogin) =>
                 {
                     string authUri = _client.BuildAuthorizeUrl(APP_AUTH_URI);
-                    MyWebBrowserTask webBrowser = new MyWebBrowserTask(authUri);
+                    DropboxWebBrowserTask webBrowser = new DropboxWebBrowserTask(authUri);
                     await webBrowser.ShowAsync();
 
                     _client.GetAccessTokenAsync((accessToken) =>

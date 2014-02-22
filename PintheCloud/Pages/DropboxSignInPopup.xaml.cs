@@ -15,7 +15,8 @@ namespace PintheCloud.Pages
 {
     public partial class MyPopup : UserControl
     {
-        Popup p;
+        private Popup p = null;
+
 
         public MyPopup(Popup p, string uri)
         {
@@ -25,6 +26,7 @@ namespace PintheCloud.Pages
             webBrowser.Navigate(new Uri(uri,UriKind.RelativeOrAbsolute));
         }
 
+
         private void webBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             if (e.Uri.ToString().StartsWith("http://54.214") &&e.Uri.ToString().Contains("54.214.19.198"))
@@ -32,7 +34,5 @@ namespace PintheCloud.Pages
                 p.IsOpen = false;
             }
         }
-        
-
     }
 }

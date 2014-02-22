@@ -107,18 +107,18 @@
     <Compile Include="Managers\SpaceManagerImplement.cs" />
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Space.cs" />
-    <Compile Include="Pages\MyPopup.xaml.cs">
-      <DependentUpon>MyPopup.xaml</DependentUpon>
+    <Compile Include="Pages\DropboxSignInPopup.xaml.cs">
+      <DependentUpon>DropboxSignInPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\FileObjectConverter.cs" />
-    <Compile Include="Utilities\MyWebBrowserResult.cs" />
-    <Compile Include="Utilities\MyWebBrowserTask.cs" />
+    <Compile Include="Utilities\DropboxWebBrowserResult.cs" />
+    <Compile Include="Utilities\DropboxWebBrowserTask.cs" />
     <Compile Include="Utilities\ShareException.cs" />
     <Compile Include="Utilities\StringToThumnailUriConverter.cs" />
     <Compile Include="Pages\FileListPage.xaml.cs">
       <DependentUpon>FileListPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\MyEncoder.cs" />
+    <Compile Include="Utilities\PtcEncoder.cs" />
     <Compile Include="Utilities\ParseHelper.cs" />
     <Compile Include="Utilities\StringToFontWeightConverter.cs" />
     <Compile Include="Utilities\StringToUriConverter.cs" />
@@ -169,7 +169,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\MyPopup.xaml">
+    <Page Include="Pages\DropboxSignInPopup.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
