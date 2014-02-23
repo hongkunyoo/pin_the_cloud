@@ -28,13 +28,10 @@ namespace PintheCloud.Pages
     {
         // Const Instances
         private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_upload.png";
-
-        private const int PIN_APP_BAR_BUTTON_INDEX = 1;
-
+        public const string SELECTED_FILE_KEY = "SELECTED_FILE_KEY";
         public const int PICK_PIVOT_INDEX = 0;
         public const int PIN_INFO_PIVOT_INDEX = 1;
-        public const string SELECTED_FILE_KEY = "SELECTED_FILE_KEY";
-
+        
 
         // Instances
         private int MainPlatformIndex = 0;
@@ -55,7 +52,7 @@ namespace PintheCloud.Pages
         {
             InitializeComponent();
 
-            // Set pin button
+            // Set pin app bar button
             this.PinInfoAppBarButton.Text = AppResources.Pin;
             this.PinInfoAppBarButton.IconUri = new Uri(PIN_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
             this.PinInfoAppBarButton.IsEnabled = false;
@@ -139,8 +136,6 @@ namespace PintheCloud.Pages
             {
                 /*** Pick Pivot ***/
 
-                // TODO Refresh
-
                 if (uiExplorerPivot.SelectedIndex == PICK_PIVOT_INDEX)
                 {
                     // If Internet available, Set space list
@@ -161,9 +156,12 @@ namespace PintheCloud.Pages
                     {
                         this.SelectedFile.Clear();
                         this.PinInfoAppBarButton.IsEnabled = false;
-
-                        IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
-                        this.SetPinInfoListAsync(this.FolderTree.First(), AppResources.Loading, iStorageManager);
+                        foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
+                        {
+                            if(!fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER)
+                                && fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
+                                fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                        }
                     }
                     else
                     {
@@ -189,7 +187,7 @@ namespace PintheCloud.Pages
             {
                 case PICK_PIVOT_INDEX:
                     // Remove button and menuitems and Cloud Mode text
-                    ApplicationBar.Buttons.RemoveAt(PIN_APP_BAR_BUTTON_INDEX);
+                    ApplicationBar.Buttons.Remove(this.PinInfoAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
                         ApplicationBar.MenuItems.Remove(this.AppBarMenuItems[i]);
                     uiCurrentPlatformText.Visibility = Visibility.Collapsed;
@@ -637,7 +635,7 @@ namespace PintheCloud.Pages
                         uiPinInfoList.Visibility = Visibility.Visible;
                         uiPinInfoMessage.Visibility = Visibility.Collapsed;
                         uiPinInfoCurrentPath.Text = this.GetCurrentPath();
-                        this.FileObjectViewModel.SetItems(files);
+                        this.FileObjectViewModel.SetItems(files, true);
                     });
                 }
                 else
