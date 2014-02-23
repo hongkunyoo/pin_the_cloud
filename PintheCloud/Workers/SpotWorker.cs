@@ -13,13 +13,13 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.Workers
 {
-    public class SpaceWorker
+    public class SpotWorker
     {
-        public async Task<bool> PinSpaceAsync(Space space)
+        public async Task<bool> PinSpotAsync(Spot spot)
         {
             try
             {
-                await App.MobileService.GetTable<Space>().InsertAsync(space);
+                await App.MobileService.GetTable<Spot>().InsertAsync(spot);
             }
             catch (MobileServiceInvalidOperationException)
             {
@@ -29,43 +29,43 @@ namespace PintheCloud.Workers
         }
 
 
-        // Get spaces 300m away from here
-        public async Task<JArray> GetNearSpacesAsync(double currentLatitude, double currentLongtitude)
+        // Get spots 300m away from here
+        public async Task<JArray> GetNearSpotsAsync(double currentLatitude, double currentLongtitude)
         {
             string json = @"{'currentLatitude':" + currentLatitude + ",'currentLongtitude':" + currentLongtitude + "}";
             JToken jToken = JToken.Parse(json);
-            JArray spaces = null;
+            JArray spots = null;
             try
             {
-                // Load near spaces use custom api in server script
-                spaces = (JArray)await App.MobileService.InvokeApiAsync("select_near_spaces_async", jToken);
+                // Load near spots use custom api in server script
+                spots = (JArray)await App.MobileService.InvokeApiAsync("select_near_spots_async", jToken);
             }
             catch (MobileServiceInvalidOperationException)
             {
                 return null;
             }
-            if (spaces.Count > 0)
-                return spaces;
+            if (spots.Count > 0)
+                return spots;
             else
                 return null;
         }
 
 
-        // Get spaces from DB
-        public async Task<JArray> GetMySpacesAsync(List<string> ids)
+        // Get spots from DB
+        public async Task<JArray> GetMySpotsAsync(List<string> ids)
         {
-            JArray spaces = null;
+            JArray spots = null;
             try
             {
-                // Load current account's spaces
-                spaces = (JArray)await App.MobileService.InvokeApiAsync<List<string>, JArray>("select_my_spaces_async", ids);
+                // Load current account's spots
+                spots = (JArray)await App.MobileService.InvokeApiAsync<List<string>, JArray>("select_my_spots_async", ids);
             }
             catch (MobileServiceInvalidOperationException)
             {
                 return null;
             }
-            if (spaces.Count > 0)
-                return spaces;
+            if (spots.Count > 0)
+                return spots;
             else
                 return null;
         }

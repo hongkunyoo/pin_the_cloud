@@ -40,7 +40,7 @@ namespace PintheCloud.Pages
             Account.StorageAccountType mainPlatformType = 0;
             if (!App.ApplicationSettings.TryGetValue<Account.StorageAccountType>(Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY, out mainPlatformType))
             {
-                App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.SKY_DRIVE;
+                App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.ONE_DRIVE;
                 App.ApplicationSettings.Save();
             }
 
@@ -56,14 +56,12 @@ namespace PintheCloud.Pages
             // SIgn in
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                //NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
                 for (int i = 0; i < App.IStorageManagers.Length; i++)
                 {
                     // If main platform is signed in, process it.
                     // Otherwise, ignore and go to explorer page.
-                    IStorageManager iStorageManager = App.IStorageManagers[i];
-                    if (iStorageManager.IsSignIn())
-                        App.TaskManager.AddSignInTask(iStorageManager.SignIn(), i);
+                    if (App.IStorageManagers[i].IsSignIn())
+                        App.TaskManager.AddSignInTask(App.IStorageManagers[i].SignIn(), i);
                 }
             }
             NavigationService.Navigate(new Uri(EXPLORER_PAGE, UriKind.Relative));

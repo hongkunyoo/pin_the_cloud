@@ -2,6 +2,7 @@
 using Microsoft.WindowsAzure.Storage.Blob;
 using PintheCloud.Managers;
 using PintheCloud.Models;
+using PintheCloud.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,17 +15,20 @@ namespace PintheCloud.Utilities
     public class FileObjectConverter
     {
         /// <summary>
-        /// Converting SkyDrive Model to FileObject.
+        /// Converting OneDrive Model to FileObject.
         /// </summary>
-        /// <param name="dic">SkyDrive Model</param>
+        /// <param name="dic">OneDrive Model</param>
         /// <returns>POJO FileObject</returns>
         public static FileObject ConvertToFileObject(IDictionary<string, object> dic)
         {
+            // Pass onenote
+            if (((string)(dic["type"] ?? "")).Equals("notebook"))
+                return null;
 
             string id = (string)(dic["id"] ?? "");
             string name = (string)(dic["name"] ?? "");
             double size = Convert.ToDouble(dic["size"] + ".0");
-            FileObject.FileObjectType type = ("file".Equals(id.Split('.').First()) ? FileObject.FileObjectType.FILE : FileObject.FileObjectType.FOLDER);
+            FileObject.FileObjectType type = (id.Split('.').First().Equals(FileObjectViewModel.FOLDER) ? FileObject.FileObjectType.FOLDER : FileObject.FileObjectType.FILE);
             string extension = name.Split('.').Last();
             string updateAt = (string)dic["updated_time"] ?? DateTime.Now.ToString();
 

@@ -10,7 +10,6 @@ namespace PintheCloud.Managers
 {
     public static class AccountManager
     {
-
         public static async Task<Account> GetAccountAsync(string accountId)
         {
             MobileServiceCollection<Account, Account> accounts = null;
@@ -32,6 +31,8 @@ namespace PintheCloud.Managers
             else
                 return null;
         }
+
+
         public static async Task<bool> CreateAccountAsync(string accountId, string accountUserName, Account.StorageAccountType type)
         {
             Account account = new Account(accountId, type, accountUserName, 0, AccountType.NORMAL_ACCOUNT_TYPE);
@@ -46,26 +47,5 @@ namespace PintheCloud.Managers
             
             return true;
         }
-
-
-        //private async Task<bool> IsExistedPerson(string accountId)
-        //{
-        //    MobileServiceCollection<Account, Account> accounts = null;
-        //    try
-        //    {
-        //        accounts = await App.MobileService.GetTable<Account>()
-        //            .Where(a => a.account_platform_id == accountId)
-        //            .ToCollectionAsync();
-        //    }
-        //    catch (MobileServiceInvalidOperationException)
-        //    {
-        //        return false;
-        //    }
-
-        //    if (accounts.Count > 0)
-        //        return true;
-        //    else
-        //        return false;
-        //}
     }
 }

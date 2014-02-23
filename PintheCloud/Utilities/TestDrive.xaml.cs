@@ -38,8 +38,7 @@ namespace PintheCloud.Utilities
         public async Task TestStorages()
         {
             //Debug.WriteLine(Account.StorageAccountType.SKY_DRIVE.ToString());
-            SkyDriveManager manager = new SkyDriveManager();
-
+            OneDriveManager manager = new OneDriveManager();
             manager.SignIn();
         }
 

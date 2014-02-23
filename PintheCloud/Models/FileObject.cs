@@ -18,7 +18,7 @@ namespace PintheCloud.Models
     public class FileObject
     {
         #region Variables
-        public enum FileObjectType { FILE, FOLDER, GOOGLE_DOC };
+        public enum FileObjectType { FILE, FOLDER, GOOGLE_DOC, NOTEBOOK };
         /// <summary>
         /// The id to Get, Upload, Download
         /// </summary>

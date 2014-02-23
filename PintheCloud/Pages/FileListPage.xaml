@@ -73,7 +73,7 @@
                 <RowDefinition Height="72"/>
             </Grid.RowDefinitions>
             <StackPanel Margin="22,0,18,0">
-                <TextBlock x:Name="uiSpaceName" Foreground="Black" FontSize="50" LineHeight="58" TextTrimming="WordEllipsis" Margin="0,0,0,20" />
+                <TextBlock x:Name="uiSpotName" Foreground="Black" FontSize="50" LineHeight="58" TextTrimming="WordEllipsis" Margin="0,0,0,20" />
                 <TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FFA7B6BE" FontWeight="Light" />
             </StackPanel>
             <StackPanel Grid.Row="1" Margin="0">

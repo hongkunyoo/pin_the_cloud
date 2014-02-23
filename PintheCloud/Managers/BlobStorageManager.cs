@@ -20,7 +20,6 @@ namespace PintheCloud.Managers
     public class BlobStorageManager
     {
         # region variables
-        //private static string BLOB_CONNECTION = "DefaultEndpointsProtocol=http;AccountName=rfrost77;AccountKey=0GgFw4h4JiCklbD5avI2YBitfyuOj9GZQQpRaMEDZEhRtPohzlsUlAOie3SfZE3aMXFCcto1hi/Gu1Ppw4ZuRg==";
         /// <summary>
         /// connection string to connect with Windows Azure Cloud Storage
         /// </summary>
@@ -28,12 +27,13 @@ namespace PintheCloud.Managers
         /// <summary>
         /// Container that files will be stored in
         /// </summary>
-        private string CONTAINER_NAME = "space-container";
+        private string CONTAINER_NAME = "spot-container";
+
         private CloudStorageAccount storageAccount;
         private CloudBlobClient blobClient;
         private CloudBlobContainer container;
-        //private string account;
         # endregion
+
 
         /// <summary>
         /// Constructor. Connecting account, aquiring client connection and container.
@@ -44,6 +44,8 @@ namespace PintheCloud.Managers
             this.blobClient = this.storageAccount.CreateCloudBlobClient();
             this.container = blobClient.GetContainerReference(this.CONTAINER_NAME);
         }
+
+
         /// <summary>
         /// Gets file meta information from the spot.
         /// </summary>
@@ -54,28 +56,34 @@ namespace PintheCloud.Managers
             CloudBlockBlob blockBlob = (CloudBlockBlob)await container.GetBlobReferenceFromServerAsync(id);
             return FileObjectConverter.ConvertToFileObject(blockBlob);
         }
+
+
         /// <summary>
         /// Gets file meta information from the spot, using account id, spot id and path.
         /// </summary>
         /// <param name="account">The account id of the spot.</param>
-        /// <param name="spaceId">The spot id of the spot.</param>
+        /// <param name="spotId">The spot id of the spot.</param>
         /// <param name="sourcePath">The path of the file</param>
         /// <returns>FileObject containing file meta information.</returns>
-        public async Task<FileObject> GetFileAsync(string account, string spaceId, string sourcePath)
+        public async Task<FileObject> GetFileAsync(string account, string spotId, string sourcePath)
         {
             sourcePath = ParseHelper.TrimSlash(sourcePath);
-            return await this.GetFileAsync(account + "/" + spaceId + "/" + sourcePath);
+            return await this.GetFileAsync(account + "/" + spotId + "/" + sourcePath);
         }
+
+
         /// <summary>
         /// Gets List of file meta information with directory.
         /// </summary>
         /// <param name="account">The account id of the spot</param>
-        /// <param name="spaceId">The spot id</param>
+        /// <param name="spotId">The spot id</param>
         /// <returns>List of the FileObject containing file meta information</returns>
         public Task<List<FileObject>> GetFilesFromSpotAsync(string account, string spotId)
         {
             return this._GetFilesFromFolderByIdAsync(account + "/" + spotId);
         }
+
+
         /// <summary>
         /// Downloads file to the given StorageFile
         /// </summary>
@@ -98,6 +106,8 @@ namespace PintheCloud.Managers
                 throw new ShareException(id, ShareException.ShareType.DOWNLOAD);
             }
         }
+
+
         /// <summary>
         /// Downloads file to the given StorageFile using directory.
         /// </summary>
@@ -105,11 +115,13 @@ namespace PintheCloud.Managers
         /// <param name="sourcePath">The path to download</param>
         /// <param name="downloadFile">The file downloaded to</param>
         /// <returns>The downloaded file</returns>
-        public async Task<StorageFile> DownloadFileAsync(string account, string spaceId, string sourcePath, StorageFile downloadFile)
+        public async Task<StorageFile> DownloadFileAsync(string account, string spotId, string sourcePath, StorageFile downloadFile)
         {
             sourcePath = ParseHelper.TrimSlash(sourcePath);
-            return await this.DownloadFileAsync(account + "/" + spaceId + "/" + sourcePath, downloadFile);
+            return await this.DownloadFileAsync(account + "/" + spotId + "/" + sourcePath, downloadFile);
         }
+
+
         /// <summary>
         /// Gets Download Stream
         /// </summary>
@@ -126,21 +138,22 @@ namespace PintheCloud.Managers
             {
                 throw new ShareException(id, ShareException.ShareType.DOWNLOAD);
             }
-            
         }
+
+
         /// <summary>
         /// Upload File to a given stream.
         /// </summary>
         /// <param name="account">The account id to upload</param>
-        /// <param name="spaceId">The spot id to upload</param>
+        /// <param name="spotId">The spot id to upload</param>
         /// <param name="file">The name to be used after uploaded</param>
         /// <param name="stream">The stream to upload</param>
         /// <returns>The file id</returns>
-        public async Task<string> UploadFileStreamAsync(string account, string spaceId, string fileName, Stream stream)
+        public async Task<string> UploadFileStreamAsync(string account, string spotId, string fileName, Stream stream)
         {
             try
             {
-                CloudBlockBlob blockBlob = container.GetBlockBlobReference(account + "/" + spaceId + "/" + fileName);
+                CloudBlockBlob blockBlob = container.GetBlockBlobReference(account + "/" + spotId + "/" + fileName);
                 using (Stream s = stream)
                 {
                     await blockBlob.UploadFromStreamAsync(s);
@@ -148,10 +161,12 @@ namespace PintheCloud.Managers
             }
             catch
             {
-                throw new ShareException(account + "/" + spaceId + "/" + fileName, ShareException.ShareType.UPLOAD);
+                throw new ShareException(account + "/" + spotId + "/" + fileName, ShareException.ShareType.UPLOAD);
             }
-            return account + "/" + spaceId + "/" + fileName;
+            return account + "/" + spotId + "/" + fileName;
         }
+
+
         /// <summary>
         /// Deletes the file
         /// </summary>
@@ -170,6 +185,8 @@ namespace PintheCloud.Managers
             }
             return true;
         }
+
+
         /// <summary>
         /// Deleting every files in given SpotId
         /// </summary>
@@ -189,6 +206,8 @@ namespace PintheCloud.Managers
             }
             return true;
         }
+
+
         /// <summary>
         /// Deleting every files in given accountId
         /// </summary>
@@ -208,11 +227,14 @@ namespace PintheCloud.Managers
             return true;
         }
 
+
         # region Private Methods
         private async Task<List<FileObject>> _GetFilesFromFolderByIdAsync(string id)
         {
             return await this._GetFileObjectListFromBlobClient(this.CONTAINER_NAME + "/" + id + "/");
         }
+
+
         private async Task<string> _UploadFileAsyncById(string id, StorageFile uploadfile)
         {
             try
@@ -229,6 +251,8 @@ namespace PintheCloud.Managers
             }
             return id;
         }
+
+
         private async Task<List<FileObject>> _GetFileObjectListFromBlobClient(string prefix)
         {
             List<FileObject> list = new List<FileObject>();
@@ -243,6 +267,8 @@ namespace PintheCloud.Managers
             } while (token != null);
             return list;
         }
+
+
         private FileObject _GetData(IListBlobItem item)
         {
             if (item.GetType() == typeof(CloudBlockBlob))
@@ -255,6 +281,8 @@ namespace PintheCloud.Managers
             }
             return null;
         }
+
+
         private List<FileObject> _GetDataList(IEnumerable<IListBlobItem> result)
         {
             List<FileObject> list = new List<FileObject>();
@@ -267,51 +295,52 @@ namespace PintheCloud.Managers
         }
         # endregion
 
+
         # region Not Using Methods
         /// <summary>
         /// Deletes the file
         /// </summary>
         /// <param name="account">The account id of the spot</param>
-        /// <param name="spaceId">The spot id</param>
+        /// <param name="spotId">The spot id</param>
         /// <param name="sourcePath">The path to delete</param>
         /// <returns>True if succeeded, false if not.</returns>
         /*
-        public async Task<bool> DeleteFileAsync(string account, string spaceId, string sourcePath)
+        public async Task<bool> DeleteFileAsync(string account, string spotId, string sourcePath)
         {
-            return await this.DeleteFileAsync(account + "/" + spaceId + "/" + sourcePath);
+            return await this.DeleteFileAsync(account + "/" + spotId + "/" + sourcePath);
         }
          */
         /// <summary>
         /// Upload File to a given stream.
         /// </summary>
         /// <param name="account">The account id to upload</param>
-        /// <param name="spaceId">The spot id to upload</param>
+        /// <param name="spotId">The spot id to upload</param>
         /// <param name="uploadfile">The file to upload</param>
         /// <returns>The file id</returns>
         /*
-        public async Task<string> UploadFileAsync(string account, string spaceId, StorageFile uploadfile)
+        public async Task<string> UploadFileAsync(string account, string spotId, StorageFile uploadfile)
         {
-            return await this._UploadFileAsyncById(account + "/" + spaceId + "/" + MyEncoder.Decode(uploadfile.Name), uploadfile);
+            return await this._UploadFileAsyncById(account + "/" + spotId + "/" + MyEncoder.Decode(uploadfile.Name), uploadfile);
         }*/
         /// <summary>
         /// Upload File to a given stream.
         /// </summary>
         /// <param name="account">The account id to upload</param>
-        /// <param name="spaceId">The spot id to upload</param>
+        /// <param name="spotId">The spot id to upload</param>
         /// <param name="sourcePath">The path to upload</param>
         /// <param name="uploadfile">The file to upload</param>
         /// <returns>The file id</returns>
         /*
-        public async Task<string> UploadFileAsync(string account, string spaceId, string sourcePath, StorageFile uploadfile)
+        public async Task<string> UploadFileAsync(string account, string spotId, string sourcePath, StorageFile uploadfile)
         {
             if ("".Equals(sourcePath))
             {
-                return await this.UploadFileAsync(account, spaceId, uploadfile);
+                return await this.UploadFileAsync(account, spotId, uploadfile);
             }
             else
             {
                 sourcePath = ParseHelper.TrimSlash(sourcePath);
-                return await this._UploadFileAsyncById(account + "/" + spaceId + "/" + sourcePath + "/" + MyEncoder.Decode(uploadfile.Name), uploadfile);
+                return await this._UploadFileAsyncById(account + "/" + spotId + "/" + sourcePath + "/" + MyEncoder.Decode(uploadfile.Name), uploadfile);
             }
             
         }
@@ -320,14 +349,14 @@ namespace PintheCloud.Managers
         /// Gets List of file meta information with directory.
         /// </summary>
         /// <param name="account">The account id of the spot</param>
-        /// <param name="spaceId">The spot id</param>
+        /// <param name="spotId">The spot id</param>
         /// /// <param name="sourcePath">The directory of which to get file list</param>
         /// <returns>List of the FileObject containing file meta information</returns>
         /*
-        public Task<List<FileObject>> GetFilesFromFolderAsync(string account, string spaceId, string sourcePath)
+        public Task<List<FileObject>> GetFilesFromFolderAsync(string account, string spotId, string sourcePath)
         {
             sourcePath = ParseHelper.TrimSlash(sourcePath);
-            return this._GetFilesFromFolderByIdAsync(account + "/" + spaceId + "/" + sourcePath);
+            return this._GetFilesFromFolderByIdAsync(account + "/" + spotId + "/" + sourcePath);
         }
         */
         /*

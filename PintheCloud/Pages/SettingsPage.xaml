@@ -65,8 +65,8 @@
             						<ColumnDefinition/>
             						<ColumnDefinition Width="110"/>
             					</Grid.ColumnDefinitions>
-            					<Button x:Name="uiSkyDriveSignButton" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
-            					<Button x:Name="uiSkyDriveSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" Grid.Column="1" Click="uiSkyDriveSetMainButton_Click"/>
+            					<Button x:Name="uiOneDriveSignButton" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
+            					<Button x:Name="uiOneDriveSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" Grid.Column="1" Click="uiOneDriveSetMainButton_Click"/>
             				</Grid>
             				<Grid>
             					<Grid.ColumnDefinitions>
@@ -99,17 +99,17 @@
             <phone:PivotItem Header="{Binding LocalizedResources.MySpot, Source={StaticResource LocalizedStrings}}" Margin="0">
                 <Grid>
                     <Grid.Resources>
-                        <DataTemplate x:Key="uiSpaceListItemTemplate">
-                            <Grid x:Name="uiSpaceListItem">
+                        <DataTemplate x:Key="uiSpotListItemTemplate">
+                            <Grid x:Name="uiSpotListItem">
                                 <Grid.RowDefinitions>
                                     <RowDefinition/>
                                     <RowDefinition Height="1"/>
                                 </Grid.RowDefinitions>
-                                <Button x:Name="uiSpaceButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                <Button x:Name="uiSpotButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                                     <Grid Margin="22,17.5,18,14">
                                         <StackPanel Margin="0">
-                                            <TextBlock x:Name="uiSpaceName" TextWrapping="Wrap" Text="{Binding SpaceName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
-                                            <TextBlock x:Name="uiSpaceAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" FontWeight="Bold"/>
+                                            <TextBlock x:Name="uiSpotName" TextWrapping="Wrap" Text="{Binding SpotName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
+                                            <TextBlock x:Name="uiSpotAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" FontWeight="Bold"/>
                                         </StackPanel>
                                     </Grid>
                                 </Button>
@@ -122,7 +122,7 @@
                 		<RowDefinition Height="72"/>
                 	</Grid.RowDefinitions>
                     <TextBlock x:Name="uiMySpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,28,18,0" Visibility="Collapsed"/>
-                    <phone:LongListSelector x:Name="uiMySpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpaceListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpotList_SelectionChanged" />
+                    <phone:LongListSelector x:Name="uiMySpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpotList_SelectionChanged" />
                 </Grid>
             </phone:PivotItem>
             <phone:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">

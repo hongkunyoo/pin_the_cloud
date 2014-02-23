@@ -9,13 +9,13 @@ using Windows.UI;
 
 namespace PintheCloud.ViewModels
 {
-    public class SpaceViewItem : INotifyPropertyChanged
+    public class SpotViewItem : INotifyPropertyChanged
     {
-        public string SpaceName { get; set; }
+        public string SpotName { get; set; }
         public string AccountId { get; set; }
         public string AccountName { get; set; }
-        public double SpaceDistance { get; set; }
-        public string SpaceId { get; set; }
+        public double SpotDistance { get; set; }
+        public string SpotId { get; set; }
 
 
         public event PropertyChangedEventHandler PropertyChanged;

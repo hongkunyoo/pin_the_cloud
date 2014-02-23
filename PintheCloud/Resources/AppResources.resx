@@ -287,8 +287,8 @@
   <data name="GoogleDrive" xml:space="preserve">
     <value>GoogleDrive</value>
   </data>
-  <data name="SkyDrive" xml:space="preserve">
-    <value>SkyDrive</value>
+  <data name="OneDrive" xml:space="preserve">
+    <value>OneDrive</value>
   </data>
   <data name="Deleting" xml:space="preserve">
     <value>Deleting...</value>

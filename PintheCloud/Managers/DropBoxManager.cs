@@ -15,7 +15,7 @@ using Windows.Storage;
 
 namespace PintheCloud.Managers
 {
-    public class DropBoxManager : IStorageManager
+    public class DropboxManager : IStorageManager
     {
         #region Variables
         private const string APP_KEY = "gxjfureco8noyle";

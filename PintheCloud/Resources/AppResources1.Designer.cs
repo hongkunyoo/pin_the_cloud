@@ -394,6 +394,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   OneDrive과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string OneDrive {
+            get {
+                return ResourceManager.GetString("OneDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Path : 과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Path {
@@ -543,15 +552,6 @@ namespace PintheCloud.Resources {
         public static string SignOutMessage {
             get {
                 return ResourceManager.GetString("SignOutMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   SkyDrive과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string SkyDrive {
-            get {
-                return ResourceManager.GetString("SkyDrive", resourceCulture);
             }
         }
         

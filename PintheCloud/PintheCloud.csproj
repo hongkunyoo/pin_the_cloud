@@ -97,18 +97,18 @@
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Utilities\AccountManager.cs" />
-    <Compile Include="Managers\DropBoxManager.cs" />
+    <Compile Include="Managers\DropboxManager.cs" />
     <Compile Include="Managers\GoogleDriveManager.cs" />
     <Compile Include="Managers\IStorageManager.cs" />
     <Compile Include="Managers\BlobStorageManager.cs" />
     <Compile Include="Managers\LocalStorageManager.cs" />
-    <Compile Include="Managers\SkyDriveManager.cs" />
+    <Compile Include="Managers\OneDriveManager.cs" />
     <Compile Include="Managers\GeoCalculateManager.cs" />
     <Compile Include="Managers\GeoCalculateManagerImplement.cs" />
-    <Compile Include="Managers\SpaceManager.cs" />
-    <Compile Include="Managers\SpaceManagerImplement.cs" />
+    <Compile Include="Managers\SpotManager.cs" />
+    <Compile Include="Managers\SpotManagerImplement.cs" />
     <Compile Include="Models\FileObject.cs" />
-    <Compile Include="Models\Space.cs" />
+    <Compile Include="Models\Spot.cs" />
     <Compile Include="Pages\DropboxSignInPopup.xaml.cs">
       <DependentUpon>DropboxSignInPopup.xaml</DependentUpon>
     </Compile>
@@ -136,7 +136,7 @@
     <Compile Include="Utilities\ColorHexStringToBrushConverter.cs" />
     <Compile Include="ViewModels\FileObjectViewItem.cs" />
     <Compile Include="ViewModels\FileObjectViewModel.cs" />
-    <Compile Include="ViewModels\SpaceViewItem.cs" />
+    <Compile Include="ViewModels\SpotViewItem.cs" />
     <Compile Include="Models\AccountType.cs" />
     <Compile Include="Pages\PtcPage.cs" />
     <Compile Include="Pages\ExplorerPage.xaml.cs">
@@ -149,8 +149,8 @@
       <DependentUpon>SplashPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\SpaceViewModel.cs" />
-    <Compile Include="Workers\SpaceWorker.cs" />
+    <Compile Include="ViewModels\SpotViewModel.cs" />
+    <Compile Include="Workers\SpotWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

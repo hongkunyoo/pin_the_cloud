@@ -17,36 +17,36 @@ using Windows.UI;
 
 namespace PintheCloud.ViewModels
 {
-    public class SpaceViewModel : INotifyPropertyChanged
+    public class SpotViewModel : INotifyPropertyChanged
     {
-        public ObservableCollection<SpaceViewItem> Items { get; set; }
+        public ObservableCollection<SpotViewItem> Items { get; set; }
 
         // Mutex
         public bool IsDataLoaded { get; set; }
 
 
-        public SpaceViewModel()
+        public SpotViewModel()
         {
-            this.Items = new ObservableCollection<SpaceViewItem>();
+            this.Items = new ObservableCollection<SpotViewItem>();
         }
 
 
-        public void SetItems(JArray spaces)
+        public void SetItems(JArray spots)
         {
             // If items have something, clear.
             this.Items.Clear();
 
-            // Convert jarray spaces to space view items and set to view model
-            foreach (JObject jSpace in spaces)
+            // Convert jarray spots to spot view items and set to view model
+            foreach (JObject jSpot in spots)
             {
-                // Set new space view item
-                SpaceViewItem spaceViewItem = new SpaceViewItem();
-                spaceViewItem.SpaceName = (string)jSpace["space_name"];
-                spaceViewItem.AccountId = (string)jSpace["account_id"];
-                spaceViewItem.AccountName = (string)jSpace["account_name"];
-                spaceViewItem.SpaceId = (string)jSpace["id"];
-                spaceViewItem.SpaceDistance = (double)jSpace["space_distance"];
-                this.Items.Add(spaceViewItem);
+                // Set new spot view item
+                SpotViewItem spotViewItem = new SpotViewItem();
+                spotViewItem.SpotName = (string)jSpot["spot_name"];
+                spotViewItem.AccountId = (string)jSpot["account_id"];
+                spotViewItem.AccountName = (string)jSpot["account_name"];
+                spotViewItem.SpotId = (string)jSpot["id"];
+                spotViewItem.SpotDistance = (double)jSpot["spot_distance"];
+                this.Items.Add(spotViewItem);
             }
         }
 

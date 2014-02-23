@@ -41,7 +41,7 @@ namespace PintheCloud.Pages
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarMenuItem[] AppBarMenuItems = null;
 
-        private SpaceViewModel NearSpaceViewModel = new SpaceViewModel();
+        private SpotViewModel NearSpotViewModel = new SpotViewModel();
         private FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
 
         private Stack<FileObjectViewItem> FolderTree = new Stack<FileObjectViewItem>();
@@ -75,7 +75,7 @@ namespace PintheCloud.Pages
             this.CurrentPlatformIndex = this.MainPlatformIndex;
 
             // Set Datacontext
-            uiNearSpaceList.DataContext = this.NearSpaceViewModel;
+            uiNearSpotList.DataContext = this.NearSpotViewModel;
             uiPinInfoList.DataContext = this.FileObjectViewModel;
         }
 
@@ -101,7 +101,7 @@ namespace PintheCloud.Pages
 
                 if (uiExplorerPivot.SelectedIndex == PIN_INFO_PIVOT_INDEX)
                 {
-                    // If it is already signin skydrive, load files.
+                    // If it is already signin, load files.
                     // Otherwise, show signin button.
                     IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
                     if (!iStorageManager.IsSignIn())  // wasn't signed in.
@@ -178,16 +178,16 @@ namespace PintheCloud.Pages
                     uiCurrentPlatformText.Visibility = Visibility.Collapsed;
 
 
-                    // If Internet available, Set space list
+                    // If Internet available, Set spot list
                     // Otherwise, show internet bad message
                     if (NetworkInterface.GetIsNetworkAvailable())
                     {
-                        if (!this.NearSpaceViewModel.IsDataLoaded)  // Mutex check
-                            this.SetNearSpaceListAsync(AppResources.Loading);
+                        if (!this.NearSpotViewModel.IsDataLoaded)  // Mutex check
+                            this.SetNearSpotListAsync(AppResources.Loading);
                     }
                     else
                     {
-                        base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
+                        base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.InternetUnavailableMessage, uiNearSpotMessage);
                     }
                     break;
 
@@ -228,16 +228,16 @@ namespace PintheCloud.Pages
         }
 
 
-        // Refresh space list.
+        // Refresh spot list.
         private void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
         {
             switch (uiExplorerPivot.SelectedIndex)
             {
                 case PICK_PIVOT_INDEX:
                     if (NetworkInterface.GetIsNetworkAvailable())
-                        this.SetNearSpaceListAsync(AppResources.Refreshing);
+                        this.SetNearSpotListAsync(AppResources.Refreshing);
                     else
-                        base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
+                        base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.InternetUnavailableMessage, uiNearSpotMessage);
                     break;
 
                 case PIN_INFO_PIVOT_INDEX:
@@ -287,33 +287,33 @@ namespace PintheCloud.Pages
         /*** Pick Pivot ***/
 
         // List select event
-        private void uiNearSpaceList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void uiNearSpotList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            // Get Selected Space View Item
-            SpaceViewItem spaceViewItem = uiNearSpaceList.SelectedItem as SpaceViewItem;
+            // Get Selected Spot View Item
+            SpotViewItem spotViewItem = uiNearSpotList.SelectedItem as SpotViewItem;
 
             // Set selected item to null for next selection of list item. 
-            uiNearSpaceList.SelectedItem = null;
+            uiNearSpotList.SelectedItem = null;
 
 
             // If selected item isn't null and it doesn't come from like button, goto File list page.
             // Otherwise, Process Like or Not Like by current state
-            if (spaceViewItem != null)  // Go to FIle List Page
+            if (spotViewItem != null)  // Go to FIle List Page
             {
-                string parameters = base.GetParameterStringFromSpaceViewItem(spaceViewItem);
+                string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
                 NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters + "&pivot=" + 
                     PICK_PIVOT_INDEX + "&platform=" + this.MainPlatformIndex, UriKind.Relative));
             }
         }
 
 
-        private async void SetNearSpaceListAsync(string message)
+        private async void SetNearSpotListAsync(string message)
         {
             // Before go load, set mutex to true.
-            this.NearSpaceViewModel.IsDataLoaded = true;
+            this.NearSpotViewModel.IsDataLoaded = true;
 
             // Show progress indicator 
-            base.SetListUnableAndShowMessage(uiNearSpaceList, message, uiNearSpaceMessage);
+            base.SetListUnableAndShowMessage(uiNearSpotList, message, uiNearSpotMessage);
             base.SetProgressIndicator(true);
 
 
@@ -328,43 +328,43 @@ namespace PintheCloud.Pages
                     // Check whether GPS works well or not
                     if (currentGeoposition != null)  // works well
                     {
-                        // If there is near spaces, Clear and Add spaces to list
+                        // If there is near spots, Clear and Add spots to list
                         // Otherwise, Show none message.
-                        JArray spaces = await App.SpaceManager.GetNearSpaceViewItemsAsync(currentGeoposition);
+                        JArray spots = await App.SpotManager.GetNearSpotViewItemsAsync(currentGeoposition);
 
-                        if (spaces != null)  // There are near spaces
+                        if (spots != null)  // There are near spots
                         {
                             base.Dispatcher.BeginInvoke(() =>
                             {
-                                uiNearSpaceList.Visibility = Visibility.Visible;
-                                uiNearSpaceMessage.Visibility = Visibility.Collapsed;
-                                this.NearSpaceViewModel.SetItems(spaces);
+                                uiNearSpotList.Visibility = Visibility.Visible;
+                                uiNearSpotMessage.Visibility = Visibility.Collapsed;
+                                this.NearSpotViewModel.SetItems(spots);
                             });
                         }
-                        else  // No near spaces
+                        else  // No near spots
                         {
-                            base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoNearSpotMessage, uiNearSpaceMessage);
+                            base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.NoNearSpotMessage, uiNearSpotMessage);
                         }
                     }
                     else  // works bad
                     {
                         // Show GPS off message box.
-                        base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.BadGpsMessage, uiNearSpaceMessage);
-                        NearSpaceViewModel.IsDataLoaded = false;  // Mutex
+                        base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.BadGpsMessage, uiNearSpotMessage);
+                        NearSpotViewModel.IsDataLoaded = false;  // Mutex
                     }
                 }
                 else  // GPS is off
                 {
                     // Show GPS off message box.
-                    base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoGpsOnMessage, uiNearSpaceMessage);
-                    NearSpaceViewModel.IsDataLoaded = false;  // Mutex
+                    base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.NoGpsOnMessage, uiNearSpotMessage);
+                    NearSpotViewModel.IsDataLoaded = false;  // Mutex
                 }
             }
             else  // First or not consented of access in location information.
             {
                 // Show no consent message box.
-                base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.NoLocationAcessConsentMessage, uiNearSpaceMessage);
-                NearSpaceViewModel.IsDataLoaded = false;  // Mutex
+                base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.NoLocationAcessConsentMessage, uiNearSpotMessage);
+                NearSpotViewModel.IsDataLoaded = false;  // Mutex
             }
 
 
@@ -383,17 +383,15 @@ namespace PintheCloud.Pages
             int platformIndex = base.GetPlatformIndex(appBarMenuItem.Text);
 
 
-            // If it is not in sky drive mode, change it.
+            // If it is not in current cloud mode, change it.
             if (this.CurrentPlatformIndex != platformIndex && !this.FileObjectViewModel.IsDataLoading)
             {
                 IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
                 uiCurrentPlatformText.Text = App.IStorageManagers[platformIndex].GetStorageName();
                 this.CurrentPlatformIndex = platformIndex;
 
-                // If it is already signin skydrive, load files.
+                // If it is already signin, load files.
                 // Otherwise, show signin button.
-                //bool isSignIn = false;
-                //App.ApplicationSettings.TryGetValue<bool>(iStorageManager.GetAccountIsSignInKey(), out isSignIn);
                 if (!iStorageManager.IsSignIn())
                 {
                     uiPinInfoListGrid.Visibility = Visibility.Collapsed;
@@ -422,7 +420,7 @@ namespace PintheCloud.Pages
                 // Check whether GPS is on or not
                 if (App.GeoCalculateManager.GetGeolocatorPositionStatus())  // GPS is on
                 {
-                    this.NearSpaceViewModel.IsDataLoaded = false;
+                    this.NearSpotViewModel.IsDataLoaded = false;
                     PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.SelectedFile;
                     NavigationService.Navigate(new Uri(FILE_LIST_PAGE + "?pivot=" + PIN_INFO_PIVOT_INDEX + 
                         "&platform=" + this.CurrentPlatformIndex, UriKind.Relative));
@@ -498,7 +496,7 @@ namespace PintheCloud.Pages
                         this.PinInfoAppBarButton.IsEnabled = true;
                     }
 
-                    else
+                    else if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
                     {
                         this.SelectedFile.Remove(fileObjectViewItem);
                         fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;

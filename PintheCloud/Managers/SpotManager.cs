@@ -13,10 +13,10 @@ using Windows.Devices.Geolocation;
 
 namespace PintheCloud.Managers
 {
-    public interface SpaceManager
+    public interface SpotManager
     {
-        Task<bool> PinSpaceAsync(Space space);
-        Task<JArray> GetNearSpaceViewItemsAsync(Geoposition currentGeoposition);
-        Task<JArray> GetMySpaceViewItemsAsync();
+        Task<bool> PinSpotAsync(Spot spot);
+        Task<JArray> GetNearSpotViewItemsAsync(Geoposition currentGeoposition);
+        Task<JArray> GetMySpotViewItemsAsync();
     }
 }

@@ -37,15 +37,17 @@ namespace PintheCloud.Pages
         private const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
         private const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
         private const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_delete.png";
+        private const string PICK_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_download.png";
 
         // Instances
-        private string SpaceId = null;
-        private string SpaceName = null;
+        private string SpotId = null;
+        private string SpotName = null;
         private string AccountId = null;
         private string AccountName = null;
         private int PlatformIndex = 0;
 
         private ApplicationBarIconButton DeleteAppBarButton = new ApplicationBarIconButton();
+        private ApplicationBarIconButton PickAppBarButton = new ApplicationBarIconButton();
         private FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
         private List<FileObjectViewItem> SelectedFile = new List<FileObjectViewItem>();
 
@@ -54,11 +56,16 @@ namespace PintheCloud.Pages
         {
             InitializeComponent();
 
-            // Set delete app bar button
+            // Set delete app bar button and pick app bar button
             this.DeleteAppBarButton.Text = AppResources.Pin;
             this.DeleteAppBarButton.IconUri = new Uri(DELETE_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
             this.DeleteAppBarButton.IsEnabled = false;
             this.DeleteAppBarButton.Click += DeleteAppBarButton_Click;
+
+            this.PickAppBarButton.Text = AppResources.Pick;
+            this.PickAppBarButton.IconUri = new Uri(PICK_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
+            this.PickAppBarButton.IsEnabled = false;
+            this.PickAppBarButton.Click += PickAppBarButton_Click;
 
             // Set datacontext
             uiFileList.DataContext = this.FileObjectViewModel;
@@ -80,14 +87,14 @@ namespace PintheCloud.Pages
             if (pivot == ExplorerPage.PICK_PIVOT_INDEX)  // Pick state
             {
                 // Get parameters
-                this.SpaceId = NavigationContext.QueryString["spaceId"];
-                this.SpaceName = NavigationContext.QueryString["spaceName"];
+                this.SpotId = NavigationContext.QueryString["spotId"];
+                this.SpotName = NavigationContext.QueryString["spotName"];
                 this.AccountId = NavigationContext.QueryString["accountId"];
                 this.AccountName = NavigationContext.QueryString["accountName"];
 
 
                 // Set Binding Instances to UI
-                uiSpaceName.Text = this.SpaceName;
+                uiSpotName.Text = this.SpotName;
                 uiAccountName.Text = this.AccountName;
                 uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.LIGHT);
 
@@ -105,13 +112,13 @@ namespace PintheCloud.Pages
                 // Get parameters
                 IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
                 Account account = iStorageManager.GetAccount();
-                this.SpaceName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
+                this.SpotName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
                 this.AccountId = account.account_platform_id;
                 this.AccountName = account.account_name;
 
 
                 // Set Binding Instances to UI
-                uiSpaceName.Text = this.SpaceName;
+                uiSpotName.Text = this.SpotName;
                 uiAccountName.Text = this.AccountName;
                 uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.BOLD);
 
@@ -149,33 +156,51 @@ namespace PintheCloud.Pages
                 // If it is view mode, click is preview.
                 // If it is edit mode, click is selection.
                 string currentEditViewMode = ((BitmapImage)uiFileListEditViewButtonImage.Source).UriSource.ToString();
-                if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit mode
+                if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View mode
+                {
+                    if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
+                    {
+                        // Do Something
+                        //StorageFile downloadFile = await App.LocalStorageManager.CreateFileToLocalBlobStorageAsync(fileObject.Name);
+                        //await App.BlobStorageManager.DownloadFileAsync(fileObject.Id, downloadFile);
+                        //await Launcher.LaunchFileAsync(downloadFile);
+                        //await this.DownloadFileAsync(fileObjectViewItem.Id, fileObjectViewItem.Name);
+                    }
+                }
+                else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit mode
                 {
                     if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
                     {
                         this.SelectedFile.Add(fileObjectViewItem);
                         fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_IMAGE_URI;
+                        this.PickAppBarButton.IsEnabled = true;
                         this.DeleteAppBarButton.IsEnabled = true;
                     }
 
-                    else
+                    else if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
                     {
                         this.SelectedFile.Remove(fileObjectViewItem);
                         fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
-                        if (this.SelectedFile.Count <= 0)
+                        if (this.SelectedFile.Count < 1)
+                        {
+                            this.PickAppBarButton.IsEnabled = false;
                             this.DeleteAppBarButton.IsEnabled = false;
+                        }
                     }
                 }
-
-                else if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View mode
-                {
-                    // Do Something
-                    //StorageFile downloadFile = await App.LocalStorageManager.CreateFileToLocalBlobStorageAsync(fileObject.Name);
-                    //await App.BlobStorageManager.DownloadFileAsync(fileObject.Id, downloadFile);
-                    //await Launcher.LaunchFileAsync(downloadFile);
-                    //await this.DownloadFileAsync(fileObjectViewItem.Id, fileObjectViewItem.Name);
-                }
             }
+        }
+
+
+        private void PickAppBarButton_Click(object sender, EventArgs e)
+        { 
+            // TODO download files
+        }
+
+
+        private async void PickFileAsync(FileObjectViewItem fileObjectViewItem)
+        { 
+            // TODO download files
         }
 
 
@@ -185,8 +210,10 @@ namespace PintheCloud.Pages
             foreach (FileObjectViewItem fileObjectViewItem in this.SelectedFile)
                 this.DeleteFileAsync(fileObjectViewItem);
             this.SelectedFile.Clear();
+            this.PickAppBarButton.IsEnabled = false;
             this.DeleteAppBarButton.IsEnabled = false;
         }
+
 
         private async void DeleteFileAsync(FileObjectViewItem fileObjectViewItem)
         {
@@ -229,7 +256,7 @@ namespace PintheCloud.Pages
 
             // If file exists, show it.
             // Otherwise, show no file in spot message.
-            List<FileObject> fileList = await App.BlobStorageManager.GetFilesFromSpotAsync(this.AccountId, this.SpaceId);
+            List<FileObject> fileList = await App.BlobStorageManager.GetFilesFromSpotAsync(this.AccountId, this.SpotId);
             if (fileList.Count > 0)
             {
                 base.Dispatcher.BeginInvoke(() =>
@@ -258,11 +285,11 @@ namespace PintheCloud.Pages
 
             // Pin spot
             Geoposition geo = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
-            Space space = new Space(DateTime.Now.ToString(), geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
-            string spaceId = null;
-            if (await App.SpaceManager.PinSpaceAsync(space))
+            Spot spot = new Spot(this.SpotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
+            string spotId = null;
+            if (await App.SpotManager.PinSpotAsync(spot))
             {
-                spaceId = space.id;
+                spotId = spot.id;
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     uiFileList.Visibility = Visibility.Visible;
@@ -276,7 +303,7 @@ namespace PintheCloud.Pages
 
             // Hide Progress Indicator and return
             base.SetProgressIndicator(false);
-            return spaceId;
+            return spotId;
         }
 
 
@@ -297,7 +324,7 @@ namespace PintheCloud.Pages
             Stream stream = await iStorageManager.DownloadFileStreamAsync(fileObjectViewItem.Id);
             if (stream != null)
             {
-                string uploadPath = await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpaceId, fileObjectViewItem.Name, stream);
+                string uploadPath = await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpotId, fileObjectViewItem.Name, stream);
                 if (uploadPath != null)
                 {
                     base.Dispatcher.BeginInvoke(() =>
@@ -334,12 +361,12 @@ namespace PintheCloud.Pages
 
             // If pin spot success, upload files.
             // Otherwise, show warning message.
-            string spaceId = await this.PinSpotAsync();
-            if (spaceId != null)
+            string spotId = await this.PinSpotAsync();
+            if (spotId != null)
             {
-                // Register space id
+                // Register spot id
                 // Get selected files from previous page, Upload each files in order.
-                this.SpaceId = spaceId;
+                this.SpotId = spotId;
 
                 for (int i = 0; i < fileArray.Length; i++)
                 {
@@ -366,18 +393,33 @@ namespace PintheCloud.Pages
             string currentEditViewMode = ((BitmapImage)uiFileListEditViewButtonImage.Source).UriSource.ToString();
             if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // To View mode
             {
-                uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_URI, UriKind.Relative));
+                // Change mode image and remove app bar buttons.
+                ApplicationBar.Buttons.Remove(this.PickAppBarButton);
                 ApplicationBar.Buttons.Remove(this.DeleteAppBarButton);
+                uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_URI, UriKind.Relative));
+                
+                // Change select check image of each file object view item.
                 foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                {
+                    if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI)
+                        || fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                }
             }
 
             else if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // To Edit mode
             {
-                uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_URI, UriKind.Relative));
+                // Change mode image and remove app bar buttons.
+                ApplicationBar.Buttons.Add(this.PickAppBarButton);
                 ApplicationBar.Buttons.Add(this.DeleteAppBarButton);
+                uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_URI, UriKind.Relative));
+
+                // Change select check image of each file object view item.
                 foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                {
+                    if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                }
             }
         }
 

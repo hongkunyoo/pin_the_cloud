@@ -45,7 +45,7 @@ namespace PintheCloud
         public static IsolatedStorageSettings ApplicationSettings = null;
 
         // Manager
-        public static SpaceManager SpaceManager = null;
+        public static SpotManager SpotManager = null;
         public static GeoCalculateManager GeoCalculateManager = null;
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
@@ -53,8 +53,8 @@ namespace PintheCloud
         public static IStorageManager[] IStorageManagers = null;
         public static TaskManager TaskManager = null;
 
-        private static SkyDriveManager SkyDriveManager = null;
-        private static DropBoxManager DropBoxManager = null;
+        private static OneDriveManager SkyDriveManager = null;
+        private static DropboxManager DropBoxManager = null;
         private static GoogleDriveManager GoogleDriveManger = null;
 
 
@@ -91,13 +91,13 @@ namespace PintheCloud
             ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
 
             // Manager
-            SpaceManager = new SpaceManagerImplement();
+            SpotManager = new SpotManagerImplement();
             GeoCalculateManager = new GeoCalculateManagerImplement();
             BlobStorageManager = new BlobStorageManager();
             LocalStorageManager = new LocalStorageManager();
 
-            SkyDriveManager = new SkyDriveManager();
-            DropBoxManager = new DropBoxManager();
+            SkyDriveManager = new OneDriveManager();
+            DropBoxManager = new DropboxManager();
             GoogleDriveManger = new GoogleDriveManager();
             IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
             TaskManager = new TaskManager();
