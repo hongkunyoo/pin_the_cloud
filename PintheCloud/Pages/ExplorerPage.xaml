@@ -24,7 +24,6 @@
                 <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshMenuItem" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshMenuItem_Click"/>
             </shell:ApplicationBar.MenuItems>
             <shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/pajeon/png/general_bar_setting.png" IsEnabled="True" Text="settings" Click="uiAppBarSettingsButton_Click"/>
-            <shell:ApplicationBarIconButton x:Name="uiAppBarPinInfoButton" IconUri="/Assets/pajeon/png/general_bar_upload.png" IsEnabled="False" Text="pin"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
 

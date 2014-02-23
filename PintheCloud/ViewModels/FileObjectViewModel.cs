@@ -32,7 +32,7 @@ namespace PintheCloud.ViewModels
         }
 
 
-        public void SetItems(List<FileObject> fileObjectList)
+        public void SetItems(List<FileObject> fileObjectList, bool select)
         {
             // If items have something, clear.
             this.Items.Clear();
@@ -72,18 +72,25 @@ namespace PintheCloud.ViewModels
                     fileObjectViewItem.SizeUnit = AppResources.Bytes;
                 }
 
-
-                // Set Type
+                // Set type
                 if (fileObject.Type == FileObject.FileObjectType.FOLDER)
-                {
                     fileObjectViewItem.ThumnailType = FOLDER;
-                    fileObjectViewItem.SelectCheckImage = TRANSPARENT_IMAGE_URI;
+                else
+                    fileObjectViewItem.ThumnailType = fileObject.Extension;
+
+                // If select is on, set check image.
+                // Otherwise, set transparent image.
+                if (select)
+                {
+                    if (fileObject.Type == FileObject.FileObjectType.FOLDER)
+                        fileObjectViewItem.SelectCheckImage = TRANSPARENT_IMAGE_URI;
+                    else
+                        fileObjectViewItem.SelectCheckImage = CHECK_NOT_IMAGE_URI;
                 }
                 else
                 {
-                    fileObjectViewItem.ThumnailType = fileObject.Extension;
-                    fileObjectViewItem.SelectCheckImage = CHECK_NOT_IMAGE_URI;
-                }    
+                    fileObjectViewItem.SelectCheckImage = TRANSPARENT_IMAGE_URI;
+                }
 
                 this.Items.Add(fileObjectViewItem);
             }
