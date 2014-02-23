@@ -50,14 +50,9 @@ namespace PintheCloud.Managers
             List<string> ids = new List<string>();
             for (int i = 0; i < App.IStorageManagers.Length; i++)
             {
-                //string id = null;
                 IStorageManager iStorageManager = App.IStorageManagers[i];
-                //if (App.ApplicationSettings.TryGetValue<string>(iStorageManager.GetAccountIdKey(), out id))
                 if (iStorageManager.IsSignIn())
-                {
-                    ids.Add(iStorageManager.GetAccount().account_platform_id);
-                }
-                    
+                    ids.Add(iStorageManager.GetAccount().account_platform_id);  
             }
             if (ids.Count <= 0)
                 return null;

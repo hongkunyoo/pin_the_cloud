@@ -18,9 +18,7 @@
 
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshMenuItem" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshMenuItem_Click"/>
-            </shell:ApplicationBar.MenuItems>
+			<shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/png/general_bar_circle.png" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
             <shell:ApplicationBarIconButton x:Name="uiAppBarPinInfoButton" IconUri="/Assets/pajeon/png/general_bar_upload.png" IsEnabled="True" Text="pin" Click="uiAppBarPinInfoButton_Click"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
@@ -33,7 +31,7 @@
 
         <Grid Background="#FF00A4BF">
             <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <Button x:Name="uiFileListEditViewButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Click="uiFileListEditViewButton_Click" Visibility="Collapsed">
+            <Button x:Name="uiFileListEditViewButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Click="uiFileListEditViewButton_Click">
                 <Image x:Name="uiFileListEditViewButtonImage" Source="/Assets/pajeon/png/general_edit.png" Stretch="None"/>
             </Button>
         </Grid>
@@ -80,7 +78,7 @@
             </StackPanel>
             <StackPanel Grid.Row="1" Margin="0">
                 <TextBlock x:Name="uiFileListMessage" TextWrapping="Wrap" Margin="22,28,18,0" Foreground="Black" FontSize="22" Visibility="Collapsed"/>
-                <phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiFileListItemTemplate}" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed" Margin="0,28,0,0"/>
+                <phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiFileListItemTemplate}" Style="{StaticResource CustomLongListSelectorStyle}" Margin="0,28,0,0"/>
             </StackPanel>
         </Grid>
     </Grid>

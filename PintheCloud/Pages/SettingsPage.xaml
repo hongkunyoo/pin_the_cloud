@@ -16,9 +16,7 @@
     shell:SystemTray.IsVisible="True" >
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E" IsVisible="False">
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem x:Name="uiAppBarRefreshMenuItem" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshMenuItem_Click"/>
-            </shell:ApplicationBar.MenuItems>
+			<shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/png/general_bar_circle.png" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
 

@@ -133,23 +133,9 @@ namespace PintheCloud.Pages
             // Comes from file list page
             if (PREVIOUS_PAGE.Equals(FILE_LIST_PAGE))
             {
-                /*** Pick Pivot ***/
-
-                if (uiExplorerPivot.SelectedIndex == PICK_PIVOT_INDEX)
-                {
-                    // If Internet available, Set space list
-                    // Otherwise, show internet bad message
-                    if (NetworkInterface.GetIsNetworkAvailable())
-                            this.SetNearSpaceListAsync(AppResources.Loading);
-                    else
-                        base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
-                }
-
-
-
                 /*** Pin Pivot ***/
-
-                else if (uiExplorerPivot.SelectedIndex == PIN_INFO_PIVOT_INDEX)
+                
+                if (uiExplorerPivot.SelectedIndex == PIN_INFO_PIVOT_INDEX)
                 {
                     if (NetworkInterface.GetIsNetworkAvailable())
                     {
@@ -243,7 +229,7 @@ namespace PintheCloud.Pages
 
 
         // Refresh space list.
-        private void uiAppBarRefreshMenuItem_Click(object sender, System.EventArgs e)
+        private void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
         {
             switch (uiExplorerPivot.SelectedIndex)
             {

@@ -51,9 +51,7 @@ namespace PintheCloud.Pages
             this.SignButtons = new Button[] { uiSkyDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
             for(int i=0 ; i<App.IStorageManagers.Length ; i++)
             {
-                //bool isSignIn = false;
                 IStorageManager iStorageManager = App.IStorageManagers[i];
-                //App.ApplicationSettings.TryGetValue<bool>(iStorageManager.GetAccountIsSignInKey(), out isSignIn);
                 this.SetSignButton(i, iStorageManager.IsSignIn());
             }
 
@@ -311,7 +309,7 @@ namespace PintheCloud.Pages
 
 
         // Refresh space list.
-        private void uiAppBarRefreshMenuItem_Click(object sender, System.EventArgs e)
+        private void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
         {
             // If Internet available, Set space list
             if (NetworkInterface.GetIsNetworkAvailable())

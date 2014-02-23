@@ -142,6 +142,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Deleting...과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Deleting {
+            get {
+                return ResourceManager.GetString("Deleting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Doing sign in...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string DoingSignIn {
@@ -570,15 +579,6 @@ namespace PintheCloud.Resources {
         public static string TermsOfService {
             get {
                 return ResourceManager.GetString("TermsOfService", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Uploading...과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Uploading {
-            get {
-                return ResourceManager.GetString("Uploading", resourceCulture);
             }
         }
     }

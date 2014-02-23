@@ -33,6 +33,23 @@ namespace PintheCloud.ViewModels
         }
 
 
+        public FileObjectViewItem()
+        { 
+        }
+
+
+        // Deep copy
+        public FileObjectViewItem(FileObjectViewItem fileObjectViewItem)
+        {
+            this.Id = fileObjectViewItem.Id;
+            this.Name = fileObjectViewItem.Name;
+            this.Size = fileObjectViewItem.Size;
+            this.SizeUnit = fileObjectViewItem.SizeUnit;
+            this.ThumnailType = fileObjectViewItem.ThumnailType;
+            this.SelectCheckImage = fileObjectViewItem.SelectCheckImage;
+        }
+
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(String propertyName)
         {

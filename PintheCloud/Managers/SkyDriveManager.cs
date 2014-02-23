@@ -27,13 +27,9 @@ namespace PintheCloud.Managers
         #region Variables
         // Summary:
         //     Object to communicate with SkyDrive.
-        private const string ACCOUNT_IS_SIGN_IN_KEY = "ACCOUNT_SKY_DRIVE_SIGN_IN_KEY";
-        //public const string ACCOUNT_ID_KEY = "ACCOUNT_SKY_DRIVE_ID_KEY";
-        //public const string ACCOUNT_USED_SIZE_KEY = "ACCOUNT_SKY_DRIVE_USED_SIZE_KEY";
-        //public const string ACCOUNT_BUSINESS_TYPE_KEY = "ACCOUNT_SKY_DRIVE_BUSINESS_TYPE_KEY";
-
+        private const string SKY_DRIVE_USER_KEY = "SKY_DRIVE_USER_KEY";
         private string LIVE_CLIENT_ID = "0000000044110129";
-        //private SkyDriveAccountWorker AccountWorker = new SkyDriveAccountWorker();
+
         private LiveConnectClient LiveClient = null;
         private Account CurrentAccount = null;
         #endregion
@@ -79,7 +75,7 @@ namespace PintheCloud.Managers
         public async Task SignIn()
         {
             // Add application settings before work for good UX
-            App.ApplicationSettings[ACCOUNT_IS_SIGN_IN_KEY] = true;
+            App.ApplicationSettings[SKY_DRIVE_USER_KEY] = true;
             App.ApplicationSettings.Save();
 
             // If it haven't registerd live client, register
@@ -116,40 +112,32 @@ namespace PintheCloud.Managers
             liveAuthClient.Logout();
 
             // Remove user is signed in record
-            App.ApplicationSettings.Remove(ACCOUNT_IS_SIGN_IN_KEY);
-            //App.ApplicationSettings.Remove(ACCOUNT_USED_SIZE_KEY);
-            //App.ApplicationSettings.Remove(ACCOUNT_BUSINESS_TYPE_KEY);
+            App.ApplicationSettings.Remove(SKY_DRIVE_USER_KEY);
             App.ApplicationSettings.Save();
+
             // Set null account
             this.LiveClient = null;
             this.CurrentAccount = null;
         }
 
+
         public bool IsSignIn()
         {
-            return App.ApplicationSettings.Contains(ACCOUNT_IS_SIGN_IN_KEY);
+            return App.ApplicationSettings.Contains(SKY_DRIVE_USER_KEY);
         }
+
 
         public string GetStorageName()
         {
             return AppResources.SkyDrive;
         }
+
+
         public Account GetAccount()
         {
             return this.CurrentAccount;
         }
 
-
-        //public string GetAccountIsSignInKey()
-        //{
-        //    return ACCOUNT_IS_SIGN_IN_KEY;
-        //}
-
-
-        //public string GetAccountIdKey()
-        //{
-        //    return ACCOUNT_ID_KEY;
-        //}
 
         // Summary:
         //     Gets Root Folder of SkyDrive storage.

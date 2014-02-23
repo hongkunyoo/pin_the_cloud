@@ -28,8 +28,12 @@ namespace PintheCloud.Pages
     public partial class FileListPage : PtcPage
     {
         // Const Instances
-        private const string UPLOAD_FAIL_IMAGE_URI = "UPLOAD_FAIL_IMAGE_URI";
         private const string UPLOADING_FILE_IMAGE_URI = "UPLOADING_FILE_IMAGE_URI";
+        private const string UPLOAD_FAIL_IMAGE_URI = "UPLOAD_FAIL_IMAGE_URI";
+        
+        private const string DELETING_FILE_IMAGE_URI = "DELETING_FILE_IMAGE_URI";
+        private const string DELET_FAIL_IMAGE_URI = "DELET_FAIL_IMAGE_URI";
+
         private const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
         private const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
         private const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_delete.png";
@@ -66,21 +70,10 @@ namespace PintheCloud.Pages
             base.OnNavigatedTo(e);
 
             // Get platform and pivot from previous page.
-            // Set edit view button by pivot and previous page.
             this.PlatformIndex = Convert.ToInt32(NavigationContext.QueryString["platform"]);
             int pivot = ExplorerPage.PICK_PIVOT_INDEX;
             if (PREVIOUS_PAGE.Equals(EXPLORER_PAGE))
-            {
                 pivot = Convert.ToInt32(NavigationContext.QueryString["pivot"]);
-                if (pivot == ExplorerPage.PICK_PIVOT_INDEX)  // Pick state
-                    uiFileListEditViewButton.Visibility = Visibility.Collapsed;
-                else  // Pin state
-                    uiFileListEditViewButton.Visibility = Visibility.Visible;
-            }
-            else if (PREVIOUS_PAGE.Equals(SETTINGS_PAGE))
-            {
-                uiFileListEditViewButton.Visibility = Visibility.Visible;
-            }
 
 
             // Set diffetent by pivot state
@@ -102,7 +95,7 @@ namespace PintheCloud.Pages
                 // If internet is on, refresh
                 // Otherwise, show internet unavailable message.
                 if (NetworkInterface.GetIsNetworkAvailable())
-                    this.Refresh(AppResources.Loading);
+                    this.RefreshAsync(AppResources.Loading);
                 else
                     base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
             }
@@ -187,12 +180,48 @@ namespace PintheCloud.Pages
 
 
         private void DeleteAppBarButton_Click(object sender, EventArgs e)
+        {            
+            // Delete file
+            foreach (FileObjectViewItem fileObjectViewItem in this.SelectedFile)
+                this.DeleteFileAsync(fileObjectViewItem);
+            this.SelectedFile.Clear();
+            this.DeleteAppBarButton.IsEnabled = false;
+        }
+
+        private async void DeleteFileAsync(FileObjectViewItem fileObjectViewItem)
         {
-            // TODO delete file
+            // Show Uploading message and file for good UX
+            base.SetProgressIndicator(true);
+            base.Dispatcher.BeginInvoke(() =>
+            {
+                fileObjectViewItem.SelectCheckImage = DELETING_FILE_IMAGE_URI;
+            });
+
+
+            if (await App.BlobStorageManager.DeleteFileAsync(fileObjectViewItem.Id))
+            {
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    this.FileObjectViewModel.Items.Remove(fileObjectViewItem);
+                });
+            }
+            else
+            {
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    fileObjectViewItem.SelectCheckImage = DELET_FAIL_IMAGE_URI;
+                });
+            }
+
+            // Hide Progress Indicator
+            // If file list is empty, show empty message.
+            base.SetProgressIndicator(false);
+            if (this.FileObjectViewModel.Items.Count-1 < 1)
+                base.SetListUnableAndShowMessage(uiFileList, AppResources.NoFileInSpotMessage, uiFileListMessage);
         }
 
 
-        private async void Refresh(string message)
+        private async void RefreshAsync(string message)
         {
             // Show Refresh message and Progress Indicator
             base.SetListUnableAndShowMessage(uiFileList, message, uiFileListMessage);
@@ -221,19 +250,29 @@ namespace PintheCloud.Pages
 
 
         // Pin spot
-        private async Task<string> PinSpot()
+        private async Task<string> PinSpotAsync()
         {
             // Show Pining message and Progress Indicator
             base.SetListUnableAndShowMessage(uiFileList, AppResources.PiningSpot, uiFileListMessage);
             base.SetProgressIndicator(true);
 
-
+            // Pin spot
             Geoposition geo = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
             Space space = new Space(DateTime.Now.ToString(), geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
             string spaceId = null;
             if (await App.SpaceManager.PinSpaceAsync(space))
+            {
                 spaceId = space.id;
-
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    uiFileList.Visibility = Visibility.Visible;
+                    uiFileListMessage.Visibility = Visibility.Collapsed;
+                });
+            }
+            else
+            {
+                base.SetListUnableAndShowMessage(uiFileList, AppResources.BadPinSpotMessage, uiFileListMessage);
+            }
 
             // Hide Progress Indicator and return
             base.SetProgressIndicator(false);
@@ -242,39 +281,35 @@ namespace PintheCloud.Pages
 
 
         // Upload. have to wait it.
-        private async void UploadFileAsync(FileObjectViewItem file)
+        private async void UploadFileAsync(FileObjectViewItem fileObjectViewItem)
         {
             // Show Uploading message and file for good UX
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                file.SelectCheckImage = UPLOADING_FILE_IMAGE_URI;
-                this.FileObjectViewModel.Items.Add(file);
-
-                uiFileListMessage.Text = AppResources.Uploading;
-                uiFileList.Visibility = Visibility.Visible;
-                uiFileListMessage.Visibility = Visibility.Visible;
+                fileObjectViewItem.SelectCheckImage = UPLOADING_FILE_IMAGE_URI;
+                this.FileObjectViewModel.Items.Add(fileObjectViewItem);
             });
 
 
             // Upload
             IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
-            Stream stream = await iStorageManager.DownloadFileStreamAsync(file.Id);
+            Stream stream = await iStorageManager.DownloadFileStreamAsync(fileObjectViewItem.Id);
             if (stream != null)
             {
-                string uploadPath = await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpaceId, file.Name, stream);
+                string uploadPath = await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpaceId, fileObjectViewItem.Name, stream);
                 if (uploadPath != null)
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        file.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
                     });
                 }
                 else
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        file.SelectCheckImage = UPLOAD_FAIL_IMAGE_URI;
+                        fileObjectViewItem.SelectCheckImage = UPLOAD_FAIL_IMAGE_URI;
                     });
                 }
             }
@@ -282,16 +317,12 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    file.SelectCheckImage = UPLOAD_FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectCheckImage = UPLOAD_FAIL_IMAGE_URI;
                 });
             }
 
             // Hide progress message
             base.SetProgressIndicator(false);
-            base.Dispatcher.BeginInvoke(() =>
-            {
-                uiFileListMessage.Visibility = Visibility.Collapsed;
-            });
         }
 
 
@@ -303,18 +334,18 @@ namespace PintheCloud.Pages
 
             // If pin spot success, upload files.
             // Otherwise, show warning message.
-            string spaceId = await this.PinSpot();
+            string spaceId = await this.PinSpotAsync();
             if (spaceId != null)
             {
                 // Register space id
                 // Get selected files from previous page, Upload each files in order.
                 this.SpaceId = spaceId;
-                foreach (FileObjectViewItem file in fileArray)
-                    this.UploadFileAsync(file);
-            }
-            else
-            {
-                base.SetListUnableAndShowMessage(uiFileList, AppResources.BadPinSpotMessage, uiFileListMessage);
+
+                for (int i = 0; i < fileArray.Length; i++)
+                {
+                    FileObjectViewItem fileObjectViewItem = new FileObjectViewItem(fileArray[i]);
+                    this.UploadFileAsync(fileObjectViewItem);
+                }
             }
         }
 
@@ -350,15 +381,17 @@ namespace PintheCloud.Pages
             }
         }
 
-        private void uiAppBarRefreshMenuItem_Click(object sender, System.EventArgs e)
+
+        private void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
         {
             // If internet is on, refresh
             // Otherwise, show internet unavailable message.
             if (NetworkInterface.GetIsNetworkAvailable())
-                this.Refresh(AppResources.Refreshing);
+                this.RefreshAsync(AppResources.Refreshing);
             else
                 base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
         }
+
 
         private void uiAppBarPinInfoButton_Click(object sender, System.EventArgs e)
         {

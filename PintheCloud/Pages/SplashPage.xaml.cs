@@ -61,9 +61,7 @@ namespace PintheCloud.Pages
                 {
                     // If main platform is signed in, process it.
                     // Otherwise, ignore and go to explorer page.
-                    //bool isSignIn = false;
                     IStorageManager iStorageManager = App.IStorageManagers[i];
-                    //App.ApplicationSettings.TryGetValue<bool>(iStorageManager.GetAccountIsSignInKey(), out isSignIn);
                     if (iStorageManager.IsSignIn())
                         App.TaskManager.AddSignInTask(iStorageManager.SignIn(), i);
                 }

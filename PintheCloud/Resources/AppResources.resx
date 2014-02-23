@@ -275,9 +275,6 @@
   <data name="PiningSpot" xml:space="preserve">
     <value>Pining Spot...</value>
   </data>
-  <data name="Uploading" xml:space="preserve">
-    <value>Uploading...</value>
-  </data>
   <data name="DoingSignOut" xml:space="preserve">
     <value>Doing Sign Out...</value>
   </data>
@@ -292,5 +289,8 @@
   </data>
   <data name="SkyDrive" xml:space="preserve">
     <value>SkyDrive</value>
+  </data>
+  <data name="Deleting" xml:space="preserve">
+    <value>Deleting...</value>
   </data>
 </root>
