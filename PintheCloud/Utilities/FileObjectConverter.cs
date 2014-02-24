@@ -83,7 +83,7 @@ namespace PintheCloud.Utilities
             string ParentId = meta.Path;
             double Size = meta.Bytes * 1.0;
             FileObject.FileObjectType Type = (meta.Is_Dir ? FileObject.FileObjectType.FOLDER : FileObject.FileObjectType.FILE);
-            string Extension = meta.Extension.Substring(1, meta.Extension.Length -1); // .png
+            string Extension = (meta.Extension == null || "".Equals(meta.Extension)) ? "" : meta.Extension.Substring(1, meta.Extension.Length -1); // .png
 
             return new FileObject(Id,Name,Size,Type,Extension,UpdateAt);
         }
@@ -101,26 +101,46 @@ namespace PintheCloud.Utilities
             string Extension = file.FileExtension ?? "No Extension";
             string UpdateAt = file.ModifiedDate.ToString();
             string Thumbnail = file.ThumbnailLink ?? "No Thumbnail";
-            string DownloadUrl;
-            if (file.ExportLinks != null && file.MimeType != null && file.MimeType.Contains("application/vnd.google-apps"))
+            string DownloadUrl = "";
+            try
             {
-                DownloadUrl = file.ExportLinks[GoogleDriveManager.GoogleDocMapper[file.MimeType]];
+                if (file.ExportLinks != null && file.MimeType != null && file.MimeType.Contains("application/vnd.google-apps"))
+                {
+                    DownloadUrl = file.ExportLinks[GoogleDriveManager.GoogleDocMapper[file.MimeType]];
+                }
+                else
+                {
+                    DownloadUrl = file.DownloadUrl;
+                }
             }
-            else
+            catch
             {
-                DownloadUrl = file.DownloadUrl;
+                System.Diagnostics.Debug.WriteLine("GoogleDocMapper Error");
+                System.Diagnostics.Debugger.Break();
             }
+            
             
             string MimeType = file.MimeType ?? "No MimeType";
             string Name = "";
-            if (!"application/vnd.google-apps.folder".Equals(file.MimeType) && file.MimeType.Contains("application/vnd.google-apps"))
+            try
             {
-                Name = file.Title + GoogleDriveManager.ExtensionMapper[file.MimeType];
+                if (!"application/vnd.google-apps.folder".Equals(file.MimeType) && file.MimeType.Contains("application/vnd.google-apps"))
+                {
+                    Name = file.Title + "." + GoogleDriveManager.ExtensionMapper[file.MimeType];
+                    Extension = GoogleDriveManager.ExtensionMapper[file.MimeType];
+                }
+                else
+                {
+                    Name = file.Title;
+                }
             }
-            else
+            catch
             {
-                Name = file.Title;
+                System.Diagnostics.Debug.WriteLine(file.MimeType);
+                System.Diagnostics.Debug.WriteLine("ExtensionMapper Error");
+                System.Diagnostics.Debugger.Break();
             }
+            
             return new FileObject(Id,Name,Size,Type, Extension,UpdateAt,Thumbnail,DownloadUrl,MimeType);
         }
     }

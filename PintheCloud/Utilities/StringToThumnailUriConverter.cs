@@ -54,6 +54,7 @@ namespace PintheCloud.Utilities
         private const string DOC = "doc";
         private const string DOCX = "docx";
         private const string XLS = "xls";
+        private const string XLSX = "xlsx";
         private const string HWP = "hwp";
         
         // ETC
@@ -82,11 +83,11 @@ namespace PintheCloud.Utilities
             else if (type.Equals(DOC) || type.Equals(DOCX))  // Word
                 return new Uri(DOC_IMAGE_PATH, UriKind.Relative);
 
-            else if (type.Equals(XLS))  // XLS
-                return new Uri(VIDEO_IMAGE_PATH, UriKind.Relative);
+            else if (type.Equals(XLS) || (type.Equals(XLSX))) // XLS
+                return new Uri(XLS_IMAGE_PATH, UriKind.Relative);
 
             else if (type.Equals(HWP))  // HWP
-                return new Uri(VIDEO_IMAGE_PATH, UriKind.Relative);
+                return new Uri(HWP_IMAGE_PATH, UriKind.Relative);
 
             else if (type.Equals(PDF))  // PDF
                 return new Uri(PDF_IMAGE_PATH, UriKind.Relative);

@@ -42,6 +42,7 @@ namespace PintheCloud.Managers
         private UserCredential credential;
         private Account CurrentAccount;
         private User user;
+        private string rootFodlerId = "";
         #endregion
 
         public GoogleDriveManager()
@@ -62,10 +63,11 @@ namespace PintheCloud.Managers
             // Presentation file
             GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.presentation", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
 
-            GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.document", ".doc");
-            GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.spreadsheet", ".xls");
-            GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.drawing", ".png");
-            GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.presentation", ".ppt");
+            GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.document", "doc");
+            GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.spreadsheet", "xls");
+            GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.drawing", "png");
+            GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.presentation", "ppt");
+            //GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.formr", "");
             
             Task setMimeTypeMapperTask = this.SetMimeTypeMapper();
         }
@@ -97,13 +99,10 @@ namespace PintheCloud.Managers
                 AboutResource aboutResource = service.About;
                 About about = await aboutResource.Get().ExecuteAsync();
                 this.user = about.User;
-                // TODO Make Account
-                // TODO Insert Account
-                // TODO Save Account to this.Account
 
                 string name = this.user.DisplayName;
                 string id = about.PermissionId;
-                this.CurrentAccount = new Account(id, Account.StorageAccountType.GOOGLE_DRIVE, name, 0);
+                this.CurrentAccount = new Account(id, Account.StorageAccountType.GOOGLE_DRIVE, name, 0, AccountType.NORMAL_ACCOUNT_TYPE);
             }
             catch (Microsoft.Phone.Controls.WebBrowserNavigationException ex)
             {
@@ -164,6 +163,7 @@ namespace PintheCloud.Managers
             AboutResource aboutResource = service.About;
             About about = await aboutResource.Get().ExecuteAsync();
             rootFile.Id = about.RootFolderId;
+            this.rootFodlerId = about.RootFolderId;
             rootFile.Name = "/";
             return rootFile;
         }
@@ -187,17 +187,26 @@ namespace PintheCloud.Managers
         public async Task<FileObject> GetFileAsync(string fileId)
         {
             Google.Apis.Drive.v2.Data.File file = await service.Files.Get(fileId).ExecuteAsync();
-            return FileObjectConverter.ConvertToFileObject(file);
+            if (this._IsValidFile(file))
+            {
+                return FileObjectConverter.ConvertToFileObject(file);
+            }
+            return null;
         }
 
 
         public async Task<List<FileObject>> GetFilesFromFolderAsync(string folderId)
         {
+            if (this.rootFodlerId.Equals(folderId))
+            {
+                return await GetRootFilesAsync();
+            }
             List<FileObject> list = new List<FileObject>();
             ChildList childList = await service.Children.List(folderId).ExecuteAsync();
             foreach(ChildReference child in childList.Items){
                 list.Add(await this.GetFileAsync(child.Id));
             }
+            list.RemoveAll(item => item == null);
             return list;
         }
 

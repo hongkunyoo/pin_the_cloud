@@ -46,15 +46,15 @@ namespace PintheCloud.Models
             this.account_used_size = account_used_size;
             this.account_business_type = account_business_type;
         }
-
-        public Account(string account_platform_id, Account.StorageAccountType account_platform_id_type, string account_name,
-            double account_used_size)
-        {
-            this.account_platform_id = account_platform_id;
-            this.account_platform_id_type = account_platform_id_type.ToString();
-            this.account_name = account_name;
-            this.account_used_size = account_used_size;
-            this.account_business_type = AccountType.NORMAL_ACCOUNT_TYPE;
-        }
+        
+        //public Account(string account_platform_id, Account.StorageAccountType account_platform_id_type, string account_name,
+        //    double account_used_size)
+        //{
+        //    this.account_platform_id = account_platform_id;
+        //    this.account_platform_id_type = account_platform_id_type.ToString();
+        //    this.account_name = account_name;
+        //    this.account_used_size = account_used_size;
+        //    this.account_business_type = AccountType.NORMAL_ACCOUNT_TYPE;
+        //}
     }
 }

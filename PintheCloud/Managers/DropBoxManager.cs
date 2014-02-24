@@ -6,6 +6,7 @@ using PintheCloud.Utilities;
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -34,8 +35,8 @@ namespace PintheCloud.Managers
         private Task<Account> GetMyAccountAsync()
         {
             TaskCompletionSource<Account> tcs = new TaskCompletionSource<Account>();
-            this._client.AccountInfoAsync((info) => { 
-                tcs.SetResult(new Account(info.uid.ToString(),Account.StorageAccountType.DROPBOX,info.display_name,0.0));
+            this._client.AccountInfoAsync((info) => {
+                tcs.SetResult(new Account(info.uid.ToString(),Account.StorageAccountType.DROPBOX,info.display_name,0.0,AccountType.NORMAL_ACCOUNT_TYPE));
             }, (fail) => {
                 tcs.SetException(new Exception("Account Info Get Failed"));
             });
@@ -49,7 +50,7 @@ namespace PintheCloud.Managers
             //App.ApplicationSettings[ACCOUNT_IS_SIGN_IN_KEY] = true;
             //App.ApplicationSettings.Save();
 
-            //TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             _client = new DropNetClient(APP_KEY, APP_SECRET);
 
             UserLogin dropboxUser = null;
@@ -75,19 +76,19 @@ namespace PintheCloud.Managers
                         // TODO Make Account
                         // TODO Insert Account
                         // TODO Save Account to this.Account
-                        //tcs.SetResult(true);
+                        tcs.SetResult(true);
                         this.CurrentAccount = await GetMyAccountAsync();
                     },
                     (error) =>
                     {
                         this.SignOut();
-                        //tcs.SetResult(false);
+                        tcs.SetResult(false);
                     });
                 },
                 (error) =>
                 {
                     this.SignOut();
-                    //tcs.SetResult(false);
+                    tcs.SetResult(false);
                 });
             }
             else
@@ -97,9 +98,9 @@ namespace PintheCloud.Managers
                 // TODO Update Account
                 // TODO Save Account to this.Account
                 this.CurrentAccount = await GetMyAccountAsync();
-                //tcs.SetResult(true);
+                tcs.SetResult(true);
             }
-            //return tcs.Task;
+            await tcs.Task;
         }
 
 

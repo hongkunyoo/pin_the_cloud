@@ -21,6 +21,7 @@ using System.Windows.Media.Imaging;
 using Newtonsoft.Json.Linq;
 using PintheCloud.Utilities;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace PintheCloud.Pages
 {
@@ -564,7 +565,6 @@ namespace PintheCloud.Pages
                 IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
                 App.TaskManager.AddSignInTask(iStorageManager.SignIn(), this.CurrentPlatformIndex);
                 await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);
-
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.
                 if (iStorageManager.GetAccount() != null)
