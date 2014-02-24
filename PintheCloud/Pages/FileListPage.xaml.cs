@@ -28,18 +28,6 @@ namespace PintheCloud.Pages
     public partial class FileListPage : PtcPage
     {
         // Const Instances
-        private const string UPLOADING_FILE_IMAGE_URI = "UPLOADING_FILE_IMAGE_URI";
-        private const string UPLOAD_FAIL_IMAGE_URI = "UPLOAD_FAIL_IMAGE_URI";
-        
-        private const string DELETING_FILE_IMAGE_URI = "DELETING_FILE_IMAGE_URI";
-        private const string DELET_FAIL_IMAGE_URI = "DELET_FAIL_IMAGE_URI";
-
-        private const string DOWNLOADING_FILE_IMAGE_URI = "DOWNLOADING_FILE_IMAGE_URI";
-        private const string DOWNLOAD_FAIL_IMAGE_URI = "DOWNLOAD_FAIL_IMAGE_URI";
-
-        private const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
-        private const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
-        private const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_delete.png";
         private const string PICK_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_download.png";
 
         // Instances
@@ -310,7 +298,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectCheckImage = DOWNLOADING_FILE_IMAGE_URI;
+                fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
             });
 
             // Download
@@ -334,7 +322,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        fileObjectViewItem.SelectCheckImage = DOWNLOAD_FAIL_IMAGE_URI;
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOAD_FAIL_IMAGE_URI;
                     });  
                 }
             }
@@ -342,7 +330,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = DOWNLOAD_FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOAD_FAIL_IMAGE_URI;
                 }); 
             }
 
@@ -375,7 +363,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectCheckImage = DELETING_FILE_IMAGE_URI;
+                fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DELETING_IMAGE_URI;
             });
 
             // Delete
@@ -384,21 +372,20 @@ namespace PintheCloud.Pages
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     this.FileObjectViewModel.Items.Remove(fileObjectViewItem);
+                    if (this.FileObjectViewModel.Items.Count < 1)
+                        base.SetListUnableAndShowMessage(uiFileList, AppResources.NoFileInSpotMessage, uiFileListMessage);
                 });
             }
             else
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = DELET_FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DELET_FAIL_IMAGE_URI;
                 });
             }
 
             // Hide Progress Indicator
-            // If file list is empty, show empty message.
             base.SetProgressIndicator(false);
-            if (this.FileObjectViewModel.Items.Count-1 < 1)
-                base.SetListUnableAndShowMessage(uiFileList, AppResources.NoFileInSpotMessage, uiFileListMessage);
         }
 
 
@@ -468,7 +455,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectCheckImage = UPLOADING_FILE_IMAGE_URI;
+                fileObjectViewItem.SelectCheckImage = FileObjectViewModel.UPLOADING_IMAGE_URI;
                 this.FileObjectViewModel.Items.Add(fileObjectViewItem);
             });
 
@@ -492,7 +479,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        fileObjectViewItem.SelectCheckImage = UPLOAD_FAIL_IMAGE_URI;
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.UPLOAD_FAIL_IMAGE_URI;
                     });
                 }
             }
@@ -500,7 +487,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = UPLOAD_FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.UPLOAD_FAIL_IMAGE_URI;
                 });
             }
 

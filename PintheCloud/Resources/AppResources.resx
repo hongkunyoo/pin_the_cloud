@@ -296,4 +296,7 @@
   <data name="NoSignedInMessage" xml:space="preserve">
     <value>Main cloud platform account haven't signed in. Please sign in.</value>
   </data>
+  <data name="BadDeleteSpotMessage" xml:space="preserve">
+    <value>Delete spot process met error. Please try it again.</value>
+  </data>
 </root>

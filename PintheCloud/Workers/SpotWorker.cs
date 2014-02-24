@@ -29,6 +29,20 @@ namespace PintheCloud.Workers
         }
 
 
+        public async Task<bool> DeleteSpotAsync(Spot spot)
+        {
+            try
+            {
+                await App.MobileService.GetTable<Spot>().DeleteAsync(spot);
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+                return false;
+            }
+            return true;
+        }
+
+
         // Get spots 300m away from here
         public async Task<JArray> GetNearSpotsAsync(double currentLatitude, double currentLongtitude)
         {

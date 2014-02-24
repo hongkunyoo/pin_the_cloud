@@ -16,6 +16,7 @@ namespace PintheCloud.Managers
     public interface SpotManager
     {
         Task<bool> PinSpotAsync(Spot spot);
+        Task<bool> DeleteSpotAsync(Spot spot);
         Task<JArray> GetNearSpotViewItemsAsync(Geoposition currentGeoposition);
         Task<JArray> GetMySpotViewItemsAsync();
     }

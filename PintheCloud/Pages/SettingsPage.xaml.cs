@@ -25,13 +25,6 @@ namespace PintheCloud.Pages
     public partial class SettingsPage : PtcPage
     {
         // Const Instances
-        private const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
-        private const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
-        private const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_delete.png";
-
-        private const string DELETING_SPOT_IMAGE_URI = "DELETING_SPOT_IMAGE_URI";
-        private const string DELET_FAIL_IMAGE_URI = "DELET_FAIL_IMAGE_URI";
-
         private const int APPLICATION_PIVOT_INDEX = 0;
         private const int MY_SPOT_PIVOT_INDEX = 1;
 
@@ -317,9 +310,35 @@ namespace PintheCloud.Pages
             // If selected item isn't null, goto File list page.
             if (spotViewItem != null)
             {
-                string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
-                NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters + "&platform=" + 
-                    ((int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY]), UriKind.Relative));
+                // If it is view mode, click is preview.
+                // If it is edit mode, click is selection.
+                string currentEditViewMode = ((BitmapImage)uiMySpotEditViewButtonImage.Source).UriSource.ToString();
+                if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View mode
+                {
+                    if (spotViewItem.SelectCheckImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
+                    {
+                        string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
+                        NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters + "&platform=" +
+                            ((int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY]), UriKind.Relative));
+                    }
+                }
+                else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit mode
+                {
+                    if (spotViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
+                    {
+                        this.SelectedSpot.Add(spotViewItem);
+                        spotViewItem.SelectCheckImage = FileObjectViewModel.CHECK_IMAGE_URI;
+                        this.DeleteAppBarButton.IsEnabled = true;
+                    }
+
+                    else if (spotViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
+                    {
+                        this.SelectedSpot.Remove(spotViewItem);
+                        spotViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                        if (this.SelectedSpot.Count < 1)
+                            this.DeleteAppBarButton.IsEnabled = false;
+                    }
+                }
             }
         }
 
@@ -425,24 +444,71 @@ namespace PintheCloud.Pages
         }
 
 
-        private void DeleteSpotAsync(SpotViewItem spotViewItem)
+        private async void DeleteSpotAsync(SpotViewItem spotViewItem)
         {
             // Show Deleting message
+            bool deleteFileSuccess = true;
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                spotViewItem.SelectCheckImage = DELETING_SPOT_IMAGE_URI;
+                spotViewItem.SelectCheckImage = FileObjectViewModel.DELETING_IMAGE_URI;
             });
 
+            // Delete
+            List<FileObject> fileList = await App.BlobStorageManager.GetFilesFromSpotAsync(spotViewItem.AccountId, spotViewItem.SpotId);
+            if (fileList.Count > 0)
+            {
+                foreach (FileObject fileObject in fileList)
+                {
+                    if (!await App.BlobStorageManager.DeleteFileAsync(fileObject.Id))
+                        deleteFileSuccess = false;
+                }
+            }
 
-            // TODODelete
-
+            // If delete job success to all files, delete spot.
+            // Otherwise, show delete fail image.
+            if (deleteFileSuccess)
+            {
+                Spot spot = new Spot(spotViewItem.SpotName, 0, 0, spotViewItem.AccountId, spotViewItem.AccountName, spotViewItem.SpotDistance);
+                spot.id = spotViewItem.SpotId;
+                if (await App.SpotManager.DeleteSpotAsync(spot))
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        this.MySpotViewModel.Items.Remove(spotViewItem);
+                        if (this.MySpotViewModel.Items.Count < 1)
+                            base.SetListUnableAndShowMessage(uiMySpotList, AppResources.NoFileInSpotMessage, uiMySpotMessage);
+                    });
+                }
+                else
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        spotViewItem.SelectCheckImage = FileObjectViewModel.DELET_FAIL_IMAGE_URI;
+                    });
+                }
+            }
+            else
+            {
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    spotViewItem.SelectCheckImage = FileObjectViewModel.DELET_FAIL_IMAGE_URI;
+                });
+            }
 
             // Hide Progress Indicator
-            // If file list is empty, show empty message.
             base.SetProgressIndicator(false);
-            if (this.MySpotViewModel.Items.Count - 1 < 1)
-                base.SetListUnableAndShowMessage(uiMySpotList, AppResources.NoFileInSpotMessage, uiMySpotMessage);
+        }
+
+        private async Task<bool> DeleteFilesAsync(List<FileObject> fileList)
+        {
+            bool deleteFileSuccess = true;
+            foreach (FileObject fileObject in fileList)
+            {
+                if (!await App.BlobStorageManager.DeleteFileAsync(fileObject.Id))
+                    deleteFileSuccess = false;
+            }
+            return deleteFileSuccess;
         }
     }
 }

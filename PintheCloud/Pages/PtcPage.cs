@@ -33,6 +33,10 @@ namespace PintheCloud.Pages
         protected const string PIVOT_KEY = "PIVOT_KEY";
         protected const string PLATFORM_KEY = "PLATFORM_KEY";
 
+        protected const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
+        protected const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
+        protected const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_delete.png";
+
         protected string PREVIOUS_PAGE = null;
 
         //protected int PIVOT = 0;
