@@ -500,7 +500,7 @@ namespace PintheCloud.Pages
                     {
                         this.SelectedFile.Remove(fileObjectViewItem);
                         fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
-                        if (this.SelectedFile.Count <= 0)
+                        if (this.SelectedFile.Count < 1)
                             this.PinInfoAppBarButton.IsEnabled = false;
                     }
                 }
@@ -622,6 +622,14 @@ namespace PintheCloud.Pages
                 {
                     base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.NoFileInCloudMessage, uiPinInfoMessage);
                 }
+            }
+            else
+            {
+                this.Dispatcher.BeginInvoke(() =>
+                {
+                    uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                    uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                });
             }
 
 

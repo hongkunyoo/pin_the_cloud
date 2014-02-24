@@ -34,6 +34,9 @@ namespace PintheCloud.Pages
         private const string DELETING_FILE_IMAGE_URI = "DELETING_FILE_IMAGE_URI";
         private const string DELET_FAIL_IMAGE_URI = "DELET_FAIL_IMAGE_URI";
 
+        private const string DOWNLOADING_FILE_IMAGE_URI = "DOWNLOADING_FILE_IMAGE_URI";
+        private const string DOWNLOAD_FAIL_IMAGE_URI = "DOWNLOAD_FAIL_IMAGE_URI";
+
         private const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
         private const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
         private const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_delete.png";
@@ -142,7 +145,7 @@ namespace PintheCloud.Pages
 
         /*** Self Methods ***/
 
-        private void uiFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private async void uiFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected File Obejct
             FileObjectViewItem fileObjectViewItem = uiFileList.SelectedItem as FileObjectViewItem;
@@ -160,11 +163,10 @@ namespace PintheCloud.Pages
                 {
                     if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
                     {
-                        // Do Something
-                        //StorageFile downloadFile = await App.LocalStorageManager.CreateFileToLocalBlobStorageAsync(fileObject.Name);
-                        //await App.BlobStorageManager.DownloadFileAsync(fileObject.Id, downloadFile);
+                        // TODO Launch files to other reader app.
+                        //StorageFile downloadFile = await App.LocalStorageManager.CreateFileToLocalBlobStorageAsync(fileObjectViewItem.Name);
+                        //await App.BlobStorageManager.DownloadFileAsync(fileObjectViewItem.Id, downloadFile);
                         //await Launcher.LaunchFileAsync(downloadFile);
-                        //await this.DownloadFileAsync(fileObjectViewItem.Id, fileObjectViewItem.Name);
                     }
                 }
                 else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit mode
@@ -192,39 +194,117 @@ namespace PintheCloud.Pages
         }
 
 
-        private void PickAppBarButton_Click(object sender, EventArgs e)
-        { 
-            // TODO download files
+        // Download files.
+        private async void PickAppBarButton_Click(object sender, EventArgs e)
+        {
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                if (App.IStorageManagers[this.PlatformIndex].IsSignIn())
+                {
+                    // Wait tasks
+                    await App.TaskManager.WaitSignInTask(this.PlatformIndex);
+                    await App.TaskManager.WaitSignOutTask(this.PlatformIndex);
+
+                    if (App.IStorageManagers[this.PlatformIndex].GetAccount() != null)
+                    {
+                        foreach (FileObjectViewItem fileObjectViewItem in this.SelectedFile)
+                            this.PickFileAsync(fileObjectViewItem);
+                        this.SelectedFile.Clear();
+                        this.PickAppBarButton.IsEnabled = false;
+                        this.DeleteAppBarButton.IsEnabled = false;
+                    }
+                    else
+                    {
+                        MessageBox.Show(AppResources.NoSignedInMessage, App.IStorageManagers[this.PlatformIndex].GetStorageName(), MessageBoxButton.OK);    
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(AppResources.NoSignedInMessage, App.IStorageManagers[this.PlatformIndex].GetStorageName(), MessageBoxButton.OK);
+                }
+            }
+            else
+            {
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+            }
         }
 
 
         private async void PickFileAsync(FileObjectViewItem fileObjectViewItem)
-        { 
-            // TODO download files
+        {
+            // Show Downloading message
+            base.SetProgressIndicator(true);
+            base.Dispatcher.BeginInvoke(() =>
+            {
+                fileObjectViewItem.SelectCheckImage = DOWNLOADING_FILE_IMAGE_URI;
+            });
+
+            // Download
+            Stream stream = await App.BlobStorageManager.DownloadFileStreamAsync(fileObjectViewItem.Id);
+            if (stream != null)
+            {
+                IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
+                FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
+                if (await iStorageManager.UploadFileStreamAsync(rootFolder.Id, fileObjectViewItem.Name, stream))
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        string currentEditViewMode = ((BitmapImage)uiFileListEditViewButtonImage.Source).UriSource.ToString();
+                        if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
+                            fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                        else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit Mode
+                            fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                    });
+                }
+                else
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        fileObjectViewItem.SelectCheckImage = DOWNLOAD_FAIL_IMAGE_URI;
+                    });  
+                }
+            }
+            else
+            {
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    fileObjectViewItem.SelectCheckImage = DOWNLOAD_FAIL_IMAGE_URI;
+                }); 
+            }
+
+            // Hide Progress Indicator
+            base.SetProgressIndicator(false);            
         }
 
 
+        // Delete files.
         private void DeleteAppBarButton_Click(object sender, EventArgs e)
-        {            
-            // Delete file
-            foreach (FileObjectViewItem fileObjectViewItem in this.SelectedFile)
-                this.DeleteFileAsync(fileObjectViewItem);
-            this.SelectedFile.Clear();
-            this.PickAppBarButton.IsEnabled = false;
-            this.DeleteAppBarButton.IsEnabled = false;
+        {
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                foreach (FileObjectViewItem fileObjectViewItem in this.SelectedFile)
+                    this.DeleteFileAsync(fileObjectViewItem);
+                this.SelectedFile.Clear();
+                this.PickAppBarButton.IsEnabled = false;
+                this.DeleteAppBarButton.IsEnabled = false;
+            }
+            else
+            {
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+            }
         }
 
 
         private async void DeleteFileAsync(FileObjectViewItem fileObjectViewItem)
         {
-            // Show Uploading message and file for good UX
+            // Show Deleting message
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
                 fileObjectViewItem.SelectCheckImage = DELETING_FILE_IMAGE_URI;
             });
 
-
+            // Delete
             if (await App.BlobStorageManager.DeleteFileAsync(fileObjectViewItem.Id))
             {
                 base.Dispatcher.BeginInvoke(() =>
@@ -318,10 +398,8 @@ namespace PintheCloud.Pages
                 this.FileObjectViewModel.Items.Add(fileObjectViewItem);
             });
 
-
             // Upload
-            IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
-            Stream stream = await iStorageManager.DownloadFileStreamAsync(fileObjectViewItem.Id);
+            Stream stream = await App.IStorageManagers[this.PlatformIndex].DownloadFileStreamAsync(fileObjectViewItem.Id);
             if (stream != null)
             {
                 string uploadPath = await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpotId, fileObjectViewItem.Name, stream);
@@ -329,7 +407,11 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                        string currentEditViewMode = ((BitmapImage)uiFileListEditViewButtonImage.Source).UriSource.ToString();
+                        if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
+                            fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                        else if(currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit Mode
+                            fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
                     });
                 }
                 else
@@ -377,16 +459,6 @@ namespace PintheCloud.Pages
         }
 
 
-        private async Task<bool> DownloadFileAsync(string fildObjectId, string fileObjectName)
-        {
-            IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
-            FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
-            if (!await iStorageManager.UploadFileStreamAsync(rootFolder.Id, fileObjectName, await App.BlobStorageManager.DownloadFileStreamAsync(fildObjectId)))
-                return false;
-            else
-                return true;
-        }
-
         private void uiFileListEditViewButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             // Change edit view mode
@@ -394,6 +466,12 @@ namespace PintheCloud.Pages
             if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // To View mode
             {
                 // Change mode image and remove app bar buttons.
+                if (this.SelectedFile.Count > 0)
+                {
+                    this.SelectedFile.Clear();
+                    this.PickAppBarButton.IsEnabled = false;
+                    this.DeleteAppBarButton.IsEnabled = false;
+                }
                 ApplicationBar.Buttons.Remove(this.PickAppBarButton);
                 ApplicationBar.Buttons.Remove(this.DeleteAppBarButton);
                 uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_URI, UriKind.Relative));
