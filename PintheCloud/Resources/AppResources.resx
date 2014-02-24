@@ -165,7 +165,7 @@
     <value>This app accesses your phone's location. Is that ok?</value>
   </data>
   <data name="SignOutMessage" xml:space="preserve">
-    <value>Do you want sign out? Your setting will be intialized.</value>
+    <value>Do you want sign out? Your setting about this cloud will be intialized.</value>
   </data>
   <data name="NoNearSpotMessage" xml:space="preserve">
     <value>There is no near spot. Make it yours.</value>
@@ -251,9 +251,6 @@
   <data name="DoingSignIn" xml:space="preserve">
     <value>Doing sign in...</value>
   </data>
-  <data name="SetSpotNickNameCaption" xml:space="preserve">
-    <value>Nick Name</value>
-  </data>
   <data name="SetSpotNickNameMessage" xml:space="preserve">
     <value>New nick name is successfully registered. New spot's will be the nick name.</value>
   </data>
@@ -298,5 +295,14 @@
   </data>
   <data name="BadDeleteSpotMessage" xml:space="preserve">
     <value>Delete spot process met error. Please try it again.</value>
+  </data>
+  <data name="QuitAppCaption" xml:space="preserve">
+    <value>Quit</value>
+  </data>
+  <data name="QuitAppMessage" xml:space="preserve">
+    <value>Do you want to quit At Here?</value>
+  </data>
+  <data name="GoogleDoc" xml:space="preserve">
+    <value>Google Doc</value>
   </data>
 </root>

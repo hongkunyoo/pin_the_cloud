@@ -440,29 +440,39 @@ namespace PintheCloud.Pages
         }
 
 
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        protected override async void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
-            base.OnBackKeyPress(e);
-            bool quit = true;
+            // Sign out
+            MessageBoxResult result = MessageBox.Show(AppResources.QuitAppMessage, AppResources.QuitAppCaption, MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.OK)
+            {
+                // Get index
+                Button signoutButton = (Button)sender;
+                int platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
 
-            // Back file tree
+                IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
+                App.TaskManager.AddSignOutTask(this.SignOut(platformIndex, iStorageManager), platformIndex);
+            }
+
+
+            // Wait tasks
+            await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);
+            await App.TaskManager.WaitSignOutTask(this.CurrentPlatformIndex);
+
+            base.OnBackKeyPress(e);
+
             if (uiExplorerPivot.SelectedIndex == EventManager.PIN)
             {
-                if (this.FolderTree.Count > 1)
+                if (this.FolderTree.Count < 2)
+                {
+                    e.Cancel = false;
+                }
+                else
                 {
                     e.Cancel = true;
-                    quit = false;
                     if (!this.FileObjectViewModel.IsDataLoading)
                         this.TreeUp();
                 }
-            }
-
-            // Quit app
-            if (quit)
-            {
-                MessageBoxResult result = MessageBox.Show(AppResources.QuitAppMessage, AppResources.QuitAppCaption, MessageBoxButton.OKCancel);
-                if (result != MessageBoxResult.OK)
-                    e.Cancel = true;
             }
         }
 

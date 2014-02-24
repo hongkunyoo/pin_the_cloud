@@ -9,7 +9,6 @@ namespace PintheCloud.Managers
 {
     public static class EventManager
     {
-        
         public const string SPLASH_PAGE = "/Pages/SplashPage.xaml";
         public const string EXPLORER_PAGE = "/Pages/ExplorerPage.xaml";
         public const string SETTINGS_PAGE = "/Pages/SettingsPage.xaml";
@@ -18,12 +17,12 @@ namespace PintheCloud.Managers
         public const int PICK = 0;
         public const int PIN = 1;
         public const int BOTH_PIVOT = 2;
-        
+
         private static Dictionary<string, Context> Map = new Dictionary<string, Context>();
-        
+
         public static Context GetContext(string currentPage)
         {
-            if(Map.ContainsKey(currentPage))
+            if (Map.ContainsKey(currentPage))
                 return Map[currentPage];
             Context con = new Context();
             Map.Add(currentPage, con);
@@ -42,7 +41,7 @@ namespace PintheCloud.Managers
             }
 
             if (!m[previous].ContainsKey(pivot)) return;
-            Debug.WriteLine("firing : {0} {1} {2}", current, previous, pivot==PIN? "PIN":"PICK");
+            Debug.WriteLine("firing : {0} {1} {2}", current, previous, pivot == PIN ? "PIN" : "PICK");
             m[previous][pivot]();
         }
     }
@@ -53,9 +52,9 @@ namespace PintheCloud.Managers
         private Dictionary<string, Dictionary<int, TriggerEvent>> contextMap = new Dictionary<string, Dictionary<int, TriggerEvent>>();
         public void HandleEvent(string previous, int pivot, TriggerEvent _event)
         {
-            if(!contextMap.ContainsKey(previous))
+            if (!contextMap.ContainsKey(previous))
                 contextMap[previous] = new Dictionary<int, TriggerEvent>();
-            
+
             contextMap[previous][pivot] = _event;
         }
         public void HandleEvent(string previous, TriggerEvent _event)
@@ -69,6 +68,5 @@ namespace PintheCloud.Managers
         {
             return this.contextMap;
         }
-    
     }
 }

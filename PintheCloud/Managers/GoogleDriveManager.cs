@@ -46,9 +46,6 @@ namespace PintheCloud.Managers
             GoogleDriveManager.GoogleDocMapper = new Dictionary<string, string>();
             GoogleDriveManager.ExtensionMapper = new Dictionary<string, string>();
 
-            //GoogleDocMapper.Add("application/vnd.google-apps.form", "Not Supported");
-            //GoogleDocMapper.Add("application/vnd.google-apps.folder", "Folder");
-
             // Document file
             GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.document", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
             // SpreadSheet file
@@ -57,6 +54,9 @@ namespace PintheCloud.Managers
             GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.drawing", "image/png");
             // Presentation file
             GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.presentation", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
+            // Not using
+            //GoogleDocMapper.Add("application/vnd.google-apps.form", "Not Supported");
+            //GoogleDocMapper.Add("application/vnd.google-apps.folder", "Folder");
 
             GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.document", "doc");
             GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.spreadsheet", "xls");
@@ -262,10 +262,14 @@ namespace PintheCloud.Managers
                 return result;
             }
         }
+
+
         private bool _IsValidFile(Google.Apis.Drive.v2.Data.File file)
         {
             return (this._IsMine(file) && !this._IsTrashed(file) && !"application/vnd.google-apps.form".Equals(file.MimeType));
         }
+
+
         private bool _IsRoot(Google.Apis.Drive.v2.Data.File file)
         {
             bool result = true;
@@ -277,6 +281,8 @@ namespace PintheCloud.Managers
             }
             return result;
         }
+
+
         private bool _IsMine(Google.Apis.Drive.v2.Data.File file)
         {
             bool result = true;
@@ -289,16 +295,22 @@ namespace PintheCloud.Managers
             }
             return result;
         }
+
+
         private bool _IsTrashed(Google.Apis.Drive.v2.Data.File file)
         {
             if (file.ExplicitlyTrashed == null) return false;
             return file.ExplicitlyTrashed.Value;
         }
+
+
         private bool _IsGoolgeDoc(Google.Apis.Drive.v2.Data.File file)
         {
             if (file.MimeType.Contains("application/vnd.google-apps")) return true;
             return false;
         }
+
+
         private bool _IsAbleToDownload(Google.Apis.Drive.v2.Data.File file)
         {
             return !string.Empty.Equals(file.DownloadUrl);

@@ -68,23 +68,28 @@ namespace PintheCloud.ViewModels
                 double gbUnit = Math.Pow(kbUnit, 3);
                 if ((size / gbUnit) >= 1)  // GB
                 {
-                    fileObjectViewItem.Size = Math.Round((size / gbUnit) * 10.0) / 10.0;
+                    fileObjectViewItem.Size = (Math.Round((size / gbUnit) * 10.0) / 10.0).ToString();
                     fileObjectViewItem.SizeUnit = AppResources.GB;
                 }
                 else if ((size / mbUnit) >= 1)  // MB
                 {
-                    fileObjectViewItem.Size = Math.Round((size / mbUnit) * 10.0) / 10.0;
+                    fileObjectViewItem.Size = (Math.Round((size / mbUnit) * 10.0) / 10.0).ToString();
                     fileObjectViewItem.SizeUnit = AppResources.MB;
                 }
                 else if ((size / kbUnit) >= 1)  // KB
                 {
-                    fileObjectViewItem.Size = Math.Round(size / kbUnit);
+                    fileObjectViewItem.Size = (Math.Round(size / kbUnit)).ToString();
                     fileObjectViewItem.SizeUnit = AppResources.KB;
                 }
-                else  // Bytes
+                else if (size > 0)  // Bytes
                 {
-                    fileObjectViewItem.Size = size;
+                    fileObjectViewItem.Size = size.ToString();
                     fileObjectViewItem.SizeUnit = AppResources.Bytes;
+                }
+                else if (fileObject.Type == FileObject.FileObjectType.GOOGLE_DOC) // Google Doc
+                {
+                    fileObjectViewItem.Size = String.Empty;
+                    fileObjectViewItem.SizeUnit = AppResources.GoogleDoc;
                 }
 
 

@@ -196,6 +196,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Google Doc과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string GoogleDoc {
+            get {
+                return ResourceManager.GetString("GoogleDoc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   GoogleDrive과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string GoogleDrive {
@@ -484,6 +493,24 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Quit과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string QuitAppCaption {
+            get {
+                return ResourceManager.GetString("QuitAppCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want to quit At Here?과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string QuitAppMessage {
+            get {
+                return ResourceManager.GetString("QuitAppMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Refreshing...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Refreshing {
@@ -516,15 +543,6 @@ namespace PintheCloud.Resources {
         public static string RootPath {
             get {
                 return ResourceManager.GetString("RootPath", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Nick Name과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string SetSpotNickNameCaption {
-            get {
-                return ResourceManager.GetString("SetSpotNickNameCaption", resourceCulture);
             }
         }
         
@@ -565,7 +583,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Do you want sign out? Your setting will be intialized.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Do you want sign out? Your setting about this cloud will be intialized.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string SignOutMessage {
             get {

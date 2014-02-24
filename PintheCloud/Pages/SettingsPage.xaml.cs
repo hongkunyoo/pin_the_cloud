@@ -201,14 +201,9 @@ namespace PintheCloud.Pages
                 uiApplicationMessage.Text = AppResources.DoingSignOut;
             });
 
-
-            // Delete application settings before work for good UX and Wait signin task
-            //App.ApplicationSettings.Remove(iStorageManager.GetAccountIsSignInKey());
+            // Wait task and sign out
             await App.TaskManager.WaitSignInTask(platformIndex);
-
-            // Signout
             iStorageManager.SignOut();
-
 
             // Hide process indicator
             base.Dispatcher.BeginInvoke(() =>
@@ -255,7 +250,7 @@ namespace PintheCloud.Pages
         {
             App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY] = uiSpotNickNameTextBox.Text;
             App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.SetSpotNickNameMessage, AppResources.SetSpotNickNameCaption, MessageBoxButton.OK);
+            MessageBox.Show(AppResources.SetSpotNickNameMessage, uiSpotNickNameTextBox.Text, MessageBoxButton.OK);
         }
 
 
