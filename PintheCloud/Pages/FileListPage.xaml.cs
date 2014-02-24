@@ -39,7 +39,6 @@ namespace PintheCloud.Pages
         private string AccountId = null;
         private string AccountName = null;
         private int PlatformIndex = 0;
-        private bool PiningSpot = false;
 
         private FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
 
@@ -84,15 +83,9 @@ namespace PintheCloud.Pages
                 // If internet is on, refresh
                 // Otherwise, show internet unavailable message.
                 if (NetworkInterface.GetIsNetworkAvailable())
-                {
-                    uiFileList.Visibility = Visibility.Visible;
-                    uiFileListMessage.Visibility = Visibility.Collapsed;
                     this.Refresh(AppResources.Loading);
-                }
                 else
-                {
                     base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
-                }
             }
 
             else  // Pin state
@@ -114,7 +107,7 @@ namespace PintheCloud.Pages
                 // If internet is on, upload file given from previous page.
                 // Otherwise, show internet unavailable message.
                 if (NetworkInterface.GetIsNetworkAvailable())
-                    App.TaskManager.AddTask(TaskManager.INITIAL_PIN_SPOT_AND_UPLOAD_FILE_TASK, this.InitialPinSpotAndUploadFileAsync());
+                    this.InitialPinSpotAndUploadFileAsync();
                 else
                     base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
             }
@@ -129,13 +122,6 @@ namespace PintheCloud.Pages
 
 
         /*** Self Methods ***/
-
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-        {
-            base.OnBackKeyPress(e);
-            e.Cancel = this.PiningSpot;
-        }
-
 
         private async void uiFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -194,7 +180,6 @@ namespace PintheCloud.Pages
             // Show Pining message and Progress Indicator
             base.SetListUnableAndShowMessage(uiFileList, AppResources.PiningSpot, uiFileListMessage);
             base.SetProgressIndicator(true);
-            this.PiningSpot = true;
 
 
             Geoposition geo = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
@@ -205,14 +190,13 @@ namespace PintheCloud.Pages
 
 
             // Hide Progress Indicator and return
-            this.PiningSpot = false;
             base.SetProgressIndicator(false);
             return spaceId;
         }
 
 
         // Upload. have to wait it.
-        private async Task UploadFileAsync(FileObjectViewItem file)
+        private async void UploadFileAsync(FileObjectViewItem file)
         {
             // Show Uploading message and file for good UX
             base.SetProgressIndicator(true);
@@ -265,20 +249,22 @@ namespace PintheCloud.Pages
         }
 
 
-        private async Task InitialPinSpotAndUploadFileAsync()
+        private async void InitialPinSpotAndUploadFileAsync()
         {
+            // Get selected file list from previous page before pin spot.
+            List<FileObjectViewItem> fileList = (List<FileObjectViewItem>)PhoneApplicationService.Current.State[ExplorerPage.SELECTED_FILE_KEY];
+            FileObjectViewItem[] fileArray = fileList.ToArray<FileObjectViewItem>();
+
+            // If pin spot success, upload files.
+            // Otherwise, show warning message.
             string spaceId = await this.PinSpot();
             if (spaceId != null)
             {
                 // Register space id
-                this.SpaceId = spaceId;
-
                 // Get selected files from previous page, Upload each files in order.
-                List<FileObjectViewItem> list = (List<FileObjectViewItem>)PhoneApplicationService.Current.State[ExplorerPage.SELECTED_FILE_KEY];
-                foreach (FileObjectViewItem file in list)
-                {
-                    Task uploadTask = this.UploadFileAsync(file);
-                }
+                this.SpaceId = spaceId;
+                foreach (FileObjectViewItem file in fileArray)
+                    this.UploadFileAsync(file);
             }
             else
             {
@@ -308,12 +294,17 @@ namespace PintheCloud.Pages
 
         private void uiAppBarRefreshMenuItem_Click(object sender, System.EventArgs e)
         {
-        	// TODO: 여기에 구현된 이벤트 처리기를 추가하십시오.
+            // If internet is on, refresh
+            // Otherwise, show internet unavailable message.
+            if (NetworkInterface.GetIsNetworkAvailable())
+                this.Refresh(AppResources.Refreshing);
+            else
+                base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
         }
 
         private void uiAppBarPinInfoButton_Click(object sender, System.EventArgs e)
         {
-        	// TODO: 여기에 구현된 이벤트 처리기를 추가하십시오.
+            // TODO Have to add pin pop up.
         }
     }
 }

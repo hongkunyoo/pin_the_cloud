@@ -15,10 +15,6 @@ namespace PintheCloud.Utilities
         public Task[] SignOutTasks = new Task[App.IStorageManagers.Length];
 
 
-        // Task keys
-        public const string INITIAL_PIN_SPOT_AND_UPLOAD_FILE_TASK = "INITIAL_PIN_SPOT_AND_UPLOAD_FILE_TASK";
-
-
         public void AddTask(string name, Task task)
         {
             Task existedTask = null;

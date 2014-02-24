@@ -304,8 +304,8 @@ namespace PintheCloud.Pages
             if (spaceViewItem != null)
             {
                 string parameters = base.GetParameterStringFromSpaceViewItem(spaceViewItem);
-                NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters + "?platform=" + 
-                    App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY], UriKind.Relative));
+                NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters + "&platform=" + 
+                    ((int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY]), UriKind.Relative));
             }
         }
 
