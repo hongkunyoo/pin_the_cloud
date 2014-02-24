@@ -107,10 +107,15 @@
                                 </Grid.RowDefinitions>
                                 <Button x:Name="uiSpotButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                                     <Grid Margin="22,17.5,18,14">
+                                    	<Grid.ColumnDefinitions>
+                                    		<ColumnDefinition/>
+                                    		<ColumnDefinition Width="49"/>
+                                    	</Grid.ColumnDefinitions>
                                         <StackPanel Margin="0">
                                             <TextBlock x:Name="uiSpotName" TextWrapping="Wrap" Text="{Binding SpotName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
                                             <TextBlock x:Name="uiSpotAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" FontWeight="Bold"/>
                                         </StackPanel>
+										<Image x:Name="uiSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Stretch="None"/>
                                     </Grid>
                                 </Button>
                                 <Grid Grid.Row="1" Background="#FFCED7DD"/>

@@ -93,7 +93,6 @@ namespace PintheCloud.Pages
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
 
-
             // Comes from settings page
             if (PREVIOUS_PAGE.Equals(SETTINGS_PAGE))
             {
