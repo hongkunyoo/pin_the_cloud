@@ -102,7 +102,14 @@ namespace PintheCloud.Managers
 
                 string name = this.user.DisplayName;
                 string id = about.PermissionId;
-                this.CurrentAccount = new Account(id, Account.StorageAccountType.GOOGLE_DRIVE, name, 0, AccountType.NORMAL_ACCOUNT_TYPE);
+
+                Account account = await AccountHelper.GetAccountAsync(id);
+                if (account == null)
+                {
+                    account = new Account(id, Account.StorageAccountType.GOOGLE_DRIVE, name, 0, AccountType.NORMAL_ACCOUNT_TYPE);
+                    await AccountHelper.CreateAccountAsync(account);
+                }
+                this.CurrentAccount = account;
             }
             catch (Microsoft.Phone.Controls.WebBrowserNavigationException ex)
             {

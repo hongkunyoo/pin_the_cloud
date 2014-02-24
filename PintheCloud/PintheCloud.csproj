@@ -96,7 +96,10 @@
     </Compile>
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Models\Account.cs" />
-    <Compile Include="Utilities\AccountManager.cs" />
+    <Compile Include="Pages\UploadPickerPopup.xaml.cs">
+      <DependentUpon>UploadPickerPopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utilities\AccountHelper.cs" />
     <Compile Include="Managers\DropBoxManager.cs" />
     <Compile Include="Managers\GoogleDriveManager.cs" />
     <Compile Include="Managers\IStorageManager.cs" />
@@ -109,8 +112,8 @@
     <Compile Include="Managers\SpaceManagerImplement.cs" />
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Space.cs" />
-    <Compile Include="Pages\DropboxSignInPopup.xaml.cs">
-      <DependentUpon>DropboxSignInPopup.xaml</DependentUpon>
+    <Compile Include="Pages\DropBoxSignInPopup.xaml.cs">
+      <DependentUpon>DropBoxSignInPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\FileObjectConverter.cs" />
     <Compile Include="Utilities\DropboxWebBrowserResult.cs" />
@@ -134,6 +137,7 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Utilities\ColorHexStringToBrushConverter.cs" />
+    <Compile Include="Utilities\UploadPickerTask.cs" />
     <Compile Include="ViewModels\FileObjectViewItem.cs" />
     <Compile Include="ViewModels\FileObjectViewModel.cs" />
     <Compile Include="ViewModels\SpaceViewItem.cs" />
@@ -170,7 +174,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\DropboxSignInPopup.xaml">
+    <Page Include="Pages\DropBoxSignInPopup.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -179,6 +183,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\SplashPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\UploadPickerPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -339,6 +347,7 @@
     <Reference Include="Microsoft.Data.OData.Portable">
       <HintPath>..\packages\Microsoft.Data.OData.5.6.0\lib\portable-net40+sl5+wp8+win8\Microsoft.Data.OData.Portable.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="Microsoft.Live, Version=5.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveSDK.5.5\lib\WindowsPhone8\Microsoft.Live.dll</HintPath>
     </Reference>

@@ -100,10 +100,10 @@ namespace PintheCloud.Managers
             LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
             string accountId = (string)operationResult.Result["id"];
             string accountUserName = (string)operationResult.Result["name"];
-            Account account = await AccountManager.GetAccountAsync(accountId);
+            Account account = await AccountHelper.GetAccountAsync(accountId);
             if (account == null)
             {
-                await AccountManager.CreateAccountAsync(accountId, accountUserName, Account.StorageAccountType.SKY_DRIVE);
+                await AccountHelper.CreateAccountAsync(accountId, accountUserName, Account.StorageAccountType.SKY_DRIVE);
             }
             this.CurrentAccount = account;
         }

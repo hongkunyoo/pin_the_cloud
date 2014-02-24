@@ -13,12 +13,12 @@ using DropNet.Models;
 
 namespace PintheCloud.Pages
 {
-    public partial class MyPopup : UserControl
+    public partial class DropBoxSignInPopup : UserControl
     {
         private Popup p = null;
 
 
-        public MyPopup(Popup p, string uri)
+        public DropBoxSignInPopup(Popup p, string uri)
         {
             InitializeComponent();
             this.p = p;

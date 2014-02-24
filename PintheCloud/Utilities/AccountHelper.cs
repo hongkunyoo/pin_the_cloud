@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.Managers
 {
-    public static class AccountManager
+    public static class AccountHelper
     {
 
         public static async Task<Account> GetAccountAsync(string accountId)
@@ -43,7 +43,18 @@ namespace PintheCloud.Managers
             {
                 return false;
             }
-            
+            return true;
+        }
+        public static async Task<bool> CreateAccountAsync(Account account)
+        {
+            try
+            {
+                await App.MobileService.GetTable<Account>().InsertAsync(account);
+            }
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
             return true;
         }
 

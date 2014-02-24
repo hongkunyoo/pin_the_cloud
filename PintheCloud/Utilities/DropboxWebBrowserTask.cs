@@ -49,7 +49,7 @@ namespace PintheCloud.Utilities
             base.Show();
 
             Popup p = new Popup();
-            p.Child = new MyPopup(p, this.uri);
+            p.Child = new DropBoxSignInPopup(p, this.uri);
             p.Visibility = System.Windows.Visibility.Visible;
             p.IsOpen = true;
 
@@ -60,7 +60,6 @@ namespace PintheCloud.Utilities
         }
         public Task<DropboxWebBrowserResult> ShowAsync()
         {
-            
             TaskCompletionSource<DropboxWebBrowserResult> tcs = new TaskCompletionSource<DropboxWebBrowserResult>();
             this.Completed += (sender, e) =>
             {

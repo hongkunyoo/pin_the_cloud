@@ -38,9 +38,8 @@ namespace PintheCloud.Utilities
         public async Task TestStorages()
         {
             //Debug.WriteLine(Account.StorageAccountType.SKY_DRIVE.ToString());
-            SkyDriveManager manager = new SkyDriveManager();
-
-            manager.SignIn();
+            UploadPickerTask t = new UploadPickerTask();
+            t.Show();
         }
 
         private async Task<StorageFile> GetStreamGiveFile(Stream input, string fileName)
