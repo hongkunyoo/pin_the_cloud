@@ -31,6 +31,12 @@ namespace PintheCloud.Managers
         }
 
 
+        public async Task<bool> DeleteSpotAsync(Spot spot)
+        {
+            return await this.CurrentSpotWorker.DeleteSpotAsync(spot);
+        }
+
+
         // Get spot view item from spot list.
         public async Task<JArray> GetNearSpotViewItemsAsync(Geoposition currentGeoposition)
         {

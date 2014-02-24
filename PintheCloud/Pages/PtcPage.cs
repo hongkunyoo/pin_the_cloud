@@ -30,6 +30,10 @@ namespace PintheCloud.Pages
         protected const string FILE_LIST_PAGE = "/Pages/FileListPage.xaml";
         protected const string PREV_PAGE = "PREV_PAGE";
 
+        protected const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
+        protected const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
+        protected const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_delete.png";
+
         protected string PREVIOUS_PAGE = null;
 
 

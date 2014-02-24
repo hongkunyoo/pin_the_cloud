@@ -261,6 +261,7 @@ namespace PintheCloud.Pages
         // Move to Setting Page
         private void uiAppBarSettingsButton_Click(object sender, System.EventArgs e)
         {
+            this.NearSpotViewModel.IsDataLoaded = false;
             NavigationService.Navigate(new Uri(SETTINGS_PAGE, UriKind.Relative));
         }
 

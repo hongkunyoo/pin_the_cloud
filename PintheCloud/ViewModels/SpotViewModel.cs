@@ -46,6 +46,7 @@ namespace PintheCloud.ViewModels
                 spotViewItem.AccountName = (string)jSpot["account_name"];
                 spotViewItem.SpotId = (string)jSpot["id"];
                 spotViewItem.SpotDistance = (double)jSpot["spot_distance"];
+                spotViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
                 this.Items.Add(spotViewItem);
             }
         }
