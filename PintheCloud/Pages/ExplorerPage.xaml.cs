@@ -77,6 +77,15 @@ namespace PintheCloud.Pages
             // Set Datacontext
             uiNearSpaceList.DataContext = this.NearSpaceViewModel;
             uiPinInfoList.DataContext = this.FileObjectViewModel;
+
+
+            Context currentContextPage = EventManager.GetContext(EventManager.EXPLORER_PAGE);
+
+            currentContextPage.HandleEvent(EventManager.SETTINGS_PAGE, EventManager.PIN, previous_SETTINGS_pivot_PIN);
+
+            currentContextPage.HandleEvent(EventManager.FILE_LIST_PAGE, EventManager.PICK, previous_FILE_LIST_pivot_PICK);
+
+            currentContextPage.HandleEvent(EventManager.FILE_LIST_PAGE, EventManager.PIN, previous_FILE_LIST_pivot_PIN);
         }
 
 
@@ -93,83 +102,65 @@ namespace PintheCloud.Pages
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
 
+            base.PIVOT = uiExplorerPivot.SelectedIndex;
+           
+        }
 
-            // Comes from settings page
-            if (PREVIOUS_PAGE.Equals(SETTINGS_PAGE))
+        private void previous_SETTINGS_pivot_PIN()
+        {
+            // If it is already signin skydrive, load files.
+            // Otherwise, show signin button.
+            IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
+            if (!iStorageManager.IsSignIn())  // wasn't signed in.
             {
-                /*** Pin Pivot ***/
-
-                if (uiExplorerPivot.SelectedIndex == PIN_INFO_PIVOT_INDEX)
+                if (uiPinInfoSignInGrid.Visibility == Visibility.Collapsed)
                 {
-                    // If it is already signin skydrive, load files.
-                    // Otherwise, show signin button.
-                    IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
-                    if (!iStorageManager.IsSignIn())  // wasn't signed in.
-                    {
-                        if (uiPinInfoSignInGrid.Visibility == Visibility.Collapsed)
-                        {
-                            uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                            uiPinInfoSignInGrid.Visibility = Visibility.Visible;
-                        }
-                    }
-                    else  // was signed in.
-                    {
-                        if (uiPinInfoSignInGrid.Visibility == Visibility.Visible)
-                        {
-                            // Show Loading message and save is login true for pivot moving action while sign in.
-                            uiPinInfoListGrid.Visibility = Visibility.Visible;
-                            uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
-
-                            if (NetworkInterface.GetIsNetworkAvailable())
-                                this.SetPinInfoListAsync(null, AppResources.Loading, iStorageManager);
-                            else
-                                base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
-                        }
-                    }
+                    uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                    uiPinInfoSignInGrid.Visibility = Visibility.Visible;
                 }
             }
-
-
-            // Comes from file list page
-            if (PREVIOUS_PAGE.Equals(FILE_LIST_PAGE))
+            else  // was signed in.
             {
-                /*** Pick Pivot ***/
-
-                if (uiExplorerPivot.SelectedIndex == PICK_PIVOT_INDEX)
+                if (uiPinInfoSignInGrid.Visibility == Visibility.Visible)
                 {
-                    // If Internet available, Set space list
-                    // Otherwise, show internet bad message
+                    // Show Loading message and save is login true for pivot moving action while sign in.
+                    uiPinInfoListGrid.Visibility = Visibility.Visible;
+                    uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
+
                     if (NetworkInterface.GetIsNetworkAvailable())
-                            this.SetNearSpaceListAsync(AppResources.Loading);
+                        this.SetPinInfoListAsync(null, AppResources.Loading, iStorageManager);
                     else
-                        base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
-                }
-
-
-
-                /*** Pin Pivot ***/
-
-                else if (uiExplorerPivot.SelectedIndex == PIN_INFO_PIVOT_INDEX)
-                {
-                    if (NetworkInterface.GetIsNetworkAvailable())
-                    {
-                        this.SelectedFile.Clear();
-                        this.PinInfoAppBarButton.IsEnabled = false;
-                        foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
-                        {
-                            if(!fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER)
-                                && fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
-                                fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
-                        }
-                    }
-                    else
-                    {
                         base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
-                    }
                 }
             }
         }
-
+        private void previous_FILE_LIST_pivot_PICK()
+        {
+            // If Internet available, Set space list
+            // Otherwise, show internet bad message
+            if (NetworkInterface.GetIsNetworkAvailable())
+                this.SetNearSpaceListAsync(AppResources.Loading);
+            else
+                base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
+        }
+        private void previous_FILE_LIST_pivot_PIN()
+        {
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                this.SelectedFile.Clear();
+                this.PinInfoAppBarButton.IsEnabled = false;
+                foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
+                {
+                    if (!fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER)
+                        && fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                }
+            }
+            else
+            {
+                base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
+            }
+        }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
@@ -182,6 +173,8 @@ namespace PintheCloud.Pages
         {
             // Set View model for dispaly,
             // One time loading.
+            base.PIVOT = uiExplorerPivot.SelectedIndex;
+            
             switch (uiExplorerPivot.SelectedIndex)
             {
                 case PICK_PIVOT_INDEX:

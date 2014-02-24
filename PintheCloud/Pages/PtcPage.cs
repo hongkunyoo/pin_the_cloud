@@ -18,6 +18,7 @@ using System.Text.RegularExpressions;
 using Windows.UI;
 using PintheCloud.Utilities;
 using PintheCloud.ViewModels;
+using PintheCloud.Managers;
 //using System.Threading.Tasks;
 
 namespace PintheCloud.Pages
@@ -32,7 +33,8 @@ namespace PintheCloud.Pages
 
         protected string PREVIOUS_PAGE = null;
 
-
+        protected int PIVOT = 0;
+        
         public PtcPage()
         {
         }
@@ -45,6 +47,9 @@ namespace PintheCloud.Pages
             if (PhoneApplicationService.Current.State.ContainsKey(PREV_PAGE))
                 this.PREVIOUS_PAGE = (string)PhoneApplicationService.Current.State[PREV_PAGE];
             PhoneApplicationService.Current.State[PREV_PAGE] = this.NavigationService.CurrentSource.ToString().Split('?')[0];
+            string CURRENT_PAGE = (string)PhoneApplicationService.Current.State[PREV_PAGE];
+
+            EventManager.FireEvent(CURRENT_PAGE, this.PREVIOUS_PAGE, this.PIVOT);
         }
 
 
