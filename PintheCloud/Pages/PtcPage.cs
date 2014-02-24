@@ -95,12 +95,14 @@ namespace PintheCloud.Pages
         {
             for (int i = 0; i < App.IStorageManagers.Length; i++)
             {
-                if (platform.Equals(Account.PLATFORM_NAMES[i]))
+                if (platform.Equals(App.IStorageManagers[i].GetStorageName()))
                 {
                     return i;
                 }
             }
-            return (int)Account.StorageAccountType.SKY_DRIVE;
+            //return (int)Account.StorageAccountType.SKY_DRIVE;
+
+            throw new Exception("No such Storage Name");
         }
     }
 }

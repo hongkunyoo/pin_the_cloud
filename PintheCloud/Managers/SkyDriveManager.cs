@@ -14,6 +14,8 @@ using Windows.System;
 using PintheCloud.Workers;
 using System.Windows;
 using PintheCloud.Pages;
+using PintheCloud.Resources;
+using System.Diagnostics;
 
 namespace PintheCloud.Managers
 {
@@ -26,15 +28,53 @@ namespace PintheCloud.Managers
         // Summary:
         //     Object to communicate with SkyDrive.
         private const string ACCOUNT_IS_SIGN_IN_KEY = "ACCOUNT_SKY_DRIVE_SIGN_IN_KEY";
-        public const string ACCOUNT_ID_KEY = "ACCOUNT_SKY_DRIVE_ID_KEY";
-        public const string ACCOUNT_USED_SIZE_KEY = "ACCOUNT_SKY_DRIVE_USED_SIZE_KEY";
-        public const string ACCOUNT_BUSINESS_TYPE_KEY = "ACCOUNT_SKY_DRIVE_BUSINESS_TYPE_KEY";
+        //public const string ACCOUNT_ID_KEY = "ACCOUNT_SKY_DRIVE_ID_KEY";
+        //public const string ACCOUNT_USED_SIZE_KEY = "ACCOUNT_SKY_DRIVE_USED_SIZE_KEY";
+        //public const string ACCOUNT_BUSINESS_TYPE_KEY = "ACCOUNT_SKY_DRIVE_BUSINESS_TYPE_KEY";
 
-        private SkyDriveAccountWorker AccountWorker = new SkyDriveAccountWorker();
+        private string LIVE_CLIENT_ID = "0000000044110129";
+        //private SkyDriveAccountWorker AccountWorker = new SkyDriveAccountWorker();
         private LiveConnectClient LiveClient = null;
         private Account CurrentAccount = null;
         #endregion
 
+
+        private async Task<LiveConnectClient> GetLiveConnectClientAsync()
+        {
+            LiveAuthClient liveAuthClient = new LiveAuthClient(this.LIVE_CLIENT_ID);
+            string[] scopes = new[] { "wl.basic", "wl.offline_access", "wl.skydrive", "wl.skydrive_update", "wl.signin", "wl.contacts_skydrive" };
+            LiveLoginResult liveLoginResult = null;
+
+            // Get Current live connection session
+            try
+            {
+                liveLoginResult = await liveAuthClient.InitializeAsync(scopes);
+            }
+            catch (LiveAuthException)
+            {
+                return null;
+            }
+
+            // If session doesn't exist, get new one.
+            // Otherwise, get the session.
+            if (liveLoginResult.Status != LiveConnectSessionStatus.Connected)
+            {
+                try
+                {
+                    liveLoginResult = await liveAuthClient.LoginAsync(scopes);
+                }
+                catch (LiveAuthException)
+                {
+                    return null;
+                }
+            }
+
+            // Get Client using session which we get above
+            if (liveLoginResult.Session == null)
+                return null;
+            else
+                return new LiveConnectClient(liveLoginResult.Session);
+        }
 
         public async Task SignIn()
         {
@@ -46,7 +86,7 @@ namespace PintheCloud.Managers
             if (this.LiveClient == null)
             {
                 // If it success to register live connect session,
-                LiveConnectClient liveClient = await this.AccountWorker.GetLiveConnectClientAsync();
+                LiveConnectClient liveClient = await this.GetLiveConnectClientAsync();
                 if (liveClient != null)
                 {
                     this.LiveClient = liveClient;
@@ -57,60 +97,59 @@ namespace PintheCloud.Managers
                     return;
                 }
             }
-
-
-            // Get profile result and Login.
-            // If login succeed, Move to explorer page.
-            // Otherwise, Hide indicator, Show login fail message box.
-            dynamic profileResult = await this.AccountWorker.GetProfileResultAsync(this.LiveClient);
-            if (profileResult != null)
+            LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
+            string accountId = (string)operationResult.Result["id"];
+            string accountUserName = (string)operationResult.Result["name"];
+            Account account = await AccountManager.GetAccountAsync(accountId);
+            if (account == null)
             {
-                Account account = await this.AccountWorker.SkyDriveSignInAsync(this.LiveClient, profileResult);
-                if (account != null)
-                    this.CurrentAccount = account;
-                else
-                    this.SignOut();
+                await AccountManager.CreateAccountAsync(accountId, accountUserName, Account.StorageAccountType.SKY_DRIVE);
             }
-            else
-            {
-                this.SignOut();
-            }
+            this.CurrentAccount = account;
         }
 
 
         public void SignOut()
         {
             // Remove user record
-            LiveAuthClient liveAuthClient = new LiveAuthClient(App.AZURE_CLIENT_ID);
+            LiveAuthClient liveAuthClient = new LiveAuthClient(this.LIVE_CLIENT_ID);
             liveAuthClient.Logout();
 
             // Remove user is signed in record
             App.ApplicationSettings.Remove(ACCOUNT_IS_SIGN_IN_KEY);
-            App.ApplicationSettings.Remove(ACCOUNT_USED_SIZE_KEY);
-            App.ApplicationSettings.Remove(ACCOUNT_BUSINESS_TYPE_KEY);
-
+            //App.ApplicationSettings.Remove(ACCOUNT_USED_SIZE_KEY);
+            //App.ApplicationSettings.Remove(ACCOUNT_BUSINESS_TYPE_KEY);
+            App.ApplicationSettings.Save();
             // Set null account
             this.LiveClient = null;
             this.CurrentAccount = null;
         }
 
+        public bool IsSignIn()
+        {
+            return App.ApplicationSettings.Contains(ACCOUNT_IS_SIGN_IN_KEY);
+        }
 
+        public string GetStorageName()
+        {
+            return AppResources.SkyDrive;
+        }
         public Account GetAccount()
         {
             return this.CurrentAccount;
         }
 
 
-        public string GetAccountIsSignInKey()
-        {
-            return ACCOUNT_IS_SIGN_IN_KEY;
-        }
+        //public string GetAccountIsSignInKey()
+        //{
+        //    return ACCOUNT_IS_SIGN_IN_KEY;
+        //}
 
 
-        public string GetAccountIdKey()
-        {
-            return ACCOUNT_ID_KEY;
-        }
+        //public string GetAccountIdKey()
+        //{
+        //    return ACCOUNT_ID_KEY;
+        //}
 
         // Summary:
         //     Gets Root Folder of SkyDrive storage.

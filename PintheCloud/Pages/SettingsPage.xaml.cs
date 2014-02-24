@@ -51,10 +51,10 @@ namespace PintheCloud.Pages
             this.SignButtons = new Button[] { uiSkyDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
             for(int i=0 ; i<App.IStorageManagers.Length ; i++)
             {
-                bool isSignIn = false;
+                //bool isSignIn = false;
                 IStorageManager iStorageManager = App.IStorageManagers[i];
-                App.ApplicationSettings.TryGetValue<bool>(iStorageManager.GetAccountIsSignInKey(), out isSignIn);
-                this.SetSignButton(i, isSignIn);
+                //App.ApplicationSettings.TryGetValue<bool>(iStorageManager.GetAccountIsSignInKey(), out isSignIn);
+                this.SetSignButton(i, iStorageManager.IsSignIn());
             }
 
 
@@ -196,7 +196,7 @@ namespace PintheCloud.Pages
 
 
             // Delete application settings before work for good UX and Wait signin task
-            App.ApplicationSettings.Remove(iStorageManager.GetAccountIsSignInKey());
+            //App.ApplicationSettings.Remove(iStorageManager.GetAccountIsSignInKey());
             await App.TaskManager.WaitSignInTask(platformIndex);
 
             // Signout
@@ -218,13 +218,13 @@ namespace PintheCloud.Pages
         {
             if (isSignIn)  // It is signed in
             {
-                this.SignButtons[platformIndex].Content = Account.PLATFORM_NAMES[platformIndex] + " " + AppResources.SignOutCaption;
+                this.SignButtons[platformIndex].Content = App.IStorageManagers[platformIndex].GetStorageName() + " " + AppResources.SignOutCaption;
                 this.SignButtons[platformIndex].Click += SignOutButton_Click;
                 this.SignButtons[platformIndex].Click -= SignInButton_Click;
             }
             else  // It haven't signed in
             {
-                this.SignButtons[platformIndex].Content = Account.PLATFORM_NAMES[platformIndex] + " " + AppResources.SignIn;
+                this.SignButtons[platformIndex].Content = App.IStorageManagers[platformIndex].GetStorageName() + " " + AppResources.SignIn;
                 this.SignButtons[platformIndex].Click -= SignOutButton_Click;
                 this.SignButtons[platformIndex].Click += SignInButton_Click;
             }

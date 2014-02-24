@@ -66,14 +66,14 @@ namespace PintheCloud.Pages
             for (int i = 0; i < this.AppBarMenuItems.Length; i++)
             {
                 this.AppBarMenuItems[i] = new ApplicationBarMenuItem();
-                this.AppBarMenuItems[i].Text = Account.PLATFORM_NAMES[i];
+                this.AppBarMenuItems[i].Text = App.IStorageManagers[i].GetStorageName();
                 this.AppBarMenuItems[i].Click += AppBarMenuItem_Click;
             }
 
 
             // Check main platform and set current platform index.
             this.MainPlatformIndex = (int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY];
-            uiCurrentPlatformText.Text = Account.PLATFORM_NAMES[this.MainPlatformIndex];
+            uiCurrentPlatformText.Text = App.IStorageManagers[this.MainPlatformIndex].GetStorageName();
             this.CurrentPlatformIndex = this.MainPlatformIndex;
 
             // Set Datacontext
@@ -105,10 +105,8 @@ namespace PintheCloud.Pages
                 {
                     // If it is already signin skydrive, load files.
                     // Otherwise, show signin button.
-                    bool isSignIn = false;
                     IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
-                    App.ApplicationSettings.TryGetValue<bool>(iStorageManager.GetAccountIsSignInKey(), out isSignIn);
-                    if (!isSignIn)  // wasn't signed in.
+                    if (!iStorageManager.IsSignIn())  // wasn't signed in.
                     {
                         if (uiPinInfoSignInGrid.Visibility == Visibility.Collapsed)
                         {
@@ -219,10 +217,8 @@ namespace PintheCloud.Pages
 
                     // If it wasn't already signed in, show signin button.
                     // Otherwise, load files
-                    bool isSignIn = false;
                     IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
-                    App.ApplicationSettings.TryGetValue<bool>(iStorageManager.GetAccountIsSignInKey(), out isSignIn);
-                    if (!isSignIn)  // wasn't signed in.
+                    if (!iStorageManager.IsSignIn())  // wasn't signed in.
                     {
                         uiPinInfoListGrid.Visibility = Visibility.Collapsed;
                         uiPinInfoSignInGrid.Visibility = Visibility.Visible;
@@ -406,14 +402,14 @@ namespace PintheCloud.Pages
             if (this.CurrentPlatformIndex != platformIndex && !this.FileObjectViewModel.IsDataLoading)
             {
                 IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
-                uiCurrentPlatformText.Text = Account.PLATFORM_NAMES[platformIndex];
+                uiCurrentPlatformText.Text = App.IStorageManagers[platformIndex].GetStorageName();
                 this.CurrentPlatformIndex = platformIndex;
 
                 // If it is already signin skydrive, load files.
                 // Otherwise, show signin button.
-                bool isSignIn = false;
-                App.ApplicationSettings.TryGetValue<bool>(iStorageManager.GetAccountIsSignInKey(), out isSignIn);
-                if (!isSignIn)
+                //bool isSignIn = false;
+                //App.ApplicationSettings.TryGetValue<bool>(iStorageManager.GetAccountIsSignInKey(), out isSignIn);
+                if (!iStorageManager.IsSignIn())
                 {
                     uiPinInfoListGrid.Visibility = Visibility.Collapsed;
                     uiPinInfoSignInGrid.Visibility = Visibility.Visible;

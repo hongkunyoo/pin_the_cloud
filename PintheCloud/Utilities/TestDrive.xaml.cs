@@ -37,19 +37,10 @@ namespace PintheCloud.Utilities
 
         public async Task TestStorages()
         {
-            GoogleDriveManager manager = new GoogleDriveManager();
-            
-            await manager.SignIn();
+            //Debug.WriteLine(Account.StorageAccountType.SKY_DRIVE.ToString());
+            SkyDriveManager manager = new SkyDriveManager();
 
-            List<FileObject> list = await manager.GetRootFilesAsync();
-            FileObject rootFie = await manager.GetRootFolderAsync();
-            FileObject fo = list[0];
-            Stream input = await manager.DownloadFileStreamAsync(fo.DownloadUrl);
-            //StorageFile file = await GetStreamGiveFile(input, fo.Name);
-            //Debug.WriteLine(file.Name);
-            //await Launcher.LaunchFileAsync(file);
-            bool re = await manager.UploadFileStreamAsync(rootFie.Id, "myplz.xls", input);
-            //FileObject.PrintFileList(list);
+            manager.SignIn();
         }
 
         private async Task<StorageFile> GetStreamGiveFile(Stream input, string fileName)
