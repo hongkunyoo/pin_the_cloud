@@ -23,6 +23,7 @@ using Microsoft.Live;
 using System.Net.NetworkInformation;
 using PintheCloud.Resources;
 using System.Diagnostics;
+using PintheCloud.Converters;
 
 namespace PintheCloud.Pages
 {
@@ -43,6 +44,7 @@ namespace PintheCloud.Pages
         private ApplicationBarIconButton PickAppBarButton = new ApplicationBarIconButton();
         private FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
         private List<FileObjectViewItem> SelectedFile = new List<FileObjectViewItem>();
+
 
         public FileListPage()
         {
@@ -66,21 +68,21 @@ namespace PintheCloud.Pages
 
 
             // Set event by previous page
-            Context con = EventManager.GetContext(EventManager.FILE_LIST_PAGE);
-            con.HandleEvent(EventManager.EXPLORER_PAGE, EventManager.PICK, () => {
+            Context con = EventHelper.GetContext(EventHelper.FILE_LIST_PAGE);
+            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PICK, () => {
                 uiFileListEditViewButton.Visibility = Visibility.Collapsed;
-                SETTINGS_and_EXPLORE_PICK();
+                this.SETTINGS_and_EXPLORE_PICK();
             });
-            con.HandleEvent(EventManager.EXPLORER_PAGE, EventManager.PIN, () =>
+            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PIN, () =>
             {
                 uiFileListEditViewButton.Visibility = Visibility.Visible;
-                EXPLORER_PIN();
+                this.EXPLORER_PIN();
             });
-            con.HandleEvent(EventManager.SETTINGS_PAGE, () =>
+            con.HandleEvent(EventHelper.SETTINGS_PAGE, () =>
             {
                 uiFileListEditViewButton.Visibility = Visibility.Visible;
+                this.SETTINGS_and_EXPLORE_PICK();
             });
-            con.HandleEvent(EventManager.SETTINGS_PAGE, SETTINGS_and_EXPLORE_PICK);
         }
 
 
@@ -110,8 +112,7 @@ namespace PintheCloud.Pages
         {
             // Get parameters
             this.PlatformIndex = (int)PhoneApplicationService.Current.State[PLATFORM_KEY];
-            IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
-            Account account = iStorageManager.GetAccount();
+            Account account = App.IStorageManagers[this.PlatformIndex].GetAccount();
             this.SpotName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
             this.AccountId = account.account_platform_id;
             this.AccountName = account.account_name;
@@ -396,7 +397,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
 
             // Pin spot
-            Geoposition geo = await App.GeoCalculateManager.GetCurrentGeopositionAsync();
+            Geoposition geo = await App.GeoHelper.GetCurrentGeopositionAsync();
             Spot spot = new Spot(this.SpotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
             string spotId = null;
             if (await App.SpotManager.PinSpotAsync(spot))
@@ -471,7 +472,7 @@ namespace PintheCloud.Pages
         private async void InitialPinSpotAndUploadFileAsync()
         {
             // Get selected file list from previous page before pin spot.
-            List<FileObjectViewItem> fileList = (List<FileObjectViewItem>)PhoneApplicationService.Current.State[ExplorerPage.SELECTED_FILE_KEY];
+            List<FileObjectViewItem> fileList = (List<FileObjectViewItem>)PhoneApplicationService.Current.State[SELECTED_FILE_KEY];
             FileObjectViewItem[] fileArray = fileList.ToArray<FileObjectViewItem>();
 
             // If pin spot success, upload files.
@@ -482,6 +483,7 @@ namespace PintheCloud.Pages
                 // Register spot id
                 // Get selected files from previous page, Upload each files in order.
                 this.SpotId = spotId;
+                ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
 
                 for (int i = 0; i < fileArray.Length; i++)
                 {

@@ -17,6 +17,7 @@ using PintheCloud.Utilities;
 using Microsoft.Phone.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PintheCloud.Helpers;
 
 namespace PintheCloud
 {
@@ -43,12 +44,12 @@ namespace PintheCloud
 
         // Manager
         public static SpotManager SpotManager = null;
-        public static GeoCalculateManager GeoCalculateManager = null;
+        public static GeoHelper GeoHelper = null;
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
 
         public static IStorageManager[] IStorageManagers = null;
-        public static TaskManager TaskManager = null;
+        public static TaskHelper TaskManager = null;
 
         private static OneDriveManager SkyDriveManager = null;
         private static DropboxManager DropBoxManager = null;
@@ -89,7 +90,7 @@ namespace PintheCloud
 
             // Manager
             SpotManager = new SpotManagerImplement();
-            GeoCalculateManager = new GeoCalculateManagerImplement();
+            GeoHelper = new GeoHelper();
             BlobStorageManager = new BlobStorageManager();
             LocalStorageManager = new LocalStorageManager();
 
@@ -97,7 +98,7 @@ namespace PintheCloud
             DropBoxManager = new DropboxManager();
             GoogleDriveManger = new GoogleDriveManager();
             IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
-            TaskManager = new TaskManager();
+            TaskManager = new TaskHelper();
  
 
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.

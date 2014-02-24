@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Utilities
+namespace PintheCloud.Helpers
 {
     /// <summary>
     /// Helps parsing strings
@@ -12,6 +12,8 @@ namespace PintheCloud.Utilities
     public class ParseHelper
     {
         public enum Mode { DIRECTORY, FULL_PATH };
+
+
         /// <summary>
         /// Parses the path to split from each path and file name
         /// </summary>
@@ -42,6 +44,8 @@ namespace PintheCloud.Utilities
             }
             return list.ToArray();
         }
+
+
         /// <summary>
         /// Split the given string to file name and extension.
         /// </summary>
@@ -51,6 +55,8 @@ namespace PintheCloud.Utilities
         {
             return name.Split(new char[] { '.' }, 2);
         }
+
+
         /// <summary>
         /// Trim "/" character from the both side of the given string
         /// </summary>
@@ -65,6 +71,8 @@ namespace PintheCloud.Utilities
 
             return path;
         }
+
+
         /*
         public static string ParseParentId(string fullPath)
         {
@@ -72,6 +80,8 @@ namespace PintheCloud.Utilities
             return System.Text.RegularExpressions.Regex.Match(fullPath, ".*\/").Value;
         }
         */
+
+
         /// <summary>
         /// Parse the name from the full path
         /// </summary>
@@ -82,6 +92,7 @@ namespace PintheCloud.Utilities
             fullPath = ParseHelper.TrimSlash(fullPath);
             return System.Text.RegularExpressions.Regex.Match(fullPath, "[^/]*$").Value;
         }
+
 
         // Private Method
         private static string getToken(string path, out string slicedPath)

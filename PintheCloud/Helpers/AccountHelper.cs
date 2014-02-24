@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Managers
+namespace PintheCloud.Helpers
 {
-    public static class AccountHelper
+    public class AccountHelper
     {
         public static async Task<Account> GetAccountAsync(string accountId)
         {
@@ -46,6 +46,8 @@ namespace PintheCloud.Managers
             }
             return true;
         }
+
+
         public static async Task<bool> CreateAccountAsync(Account account)
         {
             try

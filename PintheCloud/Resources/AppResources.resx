@@ -122,7 +122,7 @@
     <comment>Controls the FlowDirection for all elements in the RootFrame. Set to the traditional direction of this resource file's language</comment>
   </data>
   <data name="ResourceLanguage" xml:space="preserve">
-    <value>en-us</value>
+    <value>en-US</value>
     <comment>Controls the Language and ensures that the font for all elements in the RootFrame aligns with the app's language. Set to the language code of this resource file's language.</comment>
   </data>
   <data name="About" xml:space="preserve">
@@ -130,9 +130,6 @@
   </data>
   <data name="Application" xml:space="preserve">
     <value>Application</value>
-  </data>
-  <data name="ApplicationTitle" xml:space="preserve">
-    <value>Pin the Cloud</value>
   </data>
   <data name="BadSignInMessage" xml:space="preserve">
     <value>Sign in process met error. Please try it again</value>
@@ -148,9 +145,6 @@
   </data>
   <data name="InternetUnavailableMessage" xml:space="preserve">
     <value>Sorry. Could not connect to At Here. Please check WIFI and try again.</value>
-  </data>
-  <data name="Profile" xml:space="preserve">
-    <value>Profile</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
@@ -182,9 +176,6 @@
   <data name="NoLocationAcessConsentMessage" xml:space="preserve">
     <value>This app requires consent to access location information. Please consent it in settings.</value>
   </data>
-  <data name="Likes" xml:space="preserve">
-    <value> likes</value>
-  </data>
   <data name="Refreshing" xml:space="preserve">
     <value>Refreshing...</value>
   </data>
@@ -202,12 +193,6 @@
   </data>
   <data name="Pick" xml:space="preserve">
     <value>Pick</value>
-  </data>
-  <data name="Path" xml:space="preserve">
-    <value>Path : </value>
-  </data>
-  <data name="RootPath" xml:space="preserve">
-    <value>/</value>
   </data>
   <data name="GB" xml:space="preserve">
     <value> GB</value>
@@ -227,8 +212,8 @@
   <data name="BadSignInCaption" xml:space="preserve">
     <value>Sign In Error</value>
   </data>
-  <data name="NoFileInCloudMessage" xml:space="preserve">
-    <value>There is no files in this cloud.</value>
+  <data name="NoFileInFolderMessage" xml:space="preserve">
+    <value>There is no files in this folder.</value>
   </data>
   <data name="SignOutCaption" xml:space="preserve">
     <value>Sign Out</value>
@@ -252,22 +237,16 @@
     <value>Doing sign in...</value>
   </data>
   <data name="SetSpotNickNameMessage" xml:space="preserve">
-    <value>New nick name is successfully registered. New spot's will be the nick name.</value>
+    <value>New nick name is successfully registered. New spot's name will be the nick name.</value>
   </data>
   <data name="Main" xml:space="preserve">
     <value>Main</value>
   </data>
-  <data name="MainCloudChangeCpation" xml:space="preserve">
-    <value>Main Cloud</value>
-  </data>
-  <data name="MainCloudChangeMessage" xml:space="preserve">
-    <value> is set to main cloud.</value>
+  <data name="SetMainCloudMessage" xml:space="preserve">
+    <value>It is set to main cloud.</value>
   </data>
   <data name="NoFileInSpotMessage" xml:space="preserve">
     <value>There is no files in this spot.</value>
-  </data>
-  <data name="Percentage" xml:space="preserve">
-    <value>%</value>
   </data>
   <data name="PiningSpot" xml:space="preserve">
     <value>Pining Spot...</value>

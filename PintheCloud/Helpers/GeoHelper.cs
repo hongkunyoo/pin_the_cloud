@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
 
-namespace PintheCloud.Managers
+namespace PintheCloud.Helpers
 {
-    public class GeoCalculateManagerImplement : GeoCalculateManager
+    public class GeoHelper
     {
         // Instances
         Geolocator geolocator = new Geolocator();

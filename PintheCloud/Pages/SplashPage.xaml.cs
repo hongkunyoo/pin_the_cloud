@@ -15,7 +15,6 @@ using System.IO.IsolatedStorage;
 using Microsoft.Phone.Net.NetworkInformation;
 using PintheCloud.Models;
 using PintheCloud.Managers;
-using PintheCloud.Workers;
 using PintheCloud.Utilities;
 using Windows.Storage;
 using System.Xml;
@@ -64,7 +63,7 @@ namespace PintheCloud.Pages
                         App.TaskManager.AddSignInTask(App.IStorageManagers[i].SignIn(), i);
                 }
             }
-            NavigationService.Navigate(new Uri(EXPLORER_PAGE, UriKind.Relative));
+            NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE, UriKind.Relative));
         }
 
 

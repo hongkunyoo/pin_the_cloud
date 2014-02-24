@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Utilities
+namespace PintheCloud.Helpers
 {
-    public class TaskManager
+    public class TaskHelper
     {
         // Tasks
         public IDictionary<string, Task> Tasks = new Dictionary<string, Task>();

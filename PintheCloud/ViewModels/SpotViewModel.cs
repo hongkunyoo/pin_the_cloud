@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using PintheCloud.Models;
 using PintheCloud.Resources;
 using PintheCloud.Utilities;
-using PintheCloud.Workers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

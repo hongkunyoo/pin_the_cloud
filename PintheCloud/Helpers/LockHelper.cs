@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Utilities
+namespace PintheCloud.Helpers
 {
     public class LockHelper
     {
         private static string LOCK_KEY = "LOCK_KEY";
-        public static string LAUNCHER_LOCK = "LAUNCHER_LOCK";
         public delegate void Block();
 
 

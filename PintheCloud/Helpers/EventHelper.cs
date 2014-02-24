@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.Managers
 {
-    public static class EventManager
+    public class EventHelper
     {
         public const string SPLASH_PAGE = "/Pages/SplashPage.xaml";
         public const string EXPLORER_PAGE = "/Pages/ExplorerPage.xaml";
@@ -20,6 +20,7 @@ namespace PintheCloud.Managers
 
         private static Dictionary<string, Context> Map = new Dictionary<string, Context>();
 
+
         public static Context GetContext(string currentPage)
         {
             if (Map.ContainsKey(currentPage))
@@ -28,6 +29,7 @@ namespace PintheCloud.Managers
             Map.Add(currentPage, con);
             return con;
         }
+
 
         public static void FireEvent(string current, string previous, int pivot)
         {
@@ -39,7 +41,6 @@ namespace PintheCloud.Managers
                 m[previous][BOTH_PIVOT]();
                 return;
             }
-
             if (!m[previous].ContainsKey(pivot)) return;
             Debug.WriteLine("firing : {0} {1} {2}", current, previous, pivot == PIN ? "PIN" : "PICK");
             m[previous][pivot]();
@@ -48,8 +49,10 @@ namespace PintheCloud.Managers
 
     public class Context
     {
-        public delegate void TriggerEvent();
         private Dictionary<string, Dictionary<int, TriggerEvent>> contextMap = new Dictionary<string, Dictionary<int, TriggerEvent>>();
+        public delegate void TriggerEvent();
+
+
         public void HandleEvent(string previous, int pivot, TriggerEvent _event)
         {
             if (!contextMap.ContainsKey(previous))
@@ -57,13 +60,17 @@ namespace PintheCloud.Managers
 
             contextMap[previous][pivot] = _event;
         }
+
+
         public void HandleEvent(string previous, TriggerEvent _event)
         {
             if (!contextMap.ContainsKey(previous))
                 contextMap[previous] = new Dictionary<int, TriggerEvent>();
 
-            contextMap[previous][EventManager.BOTH_PIVOT] = _event;
+            contextMap[previous][EventHelper.BOTH_PIVOT] = _event;
         }
+
+
         public Dictionary<string, Dictionary<int, TriggerEvent>> GetContextMap()
         {
             return this.contextMap;

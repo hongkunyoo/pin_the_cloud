@@ -8,7 +8,6 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using PintheCloud.Managers;
-using PintheCloud.Workers;
 using PintheCloud.Resources;
 using System.Windows.Media.Imaging;
 using System.Net.NetworkInformation;
@@ -270,7 +269,7 @@ namespace PintheCloud.Pages
         {
             App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.ONE_DRIVE;
             App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.OneDrive + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+            MessageBox.Show(AppResources.SetMainCloudMessage, AppResources.OneDrive, MessageBoxButton.OK);
         }
 
 
@@ -278,7 +277,7 @@ namespace PintheCloud.Pages
         {
             App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.DROPBOX;
             App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.Dropbox + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+            MessageBox.Show(AppResources.SetMainCloudMessage, AppResources.Dropbox, MessageBoxButton.OK);
         }
 
 
@@ -286,7 +285,7 @@ namespace PintheCloud.Pages
         {
             App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.GOOGLE_DRIVE;
             App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.GoogleDrive + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+            MessageBox.Show(AppResources.SetMainCloudMessage, AppResources.GoogleDrive, MessageBoxButton.OK);
         }
 
 
@@ -313,7 +312,7 @@ namespace PintheCloud.Pages
                     if (spotViewItem.SelectCheckImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
                     {
                         string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
-                        NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters + "&platform=" +
+                        NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters + "&platform=" +
                             ((int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY]), UriKind.Relative));
                     }
                 }
@@ -471,6 +470,8 @@ namespace PintheCloud.Pages
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         this.MySpotViewModel.Items.Remove(spotViewItem);
+                        ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
+
                         if (this.MySpotViewModel.Items.Count < 1)
                             base.SetListUnableAndShowMessage(uiMySpotList, AppResources.NoFileInSpotMessage, uiMySpotMessage);
                     });

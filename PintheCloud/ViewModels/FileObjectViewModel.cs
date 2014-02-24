@@ -81,7 +81,7 @@ namespace PintheCloud.ViewModels
                     fileObjectViewItem.Size = (Math.Round(size / kbUnit)).ToString();
                     fileObjectViewItem.SizeUnit = AppResources.KB;
                 }
-                else if (size > 0)  // Bytes
+                else if ((size / kbUnit) < 1)  // Bytes
                 {
                     fileObjectViewItem.Size = size.ToString();
                     fileObjectViewItem.SizeUnit = AppResources.Bytes;

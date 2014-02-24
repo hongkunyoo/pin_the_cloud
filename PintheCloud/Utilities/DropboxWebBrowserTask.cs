@@ -16,7 +16,6 @@ namespace PintheCloud.Utilities
     {
         private UserControl _this;
         private string uri;
-        private string url;
 
         public string Uri
         {
@@ -29,14 +28,19 @@ namespace PintheCloud.Utilities
                 uri = value;
             }
         }
+
+
         public DropboxWebBrowserTask()
         {
-
         }
+
+
         public DropboxWebBrowserTask(string uri)
         {
             this.uri = uri;
         }
+
+
         public DropboxWebBrowserTask(string uri, UserControl _this)
         {
             this.uri = uri;

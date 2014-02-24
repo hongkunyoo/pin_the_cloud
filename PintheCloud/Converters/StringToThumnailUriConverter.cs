@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace PintheCloud.Utilities
+namespace PintheCloud.Converters
 {
     public class StringToThumnailUriConverter : IValueConverter
     {

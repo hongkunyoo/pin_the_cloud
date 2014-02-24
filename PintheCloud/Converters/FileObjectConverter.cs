@@ -1,5 +1,6 @@
 ﻿using DropNet.Models;
 using Microsoft.WindowsAzure.Storage.Blob;
+using PintheCloud.Helpers;
 using PintheCloud.Managers;
 using PintheCloud.Models;
 using PintheCloud.ViewModels;
@@ -11,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace PintheCloud.Utilities
+namespace PintheCloud.Converters
 {
     public class FileObjectConverter
     {

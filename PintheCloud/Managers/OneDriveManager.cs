@@ -11,12 +11,13 @@ using System.Windows.Controls;
 using Windows.Storage;
 using System.IO;
 using Windows.System;
-using PintheCloud.Workers;
 using System.Windows;
 using PintheCloud.Pages;
 using PintheCloud.Resources;
 using System.Diagnostics;
 using PintheCloud.ViewModels;
+using PintheCloud.Helpers;
+using PintheCloud.Converters;
 
 namespace PintheCloud.Managers
 {

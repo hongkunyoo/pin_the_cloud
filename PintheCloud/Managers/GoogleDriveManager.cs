@@ -6,6 +6,8 @@ using Google.Apis.Services;
 using Google.Apis.Upload;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PintheCloud.Converters;
+using PintheCloud.Helpers;
 using PintheCloud.Models;
 using PintheCloud.Resources;
 using PintheCloud.Utilities;

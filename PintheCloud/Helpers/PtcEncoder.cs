@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Utilities
+namespace PintheCloud.Helpers
 {
     /// <summary>
     /// For Encoding Korean & other Escape characters.
@@ -26,6 +26,8 @@ namespace PintheCloud.Utilities
             return EcodedName;
             */
         }
+
+
         /// <summary>
         /// Decodes the given string
         /// </summary>

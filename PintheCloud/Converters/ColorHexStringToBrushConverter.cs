@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace PintheCloud.Utilities
+namespace PintheCloud.Converters
 {
     public class ColorHexStringToBrushConverter : IValueConverter
     {

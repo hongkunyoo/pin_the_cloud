@@ -79,15 +79,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Pin the Cloud과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string ApplicationTitle {
-            get {
-                return ResourceManager.GetString("ApplicationTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   At Here과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string AtHere {
@@ -241,15 +232,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///    likes과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Likes {
-            get {
-                return ResourceManager.GetString("Likes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Loading...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Loading {
@@ -295,24 +277,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Main Cloud과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string MainCloudChangeCpation {
-            get {
-                return ResourceManager.GetString("MainCloudChangeCpation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///    is set to main cloud.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string MainCloudChangeMessage {
-            get {
-                return ResourceManager.GetString("MainCloudChangeMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///    MB과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MB {
@@ -340,11 +304,11 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   There is no files in this cloud.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   There is no files in this folder.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string NoFileInCloudMessage {
+        public static string NoFileInFolderMessage {
             get {
-                return ResourceManager.GetString("NoFileInCloudMessage", resourceCulture);
+                return ResourceManager.GetString("NoFileInFolderMessage", resourceCulture);
             }
         }
         
@@ -430,24 +394,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Path : 과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Path {
-            get {
-                return ResourceManager.GetString("Path", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   %과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Percentage {
-            get {
-                return ResourceManager.GetString("Percentage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Pick과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Pick {
@@ -480,15 +426,6 @@ namespace PintheCloud.Resources {
         public static string PrivatePolicy {
             get {
                 return ResourceManager.GetString("PrivatePolicy", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Profile과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Profile {
-            get {
-                return ResourceManager.GetString("Profile", resourceCulture);
             }
         }
         
@@ -529,7 +466,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   en-us과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   en-US과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string ResourceLanguage {
             get {
@@ -538,16 +475,16 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   /과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   It is set to main cloud.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string RootPath {
+        public static string SetMainCloudMessage {
             get {
-                return ResourceManager.GetString("RootPath", resourceCulture);
+                return ResourceManager.GetString("SetMainCloudMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   New nick name is successfully registered. New spot&apos;s will be the nick name.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   New nick name is successfully registered. New spot&apos;s name will be the nick name.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string SetSpotNickNameMessage {
             get {

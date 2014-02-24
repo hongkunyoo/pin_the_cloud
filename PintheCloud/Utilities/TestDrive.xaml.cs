@@ -132,7 +132,7 @@ namespace PintheCloud.Utilities
 
         private void button_Click2(object sender, System.Windows.RoutedEventArgs e)
         {
-            NavigationService.Navigate(new Uri(PtcPage.SETTINGS_PAGE, UriKind.Relative));
+            NavigationService.Navigate(new Uri(EventHelper.SETTINGS_PAGE, UriKind.Relative));
         }
 
         void photoChooserTask_Completed(object sender, PhotoResult e)
