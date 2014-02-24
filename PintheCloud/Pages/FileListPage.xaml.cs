@@ -22,6 +22,7 @@ using System.IO;
 using Microsoft.Live;
 using System.Net.NetworkInformation;
 using PintheCloud.Resources;
+using System.Diagnostics;
 
 namespace PintheCloud.Pages
 {
@@ -36,6 +37,7 @@ namespace PintheCloud.Pages
         private string AccountId = null;
         private string AccountName = null;
         private int PlatformIndex = 0;
+        private bool LaunchLock = false;
 
         private ApplicationBarIconButton DeleteAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarIconButton PickAppBarButton = new ApplicationBarIconButton();
@@ -45,6 +47,7 @@ namespace PintheCloud.Pages
         public FileListPage()
         {
             InitializeComponent();
+
 
             // Set delete app bar button and pick app bar button
             this.DeleteAppBarButton.Text = AppResources.Pin;
@@ -57,8 +60,10 @@ namespace PintheCloud.Pages
             this.PickAppBarButton.IsEnabled = false;
             this.PickAppBarButton.Click += PickAppBarButton_Click;
 
+
             // Set datacontext
             uiFileList.DataContext = this.FileObjectViewModel;
+
 
             // Set event by previous page
             Context con = EventManager.GetContext(EventManager.FILE_LIST_PAGE);
@@ -128,6 +133,7 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            this.LaunchLock = false;
         }
 
 
@@ -155,10 +161,12 @@ namespace PintheCloud.Pages
                 {
                     if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
                     {
-                        // TODO Launch files to other reader app.
-                        //StorageFile downloadFile = await App.LocalStorageManager.CreateFileToLocalBlobStorageAsync(fileObjectViewItem.Name);
-                        //await App.BlobStorageManager.DownloadFileAsync(fileObjectViewItem.Id, downloadFile);
-                        //await Launcher.LaunchFileAsync(downloadFile);
+                        // Launch files to other reader app.
+                        if (!this.LaunchLock)
+                        {
+                            this.LaunchLock = true;
+                            this.LaunchFileAsync(fileObjectViewItem);
+                        }
                     }
                 }
                 else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit mode
@@ -183,6 +191,39 @@ namespace PintheCloud.Pages
                     }
                 }
             }
+
+        }
+
+
+        private async void LaunchFileAsync(FileObjectViewItem fileObjectViewItem)
+        {
+            // Show Downloading message
+            base.SetProgressIndicator(true);
+            base.Dispatcher.BeginInvoke(() =>
+            {
+                fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
+            });
+
+            // Download file and Launch files to other reader app.
+            StorageFile downloadFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileObjectViewItem.Name, CreationCollisionOption.ReplaceExisting);
+            if (await App.BlobStorageManager.DownloadFileAsync(fileObjectViewItem.Id, downloadFile) != null)
+            {
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                });
+                await Launcher.LaunchFileAsync(downloadFile);
+            }
+            else
+            {
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOAD_FAIL_IMAGE_URI;
+                });  
+            }
+            
+            // Hide Progress Indicator
+            base.SetProgressIndicator(false);    
         }
 
 
@@ -390,14 +431,15 @@ namespace PintheCloud.Pages
             });
 
             // Upload
-            Stream stream = await App.IStorageManagers[this.PlatformIndex].DownloadFileStreamAsync(fileObjectViewItem.Id);
+            Stream stream = await App.IStorageManagers[this.PlatformIndex].DownloadFileStreamAsync((fileObjectViewItem.DownloadUrl == null ? fileObjectViewItem.Id : fileObjectViewItem.DownloadUrl));
             if (stream != null)
             {
-                string uploadPath = await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpotId, fileObjectViewItem.Name, stream);
-                if (uploadPath != null)
+                string blobId = await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpotId, fileObjectViewItem.Name, stream);
+                if (blobId != null)
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
+                        fileObjectViewItem.Id = blobId;
                         string currentEditViewMode = ((BitmapImage)uiFileListEditViewButtonImage.Source).UriSource.ToString();
                         if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
                             fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;

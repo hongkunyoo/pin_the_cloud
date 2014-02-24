@@ -28,6 +28,7 @@ namespace PintheCloud.Managers
         private const string CLIENT_ID = "109786198225-m8fihmv82b2fmf5k4d69u9039ebn68fn.apps.googleusercontent.com";
         private const string CLIENT_SECRET = "Tk8M01zlkBRlIsv-1fa9BKiS";
         private const string GOOGLE_DRIVE_USER_KEY = "GOOGLE_DRIVE_USER_KEY";
+        private const string GOOGLE_DRIVE_SIGN_IN_KEY = "GOOGLE_DRIVE_SIGN_IN_KEY";
 
         public static Dictionary<string, string> GoogleDocMapper;
         public static Dictionary<string, string> MimeTypeMapper;
@@ -71,7 +72,7 @@ namespace PintheCloud.Managers
         public async Task SignIn()
         {
             // Add application settings before work for good UX
-            App.ApplicationSettings[GOOGLE_DRIVE_USER_KEY] = null;
+            App.ApplicationSettings[GOOGLE_DRIVE_SIGN_IN_KEY] = true;
             App.ApplicationSettings.Save();
 
             try
@@ -125,14 +126,14 @@ namespace PintheCloud.Managers
         public void SignOut()
         {
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_USER_KEY);
-            App.ApplicationSettings.Save();
+            App.ApplicationSettings.Remove(GOOGLE_DRIVE_SIGN_IN_KEY);
             this.CurrentAccount = null;
         }
 
 
         public bool IsSignIn()
         {
-            return App.ApplicationSettings.Contains(GOOGLE_DRIVE_USER_KEY);
+            return App.ApplicationSettings.Contains(GOOGLE_DRIVE_SIGN_IN_KEY);
         }
 
 
@@ -204,6 +205,7 @@ namespace PintheCloud.Managers
 
         public async Task<Stream> DownloadFileStreamAsync(string fileId)
         {
+            Debug.WriteLine("in Google Downlaod : "+fileId);
             byte[] inarray = await service.HttpClient.GetByteArrayAsync(fileId);
             return new MemoryStream(inarray);
         }

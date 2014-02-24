@@ -22,6 +22,7 @@ namespace PintheCloud.Managers
         private const string APP_SECRET = "iskekcebjky6vbm";
         private const string APP_AUTH_URI = "http://54.214.19.198";
         private const string DROPBOX_USER_KEY = "DROPBOX_USER_KEY";
+        private const string DROPBOX_SIGN_IN_KEY = "DROPBOX_SIGN_IN_KEY";
 
         private DropNetClient _client = null;
         private Account CurrentAccount = null;
@@ -44,12 +45,13 @@ namespace PintheCloud.Managers
         public async Task SignIn()
         {
             // Add application settings before work for good UX
+            App.ApplicationSettings[DROPBOX_SIGN_IN_KEY] = true;
+            App.ApplicationSettings.Save();
+
+            // Get Dropbox user session
             UserLogin dropboxUser = null;
-            if (!App.ApplicationSettings.TryGetValue<UserLogin>(DROPBOX_USER_KEY, out dropboxUser))
-            {
-                App.ApplicationSettings[DROPBOX_USER_KEY] = null;
-                App.ApplicationSettings.Save();
-            }
+            if (App.ApplicationSettings.Contains(DROPBOX_USER_KEY))
+                dropboxUser = (UserLogin)App.ApplicationSettings[DROPBOX_USER_KEY];
 
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             _client = new DropNetClient(APP_KEY, APP_SECRET);
@@ -100,7 +102,7 @@ namespace PintheCloud.Managers
         {
             // Remove user record
             App.ApplicationSettings.Remove(DROPBOX_USER_KEY);
-            App.ApplicationSettings.Save();
+            App.ApplicationSettings.Remove(DROPBOX_SIGN_IN_KEY);
 
             // Set null account
             this._client = null;
@@ -110,7 +112,7 @@ namespace PintheCloud.Managers
 
         public bool IsSignIn()
         {
-            return App.ApplicationSettings.Contains(DROPBOX_USER_KEY);
+            return App.ApplicationSettings.Contains(DROPBOX_SIGN_IN_KEY);
         }
 
 

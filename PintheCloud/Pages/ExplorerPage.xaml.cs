@@ -127,13 +127,9 @@ namespace PintheCloud.Pages
             // If Internet available, Set spot list
             // Otherwise, show internet bad message
             if (NetworkInterface.GetIsNetworkAvailable())
-            {
                 this.SetNearSpotListAsync(AppResources.Loading);
-            }
             else
-            {
                 base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.InternetUnavailableMessage, uiNearSpotMessage);
-            }
         }
 
 
@@ -248,8 +244,9 @@ namespace PintheCloud.Pages
                     {
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
-                            IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
-                            this.SetPinInfoListAsync(null, AppResources.Refreshing, iStorageManager);
+                            this.SelectedFile.Clear();
+                            this.PinInfoAppBarButton.IsEnabled = false;
+                            this.SetPinInfoListAsync(this.FolderTree.First(), AppResources.Refreshing, App.IStorageManagers[this.CurrentPlatformIndex]);
                         }
                         else
                         {
@@ -452,8 +449,7 @@ namespace PintheCloud.Pages
                 {
                     e.Cancel = true;
                     quit = false;
-                    if (!this.FileObjectViewModel.IsDataLoading)
-                        this.TreeUp();
+                    this.TreeUp();
                 }
             }
 

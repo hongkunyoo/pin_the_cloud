@@ -196,8 +196,6 @@ namespace PintheCloud.Managers
                 }
                 count--;
             }
-            
-
         }
     }
 }

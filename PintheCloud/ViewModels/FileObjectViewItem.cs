@@ -15,6 +15,8 @@ namespace PintheCloud.ViewModels
         public string SizeUnit { get; set; }
         public string ThumnailType { get; set; }
 
+        public string DownloadUrl { get; set; }
+
         private string selectCheckImage;
         public string SelectCheckImage
         {
@@ -47,6 +49,7 @@ namespace PintheCloud.ViewModels
             this.SizeUnit = fileObjectViewItem.SizeUnit;
             this.ThumnailType = fileObjectViewItem.ThumnailType;
             this.SelectCheckImage = fileObjectViewItem.SelectCheckImage;
+            this.DownloadUrl = fileObjectViewItem.DownloadUrl;
         }
 
 

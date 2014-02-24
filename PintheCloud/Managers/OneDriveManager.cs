@@ -28,7 +28,7 @@ namespace PintheCloud.Managers
         #region Variables
         // Summary:
         //     Object to communicate with OneDrive.
-        private const string ONE_DRIVE_USER_KEY = "ONE_DRIVE_USER_KEY";
+        private const string ONE_DRIVE_SIGN_IN_KEY = "ONE_DRIVE_SIGN_IN_KEY";
         private string LIVE_CLIENT_ID = "0000000044110129";
 
         private LiveConnectClient LiveClient = null;
@@ -76,7 +76,7 @@ namespace PintheCloud.Managers
         public async Task SignIn()
         {
             // Add application settings before work for good UX
-            App.ApplicationSettings[ONE_DRIVE_USER_KEY] = true;
+            App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
             App.ApplicationSettings.Save();
 
             // If it haven't registerd live client, register
@@ -113,8 +113,7 @@ namespace PintheCloud.Managers
             liveAuthClient.Logout();
 
             // Remove user is signed in record
-            App.ApplicationSettings.Remove(ONE_DRIVE_USER_KEY);
-            App.ApplicationSettings.Save();
+            App.ApplicationSettings.Remove(ONE_DRIVE_SIGN_IN_KEY);
 
             // Set null account
             this.LiveClient = null;
@@ -124,7 +123,7 @@ namespace PintheCloud.Managers
 
         public bool IsSignIn()
         {
-            return App.ApplicationSettings.Contains(ONE_DRIVE_USER_KEY);
+            return App.ApplicationSettings.Contains(ONE_DRIVE_SIGN_IN_KEY);
         }
 
 
