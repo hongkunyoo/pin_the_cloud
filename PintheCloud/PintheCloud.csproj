@@ -408,7 +408,6 @@
     <Content Include="Assets\Toolkit.Content\ApplicationBar.Check.png" />
     <Content Include="Assets\Toolkit.Content\ApplicationBar.Delete.png" />
     <Content Include="Assets\Toolkit.Content\ApplicationBar.Select.png" />
-    <Content Include="Assets\user.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
