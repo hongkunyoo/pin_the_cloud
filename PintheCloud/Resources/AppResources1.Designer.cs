@@ -394,6 +394,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Main cloud platform account haven&apos;t signed in. Please sign in.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoSignedInMessage {
+            get {
+                return ResourceManager.GetString("NoSignedInMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   OneDrive과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string OneDrive {

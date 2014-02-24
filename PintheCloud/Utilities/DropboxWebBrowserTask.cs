@@ -58,9 +58,10 @@ namespace PintheCloud.Utilities
                 this.FireCompleted(this, new DropboxWebBrowserResult(), null);
             };
         }
+
+
         public Task<DropboxWebBrowserResult> ShowAsync()
         {
-            
             TaskCompletionSource<DropboxWebBrowserResult> tcs = new TaskCompletionSource<DropboxWebBrowserResult>();
             this.Completed += (sender, e) =>
             {

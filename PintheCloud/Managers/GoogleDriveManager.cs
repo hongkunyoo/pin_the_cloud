@@ -85,6 +85,7 @@ namespace PintheCloud.Managers
                       new[] { DriveService.Scope.Drive },
                       this._GetUserSession(),
                       CancellationToken.None);
+
                 this.service = new DriveService(new BaseClientService.Initializer()
                 {
                     HttpClientInitializer = credential,

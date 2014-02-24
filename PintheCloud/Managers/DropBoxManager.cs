@@ -27,6 +27,7 @@ namespace PintheCloud.Managers
         private Account CurrentAccount = null;
         #endregion
 
+
         private Task<Account> GetMyAccountAsync()
         {
             TaskCompletionSource<Account> tcs = new TaskCompletionSource<Account>();
@@ -39,17 +40,19 @@ namespace PintheCloud.Managers
             return tcs.Task;
         }
 
+
         public async Task SignIn()
         {
             // Add application settings before work for good UX
-            App.ApplicationSettings[DROPBOX_USER_KEY] = null;
-            App.ApplicationSettings.Save();
+            UserLogin dropboxUser = null;
+            if (!App.ApplicationSettings.TryGetValue<UserLogin>(DROPBOX_USER_KEY, out dropboxUser))
+            {
+                App.ApplicationSettings[DROPBOX_USER_KEY] = null;
+                App.ApplicationSettings.Save();
+            }
 
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             _client = new DropNetClient(APP_KEY, APP_SECRET);
-
-            UserLogin dropboxUser = null;
-            App.ApplicationSettings.TryGetValue<UserLogin>(DROPBOX_USER_KEY, out dropboxUser);
             if (dropboxUser == null)
             {
                 _client.GetTokenAsync(async (userLogin) =>
@@ -69,7 +72,7 @@ namespace PintheCloud.Managers
                         App.ApplicationSettings.Save();
 
                         tcs.SetResult(true);
-                        this.CurrentAccount = await GetMyAccountAsync();
+                        this.CurrentAccount = await this.GetMyAccountAsync();
                     },
                     (error) =>
                     {
@@ -86,7 +89,7 @@ namespace PintheCloud.Managers
             else
             {
                 _client.UserLogin = dropboxUser;
-                this.CurrentAccount = await GetMyAccountAsync();
+                this.CurrentAccount = await this.GetMyAccountAsync();
                 tcs.SetResult(true);
             }
             await tcs.Task;
