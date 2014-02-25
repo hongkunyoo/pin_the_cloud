@@ -27,12 +27,18 @@ namespace PintheCloud.Pages
         // Const Instances
         private const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
         private const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
+        private const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_delete.png";
+
+        private const string DELETING_SPOT_IMAGE_URI = "DELETING_SPOT_IMAGE_URI";
+        private const string DELET_FAIL_IMAGE_URI = "DELET_FAIL_IMAGE_URI";
 
         private const int APPLICATION_PIVOT_INDEX = 0;
         private const int MY_SPOT_PIVOT_INDEX = 1;
 
         // Instances
-        public SpotViewModel MySpotViewModel = new SpotViewModel();
+        private ApplicationBarIconButton DeleteAppBarButton = new ApplicationBarIconButton();
+        private SpotViewModel MySpotViewModel = new SpotViewModel();
+        private List<SpotViewItem> SelectedSpot = new List<SpotViewItem>();
         private Button[] SignButtons = null;
 
 
@@ -63,6 +69,16 @@ namespace PintheCloud.Pages
                 uiLocationAccessConsentCheckBox.IsChecked = true;
             else
                 uiLocationAccessConsentCheckBox.IsChecked = false;
+
+
+
+            /*** My Spot Pivot ***/
+
+            // Set delete app bar button
+            this.DeleteAppBarButton.Text = AppResources.Pin;
+            this.DeleteAppBarButton.IconUri = new Uri(DELETE_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
+            this.DeleteAppBarButton.IsEnabled = false;
+            this.DeleteAppBarButton.Click += DeleteAppBarButton_Click;
         }
 
 
@@ -354,11 +370,79 @@ namespace PintheCloud.Pages
 
         private void uiMySpotEditViewButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            // Change edit view mode
             string currentEditViewMode = ((BitmapImage)uiMySpotEditViewButtonImage.Source).UriSource.ToString();
-            if (currentEditViewMode.Equals(EDIT_IMAGE_URI))
-                uiMySpotEditViewButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_URI, UriKind.Relative));
-            else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))
+            if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // To View mode
+            {
+                // Change mode image and remove app bar buttons.
+                if (this.SelectedSpot.Count > 0)
+                {
+                    this.SelectedSpot.Clear();
+                    this.DeleteAppBarButton.IsEnabled = false;
+                }
+                ApplicationBar.Buttons.Remove(this.DeleteAppBarButton);
                 uiMySpotEditViewButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_URI, UriKind.Relative));
+
+                // Change select check image of each file object view item.
+                foreach (SpotViewItem spotViewItem in this.MySpotViewModel.Items)
+                {
+                    if (spotViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI)
+                        || spotViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
+                        spotViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                }
+            }
+
+            else if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // To Edit mode
+            {
+                // Change mode image and remove app bar buttons.
+                ApplicationBar.Buttons.Add(this.DeleteAppBarButton);
+                uiMySpotEditViewButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_URI, UriKind.Relative));
+
+                // Change select check image of each file object view item.
+                foreach (SpotViewItem spotViewItem in this.MySpotViewModel.Items)
+                {
+                    if (spotViewItem.SelectCheckImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
+                        spotViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                }
+            }
+        }
+
+
+        // Delete spots.
+        private void DeleteAppBarButton_Click(object sender, EventArgs e)
+        {
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                foreach (SpotViewItem spotViewItem in this.SelectedSpot)
+                    this.DeleteSpotAsync(spotViewItem);
+                this.SelectedSpot.Clear();
+                this.DeleteAppBarButton.IsEnabled = false;
+            }
+            else
+            {
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+            }
+        }
+
+
+        private void DeleteSpotAsync(SpotViewItem spotViewItem)
+        {
+            // Show Deleting message
+            base.SetProgressIndicator(true);
+            base.Dispatcher.BeginInvoke(() =>
+            {
+                spotViewItem.SelectCheckImage = DELETING_SPOT_IMAGE_URI;
+            });
+
+
+            // TODODelete
+
+
+            // Hide Progress Indicator
+            // If file list is empty, show empty message.
+            base.SetProgressIndicator(false);
+            if (this.MySpotViewModel.Items.Count - 1 < 1)
+                base.SetListUnableAndShowMessage(uiMySpotList, AppResources.NoFileInSpotMessage, uiMySpotMessage);
         }
     }
 }

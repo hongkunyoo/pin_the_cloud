@@ -98,9 +98,6 @@ namespace PintheCloud.Pages
             // Check if it is on the backstack from SplashPage and remove that.
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
-
-            //base.PIVOT = uiExplorerPivot.SelectedIndex;
-           
         }
 
         private void previous_SETTINGS_pivot_PIN()

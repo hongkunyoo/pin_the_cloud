@@ -219,7 +219,7 @@ namespace PintheCloud.Pages
 
         /*** Self Methods ***/
 
-        private async void uiFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void uiFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected File Obejct
             FileObjectViewItem fileObjectViewItem = uiFileList.SelectedItem as FileObjectViewItem;

@@ -17,6 +17,23 @@ namespace PintheCloud.ViewModels
         public double SpotDistance { get; set; }
         public string SpotId { get; set; }
 
+        private string selectCheckImage;
+        public string SelectCheckImage
+        {
+            get
+            {
+                return selectCheckImage;
+            }
+            set
+            {
+                if (selectCheckImage != value)
+                {
+                    selectCheckImage = value;
+                    NotifyPropertyChanged("SelectCheckImage");
+                }
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(String propertyName)
