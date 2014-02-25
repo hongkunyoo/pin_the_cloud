@@ -18,26 +18,26 @@ namespace PintheCloud.Managers
     public class LocalStorageManager
     {
         /// <summary>
-        /// Default SkyDrive directory.
-        /// Every SkyDrive file will be downloaded here.
+        /// Default OneDrive directory.
+        /// Every OneDrive file will be downloaded here.
         /// </summary>
-        public static string SKYDRIVE_DIRECTORY = "Shared/Transfers/";
+        public static string ONE_DRIVE_DIRECTORY = "Shared/Transfers/";
         /// <summary>
-        /// Default SkyDrive folder.
+        /// Default OneDrive folder.
         /// </summary>
-        public static string SKYDRIVE_FOLDER = "skydrive";
+        public static string ONE_DRIVE_FOLDER = "skydrive";
         /// <summary>
         /// Default Blob Storage folder.
         /// </summary>
-        public static string BLOBSTORAGE_FOLDER = "blobstorage";
+        public static string BLOB_STORAGE_FOLDER = "blobstorage";
         /// <summary>
         /// Constructor. Creating each local storages.
         /// </summary>
         /// <returns></returns>
         public async Task SetupAsync()
         {
-            await (await (await ApplicationData.Current.LocalFolder.GetFolderAsync("Shared")).GetFolderAsync("Transfers")).CreateFolderAsync(LocalStorageManager.SKYDRIVE_FOLDER, CreationCollisionOption.ReplaceExisting);
-            await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.BLOBSTORAGE_FOLDER, CreationCollisionOption.ReplaceExisting);
+            await (await (await ApplicationData.Current.LocalFolder.GetFolderAsync("Shared")).GetFolderAsync("Transfers")).CreateFolderAsync(LocalStorageManager.ONE_DRIVE_FOLDER, CreationCollisionOption.ReplaceExisting);
+            await ApplicationData.Current.LocalFolder.CreateFolderAsync(LocalStorageManager.BLOB_STORAGE_FOLDER, CreationCollisionOption.ReplaceExisting);
         }
         /// <summary>
         /// Get SkyDrive default local location.
@@ -45,7 +45,7 @@ namespace PintheCloud.Managers
         /// <returns>Default SkyDrive Folder</returns>
         public async Task<StorageFolder> GetSkyDriveStorageFolderAsync()
         {
-            return await (await (await ApplicationData.Current.LocalFolder.GetFolderAsync("Shared")).GetFolderAsync("Transfers")).GetFolderAsync(LocalStorageManager.SKYDRIVE_FOLDER);
+            return await (await (await ApplicationData.Current.LocalFolder.GetFolderAsync("Shared")).GetFolderAsync("Transfers")).GetFolderAsync(LocalStorageManager.ONE_DRIVE_FOLDER);
         }
         /// <summary>
         /// Get Blob Storage default local location.
@@ -53,7 +53,7 @@ namespace PintheCloud.Managers
         /// <returns>Default Blob Storage Folder</returns>
         public async Task<StorageFolder> GetBlobStorageFolderAsync()
         {
-            return await ApplicationData.Current.LocalFolder.GetFolderAsync(LocalStorageManager.BLOBSTORAGE_FOLDER);
+            return await ApplicationData.Current.LocalFolder.GetFolderAsync(LocalStorageManager.BLOB_STORAGE_FOLDER);
         }
         /// <summary>
         /// Creating SkyDriveStorage File
@@ -109,7 +109,7 @@ namespace PintheCloud.Managers
                 folder = await folder.CreateFolderAsync(s, CreationCollisionOption.OpenIfExists);
             }
 
-            return new Uri(PtcEncoder.Encode("/" + LocalStorageManager.SKYDRIVE_DIRECTORY + LocalStorageManager.SKYDRIVE_FOLDER + (ori_path.StartsWith("/") ? ori_path : "/" + ori_path)), UriKind.Relative);
+            return new Uri(PtcEncoder.Encode("/" + LocalStorageManager.ONE_DRIVE_DIRECTORY + LocalStorageManager.ONE_DRIVE_FOLDER + (ori_path.StartsWith("/") ? ori_path : "/" + ori_path)), UriKind.Relative);
         }
 
         /// <summary>

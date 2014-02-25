@@ -90,15 +90,15 @@ namespace PintheCloud.Pages
         }
 
 
-        // Get parameters from given space view item
-        public string GetParameterStringFromSpaceViewItem(SpaceViewItem spaceViewItem)
+        // Get parameters from given spot view item
+        public string GetParameterStringFromSpotViewItem(SpotViewItem spotViewItem)
         {
             // Go to File List Page with parameters.
-            string spaceId = spaceViewItem.SpaceId;
-            string spaceName = spaceViewItem.SpaceName;
-            string accountId = spaceViewItem.AccountId;
-            string accountName = spaceViewItem.AccountName;
-            string parameters = "?spaceId=" + spaceId + "&spaceName=" + spaceName + "&accountId=" + accountId + "&accountName=" + accountName;
+            string spotId = spotViewItem.SpotId;
+            string spotName = spotViewItem.SpotName;
+            string accountId = spotViewItem.AccountId;
+            string accountName = spotViewItem.AccountName;
+            string parameters = "?spotId=" + spotId + "&spotName=" + spotName + "&accountId=" + accountId + "&accountName=" + accountName;
             return parameters;
         }
 
@@ -112,9 +112,7 @@ namespace PintheCloud.Pages
                     return i;
                 }
             }
-            //return (int)Account.StorageAccountType.SKY_DRIVE;
-
-            throw new Exception("No such Storage Name");
+            throw new Exception("No Such Storage Name");
         }
     }
 }

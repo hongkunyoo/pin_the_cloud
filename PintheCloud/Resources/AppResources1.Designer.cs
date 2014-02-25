@@ -142,6 +142,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Deleting...과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Deleting {
+            get {
+                return ResourceManager.GetString("Deleting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Doing sign in...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string DoingSignIn {
@@ -385,6 +394,24 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Main cloud platform account haven&apos;t signed in. Please sign in.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoSignedInMessage {
+            get {
+                return ResourceManager.GetString("NoSignedInMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   OneDrive과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string OneDrive {
+            get {
+                return ResourceManager.GetString("OneDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Path : 과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Path {
@@ -538,15 +565,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   SkyDrive과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string SkyDrive {
-            get {
-                return ResourceManager.GetString("SkyDrive", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Spot Nick Name과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string SpotNickName {
@@ -570,15 +588,6 @@ namespace PintheCloud.Resources {
         public static string TermsOfService {
             get {
                 return ResourceManager.GetString("TermsOfService", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Uploading...과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Uploading {
-            get {
-                return ResourceManager.GetString("Uploading", resourceCulture);
             }
         }
     }

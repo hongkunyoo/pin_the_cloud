@@ -17,7 +17,7 @@ namespace PintheCloud.ViewModels
         public const string CHECK_IMAGE_URI = "/Assets/pajeon/png/general_checkbox_p.png";
         public const string TRANSPARENT_IMAGE_URI = "/Assets/pajeon/png/general_transparent.png";
 
-        public const string FOLDER = "FOLDER";
+        public const string FOLDER = "folder";
 
 
         public ObservableCollection<FileObjectViewItem> Items { get; set; }
@@ -44,7 +44,12 @@ namespace PintheCloud.ViewModels
                 FileObjectViewItem fileObjectViewItem = new FileObjectViewItem();
                 fileObjectViewItem.Id = fileObject.Id;
                 fileObjectViewItem.Name = fileObject.Name;
-                
+
+                // Set type
+                if (fileObject.Type == FileObject.FileObjectType.FOLDER)
+                    fileObjectViewItem.ThumnailType = FOLDER;
+                else
+                    fileObjectViewItem.ThumnailType = fileObject.Extension;
 
                 // Set Size and Size Unit
                 double size = fileObject.Size;
@@ -72,11 +77,6 @@ namespace PintheCloud.ViewModels
                     fileObjectViewItem.SizeUnit = AppResources.Bytes;
                 }
 
-                // Set type
-                if (fileObject.Type == FileObject.FileObjectType.FOLDER)
-                    fileObjectViewItem.ThumnailType = FOLDER;
-                else
-                    fileObjectViewItem.ThumnailType = fileObject.Extension;
 
                 // If select is on, set check image.
                 // Otherwise, set transparent image.

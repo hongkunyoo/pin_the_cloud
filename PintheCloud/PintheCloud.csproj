@@ -101,18 +101,18 @@
       <DependentUpon>UploadPickerPopup.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\AccountHelper.cs" />
-    <Compile Include="Managers\DropBoxManager.cs" />
+    <Compile Include="Managers\DropboxManager.cs" />
     <Compile Include="Managers\GoogleDriveManager.cs" />
     <Compile Include="Managers\IStorageManager.cs" />
     <Compile Include="Managers\BlobStorageManager.cs" />
     <Compile Include="Managers\LocalStorageManager.cs" />
-    <Compile Include="Managers\SkyDriveManager.cs" />
+    <Compile Include="Managers\OneDriveManager.cs" />
     <Compile Include="Managers\GeoCalculateManager.cs" />
     <Compile Include="Managers\GeoCalculateManagerImplement.cs" />
-    <Compile Include="Managers\SpaceManager.cs" />
-    <Compile Include="Managers\SpaceManagerImplement.cs" />
+    <Compile Include="Managers\SpotManager.cs" />
+    <Compile Include="Managers\SpotManagerImplement.cs" />
     <Compile Include="Models\FileObject.cs" />
-    <Compile Include="Models\Space.cs" />
+    <Compile Include="Models\Spot.cs" />
     <Compile Include="Pages\DropBoxSignInPopup.xaml.cs">
       <DependentUpon>DropBoxSignInPopup.xaml</DependentUpon>
     </Compile>
@@ -141,8 +141,7 @@
     <Compile Include="Utilities\UploadPickerTask.cs" />
     <Compile Include="ViewModels\FileObjectViewItem.cs" />
     <Compile Include="ViewModels\FileObjectViewModel.cs" />
-    <Compile Include="ViewModels\SpaceViewItem.cs" />
-    <Compile Include="Workers\SkyDriveAccountWorker.cs" />
+    <Compile Include="ViewModels\SpotViewItem.cs" />
     <Compile Include="Models\AccountType.cs" />
     <Compile Include="Pages\PtcPage.cs" />
     <Compile Include="Pages\ExplorerPage.xaml.cs">
@@ -155,8 +154,8 @@
       <DependentUpon>SplashPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\SpaceViewModel.cs" />
-    <Compile Include="Workers\SpaceWorker.cs" />
+    <Compile Include="ViewModels\SpotViewModel.cs" />
+    <Compile Include="Workers\SpotWorker.cs" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -188,8 +187,8 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\UploadPickerPopup.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Utilities\TestDrive.xaml">
       <SubType>Designer</SubType>
@@ -284,18 +283,6 @@
     <Content Include="Assets\pajeon\png\map_pin.png" />
     <Content Include="Assets\pajeon\png\map_point.png" />
     <Content Include="Assets\pajeon\png\splash_logo.png" />
-    <Content Include="Assets\pajeon\screenshot\explorer.png" />
-    <Content Include="Assets\pajeon\screenshot\filelist.png" />
-    <Content Include="Assets\pajeon\screenshot\filelist_me.png" />
-    <Content Include="Assets\pajeon\screenshot\filelist_me_edit.png" />
-    <Content Include="Assets\pajeon\screenshot\login.png" />
-    <Content Include="Assets\pajeon\screenshot\mapview.png" />
-    <Content Include="Assets\pajeon\screenshot\mySpace.png" />
-    <Content Include="Assets\pajeon\screenshot\mySpace_edit.png" />
-    <Content Include="Assets\pajeon\screenshot\splash.png" />
-    <Content Include="Assets\pajeon\screenshot\upload-list.png" />
-    <Content Include="Assets\pajeon\screenshot\upload-list_edit.png" />
-    <Content Include="Assets\pajeon\screenshot\upload.png" />
     <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -348,7 +335,6 @@
     <Reference Include="Microsoft.Data.OData.Portable">
       <HintPath>..\packages\Microsoft.Data.OData.5.6.0\lib\portable-net40+sl5+wp8+win8\Microsoft.Data.OData.Portable.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Expression.Drawing" />
     <Reference Include="Microsoft.Live, Version=5.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveSDK.5.5\lib\WindowsPhone8\Microsoft.Live.dll</HintPath>
     </Reference>
@@ -407,6 +393,9 @@
       <Project>{C73D4D29-41E9-4BB1-B70D-38E36187CF51}</Project>
       <Name>DropNet.WindowsPhone</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\pajeon\screenshot\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

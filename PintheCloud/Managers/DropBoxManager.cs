@@ -15,7 +15,7 @@ using Windows.Storage;
 
 namespace PintheCloud.Managers
 {
-    public class DropBoxManager : IStorageManager
+    public class DropboxManager : IStorageManager
     {
         #region Variables
         private const string APP_KEY = "gxjfureco8noyle";
@@ -23,14 +23,10 @@ namespace PintheCloud.Managers
         private const string APP_AUTH_URI = "http://54.214.19.198";
         private const string DROPBOX_USER_KEY = "DROPBOX_USER_KEY";
 
-        //private const string ACCOUNT_IS_SIGN_IN_KEY = "ACCOUNT_DROPBOX_SIGN_IN_KEY";
-        //private const string ACCOUNT_ID_KEY = "ACCOUNT_DROPBOX_ID_KEY";
-        //private const string ACCOUNT_USED_SIZE_KEY = "ACCOUNT_DROPBOX_USED_SIZE_KEY";
-        //private const string ACCOUNT_BUSINESS_TYPE_KEY = "ACCOUNT_DROPBOX_BUSINESS_TYPE_KEY";
-
         private DropNetClient _client = null;
         private Account CurrentAccount = null;
         #endregion
+
 
         private Task<Account> GetMyAccountAsync()
         {
@@ -44,17 +40,19 @@ namespace PintheCloud.Managers
             return tcs.Task;
         }
 
+
         public async Task SignIn()
         {
             // Add application settings before work for good UX
-            //App.ApplicationSettings[ACCOUNT_IS_SIGN_IN_KEY] = true;
-            //App.ApplicationSettings.Save();
+            UserLogin dropboxUser = null;
+            if (!App.ApplicationSettings.TryGetValue<UserLogin>(DROPBOX_USER_KEY, out dropboxUser))
+            {
+                App.ApplicationSettings[DROPBOX_USER_KEY] = null;
+                App.ApplicationSettings.Save();
+            }
 
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             _client = new DropNetClient(APP_KEY, APP_SECRET);
-
-            UserLogin dropboxUser = null;
-            App.ApplicationSettings.TryGetValue<UserLogin>(DROPBOX_USER_KEY, out dropboxUser);
             if (dropboxUser == null)
             {
                 _client.GetTokenAsync(async (userLogin) =>
@@ -73,11 +71,8 @@ namespace PintheCloud.Managers
                         App.ApplicationSettings[DROPBOX_USER_KEY] = user;
                         App.ApplicationSettings.Save();
 
-                        // TODO Make Account
-                        // TODO Insert Account
-                        // TODO Save Account to this.Account
                         tcs.SetResult(true);
-                        this.CurrentAccount = await GetMyAccountAsync();
+                        this.CurrentAccount = await this.GetMyAccountAsync();
                     },
                     (error) =>
                     {
@@ -94,10 +89,7 @@ namespace PintheCloud.Managers
             else
             {
                 _client.UserLogin = dropboxUser;
-                // TODO Make Account
-                // TODO Update Account
-                // TODO Save Account to this.Account
-                this.CurrentAccount = await GetMyAccountAsync();
+                this.CurrentAccount = await this.GetMyAccountAsync();
                 tcs.SetResult(true);
             }
             await tcs.Task;
@@ -108,40 +100,30 @@ namespace PintheCloud.Managers
         {
             // Remove user record
             App.ApplicationSettings.Remove(DROPBOX_USER_KEY);
-
-            // Remove user is signed in record
-            //App.ApplicationSettings.Remove(ACCOUNT_IS_SIGN_IN_KEY);
-            //App.ApplicationSettings.Remove(ACCOUNT_USED_SIZE_KEY);
-            //App.ApplicationSettings.Remove(ACCOUNT_BUSINESS_TYPE_KEY);
             App.ApplicationSettings.Save();
+
             // Set null account
             this._client = null;
             this.CurrentAccount = null;
         }
 
+
         public bool IsSignIn()
         {
             return App.ApplicationSettings.Contains(DROPBOX_USER_KEY);
         }
+
+
         public string GetStorageName()
         {
             return AppResources.Dropbox;
         }
+
+
         public Account GetAccount()
         {
             return this.CurrentAccount;
         }
-
-        //public string GetAccountIsSignInKey()
-        //{
-        //    return ACCOUNT_IS_SIGN_IN_KEY;
-        //}
-
-
-        //public string GetAccountIdKey()
-        //{
-        //    return ACCOUNT_ID_KEY;
-        //}
 
 
         public Task<FileObject> GetRootFolderAsync()

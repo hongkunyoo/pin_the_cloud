@@ -32,7 +32,7 @@ namespace PintheCloud.Pages
         private const int MY_SPOT_PIVOT_INDEX = 1;
 
         // Instances
-        public SpaceViewModel MySpotViewModel = new SpaceViewModel();
+        public SpotViewModel MySpotViewModel = new SpotViewModel();
         private Button[] SignButtons = null;
 
 
@@ -47,13 +47,11 @@ namespace PintheCloud.Pages
             uiSpotNickNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
 
 
-            // Set SkyDrive Sign button
-            this.SignButtons = new Button[] { uiSkyDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
+            // Set OneDrive Sign button
+            this.SignButtons = new Button[] { uiOneDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
             for(int i=0 ; i<App.IStorageManagers.Length ; i++)
             {
-                //bool isSignIn = false;
                 IStorageManager iStorageManager = App.IStorageManagers[i];
-                //App.ApplicationSettings.TryGetValue<bool>(iStorageManager.GetAccountIsSignInKey(), out isSignIn);
                 this.SetSignButton(i, iStorageManager.IsSignIn());
             }
 
@@ -94,7 +92,7 @@ namespace PintheCloud.Pages
                     ApplicationBar.IsVisible = true;
 
 
-                    // If Internet available, Set space list
+                    // If Internet available, Set spot list
                     if (NetworkInterface.GetIsNetworkAvailable())
                     {
                         if (!MySpotViewModel.IsDataLoaded)  // Mutex check
@@ -264,11 +262,11 @@ namespace PintheCloud.Pages
         }
 
 
-        private void uiSkyDriveSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void uiOneDriveSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.SKY_DRIVE;
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.ONE_DRIVE;
             App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.SkyDrive + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+            MessageBox.Show(AppResources.OneDrive + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
         }
 
 
@@ -294,26 +292,26 @@ namespace PintheCloud.Pages
         // List select event
         private void uiMySpotList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            // Get Selected Space View Item
-            SpaceViewItem spaceViewItem = uiMySpotList.SelectedItem as SpaceViewItem;
+            // Get Selected Spot View Item
+            SpotViewItem spotViewItem = uiMySpotList.SelectedItem as SpotViewItem;
 
             // Set selected item to null for next selection of list item. 
             uiMySpotList.SelectedItem = null;
 
             // If selected item isn't null, goto File list page.
-            if (spaceViewItem != null)
+            if (spotViewItem != null)
             {
-                string parameters = base.GetParameterStringFromSpaceViewItem(spaceViewItem);
+                string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
                 NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters + "&platform=" + 
                     ((int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY]), UriKind.Relative));
             }
         }
 
 
-        // Refresh space list.
-        private void uiAppBarRefreshMenuItem_Click(object sender, System.EventArgs e)
+        // Refresh spot list.
+        private void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
         {
-            // If Internet available, Set space list
+            // If Internet available, Set spot list
             if (NetworkInterface.GetIsNetworkAvailable())
                 this.SetMySpotPivotAsync(AppResources.Refreshing);
             else
@@ -330,21 +328,21 @@ namespace PintheCloud.Pages
             // Before go load, set mutex to true.
             MySpotViewModel.IsDataLoaded = true;
 
-            // If there is my spaces, Clear and Add spaces to list
+            // If there is my spots, Clear and Add spots to list
             // Otherwise, Show none message.
-            JArray spaces = await App.SpaceManager.GetMySpaceViewItemsAsync();
+            JArray spots = await App.SpotManager.GetMySpotViewItemsAsync();
 
-            if (spaces != null)  // There are my spaces
+            if (spots != null)  // There are my spots
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    this.MySpotViewModel.SetItems(spaces);
+                    this.MySpotViewModel.SetItems(spots);
                     uiMySpotList.DataContext = this.MySpotViewModel;
                     uiMySpotList.Visibility = Visibility.Visible;
                     uiMySpotMessage.Visibility = Visibility.Collapsed;
                 });
             }
-            else  // No my spaces
+            else  // No my spots
             {
                 base.SetListUnableAndShowMessage(uiMySpotList, AppResources.NoMySpotMessage, uiMySpotMessage);
             }

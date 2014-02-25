@@ -275,9 +275,6 @@
   <data name="PiningSpot" xml:space="preserve">
     <value>Pining Spot...</value>
   </data>
-  <data name="Uploading" xml:space="preserve">
-    <value>Uploading...</value>
-  </data>
   <data name="DoingSignOut" xml:space="preserve">
     <value>Doing Sign Out...</value>
   </data>
@@ -290,7 +287,13 @@
   <data name="GoogleDrive" xml:space="preserve">
     <value>GoogleDrive</value>
   </data>
-  <data name="SkyDrive" xml:space="preserve">
-    <value>SkyDrive</value>
+  <data name="OneDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Deleting" xml:space="preserve">
+    <value>Deleting...</value>
+  </data>
+  <data name="NoSignedInMessage" xml:space="preserve">
+    <value>Main cloud platform account haven't signed in. Please sign in.</value>
   </data>
 </root>

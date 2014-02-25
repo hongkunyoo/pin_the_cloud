@@ -16,24 +16,21 @@ using System.Windows;
 using PintheCloud.Pages;
 using PintheCloud.Resources;
 using System.Diagnostics;
+using PintheCloud.ViewModels;
 
 namespace PintheCloud.Managers
 {
     // Summary
     //      Implementation of IStorageManager.
-    //      It helps to access SkyDrive Storage.
-    public class SkyDriveManager : IStorageManager
+    //      It helps to access OneDrive Storage.
+    public class OneDriveManager : IStorageManager
     {
         #region Variables
         // Summary:
-        //     Object to communicate with SkyDrive.
-        private const string ACCOUNT_IS_SIGN_IN_KEY = "ACCOUNT_SKY_DRIVE_SIGN_IN_KEY";
-        //public const string ACCOUNT_ID_KEY = "ACCOUNT_SKY_DRIVE_ID_KEY";
-        //public const string ACCOUNT_USED_SIZE_KEY = "ACCOUNT_SKY_DRIVE_USED_SIZE_KEY";
-        //public const string ACCOUNT_BUSINESS_TYPE_KEY = "ACCOUNT_SKY_DRIVE_BUSINESS_TYPE_KEY";
-
+        //     Object to communicate with OneDrive.
+        private const string ONE_DRIVE_USER_KEY = "ONE_DRIVE_USER_KEY";
         private string LIVE_CLIENT_ID = "0000000044110129";
-        //private SkyDriveAccountWorker AccountWorker = new SkyDriveAccountWorker();
+
         private LiveConnectClient LiveClient = null;
         private Account CurrentAccount = null;
         #endregion
@@ -42,7 +39,7 @@ namespace PintheCloud.Managers
         private async Task<LiveConnectClient> GetLiveConnectClientAsync()
         {
             LiveAuthClient liveAuthClient = new LiveAuthClient(this.LIVE_CLIENT_ID);
-            string[] scopes = new[] { "wl.basic", "wl.offline_access", "wl.skydrive", "wl.skydrive_update", "wl.signin", "wl.contacts_skydrive" };
+            string[] scopes = new[] { "wl.basic", "wl.signin", "wl.offline_access", "wl.skydrive", "wl.skydrive_update", "wl.contacts_skydrive" };
             LiveLoginResult liveLoginResult = null;
 
             // Get Current live connection session
@@ -79,7 +76,7 @@ namespace PintheCloud.Managers
         public async Task SignIn()
         {
             // Add application settings before work for good UX
-            App.ApplicationSettings[ACCOUNT_IS_SIGN_IN_KEY] = true;
+            App.ApplicationSettings[ONE_DRIVE_USER_KEY] = true;
             App.ApplicationSettings.Save();
 
             // If it haven't registerd live client, register
@@ -103,7 +100,7 @@ namespace PintheCloud.Managers
             Account account = await AccountHelper.GetAccountAsync(accountId);
             if (account == null)
             {
-                await AccountHelper.CreateAccountAsync(accountId, accountUserName, Account.StorageAccountType.SKY_DRIVE);
+                await AccountHelper.CreateAccountAsync(accountId, accountUserName, Account.StorageAccountType.ONE_DRIVE);
             }
             this.CurrentAccount = account;
         }
@@ -116,55 +113,49 @@ namespace PintheCloud.Managers
             liveAuthClient.Logout();
 
             // Remove user is signed in record
-            App.ApplicationSettings.Remove(ACCOUNT_IS_SIGN_IN_KEY);
-            //App.ApplicationSettings.Remove(ACCOUNT_USED_SIZE_KEY);
-            //App.ApplicationSettings.Remove(ACCOUNT_BUSINESS_TYPE_KEY);
+            App.ApplicationSettings.Remove(ONE_DRIVE_USER_KEY);
             App.ApplicationSettings.Save();
+
             // Set null account
             this.LiveClient = null;
             this.CurrentAccount = null;
         }
 
+
         public bool IsSignIn()
         {
-            return App.ApplicationSettings.Contains(ACCOUNT_IS_SIGN_IN_KEY);
+            return App.ApplicationSettings.Contains(ONE_DRIVE_USER_KEY);
         }
+
 
         public string GetStorageName()
         {
-            return AppResources.SkyDrive;
+            return AppResources.OneDrive;
         }
+
+
         public Account GetAccount()
         {
             return this.CurrentAccount;
         }
 
 
-        //public string GetAccountIsSignInKey()
-        //{
-        //    return ACCOUNT_IS_SIGN_IN_KEY;
-        //}
-
-
-        //public string GetAccountIdKey()
-        //{
-        //    return ACCOUNT_ID_KEY;
-        //}
-
         // Summary:
-        //     Gets Root Folder of SkyDrive storage.
+        //     Gets Root Folder of OneDrive storage.
         //     It will be used to access the storage in the begining.
         //
         // Returns:
-        //     Root Folder of SkyDrive.
+        //     Root Folder of OneDrive.
         public async Task<FileObject> GetRootFolderAsync()
         {
             FileObject root = FileObjectConverter.ConvertToFileObject((await this.LiveClient.GetAsync("me/skydrive")).Result);
             root.Name = "";
             return root;
         }
+
+
         // Summary:
-        //     Gets files in Root Folder of SkyDrive storage.
+        //     Gets files in Root Folder of OneDrive storage.
         //
         // Returns:
         //     List of FileObject in root folder.
@@ -172,6 +163,8 @@ namespace PintheCloud.Managers
         {
             return _GetDataList((await this.LiveClient.GetAsync("me/skydrive/files")).Result);
         }
+
+
         // Summary:
         //     Gets the mete information of the file(such as id, name, size, etc.) by file id.
         //
@@ -185,6 +178,8 @@ namespace PintheCloud.Managers
         {
             return FileObjectConverter.ConvertToFileObject((await this.LiveClient.GetAsync(fileId)).Result);
         }
+
+
         // Summary:
         //     Gets list of meta information by folder id.
         //
@@ -198,6 +193,8 @@ namespace PintheCloud.Managers
         {
             return _GetDataList((await this.LiveClient.GetAsync(folderId + "/files")).Result);
         }
+
+
         // Summary:
         //     Download a file by file id.
         //
@@ -221,6 +218,8 @@ namespace PintheCloud.Managers
             }
             return result.Stream;
         }
+
+
         // Summary:
         //     Upload files by output stream.
         //
@@ -250,7 +249,6 @@ namespace PintheCloud.Managers
             {
                 ctsUpload.Cancel();
                 throw new ShareException(fileName, ShareException.ShareType.UPLOAD);
-                
             }
             return true;
         }
@@ -272,21 +270,24 @@ namespace PintheCloud.Managers
             List<FileObject> list = new List<FileObject>();
             foreach (IDictionary<string, object> content in data)
             {
-                list.Add(FileObjectConverter.ConvertToFileObject(content));
+                FileObject fileObject = FileObjectConverter.ConvertToFileObject(content);
+                if (fileObject != null)
+                    list.Add(fileObject);
             }
             return list;
         }
+
+
         // Summary:
         //      Gets the children of the FileObject recursively.
         //
         // Returns:
         //      Children list of given FileObject.
-        private async Task<List<FileObject>> _GetChildAsync(FileObject fo)
+        private async Task<List<FileObject>> _GetChildAsync(FileObject fileObject)
         {
-            if ("folder".Equals(fo.Type))
+            if (FileObjectViewModel.FOLDER.Equals(fileObject.Type))
             {
-                List<FileObject> list = await this.GetFilesFromFolderAsync(fo.Id);
-
+                List<FileObject> list = await this.GetFilesFromFolderAsync(fileObject.Id);
                 foreach (FileObject file in list)
                 {
                     file.FileList = await _GetChildAsync(file);
@@ -297,18 +298,19 @@ namespace PintheCloud.Managers
             {
                 return null;
             }
-
         }
+
+
         // Summary:
         //     Get the file meta information from the root to the node of the file tree.
         //
         // Returns:
-        //     Root FileObject of SkyDrive.
+        //     Root FileObject of OneDrive.
         private async Task<FileObject> Synchronize()
         {
-            FileObject fo = await GetRootFolderAsync();
-            fo.FileList = await _GetChildAsync(fo);
-            return fo;
+            FileObject fileObject = await GetRootFolderAsync();
+            fileObject.FileList = await _GetChildAsync(fileObject);
+            return fileObject;
         }
         #endregion
 

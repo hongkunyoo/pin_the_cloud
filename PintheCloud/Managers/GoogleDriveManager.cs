@@ -29,11 +29,6 @@ namespace PintheCloud.Managers
         private const string CLIENT_SECRET = "Tk8M01zlkBRlIsv-1fa9BKiS";
         private const string GOOGLE_DRIVE_USER_KEY = "GOOGLE_DRIVE_USER_KEY";
 
-        //private const string ACCOUNT_IS_SIGN_IN_KEY = "ACCOUNT_GOOGLE_DRIVE_SIGN_IN_KEY";
-        //private const string ACCOUNT_ID_KEY = "ACCOUNT_GOOGLE_DRIVE_ID_KEY";
-        //private const string ACCOUNT_USED_SIZE_KEY = "ACCOUNT_GOOGLE_DRIVE_USED_SIZE_KEY";
-        //private const string ACCOUNT_BUSINESS_TYPE_KEY = "ACCOUNT_GOOGLE_DRIVE_BUSINESS_TYPE_KEY";
-
         public static Dictionary<string, string> GoogleDocMapper;
         public static Dictionary<string, string> MimeTypeMapper;
         public static Dictionary<string, string> ExtensionMapper;
@@ -68,7 +63,7 @@ namespace PintheCloud.Managers
             GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.drawing", "png");
             GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.presentation", "ppt");
             //GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.formr", "");
-            
+
             Task setMimeTypeMapperTask = this.SetMimeTypeMapper();
         }
 
@@ -76,8 +71,8 @@ namespace PintheCloud.Managers
         public async Task SignIn()
         {
             // Add application settings before work for good UX
-            //App.ApplicationSettings[ACCOUNT_IS_SIGN_IN_KEY] = true;
-            //App.ApplicationSettings.Save();
+            App.ApplicationSettings[GOOGLE_DRIVE_USER_KEY] = null;
+            App.ApplicationSettings.Save();
 
             try
             {
@@ -90,6 +85,7 @@ namespace PintheCloud.Managers
                       new[] { DriveService.Scope.Drive },
                       this._GetUserSession(),
                       CancellationToken.None);
+
                 this.service = new DriveService(new BaseClientService.Initializer()
                 {
                     HttpClientInitializer = credential,
@@ -129,39 +125,27 @@ namespace PintheCloud.Managers
         public void SignOut()
         {
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_USER_KEY);
-            //App.ApplicationSettings.Remove(ACCOUNT_IS_SIGN_IN_KEY);
-            //App.ApplicationSettings.Remove(ACCOUNT_USED_SIZE_KEY);
-            //App.ApplicationSettings.Remove(ACCOUNT_BUSINESS_TYPE_KEY);
             App.ApplicationSettings.Save();
             this.CurrentAccount = null;
         }
+
 
         public bool IsSignIn()
         {
             return App.ApplicationSettings.Contains(GOOGLE_DRIVE_USER_KEY);
         }
 
+
         public string GetStorageName()
         {
             return AppResources.GoogleDrive;
         }
 
+
         public Account GetAccount()
         {
             return this.CurrentAccount;
         }
-
-
-        //public string GetAccountIsSignInKey()
-        //{
-        //    return ACCOUNT_IS_SIGN_IN_KEY;
-        //}
-
-
-        //public string GetAccountIdKey()
-        //{
-        //    return ACCOUNT_ID_KEY;
-        //}
 
 
         public async Task<FileObject> GetRootFolderAsync()
@@ -273,7 +257,7 @@ namespace PintheCloud.Managers
                     Enumerable.Repeat(chars, 8)
                               .Select(s => s[random.Next(s.Length)])
                               .ToArray());
-                App.ApplicationSettings.Add(GOOGLE_DRIVE_USER_KEY, result);
+                App.ApplicationSettings[GOOGLE_DRIVE_USER_KEY] = result;
                 App.ApplicationSettings.Save();
                 return result;
             }
