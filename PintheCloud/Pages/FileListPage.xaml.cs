@@ -54,7 +54,6 @@ namespace PintheCloud.Pages
         private FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
         private List<FileObjectViewItem> SelectedFile = new List<FileObjectViewItem>();
 
-
         public FileListPage()
         {
             InitializeComponent();
@@ -95,8 +94,9 @@ namespace PintheCloud.Pages
         }
         private void SETTINGS_and_EXPLORE_PICK()
         {
-            this.SpotId = NavigationContext.QueryString["spaceId"];
-            this.SpotName = NavigationContext.QueryString["spaceName"];
+            //this.NavigationContext
+            this.SpotId = NavigationContext.QueryString["spotId"];
+            this.SpotName = NavigationContext.QueryString["spotName"];
             this.AccountId = NavigationContext.QueryString["accountId"];
             this.AccountName = NavigationContext.QueryString["accountName"];
 

@@ -299,8 +299,7 @@ namespace PintheCloud.Pages
             {
                 string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
                 PhoneApplicationService.Current.State[PLATFORM_KEY] = this.MainPlatformIndex;
-                NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters + "&pivot=" +
-                    EventManager.PICK + "&platform=" + this.MainPlatformIndex, UriKind.Relative));
+                NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters, UriKind.Relative));
             }
         }
 
@@ -421,8 +420,7 @@ namespace PintheCloud.Pages
                     this.NearSpotViewModel.IsDataLoaded = false;
                     PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.SelectedFile;
                     PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
-                    NavigationService.Navigate(new Uri(FILE_LIST_PAGE + "?pivot=" + EventManager.PIN + 
-                        "&platform=" + this.CurrentPlatformIndex, UriKind.Relative));
+                    NavigationService.Navigate(new Uri(FILE_LIST_PAGE, UriKind.Relative));
                 }
                 else  // GPS is off
                 {
