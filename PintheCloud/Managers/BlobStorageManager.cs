@@ -10,6 +10,7 @@ using System.IO;
 using PintheCloud.Models;
 using PintheCloud.Utilities;
 using Windows.System;
+using System.Diagnostics;
 
 namespace PintheCloud.Managers
 {
@@ -101,8 +102,9 @@ namespace PintheCloud.Managers
                 }
                 return downloadFile;
             }
-            catch
+            catch(Exception ex)
             {
+                Debug.WriteLine(ex.ToString());
                 throw new ShareException(id, ShareException.ShareType.DOWNLOAD);
             }
         }

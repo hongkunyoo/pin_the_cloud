@@ -5,6 +5,7 @@ using PintheCloud.Models;
 using PintheCloud.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -144,7 +145,6 @@ namespace PintheCloud.Utilities
                 System.Diagnostics.Debug.WriteLine("ExtensionMapper Error");
                 System.Diagnostics.Debugger.Break();
             }
-            
             return new FileObject(Id,Name,Size,Type, Extension,UpdateAt,Thumbnail,DownloadUrl,MimeType);
         }
     }

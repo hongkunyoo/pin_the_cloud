@@ -119,6 +119,7 @@
     <Compile Include="Utilities\FileObjectConverter.cs" />
     <Compile Include="Utilities\DropboxWebBrowserResult.cs" />
     <Compile Include="Utilities\DropboxWebBrowserTask.cs" />
+    <Compile Include="Utilities\LockHelper.cs" />
     <Compile Include="Utilities\ShareException.cs" />
     <Compile Include="Utilities\StringToThumnailUriConverter.cs" />
     <Compile Include="Pages\FileListPage.xaml.cs">

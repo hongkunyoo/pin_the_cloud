@@ -21,5 +21,9 @@ namespace PintheCloud.Utilities
             this.FileId = fileId;
             this.Type = type;
         }
+        public override string ToString()
+        {
+            return this.FileId + " : " + this.Type.ToString();
+        }
     }
 }
