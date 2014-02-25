@@ -19,9 +19,10 @@ namespace PintheCloud.Managers
     public class DropboxManager : IStorageManager
     {
         #region Variables
-        private const string APP_KEY = "gxjfureco8noyle";
-        private const string APP_SECRET = "iskekcebjky6vbm";
-        private const string APP_AUTH_URI = "http://54.214.19.198";
+        private const string DROPBOX_CLIENT_KEY = "gxjfureco8noyle";
+        private const string DROPBOX_CLIENT_SECRET = "iskekcebjky6vbm";
+        public const string DROPBOX_AUTH_URI = "http://54.214.19.198";
+
         private const string DROPBOX_USER_KEY = "DROPBOX_USER_KEY";
         private const string DROPBOX_SIGN_IN_KEY = "DROPBOX_SIGN_IN_KEY";
 
@@ -55,12 +56,12 @@ namespace PintheCloud.Managers
                 dropboxUser = (UserLogin)App.ApplicationSettings[DROPBOX_USER_KEY];
 
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            _client = new DropNetClient(APP_KEY, APP_SECRET);
+            _client = new DropNetClient(DROPBOX_CLIENT_KEY, DROPBOX_CLIENT_SECRET);
             if (dropboxUser == null)
             {
                 _client.GetTokenAsync(async (userLogin) =>
                 {
-                    string authUri = _client.BuildAuthorizeUrl(APP_AUTH_URI);
+                    string authUri = _client.BuildAuthorizeUrl(DROPBOX_AUTH_URI);
                     DropboxWebBrowserTask webBrowser = new DropboxWebBrowserTask(authUri);
                     await webBrowser.ShowAsync();
 

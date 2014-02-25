@@ -100,9 +100,7 @@ namespace PintheCloud.Managers
             string accountUserName = (string)operationResult.Result["name"];
             Account account = await AccountHelper.GetAccountAsync(accountId);
             if (account == null)
-            {
                 await AccountHelper.CreateAccountAsync(accountId, accountUserName, Account.StorageAccountType.ONE_DRIVE);
-            }
             this.CurrentAccount = account;
         }
 

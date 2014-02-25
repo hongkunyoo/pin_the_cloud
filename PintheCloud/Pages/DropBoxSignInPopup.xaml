@@ -7,11 +7,10 @@
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
-    >
+    Foreground="{StaticResource PhoneForegroundBrush}" >
     
 	<Grid x:Name="LayoutRoot" Background="{StaticResource PhoneChromeBrush}">
-		<phone:WebBrowser x:Name="webBrowser" HorizontalAlignment="Left" VerticalAlignment="Top" Height="800" Width="480" Navigated="webBrowser_Navigated"/>
+		<phone:WebBrowser x:Name="uiWebBrowser" HorizontalAlignment="Left" VerticalAlignment="Top" Navigated="webBrowser_Navigated"/>
 
         
 	</Grid>

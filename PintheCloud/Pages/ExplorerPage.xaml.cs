@@ -31,6 +31,7 @@ namespace PintheCloud.Pages
         // Instances
         private int MainPlatformIndex = 0;
         private int CurrentPlatformIndex = 0;
+        private bool isSignIning = false;
 
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarMenuItem[] AppBarMenuItems = null;
@@ -260,15 +261,9 @@ namespace PintheCloud.Pages
                     if (uiPinInfoListGrid.Visibility == Visibility.Visible)
                     {
                         if (NetworkInterface.GetIsNetworkAvailable())
-                        {
-                            this.SelectedFile.Clear();
-                            this.PinInfoAppBarButton.IsEnabled = false;
                             this.SetPinInfoListAsync(this.FolderRootTree.First(), AppResources.Refreshing, App.IStorageManagers[this.CurrentPlatformIndex]);
-                        }
                         else
-                        {
                             base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
-                        }
                     }
                     break;
             }
@@ -368,14 +363,14 @@ namespace PintheCloud.Pages
                     else  // works bad
                     {
                         // Show GPS off message box.
-                        base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.BadGpsMessage, uiNearSpotMessage);
+                        base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.BadLocationServiceMessage, uiNearSpotMessage);
                         NearSpotViewModel.IsDataLoaded = false;  // Mutex
                     }
                 }
                 else  // GPS is off
                 {
                     // Show GPS off message box.
-                    base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.NoGpsOnMessage, uiNearSpotMessage);
+                    base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.NoLocationServiceMessage, uiNearSpotMessage);
                     NearSpotViewModel.IsDataLoaded = false;  // Mutex
                 }
             }
@@ -447,7 +442,7 @@ namespace PintheCloud.Pages
                 }
                 else  // GPS is off
                 {
-                    MessageBox.Show(AppResources.NoGpsOnMessage, AppResources.NoGpsOnCaption, MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.NoLocationServiceMessage, AppResources.NoLocationServiceCaption, MessageBoxButton.OK);
                 }
             }
             else  // First or not consented of access in location information.
@@ -460,7 +455,6 @@ namespace PintheCloud.Pages
         protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
             base.OnBackKeyPress(e);
-            bool quit = true;
 
             // Back file tree
             if (uiExplorerPivot.SelectedIndex == EventHelper.PIN)
@@ -468,15 +462,15 @@ namespace PintheCloud.Pages
                 if (this.FolderRootTree.Count > 1)
                 {
                     e.Cancel = true;
-                    quit = false;
                     this.TreeUp();
+                    return;
                 }
             }
 
             // Quit app
-            if (quit)
+            if (!this.isSignIning)
             {
-                MessageBoxResult result = MessageBox.Show(AppResources.QuitAppMessage, AppResources.QuitAppCaption, MessageBoxButton.OKCancel);
+                MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
                 if (result != MessageBoxResult.OK)
                     e.Cancel = true;
             }
@@ -507,8 +501,6 @@ namespace PintheCloud.Pages
                 // Otherwise, add it to list.
                 if (fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER))
                 {
-                    this.SelectedFile.Clear();
-                    this.PinInfoAppBarButton.IsEnabled = false;
                     this.SetPinInfoListAsync(fileObjectViewItem, AppResources.Loading, App.IStorageManagers[this.CurrentPlatformIndex]);
                 }
                 else  // Do selection if file
@@ -535,7 +527,7 @@ namespace PintheCloud.Pages
         private string GetCurrentPath()
         {
             FileObjectViewItem[] array = this.FolderRootTree.Reverse<FileObjectViewItem>().ToArray<FileObjectViewItem>();
-            string str = "";
+            string str = String.Empty;
             foreach (FileObjectViewItem f in array)
                 str += f.Name + "/";
             return str;
@@ -567,6 +559,7 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 // Show Loading message and save is login true for pivot moving action while sign in.
+                this.isSignIning = true;
                 base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.DoingSignIn, uiPinInfoMessage);
                 base.Dispatcher.BeginInvoke(() =>
                 {
@@ -578,6 +571,7 @@ namespace PintheCloud.Pages
                 IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
                 App.TaskManager.AddSignInTask(iStorageManager.SignIn(), this.CurrentPlatformIndex);
                 await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);
+                this.isSignIning = false;
 
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.
@@ -618,6 +612,10 @@ namespace PintheCloud.Pages
             // If it haven't signed out before working below code, do it.
             if (iStorageManager.GetAccount() != null)
             {
+                // Clear selected file and set pin button false.
+                this.SelectedFile.Clear();
+                this.PinInfoAppBarButton.IsEnabled = false;
+
                 // If folder null, set root.
                 if (folder == null)
                 {
@@ -625,16 +623,13 @@ namespace PintheCloud.Pages
                     {
                         uiPinInfoCurrentPath.Text = "";
                     });
-
                     this.FolderRootTree.Clear();
                     this.FoldersTree.Clear();
-                    this.SelectedFile.Clear();
-                    this.PinInfoAppBarButton.IsEnabled = false;
-
                     FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
                     folder = new FileObjectViewItem();
                     folder.Id = rootFolder.Id;
                 }
+
 
                 // Get files and push to stack tree.
                 List<FileObject> files = await iStorageManager.GetFilesFromFolderAsync(folder.Id);
@@ -652,6 +647,7 @@ namespace PintheCloud.Pages
                     uiPinInfoCurrentPath.Text = this.GetCurrentPath();
                     this.FileObjectViewModel.SetItems(files, true);
                 });
+
 
                 // If there exists file, show it.
                 // Otherwise, show no file message.

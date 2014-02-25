@@ -97,9 +97,6 @@
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Helpers\EventHelper.cs" />
     <Compile Include="Models\Account.cs" />
-    <Compile Include="Pages\UploadPickerPopup.xaml.cs">
-      <DependentUpon>UploadPickerPopup.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Helpers\AccountHelper.cs" />
     <Compile Include="Managers\DropboxManager.cs" />
     <Compile Include="Managers\GoogleDriveManager.cs" />
@@ -138,7 +135,6 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Converters\ColorHexStringToBrushConverter.cs" />
-    <Compile Include="Utilities\UploadPickerTask.cs" />
     <Compile Include="ViewModels\FileObjectViewItem.cs" />
     <Compile Include="ViewModels\FileObjectViewModel.cs" />
     <Compile Include="ViewModels\SpotViewItem.cs" />
@@ -184,10 +180,6 @@
     <Page Include="Pages\SplashPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\UploadPickerPopup.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Utilities\TestDrive.xaml">
       <SubType>Designer</SubType>

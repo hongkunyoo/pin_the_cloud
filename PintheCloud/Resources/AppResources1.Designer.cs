@@ -97,11 +97,11 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   GPS doesn&apos;t work. Please load it again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Location Service met error. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string BadGpsMessage {
+        public static string BadLocationServiceMessage {
             get {
-                return ResourceManager.GetString("BadGpsMessage", resourceCulture);
+                return ResourceManager.GetString("BadLocationServiceMessage", resourceCulture);
             }
         }
         
@@ -133,11 +133,29 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///    bytes과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Bytes과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Bytes {
             get {
                 return ResourceManager.GetString("Bytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Close과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string CloseAppCaption {
+            get {
+                return ResourceManager.GetString("CloseAppCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want to close At Here?과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string CloseAppMessage {
+            get {
+                return ResourceManager.GetString("CloseAppMessage", resourceCulture);
             }
         }
         
@@ -205,7 +223,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///    GB과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   GB과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string GB {
             get {
@@ -241,7 +259,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Sorry. Could not connect to At Here. Please check WIFI and try again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Could not connect to At Here. Please check WIFI and try again.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string InternetUnavailableMessage {
             get {
@@ -250,7 +268,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///    KB과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   KB과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string KB {
             get {
@@ -277,7 +295,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   This app accesses your phone&apos;s location. Is that ok?과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   At Here accesses your phone&apos;s location. Is that ok?과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string LocationAccessMessage {
             get {
@@ -304,7 +322,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///    MB과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   MB과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MB {
             get {
@@ -349,24 +367,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Gps Off과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string NoGpsOnCaption {
-            get {
-                return ResourceManager.GetString("NoGpsOnCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Location serivces are disabled. Please enable it at your system.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string NoGpsOnMessage {
-            get {
-                return ResourceManager.GetString("NoGpsOnMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Location Acess Consent과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoLocationAcessConsentCaption {
@@ -376,11 +376,29 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   This app requires consent to access location information. Please consent it in settings.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   At Here requires consent to access location. Please consent it in settings.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoLocationAcessConsentMessage {
             get {
                 return ResourceManager.GetString("NoLocationAcessConsentMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Location Service Off과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoLocationServiceCaption {
+            get {
+                return ResourceManager.GetString("NoLocationServiceCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Location serivces are disabled. Please enable it in your system.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoLocationServiceMessage {
+            get {
+                return ResourceManager.GetString("NoLocationServiceMessage", resourceCulture);
             }
         }
         
@@ -403,7 +421,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Main cloud platform account haven&apos;t signed in. Please sign in.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Main cloud haven&apos;t been signed in. Please sign in.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoSignedInMessage {
             get {
@@ -457,24 +475,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Quit과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string QuitAppCaption {
-            get {
-                return ResourceManager.GetString("QuitAppCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Do you want to quit At Here?과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string QuitAppMessage {
-            get {
-                return ResourceManager.GetString("QuitAppMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Refreshing...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Refreshing {
@@ -511,7 +511,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   New nick name is successfully registered. New spot&apos;s name will be the nick name.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Nick name is registered. New spot will be named by this.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string SetSpotNickNameMessage {
             get {
@@ -547,7 +547,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Do you want sign out? Your setting about this cloud will be intialized.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Do you want sign out? Your setting in this cloud will be intialized.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string SignOutMessage {
             get {

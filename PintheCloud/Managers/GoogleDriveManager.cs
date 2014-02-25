@@ -27,8 +27,9 @@ namespace PintheCloud.Managers
     public class GoogleDriveManager : IStorageManager
     {
         #region Variables
-        private const string CLIENT_ID = "109786198225-m8fihmv82b2fmf5k4d69u9039ebn68fn.apps.googleusercontent.com";
-        private const string CLIENT_SECRET = "Tk8M01zlkBRlIsv-1fa9BKiS";
+        private const string GOOGLE_DRIVE_CLIENT_ID = "109786198225-m8fihmv82b2fmf5k4d69u9039ebn68fn.apps.googleusercontent.com";
+        private const string GOOGLE_DRIVE_CLIENT_SECRET = "Tk8M01zlkBRlIsv-1fa9BKiS";
+
         private const string GOOGLE_DRIVE_USER_KEY = "GOOGLE_DRIVE_USER_KEY";
         private const string GOOGLE_DRIVE_SIGN_IN_KEY = "GOOGLE_DRIVE_SIGN_IN_KEY";
 
@@ -82,8 +83,8 @@ namespace PintheCloud.Managers
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                       new ClientSecrets
                       {
-                          ClientId = CLIENT_ID,
-                          ClientSecret = CLIENT_SECRET
+                          ClientId = GOOGLE_DRIVE_CLIENT_ID,
+                          ClientSecret = GOOGLE_DRIVE_CLIENT_SECRET
                       },
                       new[] { DriveService.Scope.Drive },
                       this._GetUserSession(),

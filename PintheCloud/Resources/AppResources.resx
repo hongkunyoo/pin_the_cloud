@@ -144,7 +144,7 @@
     <value>Interent unavailable</value>
   </data>
   <data name="InternetUnavailableMessage" xml:space="preserve">
-    <value>Sorry. Could not connect to At Here. Please check WIFI and try again.</value>
+    <value>Could not connect to At Here. Please check WIFI and try again.</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
@@ -156,10 +156,10 @@
     <value>Location Access</value>
   </data>
   <data name="LocationAccessMessage" xml:space="preserve">
-    <value>This app accesses your phone's location. Is that ok?</value>
+    <value>At Here accesses your phone's location. Is that ok?</value>
   </data>
   <data name="SignOutMessage" xml:space="preserve">
-    <value>Do you want sign out? Your setting about this cloud will be intialized.</value>
+    <value>Do you want sign out? Your setting in this cloud will be intialized.</value>
   </data>
   <data name="NoNearSpotMessage" xml:space="preserve">
     <value>There is no near spot. Make it yours.</value>
@@ -167,14 +167,14 @@
   <data name="Loading" xml:space="preserve">
     <value>Loading...</value>
   </data>
-  <data name="BadGpsMessage" xml:space="preserve">
-    <value>GPS doesn't work. Please load it again.</value>
+  <data name="BadLocationServiceMessage" xml:space="preserve">
+    <value>Location Service met error. Please try it again.</value>
   </data>
-  <data name="NoGpsOnMessage" xml:space="preserve">
-    <value>Location serivces are disabled. Please enable it at your system.</value>
+  <data name="NoLocationServiceMessage" xml:space="preserve">
+    <value>Location serivces are disabled. Please enable it in your system.</value>
   </data>
   <data name="NoLocationAcessConsentMessage" xml:space="preserve">
-    <value>This app requires consent to access location information. Please consent it in settings.</value>
+    <value>At Here requires consent to access location. Please consent it in settings.</value>
   </data>
   <data name="Refreshing" xml:space="preserve">
     <value>Refreshing...</value>
@@ -195,16 +195,16 @@
     <value>Pick</value>
   </data>
   <data name="GB" xml:space="preserve">
-    <value> GB</value>
+    <value>GB</value>
   </data>
   <data name="KB" xml:space="preserve">
-    <value> KB</value>
+    <value>KB</value>
   </data>
   <data name="MB" xml:space="preserve">
-    <value> MB</value>
+    <value>MB</value>
   </data>
   <data name="Bytes" xml:space="preserve">
-    <value> bytes</value>
+    <value>Bytes</value>
   </data>
   <data name="SignIn" xml:space="preserve">
     <value>Sign In</value>
@@ -227,8 +227,8 @@
   <data name="SpotNickNameMaxLength" xml:space="preserve">
     <value>(Max 15 length)</value>
   </data>
-  <data name="NoGpsOnCaption" xml:space="preserve">
-    <value>Gps Off</value>
+  <data name="NoLocationServiceCaption" xml:space="preserve">
+    <value>Location Service Off</value>
   </data>
   <data name="NoLocationAcessConsentCaption" xml:space="preserve">
     <value>Location Acess Consent</value>
@@ -237,7 +237,7 @@
     <value>Doing sign in...</value>
   </data>
   <data name="SetSpotNickNameMessage" xml:space="preserve">
-    <value>New nick name is successfully registered. New spot's name will be the nick name.</value>
+    <value>Nick name is registered. New spot will be named by this.</value>
   </data>
   <data name="Main" xml:space="preserve">
     <value>Main</value>
@@ -270,16 +270,16 @@
     <value>Deleting...</value>
   </data>
   <data name="NoSignedInMessage" xml:space="preserve">
-    <value>Main cloud platform account haven't signed in. Please sign in.</value>
+    <value>Main cloud haven't been signed in. Please sign in.</value>
   </data>
   <data name="BadDeleteSpotMessage" xml:space="preserve">
     <value>Delete spot process met error. Please try it again.</value>
   </data>
-  <data name="QuitAppCaption" xml:space="preserve">
-    <value>Quit</value>
+  <data name="CloseAppCaption" xml:space="preserve">
+    <value>Close</value>
   </data>
-  <data name="QuitAppMessage" xml:space="preserve">
-    <value>Do you want to quit At Here?</value>
+  <data name="CloseAppMessage" xml:space="preserve">
+    <value>Do you want to close At Here?</value>
   </data>
   <data name="GoogleDoc" xml:space="preserve">
     <value>Google Doc</value>

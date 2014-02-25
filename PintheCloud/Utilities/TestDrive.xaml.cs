@@ -27,20 +27,14 @@ namespace PintheCloud.Utilities
             InitializeComponent();
         }
 
-        protected  async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             //List<FileObject> list = (List<FileObject>)PhoneApplicationService.Current.State["SELECTED_FILE"];
             //await doit(list);
             //await downfromBlob();
-            await TestStorages();
+            //await TestStorages();
         }
 
-        public async Task TestStorages()
-        {
-            //Debug.WriteLine(Account.StorageAccountType.SKY_DRIVE.ToString());
-            UploadPickerTask t = new UploadPickerTask();
-            t.Show();
-        }
 
         private async Task<StorageFile> GetStreamGiveFile(Stream input, string fileName)
         {
