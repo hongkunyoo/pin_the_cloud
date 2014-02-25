@@ -63,7 +63,6 @@ namespace PintheCloud.Pages
                 this.AppBarMenuItems[i].Click += AppBarMenuItem_Click;
             }
 
-
             // Check main platform and set current platform index.
             this.MainPlatformIndex = (int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY];
             uiCurrentPlatformText.Text = App.IStorageManagers[this.MainPlatformIndex].GetStorageName();
@@ -122,6 +121,12 @@ namespace PintheCloud.Pages
                     else
                         base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
                 }
+                else  // If download some files from my spot, reload pin pivot.
+                {
+                    if (NetworkInterface.GetIsNetworkAvailable())
+                        if (!this.FileObjectViewModel.IsDataLoaded)
+                            this.SetPinInfoListAsync(null, AppResources.Loading, App.IStorageManagers[this.CurrentPlatformIndex]);
+                }
             }
         }
 
@@ -144,20 +149,25 @@ namespace PintheCloud.Pages
 
         private void previous_FILE_LIST_pivot_PIN()
         {
+            this.SelectedFile.Clear();
+            this.PinInfoAppBarButton.IsEnabled = false;
+
+            // If download some files from file list, reload files.
+            // Otherwise, just change select check image.
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                this.SelectedFile.Clear();
-                this.PinInfoAppBarButton.IsEnabled = false;
-                foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
+                if (!this.FileObjectViewModel.IsDataLoaded)
                 {
-                    if (!fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER)
-                        && fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                    this.SetPinInfoListAsync(null, AppResources.Loading, App.IStorageManagers[this.CurrentPlatformIndex]);
+                    return;
                 }
             }
-            else
+
+            foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
             {
-                base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
+                if (!fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER)
+                    && fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
             }
         }
 
@@ -171,8 +181,7 @@ namespace PintheCloud.Pages
         // Construct pivot item by page index
         private void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            // Set View model for dispaly,
-            // One time loading.
+            // Set View model for dispaly. One time loading.
             PhoneApplicationService.Current.State[PIVOT_KEY] = uiExplorerPivot.SelectedIndex;
             switch (uiExplorerPivot.SelectedIndex)
             {
@@ -270,6 +279,7 @@ namespace PintheCloud.Pages
         private void uiAppBarSettingsButton_Click(object sender, System.EventArgs e)
         {
             PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY] = this.NearSpotViewModel;
+            PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
             NavigationService.Navigate(new Uri(EventHelper.SETTINGS_PAGE, UriKind.Relative));
         }
 
@@ -280,7 +290,7 @@ namespace PintheCloud.Pages
             App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS_CONSENT_KEY, out locationAccess);
             if (!locationAccess)  // First or not consented of access in location information.
             {
-                MessageBoxResult result = MessageBox.Show(AppResources.LocationAccessMessage, AppResources.LocationAccess, MessageBoxButton.OKCancel);
+                MessageBoxResult result = MessageBox.Show(AppResources.LocationAccessMessage, AppResources.LocationAccessCaption, MessageBoxButton.OKCancel);
                 if (result == MessageBoxResult.OK)
                     App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = true;
                 else
@@ -308,8 +318,9 @@ namespace PintheCloud.Pages
             // Otherwise, Process Like or Not Like by current state
             if (spotViewItem != null)  // Go to FIle List Page
             {
+                PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
+                PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
                 string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
-                PhoneApplicationService.Current.State[PLATFORM_KEY] = this.MainPlatformIndex;
                 NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
             }
         }
@@ -346,7 +357,7 @@ namespace PintheCloud.Pages
                             {
                                 uiNearSpotList.Visibility = Visibility.Visible;
                                 uiNearSpotMessage.Visibility = Visibility.Collapsed;
-                                this.NearSpotViewModel.SetItems(spots);
+                                this.NearSpotViewModel.SetItems(spots, false);
                             });
                         }
                         else  // No near spots
@@ -429,6 +440,7 @@ namespace PintheCloud.Pages
                 if (App.GeoHelper.GetGeolocatorPositionStatus())  // GPS is on
                 {
                     PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY] = this.NearSpotViewModel;
+                    PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
                     PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.SelectedFile;
                     PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
                     NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE, UriKind.Relative));

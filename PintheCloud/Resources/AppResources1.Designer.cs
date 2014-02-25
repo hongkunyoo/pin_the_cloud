@@ -142,6 +142,33 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Delete과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DeleteCaption {
+            get {
+                return ResourceManager.GetString("DeleteCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want to delete the file?과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DeleteFileMessage {
+            get {
+                return ResourceManager.GetString("DeleteFileMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want to delete the spot?과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DeleteSpotMessage {
+            get {
+                return ResourceManager.GetString("DeleteSpotMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Deleting...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Deleting {
@@ -243,9 +270,9 @@ namespace PintheCloud.Resources {
         /// <summary>
         ///   Location Access과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string LocationAccess {
+        public static string LocationAccessCaption {
             get {
-                return ResourceManager.GetString("LocationAccess", resourceCulture);
+                return ResourceManager.GetString("LocationAccessCaption", resourceCulture);
             }
         }
         

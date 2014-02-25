@@ -39,6 +39,7 @@ namespace PintheCloud.Pages
         private string AccountName = null;
         private int PlatformIndex = 0;
         private bool LaunchLock = false;
+        private bool DeleteLock = false;
 
         private ApplicationBarIconButton DeleteAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarIconButton PickAppBarButton = new ApplicationBarIconButton();
@@ -69,20 +70,13 @@ namespace PintheCloud.Pages
 
             // Set event by previous page
             Context con = EventHelper.GetContext(EventHelper.FILE_LIST_PAGE);
-            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PICK, () => {
-                uiFileListEditViewButton.Visibility = Visibility.Collapsed;
+            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PICK, () =>
+            {
+                this.DeleteLock = true;
                 this.SETTINGS_and_EXPLORE_PICK();
             });
-            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PIN, () =>
-            {
-                uiFileListEditViewButton.Visibility = Visibility.Visible;
-                this.EXPLORER_PIN();
-            });
-            con.HandleEvent(EventHelper.SETTINGS_PAGE, () =>
-            {
-                uiFileListEditViewButton.Visibility = Visibility.Visible;
-                this.SETTINGS_and_EXPLORE_PICK();
-            });
+            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PIN, this.EXPLORER_PIN);
+            con.HandleEvent(EventHelper.SETTINGS_PAGE, this.SETTINGS_and_EXPLORE_PICK);
         }
 
 
@@ -246,16 +240,10 @@ namespace PintheCloud.Pages
                         this.SelectedFile.Clear();
                         this.PickAppBarButton.IsEnabled = false;
                         this.DeleteAppBarButton.IsEnabled = false;
-                    }
-                    else
-                    {
-                        MessageBox.Show(AppResources.NoSignedInMessage, App.IStorageManagers[this.PlatformIndex].GetStorageName(), MessageBoxButton.OK);    
+                        return;
                     }
                 }
-                else
-                {
-                    MessageBox.Show(AppResources.NoSignedInMessage, App.IStorageManagers[this.PlatformIndex].GetStorageName(), MessageBoxButton.OK);
-                }
+                MessageBox.Show(AppResources.NoSignedInMessage, App.IStorageManagers[this.PlatformIndex].GetStorageName(), MessageBoxButton.OK);
             }
             else
             {
@@ -283,6 +271,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
+                        ((FileObjectViewModel)PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                         string currentEditViewMode = ((BitmapImage)uiFileListEditViewButtonImage.Source).UriSource.ToString();
                         if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
                             fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
@@ -316,11 +305,15 @@ namespace PintheCloud.Pages
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                foreach (FileObjectViewItem fileObjectViewItem in this.SelectedFile)
-                    this.DeleteFileAsync(fileObjectViewItem);
-                this.SelectedFile.Clear();
-                this.PickAppBarButton.IsEnabled = false;
-                this.DeleteAppBarButton.IsEnabled = false;
+                MessageBoxResult result = MessageBox.Show(AppResources.DeleteFileMessage, AppResources.DeleteCaption, MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.OK)
+                {
+                    foreach (FileObjectViewItem fileObjectViewItem in this.SelectedFile)
+                        this.DeleteFileAsync(fileObjectViewItem);
+                    this.SelectedFile.Clear();
+                    this.PickAppBarButton.IsEnabled = false;
+                    this.DeleteAppBarButton.IsEnabled = false;
+                }
             }
             else
             {
@@ -508,7 +501,8 @@ namespace PintheCloud.Pages
                     this.DeleteAppBarButton.IsEnabled = false;
                 }
                 ApplicationBar.Buttons.Remove(this.PickAppBarButton);
-                ApplicationBar.Buttons.Remove(this.DeleteAppBarButton);
+                if (!DeleteLock)
+                    ApplicationBar.Buttons.Remove(this.DeleteAppBarButton);
                 uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_URI, UriKind.Relative));
                 
                 // Change select check image of each file object view item.
@@ -524,7 +518,8 @@ namespace PintheCloud.Pages
             {
                 // Change mode image and remove app bar buttons.
                 ApplicationBar.Buttons.Add(this.PickAppBarButton);
-                ApplicationBar.Buttons.Add(this.DeleteAppBarButton);
+                if (!DeleteLock)
+                    ApplicationBar.Buttons.Add(this.DeleteAppBarButton);
                 uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_URI, UriKind.Relative));
 
                 // Change select check image of each file object view item.

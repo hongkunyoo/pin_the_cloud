@@ -71,6 +71,9 @@ namespace PintheCloud.Pages
             this.DeleteAppBarButton.IconUri = new Uri(DELETE_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
             this.DeleteAppBarButton.IsEnabled = false;
             this.DeleteAppBarButton.Click += DeleteAppBarButton_Click;
+
+            // Set datacontext
+            uiMySpotList.DataContext = this.MySpotViewModel;
         }
 
 
@@ -365,10 +368,14 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    this.MySpotViewModel.SetItems(spots);
-                    uiMySpotList.DataContext = this.MySpotViewModel;
                     uiMySpotList.Visibility = Visibility.Visible;
                     uiMySpotMessage.Visibility = Visibility.Collapsed;
+
+                    string currentEditViewMode = ((BitmapImage)uiMySpotEditViewButtonImage.Source).UriSource.ToString();
+                    if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
+                        this.MySpotViewModel.SetItems(spots, false);
+                    else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit Mode
+                        this.MySpotViewModel.SetItems(spots, true);
                 });
             }
             else  // No my spots
@@ -426,10 +433,14 @@ namespace PintheCloud.Pages
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                foreach (SpotViewItem spotViewItem in this.SelectedSpot)
-                    this.DeleteSpotAsync(spotViewItem);
-                this.SelectedSpot.Clear();
-                this.DeleteAppBarButton.IsEnabled = false;
+                MessageBoxResult result = MessageBox.Show(AppResources.DeleteSpotMessage, AppResources.DeleteCaption, MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.OK)
+                {
+                    foreach (SpotViewItem spotViewItem in this.SelectedSpot)
+                        this.DeleteSpotAsync(spotViewItem);
+                    this.SelectedSpot.Clear();
+                    this.DeleteAppBarButton.IsEnabled = false;
+                }
             }
             else
             {

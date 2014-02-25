@@ -55,6 +55,7 @@ namespace PintheCloud.ViewModels
                 fileObjectViewItem.Id = fileObject.Id;
                 fileObjectViewItem.Name = fileObject.Name;
                 fileObjectViewItem.DownloadUrl = fileObject.DownloadUrl;
+
                 // Set type
                 if (fileObject.Type == FileObject.FileObjectType.FOLDER)
                     fileObjectViewItem.ThumnailType = FOLDER;

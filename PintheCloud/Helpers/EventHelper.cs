@@ -16,7 +16,7 @@ namespace PintheCloud.Managers
 
         public const int PICK = 0;
         public const int PIN = 1;
-        public const int BOTH_PIVOT = 2;
+        public const int NO_PIVOT = 2;
 
         private static Dictionary<string, Context> Map = new Dictionary<string, Context>();
 
@@ -36,9 +36,9 @@ namespace PintheCloud.Managers
             if (!Map.ContainsKey(current)) return;
             Dictionary<string, Dictionary<int, Context.TriggerEvent>> m = Map[current].GetContextMap();
             if (!m.ContainsKey(previous)) return;
-            if (m[previous].ContainsKey(BOTH_PIVOT))
+            if (m[previous].ContainsKey(NO_PIVOT))
             {
-                m[previous][BOTH_PIVOT]();
+                m[previous][NO_PIVOT]();
                 return;
             }
             if (!m[previous].ContainsKey(pivot)) return;
@@ -57,7 +57,6 @@ namespace PintheCloud.Managers
         {
             if (!contextMap.ContainsKey(previous))
                 contextMap[previous] = new Dictionary<int, TriggerEvent>();
-
             contextMap[previous][pivot] = _event;
         }
 
@@ -66,8 +65,7 @@ namespace PintheCloud.Managers
         {
             if (!contextMap.ContainsKey(previous))
                 contextMap[previous] = new Dictionary<int, TriggerEvent>();
-
-            contextMap[previous][EventHelper.BOTH_PIVOT] = _event;
+            contextMap[previous][EventHelper.NO_PIVOT] = _event;
         }
 
 

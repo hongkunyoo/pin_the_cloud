@@ -28,7 +28,9 @@ namespace PintheCloud.Pages
         protected const string PREV_PAGE_KEY = "PREV_PAGE";
         protected const string PIVOT_KEY = "PIVOT_KEY";
         protected const string PLATFORM_KEY = "PLATFORM_KEY";
+
         protected const string SPOT_VIEW_MODEL_KEY = "SPOT_VIEW_MODEL_KEY";
+        protected const string FILE_OBJECT_VIEW_MODEL_KEY = "FILE_OBJECT_VIEW_MODEL_KEY";
 
         protected const string SELECTED_FILE_KEY = "SELECTED_FILE_KEY";
 
@@ -36,9 +38,7 @@ namespace PintheCloud.Pages
         protected const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
         protected const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_delete.png";
 
-        protected string PREVIOUS_PAGE = null;
 
-        
         public PtcPage()
         {
         }
@@ -48,15 +48,18 @@ namespace PintheCloud.Pages
         {
             base.OnNavigatedFrom(e);
 
+            // Get previous page and set it.
+            string previousPage = null;
             if (PhoneApplicationService.Current.State.ContainsKey(PREV_PAGE_KEY))
-                this.PREVIOUS_PAGE = (string)PhoneApplicationService.Current.State[PREV_PAGE_KEY];
+                previousPage = (string)PhoneApplicationService.Current.State[PREV_PAGE_KEY];
             PhoneApplicationService.Current.State[PREV_PAGE_KEY] = this.NavigationService.CurrentSource.ToString().Split('?')[0];
-            
-            int pivot = 0;
-            if (PhoneApplicationService.Current.State.ContainsKey(PIVOT_KEY))
-                pivot = (int)PhoneApplicationService.Current.State[PIVOT_KEY];
 
-            EventHelper.FireEvent((string)PhoneApplicationService.Current.State[PREV_PAGE_KEY], this.PREVIOUS_PAGE, pivot);
+            // Get previous pivot.
+            int previousPivot = 0;
+            if (PhoneApplicationService.Current.State.ContainsKey(PIVOT_KEY))
+                previousPivot = (int)PhoneApplicationService.Current.State[PIVOT_KEY];
+
+            EventHelper.FireEvent((string)PhoneApplicationService.Current.State[PREV_PAGE_KEY], previousPage, previousPivot);
         }
 
 
@@ -106,12 +109,8 @@ namespace PintheCloud.Pages
         public int GetPlatformIndex(string platform)
         {
             for (int i = 0; i < App.IStorageManagers.Length; i++)
-            {
                 if (platform.Equals(App.IStorageManagers[i].GetStorageName()))
-                {
                     return i;
-                }
-            }
             throw new Exception("No Such Storage Name");
         }
     }
