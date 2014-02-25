@@ -29,11 +29,14 @@ namespace PintheCloud.Pages
         protected const string EXPLORER_PAGE = "/Pages/ExplorerPage.xaml";
         protected const string SETTINGS_PAGE = "/Pages/SettingsPage.xaml";
         protected const string FILE_LIST_PAGE = "/Pages/FileListPage.xaml";
-        protected const string PREV_PAGE = "PREV_PAGE";
+        protected const string PREV_PAGE_KEY = "PREV_PAGE";
+        protected const string PIVOT_KEY = "PIVOT_KEY";
+        protected const string PLATFORM_KEY = "PLATFORM_KEY";
 
         protected string PREVIOUS_PAGE = null;
 
-        protected int PIVOT = 0;
+        //protected int PIVOT = 0;
+        //protected int PLATFORM = 0;
         
         public PtcPage()
         {
@@ -44,12 +47,16 @@ namespace PintheCloud.Pages
         {
             base.OnNavigatedFrom(e);
 
-            if (PhoneApplicationService.Current.State.ContainsKey(PREV_PAGE))
-                this.PREVIOUS_PAGE = (string)PhoneApplicationService.Current.State[PREV_PAGE];
-            PhoneApplicationService.Current.State[PREV_PAGE] = this.NavigationService.CurrentSource.ToString().Split('?')[0];
-            string CURRENT_PAGE = (string)PhoneApplicationService.Current.State[PREV_PAGE];
+            if (PhoneApplicationService.Current.State.ContainsKey(PREV_PAGE_KEY))
+                this.PREVIOUS_PAGE = (string)PhoneApplicationService.Current.State[PREV_PAGE_KEY];
+            PhoneApplicationService.Current.State[PREV_PAGE_KEY] = this.NavigationService.CurrentSource.ToString().Split('?')[0];
+            string CURRENT_PAGE = (string)PhoneApplicationService.Current.State[PREV_PAGE_KEY];
 
-            EventManager.FireEvent(CURRENT_PAGE, this.PREVIOUS_PAGE, this.PIVOT);
+            int pivot = 0;
+            if (PhoneApplicationService.Current.State.ContainsKey(PIVOT_KEY))
+                pivot = (int)PhoneApplicationService.Current.State[PIVOT_KEY];
+
+            EventManager.FireEvent(CURRENT_PAGE, this.PREVIOUS_PAGE, pivot);
         }
 
 

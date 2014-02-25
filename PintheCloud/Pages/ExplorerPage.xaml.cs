@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using PintheCloud.Workers;
 using PintheCloud.ViewModels;
 using PintheCloud.Models;
-using Microsoft.WindowsAzure.MobileServices;
+//using Microsoft.WindowsAzure.MobileServices;
 using System.Collections.ObjectModel;
 using Windows.Devices.Geolocation;
 using PintheCloud.Resources;
@@ -30,8 +30,8 @@ namespace PintheCloud.Pages
         // Const Instances
         private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_upload.png";
         public const string SELECTED_FILE_KEY = "SELECTED_FILE_KEY";
-        public const int PICK_PIVOT_INDEX = 0;
-        public const int PIN_INFO_PIVOT_INDEX = 1;
+        //public const int PICK_PIVOT_INDEX = 0;
+        //public const int PIN_INFO_PIVOT_INDEX = 1;
         
 
         // Instances
@@ -97,12 +97,13 @@ namespace PintheCloud.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            PhoneApplicationService.Current.State[PIVOT_KEY] = uiExplorerPivot.SelectedIndex;
             base.OnNavigatedTo(e);
             // Check if it is on the backstack from SplashPage and remove that.
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
 
-            base.PIVOT = uiExplorerPivot.SelectedIndex;
+            //base.PIVOT = uiExplorerPivot.SelectedIndex;
            
         }
 
@@ -173,11 +174,11 @@ namespace PintheCloud.Pages
         {
             // Set View model for dispaly,
             // One time loading.
-            base.PIVOT = uiExplorerPivot.SelectedIndex;
+            PhoneApplicationService.Current.State[PIVOT_KEY] = uiExplorerPivot.SelectedIndex;
             
             switch (uiExplorerPivot.SelectedIndex)
             {
-                case PICK_PIVOT_INDEX:
+                case EventManager.PICK:
                     // Remove button and menuitems and Cloud Mode text
                     ApplicationBar.Buttons.Remove(this.PinInfoAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
@@ -199,7 +200,7 @@ namespace PintheCloud.Pages
                     break;
 
 
-                case PIN_INFO_PIVOT_INDEX:
+                case EventManager.PIN:
                     // Set button and menuitems and Cloud Mode text
                     ApplicationBar.Buttons.Add(this.PinInfoAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
@@ -240,14 +241,14 @@ namespace PintheCloud.Pages
         {
             switch (uiExplorerPivot.SelectedIndex)
             {
-                case PICK_PIVOT_INDEX:
+                case EventManager.PICK:
                     if (NetworkInterface.GetIsNetworkAvailable())
                         this.SetNearSpaceListAsync(AppResources.Refreshing);
                     else
                         base.SetListUnableAndShowMessage(uiNearSpaceList, AppResources.InternetUnavailableMessage, uiNearSpaceMessage);
                     break;
 
-                case PIN_INFO_PIVOT_INDEX:
+                case EventManager.PIN:
                     // Refresh only in was already signed in.
                     if (uiPinInfoListGrid.Visibility == Visibility.Visible)
                     {
@@ -308,8 +309,9 @@ namespace PintheCloud.Pages
             if (spaceViewItem != null)  // Go to FIle List Page
             {
                 string parameters = base.GetParameterStringFromSpaceViewItem(spaceViewItem);
-                NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters + "&pivot=" + 
-                    PICK_PIVOT_INDEX + "&platform=" + this.MainPlatformIndex, UriKind.Relative));
+                PhoneApplicationService.Current.State[PLATFORM_KEY] = this.MainPlatformIndex;
+                NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters + "&pivot=" +
+                    EventManager.PICK + "&platform=" + this.MainPlatformIndex, UriKind.Relative));
             }
         }
 
@@ -431,7 +433,8 @@ namespace PintheCloud.Pages
                 {
                     this.NearSpaceViewModel.IsDataLoaded = false;
                     PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.SelectedFile;
-                    NavigationService.Navigate(new Uri(FILE_LIST_PAGE + "?pivot=" + PIN_INFO_PIVOT_INDEX + 
+                    PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
+                    NavigationService.Navigate(new Uri(FILE_LIST_PAGE + "?pivot=" + EventManager.PIN + 
                         "&platform=" + this.CurrentPlatformIndex, UriKind.Relative));
                 }
                 else  // GPS is off
@@ -450,7 +453,7 @@ namespace PintheCloud.Pages
         {
             base.OnBackKeyPress(e);
 
-            if (uiExplorerPivot.SelectedIndex == PIN_INFO_PIVOT_INDEX)
+            if (uiExplorerPivot.SelectedIndex == EventManager.PIN)
             {
                 if (this.FolderTree.Count <= 1)
                 {

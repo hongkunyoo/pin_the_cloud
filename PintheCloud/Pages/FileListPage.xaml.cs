@@ -58,78 +58,141 @@ namespace PintheCloud.Pages
 
             // Set datacontext
             uiFileList.DataContext = this.FileObjectViewModel;
+
+            Context con = EventManager.GetContext(EventManager.FILE_LIST_PAGE);
+
+            con.HandleEvent(EventManager.EXPLORER_PAGE, EventManager.PICK, () => {
+                uiFileListEditViewButton.Visibility = Visibility.Collapsed;
+                SETTINGS_and_EXPLORE_PICK();
+            });
+
+            con.HandleEvent(EventManager.EXPLORER_PAGE, EventManager.PIN, () =>
+            {
+                uiFileListEditViewButton.Visibility = Visibility.Visible;
+                EXPLORER_PIN();
+            });
+
+            con.HandleEvent(EventManager.SETTINGS_PAGE, () =>
+            {
+                uiFileListEditViewButton.Visibility = Visibility.Visible;
+            });
+
+            con.HandleEvent(EventManager.SETTINGS_PAGE, SETTINGS_and_EXPLORE_PICK);
+        }
+        private void SETTINGS_and_EXPLORE_PICK()
+        {
+            this.SpaceId = NavigationContext.QueryString["spaceId"];
+            this.SpaceName = NavigationContext.QueryString["spaceName"];
+            this.AccountId = NavigationContext.QueryString["accountId"];
+            this.AccountName = NavigationContext.QueryString["accountName"];
+
+
+            // Set Binding Instances to UI
+            uiSpaceName.Text = this.SpaceName;
+            uiAccountName.Text = this.AccountName;
+            uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.LIGHT);
+
+
+            // If internet is on, refresh
+            // Otherwise, show internet unavailable message.
+            if (NetworkInterface.GetIsNetworkAvailable())
+                this.Refresh(AppResources.Loading);
+            else
+                base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
         }
 
+        private void EXPLORER_PIN()
+        {
+            this.PlatformIndex = (int)PhoneApplicationService.Current.State[PLATFORM_KEY];
+            IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
+            Account account = iStorageManager.GetAccount();
+            this.SpaceName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
+            this.AccountId = account.account_platform_id;
+            this.AccountName = account.account_name;
 
+
+            // Set Binding Instances to UI
+            uiSpaceName.Text = this.SpaceName;
+            uiAccountName.Text = this.AccountName;
+            uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.BOLD);
+
+
+            // If internet is on, upload file given from previous page.
+            // Otherwise, show internet unavailable message.
+            if (NetworkInterface.GetIsNetworkAvailable())
+                this.InitialPinSpotAndUploadFileAsync();
+            else
+                base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
+        }
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
             // Get platform and pivot from previous page.
             // Set edit view button by pivot and previous page.
-            this.PlatformIndex = Convert.ToInt32(NavigationContext.QueryString["platform"]);
-            int pivot = ExplorerPage.PICK_PIVOT_INDEX;
-            if (PREVIOUS_PAGE.Equals(EXPLORER_PAGE))
-            {
-                pivot = Convert.ToInt32(NavigationContext.QueryString["pivot"]);
-                if (pivot == ExplorerPage.PICK_PIVOT_INDEX)  // Pick state
-                    uiFileListEditViewButton.Visibility = Visibility.Collapsed;
-                else  // Pin state
-                    uiFileListEditViewButton.Visibility = Visibility.Visible;
-            }
-            else if (PREVIOUS_PAGE.Equals(SETTINGS_PAGE))
-            {
-                uiFileListEditViewButton.Visibility = Visibility.Visible;
-            }
+            //this.PlatformIndex = Convert.ToInt32(NavigationContext.QueryString["platform"]);
+            //int pivot = ExplorerPage.PICK_PIVOT_INDEX;
+            //if (PREVIOUS_PAGE.Equals(EXPLORER_PAGE))
+            //{
+            //    pivot = Convert.ToInt32(NavigationContext.QueryString["pivot"]);
+            //    if (pivot == ExplorerPage.PICK_PIVOT_INDEX)  // Pick state
+                    
+            //    else  // Pin state
+                    
+            //}
+            //else if (PREVIOUS_PAGE.Equals(SETTINGS_PAGE))
+            //{
+            //    uiFileListEditViewButton.Visibility = Visibility.Visible;
+            //}
 
-
+            // if Setting & Explorer
             // Set diffetent by pivot state
-            if (pivot == ExplorerPage.PICK_PIVOT_INDEX)  // Pick state
-            {
-                // Get parameters
-                this.SpaceId = NavigationContext.QueryString["spaceId"];
-                this.SpaceName = NavigationContext.QueryString["spaceName"];
-                this.AccountId = NavigationContext.QueryString["accountId"];
-                this.AccountName = NavigationContext.QueryString["accountName"];
+            //if (pivot == ExplorerPage.PICK_PIVOT_INDEX)  // Pick state
+            //{
+            //    // Get parameters
+            //    this.SpaceId = NavigationContext.QueryString["spaceId"];
+            //    this.SpaceName = NavigationContext.QueryString["spaceName"];
+            //    this.AccountId = NavigationContext.QueryString["accountId"];
+            //    this.AccountName = NavigationContext.QueryString["accountName"];
 
 
-                // Set Binding Instances to UI
-                uiSpaceName.Text = this.SpaceName;
-                uiAccountName.Text = this.AccountName;
-                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.LIGHT);
+            //    // Set Binding Instances to UI
+            //    uiSpaceName.Text = this.SpaceName;
+            //    uiAccountName.Text = this.AccountName;
+            //    uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.LIGHT);
 
 
-                // If internet is on, refresh
-                // Otherwise, show internet unavailable message.
-                if (NetworkInterface.GetIsNetworkAvailable())
-                    this.Refresh(AppResources.Loading);
-                else
-                    base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
-            }
+            //    // If internet is on, refresh
+            //    // Otherwise, show internet unavailable message.
+            //    if (NetworkInterface.GetIsNetworkAvailable())
+            //        this.Refresh(AppResources.Loading);
+            //    else
+            //        base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
+            //}
 
-            else  // Pin state
-            {
-                // Get parameters
-                IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
-                Account account = iStorageManager.GetAccount();
-                this.SpaceName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
-                this.AccountId = account.account_platform_id;
-                this.AccountName = account.account_name;
-
-
-                // Set Binding Instances to UI
-                uiSpaceName.Text = this.SpaceName;
-                uiAccountName.Text = this.AccountName;
-                uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.BOLD);
+            //else  // Pin state
+            //{
+            //    // Get parameters
+            //    IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
+            //    Account account = iStorageManager.GetAccount();
+            //    this.SpaceName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
+            //    this.AccountId = account.account_platform_id;
+            //    this.AccountName = account.account_name;
 
 
-                // If internet is on, upload file given from previous page.
-                // Otherwise, show internet unavailable message.
-                if (NetworkInterface.GetIsNetworkAvailable())
-                    this.InitialPinSpotAndUploadFileAsync();
-                else
-                    base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
-            }
+            //    // Set Binding Instances to UI
+            //    uiSpaceName.Text = this.SpaceName;
+            //    uiAccountName.Text = this.AccountName;
+            //    uiAccountName.FontWeight = StringToFontWeightConverter.GetFontWeightFromString(StringToFontWeightConverter.BOLD);
+
+
+            //    // If internet is on, upload file given from previous page.
+            //    // Otherwise, show internet unavailable message.
+            //    if (NetworkInterface.GetIsNetworkAvailable())
+            //        this.InitialPinSpotAndUploadFileAsync();
+            //    else
+            //        base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
+            //}
         }
 
 
