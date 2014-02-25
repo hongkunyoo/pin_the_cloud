@@ -183,12 +183,9 @@ namespace PintheCloud.Pages
             MessageBoxResult result = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
-                // Get index
                 Button signoutButton = (Button)sender;
                 int platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
-
-                IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
-                App.TaskManager.AddSignOutTask(this.SignOut(platformIndex, iStorageManager), platformIndex);
+                App.TaskManager.AddSignOutTask(this.SignOut(platformIndex, App.IStorageManagers[platformIndex]), platformIndex);
             }
         }
 

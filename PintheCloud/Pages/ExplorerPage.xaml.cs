@@ -398,7 +398,7 @@ namespace PintheCloud.Pages
 
 
             // If it is not in current cloud mode, change it.
-            if (this.CurrentPlatformIndex != platformIndex && !this.FileObjectViewModel.IsDataLoading)
+            if (this.CurrentPlatformIndex != platformIndex && !this.FileObjectViewModel.IsDataLoading && !this.isSignIning)
             {
                 IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
                 uiCurrentPlatformText.Text = iStorageManager.GetStorageName();
@@ -468,7 +468,7 @@ namespace PintheCloud.Pages
             }
 
             // Quit app
-            if (!this.isSignIning)
+            if (!isSignIning)
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
                 if (result != MessageBoxResult.OK)
@@ -559,7 +559,6 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 // Show Loading message and save is login true for pivot moving action while sign in.
-                this.isSignIning = true;
                 base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.DoingSignIn, uiPinInfoMessage);
                 base.Dispatcher.BeginInvoke(() =>
                 {
@@ -568,6 +567,7 @@ namespace PintheCloud.Pages
                 });
 
                 // Sign in and await that task.
+                this.isSignIning = true;
                 IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
                 App.TaskManager.AddSignInTask(iStorageManager.SignIn(), this.CurrentPlatformIndex);
                 await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);

@@ -76,32 +76,30 @@ namespace PintheCloud.Managers
 
         public async Task SignIn()
         {
-            // Add application settings before work for good UX
-            App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
-            App.ApplicationSettings.Save();
-
             // If it haven't registerd live client, register
             if (this.LiveClient == null)
             {
-                // If it success to register live connect session,
                 LiveConnectClient liveClient = await this.GetLiveConnectClientAsync();
-                if (liveClient != null)
-                {
-                    this.LiveClient = liveClient;
-                }
-                else
-                {
-                    this.SignOut();
+                if (liveClient == null)
                     return;
-                }
+                else
+                    this.LiveClient = liveClient;
             }
+
+            // Get id and name.
             LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
             string accountId = (string)operationResult.Result["id"];
             string accountUserName = (string)operationResult.Result["name"];
+
+            // Register account
             Account account = await AccountHelper.GetAccountAsync(accountId);
             if (account == null)
                 await AccountHelper.CreateAccountAsync(accountId, accountUserName, Account.StorageAccountType.ONE_DRIVE);
             this.CurrentAccount = account;
+
+            // Save sign in setting.
+            App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
+            App.ApplicationSettings.Save();
         }
 
 

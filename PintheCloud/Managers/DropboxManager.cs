@@ -39,25 +39,28 @@ namespace PintheCloud.Managers
             }, (fail) => {
                 tcs.SetException(new Exception("Account Info Get Failed"));
             });
-
             return tcs.Task;
         }
 
 
         public async Task SignIn()
         {
-            // Add application settings before work for good UX
-            App.ApplicationSettings[DROPBOX_SIGN_IN_KEY] = true;
-            App.ApplicationSettings.Save();
+            // Get dropbox _client.
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            _client = new DropNetClient(DROPBOX_CLIENT_KEY, DROPBOX_CLIENT_SECRET);
 
-            // Get Dropbox user session
+            // If dropbox user exists, get it.
+            // Otherwise, get from user.
             UserLogin dropboxUser = null;
             if (App.ApplicationSettings.Contains(DROPBOX_USER_KEY))
                 dropboxUser = (UserLogin)App.ApplicationSettings[DROPBOX_USER_KEY];
-
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            _client = new DropNetClient(DROPBOX_CLIENT_KEY, DROPBOX_CLIENT_SECRET);
-            if (dropboxUser == null)
+            if (dropboxUser != null)
+            {
+                _client.UserLogin = dropboxUser;
+                this.CurrentAccount = await this.GetMyAccountAsync();
+                tcs.SetResult(true);
+            }
+            else
             {
                 _client.GetTokenAsync(async (userLogin) =>
                 {
@@ -72,29 +75,21 @@ namespace PintheCloud.Managers
                         user.Secret = accessToken.Secret;
                         _client.UserLogin = user;
 
+                        // Save dropbox user got and sign in setting.
+                        this.CurrentAccount = await this.GetMyAccountAsync();
+                        App.ApplicationSettings[DROPBOX_SIGN_IN_KEY] = true;
                         App.ApplicationSettings[DROPBOX_USER_KEY] = user;
                         App.ApplicationSettings.Save();
-
-                        tcs.SetResult(true);
-                        this.CurrentAccount = await this.GetMyAccountAsync();
                     },
                     (error) =>
                     {
-                        this.SignOut();
                         tcs.SetResult(false);
                     });
                 },
-                (error) =>
-                {
-                    this.SignOut();
-                    tcs.SetResult(false);
-                });
-            }
-            else
-            {
-                _client.UserLogin = dropboxUser;
-                this.CurrentAccount = await this.GetMyAccountAsync();
-                tcs.SetResult(true);
+               (error) =>
+               {
+                   tcs.SetResult(false);
+               });
             }
             await tcs.Task;
         }

@@ -74,21 +74,18 @@ namespace PintheCloud.Managers
 
         public async Task SignIn()
         {
-            // Add application settings before work for good UX
-            App.ApplicationSettings[GOOGLE_DRIVE_SIGN_IN_KEY] = true;
-            App.ApplicationSettings.Save();
-
             try
             {
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                      new ClientSecrets
-                      {
-                          ClientId = GOOGLE_DRIVE_CLIENT_ID,
-                          ClientSecret = GOOGLE_DRIVE_CLIENT_SECRET
-                      },
-                      new[] { DriveService.Scope.Drive },
-                      this._GetUserSession(),
-                      CancellationToken.None);
+                    new ClientSecrets
+                    {
+                        ClientId = GOOGLE_DRIVE_CLIENT_ID,
+                        ClientSecret = GOOGLE_DRIVE_CLIENT_SECRET
+                    },
+                    new[] { DriveService.Scope.Drive },
+                    this._GetUserSession(),
+                    CancellationToken.None
+                );
 
                 this.service = new DriveService(new BaseClientService.Initializer()
                 {
@@ -103,6 +100,7 @@ namespace PintheCloud.Managers
                 string name = this.user.DisplayName;
                 string id = about.PermissionId;
 
+                // Register account
                 Account account = await AccountHelper.GetAccountAsync(id);
                 if (account == null)
                 {
@@ -110,16 +108,18 @@ namespace PintheCloud.Managers
                     await AccountHelper.CreateAccountAsync(account);
                 }
                 this.CurrentAccount = account;
+
+                // Save sign in setting.
+                App.ApplicationSettings[GOOGLE_DRIVE_SIGN_IN_KEY] = true;
+                App.ApplicationSettings.Save();
             }
             catch (Microsoft.Phone.Controls.WebBrowserNavigationException ex)
             {
-                this.SignOut();
                 Debug.WriteLine(ex.ToString());
                 throw new Exception("Web Browser Navigation Exception");
             }
             catch (Google.GoogleApiException e)
             {
-                this.SignOut();
                 Debug.WriteLine(e.ToString());
                 throw new Exception("Google Api Exception");
             }
@@ -261,7 +261,8 @@ namespace PintheCloud.Managers
                 var result = new string(
                     Enumerable.Repeat(chars, 8)
                               .Select(s => s[random.Next(s.Length)])
-                              .ToArray());
+                              .ToArray()
+                );
                 App.ApplicationSettings[GOOGLE_DRIVE_USER_KEY] = result;
                 App.ApplicationSettings.Save();
                 return result;
