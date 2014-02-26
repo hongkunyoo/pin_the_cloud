@@ -18,6 +18,7 @@ using Microsoft.Phone.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PintheCloud.Helpers;
+using Windows.Devices.Geolocation;
 
 namespace PintheCloud
 {
@@ -44,7 +45,7 @@ namespace PintheCloud
 
         // Manager
         public static SpotManager SpotManager = null;
-        public static GeoHelper GeoHelper = null;
+        public static Geolocator Geolocator = null;
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
 
@@ -90,7 +91,7 @@ namespace PintheCloud
 
             // Manager
             SpotManager = new SpotManagerImplement();
-            GeoHelper = new GeoHelper();
+            Geolocator = new Geolocator();
             BlobStorageManager = new BlobStorageManager();
             LocalStorageManager = new LocalStorageManager();
 

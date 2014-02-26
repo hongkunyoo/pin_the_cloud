@@ -104,7 +104,6 @@
     <Compile Include="Managers\BlobStorageManager.cs" />
     <Compile Include="Managers\LocalStorageManager.cs" />
     <Compile Include="Managers\OneDriveManager.cs" />
-    <Compile Include="Helpers\GeoHelper.cs" />
     <Compile Include="Managers\SpotManager.cs" />
     <Compile Include="Managers\SpotManagerImplement.cs" />
     <Compile Include="Models\FileObject.cs" />

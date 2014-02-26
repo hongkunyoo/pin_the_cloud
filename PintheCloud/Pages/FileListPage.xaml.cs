@@ -24,6 +24,7 @@ using System.Net.NetworkInformation;
 using PintheCloud.Resources;
 using System.Diagnostics;
 using PintheCloud.Converters;
+using PintheCloud.Helpers;
 
 namespace PintheCloud.Pages
 {
@@ -386,7 +387,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
 
             // Pin spot
-            Geoposition geo = await App.GeoHelper.GetCurrentGeopositionAsync();
+            Geoposition geo = await App.Geolocator.GetGeopositionAsync();
             Spot spot = new Spot(this.SpotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
             string spotId = null;
             if (await App.SpotManager.PinSpotAsync(spot))

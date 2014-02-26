@@ -96,7 +96,7 @@
             <phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged" Style="{StaticResource CustomPivotStyle}" Foreground="Black">
             	<phone:PivotItem x:Name="uiPickPivot" Margin="0" >
             		<Grid Margin="0">
-            			<TextBlock x:Name="uiNearSpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Foreground="Black" Visibility="Collapsed" Margin="32,32,0,0" />
+            			<TextBlock x:Name="uiNearSpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Foreground="Black" Visibility="Collapsed" Margin="32,32,32,0" />
             			<phone:LongListSelector x:Name="uiNearSpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpotList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Margin="0" Padding="0" />
             		</Grid>
             	</phone:PivotItem>
@@ -120,7 +120,7 @@
             					</Button>
             				</Grid>
             				<Grid Grid.Row="1" Margin="0">
-            					<TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Visibility="Collapsed" FontSize="22" Margin="28,25,0,0" />
+            					<TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Visibility="Collapsed" FontSize="22" Margin="28,25,44,0" />
             					<phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed" Margin="0" Padding="0"/>
             				</Grid>
             			</Grid>

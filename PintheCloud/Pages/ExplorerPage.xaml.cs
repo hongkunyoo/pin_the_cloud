@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using PintheCloud.Converters;
 using System.Windows.Media;
+using PintheCloud.Helpers;
 
 namespace PintheCloud.Pages
 {
@@ -103,6 +104,41 @@ namespace PintheCloud.Pages
             base.OnNavigatedFrom(e);
         }
 
+        // Construct pivot item by index
+        private void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            // Set View model for dispaly. One time loading.
+            PhoneApplicationService.Current.State[PIVOT_KEY] = uiExplorerPivot.SelectedIndex;
+            switch (uiExplorerPivot.SelectedIndex)
+            {
+                case EventHelper.PICK_PIVOT:
+                    // Set Pick Pivot UI
+                    ApplicationBar.Buttons.Remove(this.PinInfoAppBarButton);
+                    for (int i = 0; i < AppBarMenuItems.Length; i++)
+                        ApplicationBar.MenuItems.Remove(this.AppBarMenuItems[i]);
+                    uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(PICK_PIVOT_TITLE_GRID_COLOR_HEX_STRING));
+                    uiPivotTitleImage.Source = new BitmapImage(new Uri(PICK_PIVOT_TITLE_IMAGE_URI, UriKind.Relative));
+                    uiPivotTitleIndicator.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
+                    uiCurrentCloudModeImage.Visibility = Visibility.Collapsed;
+                    this.SetPickPivot();
+                    break;
+
+
+                case EventHelper.PIN_PIVOT:
+                    // Set Pin Pivot UI
+                    ApplicationBar.Buttons.Add(this.PinInfoAppBarButton);
+                    for (int i = 0; i < AppBarMenuItems.Length; i++)
+                        ApplicationBar.MenuItems.Add(this.AppBarMenuItems[i]);
+                    uiPivotTitleGrid.Background = new SolidColorBrush(
+                        ColorHexStringToBrushConverter.GetColorFromHex(App.IStorageManagers[this.CurrentPlatformIndex].GetStorageColorHexString()));
+                    uiPivotTitleImage.Source = new BitmapImage(new Uri(PIN_PIVOT_TITLE_IMAGE_URI, UriKind.Relative));
+                    uiPivotTitleIndicator.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
+                    uiCurrentCloudModeImage.Visibility = Visibility.Visible;
+                    this.SetPinPivot();
+                    break;
+            }
+        }
+
 
         private void SetPickPivot()
         {
@@ -163,40 +199,6 @@ namespace PintheCloud.Pages
                 if (!fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER)
                     && fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
                     fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
-            }
-        }
-
-
-        // Construct pivot item by index
-        private void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            // Set View model for dispaly. One time loading.
-            PhoneApplicationService.Current.State[PIVOT_KEY] = uiExplorerPivot.SelectedIndex;
-            switch (uiExplorerPivot.SelectedIndex)
-            {
-                case EventHelper.PICK_PIVOT:
-                    // Set Pick Pivot UI
-                    ApplicationBar.Buttons.Remove(this.PinInfoAppBarButton);
-                    for (int i = 0; i < AppBarMenuItems.Length; i++)
-                        ApplicationBar.MenuItems.Remove(this.AppBarMenuItems[i]);
-                    uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(PICK_PIVOT_TITLE_GRID_COLOR_HEX_STRING));
-                    uiPivotTitleImage.Source = new BitmapImage(new Uri(PICK_PIVOT_TITLE_IMAGE_URI, UriKind.Relative));
-                    uiPivotTitleIndicator.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
-                    uiCurrentCloudModeImage.Visibility = Visibility.Collapsed;
-                    break;
-
-
-                case EventHelper.PIN_PIVOT:
-                    // Set Pin Pivot UI
-                    ApplicationBar.Buttons.Add(this.PinInfoAppBarButton);
-                    for (int i = 0; i < AppBarMenuItems.Length; i++)
-                        ApplicationBar.MenuItems.Add(this.AppBarMenuItems[i]);
-                    uiPivotTitleGrid.Background = new SolidColorBrush(
-                        ColorHexStringToBrushConverter.GetColorFromHex(App.IStorageManagers[this.CurrentPlatformIndex].GetStorageColorHexString()));
-                    uiPivotTitleImage.Source = new BitmapImage(new Uri(PIN_PIVOT_TITLE_IMAGE_URI, UriKind.Relative));
-                    uiPivotTitleIndicator.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
-                    uiCurrentCloudModeImage.Visibility = Visibility.Visible;
-                    break;
             }
         }
 
@@ -301,22 +303,19 @@ namespace PintheCloud.Pages
 
         private async void SetNearSpotListAsync(string message)
         {
-            // Show progress indicator and Before go load, set mutex to true.
-            this.NearSpotViewModel.IsDataLoaded = true;
+            // Show progress indicator
             base.SetListUnableAndShowMessage(uiNearSpotList, message, uiNearSpotMessage);
             base.SetProgressIndicator(true);
-
 
             // Check whether user consented for location access.
             if (this.GetLocationAccessConsent())  // Got consent of location access.
             {
                 // Check whether GPS is on or not
-                if (App.GeoHelper.GetGeolocatorPositionStatus())  // GPS is on
+                if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
                 {
-                    Geoposition currentGeoposition = await App.GeoHelper.GetCurrentGeopositionAsync();
-
                     // Check whether GPS works well or not
-                    if (currentGeoposition != null)  // works well
+                    Geoposition currentGeoposition = await App.Geolocator.GetGeopositionAsync();
+                    if (currentGeoposition != null)  // GPS works well
                     {
                         // If there is near spots, Clear and Add spots to list
                         // Otherwise, Show none message.
@@ -326,6 +325,7 @@ namespace PintheCloud.Pages
                         {
                             base.Dispatcher.BeginInvoke(() =>
                             {
+                                this.NearSpotViewModel.IsDataLoaded = true;
                                 uiNearSpotList.Visibility = Visibility.Visible;
                                 uiNearSpotMessage.Visibility = Visibility.Collapsed;
                                 this.NearSpotViewModel.SetItems(spots, false);
@@ -333,30 +333,24 @@ namespace PintheCloud.Pages
                         }
                         else  // No near spots
                         {
+                            this.NearSpotViewModel.IsDataLoaded = true;
                             base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.NoNearSpotMessage, uiNearSpotMessage);
                         }
                     }
-                    else  // works bad
+                    else  // GPS works bad
                     {
-                        // Show GPS off message box.
                         base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.BadLocationServiceMessage, uiNearSpotMessage);
-                        NearSpotViewModel.IsDataLoaded = false;  // Mutex
                     }
                 }
                 else  // GPS is off
                 {
-                    // Show GPS off message box.
                     base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.NoLocationServiceMessage, uiNearSpotMessage);
-                    NearSpotViewModel.IsDataLoaded = false;  // Mutex
                 }
             }
             else  // First or not consented of access in location information.
             {
-                // Show no consent message box.
                 base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.NoLocationAcessConsentMessage, uiNearSpotMessage);
-                NearSpotViewModel.IsDataLoaded = false;  // Mutex
             }
-
 
             // Hide progress indicator
             base.SetProgressIndicator(false);
@@ -414,7 +408,7 @@ namespace PintheCloud.Pages
             if (this.GetLocationAccessConsent())  // Got consent of location access.
             {
                 // Check whether GPS is on or not
-                if (App.GeoHelper.GetGeolocatorPositionStatus())  // GPS is on
+                if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
                 {
                     PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY] = this.NearSpotViewModel;
                     PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
@@ -591,7 +585,6 @@ namespace PintheCloud.Pages
         private async void SetPinInfoListAsync(FileObjectViewItem folder, string message, IStorageManager iStorageManager)
         {
             // Set Mutex true and Show Process Indicator
-            this.FileObjectViewModel.IsDataLoaded = true;
             this.FileObjectViewModel.IsDataLoading = true;
             base.SetListUnableAndShowMessage(uiPinInfoList, message, uiPinInfoMessage);
             base.SetProgressIndicator(true);
@@ -638,7 +631,7 @@ namespace PintheCloud.Pages
                 // Set file list visible and current path.
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    // Set file tree to list.
+                    this.FileObjectViewModel.IsDataLoaded = true;
                     uiPinInfoList.Visibility = Visibility.Visible;
                     uiPinInfoCurrentPath.Text = this.GetCurrentPath();
                     this.FileObjectViewModel.SetItems(files, true);
