@@ -13,6 +13,7 @@ namespace PintheCloud.Managers
         public const string EXPLORER_PAGE = "/Pages/ExplorerPage.xaml";
         public const string SETTINGS_PAGE = "/Pages/SettingsPage.xaml";
         public const string FILE_LIST_PAGE = "/Pages/FileListPage.xaml";
+        public const string POPUP_CLOSE = "POP_UP_CLOSE";
 
         public const int PICK = 0;
         public const int PIN = 1;
@@ -20,7 +21,30 @@ namespace PintheCloud.Managers
 
         private static Dictionary<string, Context> Map = new Dictionary<string, Context>();
 
+        private static Dictionary<string, Queue<Context.TriggerEvent>> eventMap = new Dictionary<string, Queue<Context.TriggerEvent>>();
 
+        public static void AddEventHandler(string key, Context.TriggerEvent _event)
+        {
+            if (eventMap.ContainsKey(key))
+            {
+                eventMap[key].Enqueue(_event);
+            }
+            else
+            {
+                eventMap[key] = new Queue<Context.TriggerEvent>();
+                eventMap[key].Enqueue(_event);
+            }
+        }
+        public static void TriggerEvent(string key)
+        {
+            if (eventMap.ContainsKey(key))
+            {
+                foreach (Context.TriggerEvent _event in eventMap[key])
+                {
+                    _event();
+                }
+            }
+        }
         public static Context GetContext(string currentPage)
         {
             if (Map.ContainsKey(currentPage))

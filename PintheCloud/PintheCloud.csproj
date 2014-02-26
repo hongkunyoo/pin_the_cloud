@@ -109,10 +109,10 @@
     <Compile Include="Managers\SpotManagerImplement.cs" />
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Spot.cs" />
+    <Compile Include="Converters\FileObjectConverter.cs" />
     <Compile Include="Pages\DropBoxSignInPopup.xaml.cs">
       <DependentUpon>DropBoxSignInPopup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Converters\FileObjectConverter.cs" />
     <Compile Include="Utilities\DropboxWebBrowserResult.cs" />
     <Compile Include="Utilities\DropboxWebBrowserTask.cs" />
     <Compile Include="Helpers\LockHelper.cs" />
@@ -444,6 +444,10 @@
       <Project>{C73D4D29-41E9-4BB1-B70D-38E36187CF51}</Project>
       <Name>DropNet.WindowsPhone</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Assets\pajeon\png%402x\" />
+    <Folder Include="Assets\pajeon\screenshot\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

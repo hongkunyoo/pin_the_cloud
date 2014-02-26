@@ -1,4 +1,5 @@
 ﻿using Microsoft.Phone.Tasks;
+using PintheCloud.Managers;
 using PintheCloud.Pages;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,10 @@ namespace PintheCloud.Utilities
             {
                 this.FireCompleted(this, new DropboxWebBrowserResult(), null);
             };
+
+            EventHelper.AddEventHandler(EventHelper.POPUP_CLOSE, () => {
+                popup.IsOpen = false;
+            });
         }
 
 

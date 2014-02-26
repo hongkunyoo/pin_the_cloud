@@ -11,7 +11,7 @@ namespace PintheCloud.Helpers
     {
         // Tasks
         public IDictionary<string, Task> Tasks = new Dictionary<string, Task>();
-        public Task[] SignInTasks = new Task[App.IStorageManagers.Length];
+        public Task<bool>[] SignInTasks = new Task<bool>[App.IStorageManagers.Length];
         public Task[] SignOutTasks = new Task[App.IStorageManagers.Length];
 
 
@@ -33,20 +33,22 @@ namespace PintheCloud.Helpers
             }
         }
 
-        public void AddSignInTask(Task task, int platform)
+        public void AddSignInTask(Task<bool> task, int platform)
         {
             if(this.SignInTasks[platform] == null)
                 this.SignInTasks[platform] = task;
         }
 
 
-        public async Task WaitSignInTask(int platform)
+        public async Task<bool> WaitSignInTask(int platform)
         {
+            bool result = false;
             if (this.SignInTasks[platform] != null)
             {
-                await this.SignInTasks[platform];
+                result = await this.SignInTasks[platform];
                 this.SignInTasks[platform] = null;
             }
+            return result;
         }
 
 

@@ -230,10 +230,10 @@ namespace PintheCloud.Pages
                 if (App.IStorageManagers[this.PlatformIndex].IsSignIn())
                 {
                     // Wait tasks
-                    await App.TaskManager.WaitSignInTask(this.PlatformIndex);
+                    bool result = await App.TaskManager.WaitSignInTask(this.PlatformIndex);
                     await App.TaskManager.WaitSignOutTask(this.PlatformIndex);
 
-                    if (App.IStorageManagers[this.PlatformIndex].GetAccount() != null)
+                    if (result)
                     {
                         foreach (FileObjectViewItem fileObjectViewItem in this.SelectedFile)
                             this.PickFileAsync(fileObjectViewItem);

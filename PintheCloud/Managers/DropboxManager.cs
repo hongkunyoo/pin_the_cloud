@@ -28,6 +28,7 @@ namespace PintheCloud.Managers
 
         private DropNetClient _client = null;
         private Account CurrentAccount = null;
+        TaskCompletionSource<bool> tcs = null;
         #endregion
 
 
@@ -43,10 +44,10 @@ namespace PintheCloud.Managers
         }
 
 
-        public async Task SignIn()
+        public async Task<bool> SignIn()
         {
             // Get dropbox _client.
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            this.tcs = new TaskCompletionSource<bool>();
             _client = new DropNetClient(DROPBOX_CLIENT_KEY, DROPBOX_CLIENT_SECRET);
 
             // If dropbox user exists, get it.
@@ -91,10 +92,18 @@ namespace PintheCloud.Managers
                    tcs.SetResult(false);
                });
             }
-            await tcs.Task;
+            bool result = await tcs.Task;
+            return result;
         }
 
-
+        public bool IsSigningIn()
+        {
+            return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(DROPBOX_SIGN_IN_KEY);
+        }
+        public bool IsPopup()
+        {
+            return true;
+        }
         public void SignOut()
         {
             // Remove user record

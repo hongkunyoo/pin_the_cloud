@@ -42,6 +42,7 @@ namespace PintheCloud.Managers
         private Account CurrentAccount;
         private User user;
         private string rootFodlerId = "";
+        TaskCompletionSource<bool> tcs = null;
         #endregion
 
         public GoogleDriveManager()
@@ -72,8 +73,10 @@ namespace PintheCloud.Managers
         }
 
 
-        public async Task SignIn()
+        public async Task<bool> SignIn()
         {
+            this.tcs = new TaskCompletionSource<bool>();
+            // Add application settings before work for good UX
             try
             {
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
@@ -108,31 +111,42 @@ namespace PintheCloud.Managers
                     await AccountHelper.CreateAccountAsync(account);
                 }
                 this.CurrentAccount = account;
-
                 // Save sign in setting.
                 App.ApplicationSettings[GOOGLE_DRIVE_SIGN_IN_KEY] = true;
                 App.ApplicationSettings.Save();
+                tcs.SetResult(true);
             }
             catch (Microsoft.Phone.Controls.WebBrowserNavigationException ex)
             {
                 Debug.WriteLine(ex.ToString());
-                throw new Exception("Web Browser Navigation Exception");
+                tcs.SetResult(false);
             }
             catch (Google.GoogleApiException e)
             {
                 Debug.WriteLine(e.ToString());
-                throw new Exception("Google Api Exception");
+                tcs.SetResult(false);
             }
+            catch (System.Threading.Tasks.TaskCanceledException)
+            {
+                tcs.SetResult(false);
+            }
+            return tcs.Task.Result;
         }
-        
 
+        public bool IsSigningIn()
+        {
+            return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(GOOGLE_DRIVE_SIGN_IN_KEY);
+        }
         public void SignOut()
         {
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_USER_KEY);
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_SIGN_IN_KEY);
             this.CurrentAccount = null;
         }
-
+        public bool IsPopup()
+        {
+            return false;
+        }
 
         public bool IsSignIn()
         {
@@ -170,6 +184,7 @@ namespace PintheCloud.Managers
             List<FileObject> childList = new List<FileObject>();
             foreach (Google.Apis.Drive.v2.Data.File file in fileList.Items)
             {
+                Debug.WriteLine(file.Title);
                 if (this._IsRoot(file) && this._IsValidFile(file))
                 {
                     childList.Add(FileObjectConverter.ConvertToFileObject(file));
@@ -192,10 +207,10 @@ namespace PintheCloud.Managers
 
         public async Task<List<FileObject>> GetFilesFromFolderAsync(string folderId)
         {
-            if (this.rootFodlerId.Equals(folderId))
-            {
-                return await GetRootFilesAsync();
-            }
+            //if (this.rootFodlerId.Equals(folderId))
+            //{
+            //    return await GetRootFilesAsync();
+            //}
             List<FileObject> list = new List<FileObject>();
             ChildList childList = await service.Children.List(folderId).ExecuteAsync();
             foreach(ChildReference child in childList.Items){
@@ -208,7 +223,6 @@ namespace PintheCloud.Managers
 
         public async Task<Stream> DownloadFileStreamAsync(string fileId)
         {
-            Debug.WriteLine("in Google Downlaod : "+fileId);
             byte[] inarray = await service.HttpClient.GetByteArrayAsync(fileId);
             return new MemoryStream(inarray);
         }

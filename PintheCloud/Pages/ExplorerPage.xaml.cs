@@ -466,6 +466,14 @@ namespace PintheCloud.Pages
         {
             base.OnBackKeyPress(e);
 
+            // if (the manager is a popup type && is in signing mode)
+            if (App.IStorageManagers[this.CurrentPlatformIndex].IsPopup() && App.IStorageManagers[this.CurrentPlatformIndex].IsSigningIn())
+            {
+                EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
+                e.Cancel = true;
+                return;
+            }
+
             // Back file tree
             if (uiExplorerPivot.SelectedIndex == EventHelper.PIN)
             {
@@ -478,7 +486,7 @@ namespace PintheCloud.Pages
             }
 
             // Quit app
-            if (!isSignIning)
+            if (!App.IStorageManagers[this.CurrentPlatformIndex].IsSigningIn())
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
                 if (result != MessageBoxResult.OK)
@@ -580,12 +588,13 @@ namespace PintheCloud.Pages
                 this.isSignIning = true;
                 IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
                 App.TaskManager.AddSignInTask(iStorageManager.SignIn(), this.CurrentPlatformIndex);
-                await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);
+                bool result = await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);
                 this.isSignIning = false;
 
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.
-                if (iStorageManager.GetAccount() != null)
+                //if (iStorageManager.GetAccount() != null)
+                if (result)
                 {
                     this.SetPinInfoListAsync(null, AppResources.Loading, iStorageManager);
                 }
@@ -636,6 +645,8 @@ namespace PintheCloud.Pages
                     this.FolderRootTree.Clear();
                     this.FoldersTree.Clear();
                     FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
+                    FileObject.PrintFile(rootFolder);
+                        
                     folder = new FileObjectViewItem();
                     folder.Id = rootFolder.Id;
                 }

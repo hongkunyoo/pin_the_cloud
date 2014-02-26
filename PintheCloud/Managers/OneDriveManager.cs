@@ -34,6 +34,7 @@ namespace PintheCloud.Managers
 
         private LiveConnectClient LiveClient = null;
         private Account CurrentAccount = null;
+        TaskCompletionSource<bool> tcs = null;
         #endregion
 
 
@@ -74,35 +75,43 @@ namespace PintheCloud.Managers
                 return new LiveConnectClient(liveLoginResult.Session);
         }
 
-        public async Task SignIn()
+        public async Task<bool> SignIn()
         {
+            this.tcs = new TaskCompletionSource<bool>();
             // If it haven't registerd live client, register
-            if (this.LiveClient == null)
-            {
-                LiveConnectClient liveClient = await this.GetLiveConnectClientAsync();
-                if (liveClient == null)
-                    return;
-                else
-                    this.LiveClient = liveClient;
+            LiveConnectClient liveClient = await this.GetLiveConnectClientAsync();
+            if (liveClient != null){
+                this.LiveClient = liveClient;
+                // Get id and name.
+                LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
+                string accountId = (string)operationResult.Result["id"];
+                string accountUserName = (string)operationResult.Result["name"];
+
+                // Register account
+                Account account = await AccountHelper.GetAccountAsync(accountId);
+                if (account == null)
+                    await AccountHelper.CreateAccountAsync(accountId, accountUserName, Account.StorageAccountType.ONE_DRIVE);
+                this.CurrentAccount = account;
+
+                // Save sign in setting.
+                App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
+                App.ApplicationSettings.Save();
+                tcs.SetResult(true);
             }
-
-            // Get id and name.
-            LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
-            string accountId = (string)operationResult.Result["id"];
-            string accountUserName = (string)operationResult.Result["name"];
-
-            // Register account
-            Account account = await AccountHelper.GetAccountAsync(accountId);
-            if (account == null)
-                await AccountHelper.CreateAccountAsync(accountId, accountUserName, Account.StorageAccountType.ONE_DRIVE);
-            this.CurrentAccount = account;
-
-            // Save sign in setting.
-            App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
-            App.ApplicationSettings.Save();
+            else
+            {
+                tcs.SetResult(false);
+            }
+            return tcs.Task.Result;
         }
-
-
+        public bool IsSigningIn()
+        {
+            return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(ONE_DRIVE_SIGN_IN_KEY);
+        }
+        public bool IsPopup()
+        {
+            return false;
+        }
         public void SignOut()
         {
             // Remove user record
