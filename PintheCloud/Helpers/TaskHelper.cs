@@ -11,9 +11,7 @@ namespace PintheCloud.Helpers
     {
         // Tasks
         public IDictionary<string, Task> Tasks = new Dictionary<string, Task>();
-        //public Task<bool>[] SignInTasks = new Task<bool>[App.IStorageManagers.Length];
         public Dictionary<string ,Task<bool>> SignInTasks = new Dictionary<string, Task<bool>>();
-        //public Task[] SignOutTasks = new Task[App.IStorageManagers.Length];
         public Dictionary<string, Task> SignOutTasks = new Dictionary<string, Task>();
 
 
@@ -37,33 +35,32 @@ namespace PintheCloud.Helpers
 
         public void AddSignInTask(string key, Task<bool> task)
         {
-            if(!this.SignInTasks.ContainsKey(key))
-                this.SignInTasks[key] = task;
+            if (!this.SignInTasks.ContainsKey(key))
+                this.SignInTasks.Add(key, task);
         }
 
 
-        public Task<bool> WaitSignInTask(string key)
+        public async Task<bool> WaitSignInTask(string key)
         {
             if (this.SignInTasks.ContainsKey(key))
             {
-                Task<bool> t = this.SignInTasks[key];
+                bool resut = await this.SignInTasks[key];
                 this.SignInTasks.Remove(key);
-                return t;
+                return resut;
             }
             else
             {
                 TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
                 tcs.SetResult(true);
-                return tcs.Task;
+                return tcs.Task.Result;
             }
-            
         }
 
 
         public void AddSignOutTask(string key, Task task)
         {
             if (!this.SignOutTasks.ContainsKey(key))
-                this.SignOutTasks[key] = task;
+                this.SignOutTasks.Add(key, task);
         }
 
 
@@ -71,9 +68,9 @@ namespace PintheCloud.Helpers
         {
             if (this.SignOutTasks.ContainsKey(key))
             {
-                Task t = this.SignOutTasks[key];
+                Task task = this.SignOutTasks[key];
                 this.SignOutTasks.Remove(key);
-                return t;
+                return task;
             }
             else
             {

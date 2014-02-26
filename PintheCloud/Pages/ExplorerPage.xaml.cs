@@ -81,9 +81,7 @@ namespace PintheCloud.Pages
 
             // Set event by previous page
             Context currentContextPage = EventHelper.GetContext(EventHelper.EXPLORER_PAGE);
-            currentContextPage.HandleEvent(EventHelper.SETTINGS_PAGE, EventHelper.PIN, this.previous_SETTINGS_pivot_PIN);
-            currentContextPage.HandleEvent(EventHelper.SETTINGS_PAGE, EventHelper.PICK, this.previous_SETTINGS_pivot_PICK);
-            currentContextPage.HandleEvent(EventHelper.FILE_LIST_PAGE, EventHelper.PIN, this.previous_FILE_LIST_pivot_PIN);
+            currentContextPage.HandleEvent(EventHelper.FILE_LIST_PAGE, EventHelper.PIN_PIVOT, this.previous_FILE_LIST_pivot_PIN);
         }
 
 
@@ -94,51 +92,19 @@ namespace PintheCloud.Pages
             // Check if it is on the backstack from SplashPage and remove that.
             if (NavigationService.BackStack.Count() == 1)
                 NavigationService.RemoveBackEntry();
+
+            this.SetPickPivot();
+            this.SetPinPivot();
         }
 
 
-        private void previous_SETTINGS_pivot_PIN()
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            // If it is already signin, load files.
-            // Otherwise, show signin button.
-            IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
-            if (!iStorageManager.IsSignIn())  // wasn't signed in.
-            {
-                if (uiPinInfoSignInGrid.Visibility == Visibility.Collapsed)
-                {
-                    this.FolderRootTree.Clear();
-                    this.FoldersTree.Clear();
-                    this.SelectedFile.Clear();
-                    this.PinInfoAppBarButton.IsEnabled = false;
-
-                    uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                    uiPinInfoSignInGrid.Visibility = Visibility.Visible;
-                }
-            }
-            else  // was signed in.
-            {
-                if (uiPinInfoSignInGrid.Visibility == Visibility.Visible)
-                {
-                    // Show Loading message and save is login true for pivot moving action while sign in.
-                    uiPinInfoListGrid.Visibility = Visibility.Visible;
-                    uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
-
-                    if (NetworkInterface.GetIsNetworkAvailable())
-                        this.SetPinInfoListAsync(null, AppResources.Loading, iStorageManager);
-                    else
-                        base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
-                }
-                else  // If download some files from my spot, reload pin pivot.
-                {
-                    if (NetworkInterface.GetIsNetworkAvailable())
-                        if (!this.FileObjectViewModel.IsDataLoaded)
-                            this.SetPinInfoListAsync(null, AppResources.Loading, App.IStorageManagers[this.CurrentPlatformIndex]);
-                }
-            }
+            base.OnNavigatedFrom(e);
         }
 
 
-        private void previous_SETTINGS_pivot_PICK()
+        private void SetPickPivot()
         {
             // If Internet available, Set spot list
             // Otherwise, show internet bad message
@@ -154,21 +120,43 @@ namespace PintheCloud.Pages
         }
 
 
+        private void SetPinPivot()
+        {
+            // If it wasn't already signed in, show signin button.
+            // Otherwise, load files
+            IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
+            if (!iStorageManager.IsSignIn())  // wasn't signed in.
+            {
+                this.FolderRootTree.Clear();
+                this.FoldersTree.Clear();
+                this.SelectedFile.Clear();
+                this.PinInfoAppBarButton.IsEnabled = false;
+
+                uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+            }
+            else  // already signed in.
+            {
+                uiPinInfoListGrid.Visibility = Visibility.Visible;
+                uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
+
+                if (NetworkInterface.GetIsNetworkAvailable())
+                {
+                    if (!this.FileObjectViewModel.IsDataLoaded)
+                        this.SetPinInfoListAsync(null, AppResources.Loading, iStorageManager);
+                }
+                else
+                {
+                    base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
+                }
+            }
+        }
+
+
         private void previous_FILE_LIST_pivot_PIN()
         {
             this.SelectedFile.Clear();
             this.PinInfoAppBarButton.IsEnabled = false;
-
-            // If download some files from file list, reload files.
-            // Otherwise, just change select check image.
-            if (NetworkInterface.GetIsNetworkAvailable())
-            {
-                if (!this.FileObjectViewModel.IsDataLoaded)
-                {
-                    this.SetPinInfoListAsync(null, AppResources.Loading, App.IStorageManagers[this.CurrentPlatformIndex]);
-                    return;
-                }
-            }
 
             foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
             {
@@ -179,21 +167,15 @@ namespace PintheCloud.Pages
         }
 
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
-        }
-
-
-        // Construct pivot item by page index
+        // Construct pivot item by index
         private void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Set View model for dispaly. One time loading.
             PhoneApplicationService.Current.State[PIVOT_KEY] = uiExplorerPivot.SelectedIndex;
             switch (uiExplorerPivot.SelectedIndex)
             {
-                case EventHelper.PICK:
-                    // Remove button and menuitems and Cloud Mode text
+                case EventHelper.PICK_PIVOT:
+                    // Set Pick Pivot UI
                     ApplicationBar.Buttons.Remove(this.PinInfoAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
                         ApplicationBar.MenuItems.Remove(this.AppBarMenuItems[i]);
@@ -201,56 +183,19 @@ namespace PintheCloud.Pages
                     uiPivotTitleImage.Source = new BitmapImage(new Uri(PICK_PIVOT_TITLE_IMAGE_URI, UriKind.Relative));
                     uiPivotTitleIndicator.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
                     uiCurrentCloudModeImage.Visibility = Visibility.Collapsed;
-
-                    // If Internet available, Set spot list
-                    // Otherwise, show internet bad message
-                    if (NetworkInterface.GetIsNetworkAvailable())
-                    {
-                        if (!this.NearSpotViewModel.IsDataLoaded)  // Mutex check
-                            this.SetNearSpotListAsync(AppResources.Loading);
-                    }
-                    else
-                    {
-                        base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.InternetUnavailableMessage, uiNearSpotMessage);
-                    }
                     break;
 
 
-                case EventHelper.PIN:
-                    // Set button and menuitems and Cloud Mode text
+                case EventHelper.PIN_PIVOT:
+                    // Set Pin Pivot UI
                     ApplicationBar.Buttons.Add(this.PinInfoAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
                         ApplicationBar.MenuItems.Add(this.AppBarMenuItems[i]);
-
-                    IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
-                    uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(iStorageManager.GetStorageColorHexString()));
+                    uiPivotTitleGrid.Background = new SolidColorBrush(
+                        ColorHexStringToBrushConverter.GetColorFromHex(App.IStorageManagers[this.CurrentPlatformIndex].GetStorageColorHexString()));
                     uiPivotTitleImage.Source = new BitmapImage(new Uri(PIN_PIVOT_TITLE_IMAGE_URI, UriKind.Relative));
                     uiPivotTitleIndicator.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
                     uiCurrentCloudModeImage.Visibility = Visibility.Visible;
-
-
-                    // If it wasn't already signed in, show signin button.
-                    // Otherwise, load files
-                    if (!iStorageManager.IsSignIn())  // wasn't signed in.
-                    {
-                        uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                        uiPinInfoSignInGrid.Visibility = Visibility.Visible;
-                    }
-                    else  // already signed in.
-                    {
-                        uiPinInfoListGrid.Visibility = Visibility.Visible;
-                        uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
-
-                        if (NetworkInterface.GetIsNetworkAvailable())
-                        {
-                            if (!this.FileObjectViewModel.IsDataLoaded)
-                                this.SetPinInfoListAsync(null, AppResources.Loading, iStorageManager);
-                        }
-                        else
-                        {
-                            base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
-                        }
-                    }
                     break;
             }
         }
@@ -261,21 +206,44 @@ namespace PintheCloud.Pages
         {
             switch (uiExplorerPivot.SelectedIndex)
             {
-                case EventHelper.PICK:
+                case EventHelper.PICK_PIVOT:
                     if (NetworkInterface.GetIsNetworkAvailable())
                         this.SetNearSpotListAsync(AppResources.Refreshing);
                     else
                         base.SetListUnableAndShowMessage(uiNearSpotList, AppResources.InternetUnavailableMessage, uiNearSpotMessage);
                     break;
 
-                case EventHelper.PIN:
-                    // Refresh only in was already signed in.
-                    if (uiPinInfoListGrid.Visibility == Visibility.Visible)
+
+                case EventHelper.PIN_PIVOT:
+                    // If it wasn't already signed in, show signin button.
+                    // Otherwise, load files
+                    IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
+                    if (!iStorageManager.IsSignIn())  // wasn't signed in.
                     {
+                        this.FolderRootTree.Clear();
+                        this.FoldersTree.Clear();
+                        this.SelectedFile.Clear();
+                        this.PinInfoAppBarButton.IsEnabled = false;
+
+                        uiPinInfoListGrid.Visibility = Visibility.Collapsed;
+                        uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                    }
+                    else  // already signed in.
+                    {
+                        uiPinInfoListGrid.Visibility = Visibility.Visible;
+                        uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
+
                         if (NetworkInterface.GetIsNetworkAvailable())
-                            this.SetPinInfoListAsync(this.FolderRootTree.First(), AppResources.Refreshing, App.IStorageManagers[this.CurrentPlatformIndex]);
+                        {
+                            if (this.FolderRootTree.Count > 0)
+                                this.SetPinInfoListAsync(this.FolderRootTree.First(), AppResources.Refreshing, iStorageManager);
+                            else
+                                this.SetPinInfoListAsync(null, AppResources.Refreshing, iStorageManager);
+                        }
                         else
+                        {
                             base.SetListUnableAndShowMessage(uiPinInfoList, AppResources.InternetUnavailableMessage, uiPinInfoMessage);
+                        }
                     }
                     break;
             }
@@ -293,9 +261,7 @@ namespace PintheCloud.Pages
 
         public bool GetLocationAccessConsent()
         {
-            bool locationAccess = false;
-            App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS_CONSENT_KEY, out locationAccess);
-            if (!locationAccess)  // First or not consented of access in location information.
+            if (!((bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY]))  // First or not consented of access in location information.
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.LocationAccessMessage, AppResources.LocationAccessCaption, MessageBoxButton.OKCancel);
                 if (result == MessageBoxResult.OK)
@@ -335,10 +301,8 @@ namespace PintheCloud.Pages
 
         private async void SetNearSpotListAsync(string message)
         {
-            // Before go load, set mutex to true.
+            // Show progress indicator and Before go load, set mutex to true.
             this.NearSpotViewModel.IsDataLoaded = true;
-
-            // Show progress indicator 
             base.SetListUnableAndShowMessage(uiNearSpotList, message, uiNearSpotMessage);
             base.SetProgressIndicator(true);
 
@@ -421,6 +385,11 @@ namespace PintheCloud.Pages
                 // Otherwise, show signin button.
                 if (!iStorageManager.IsSignIn())
                 {
+                    this.FolderRootTree.Clear();
+                    this.FoldersTree.Clear();
+                    this.SelectedFile.Clear();
+                    this.PinInfoAppBarButton.IsEnabled = false;
+
                     uiPinInfoListGrid.Visibility = Visibility.Collapsed;
                     uiPinInfoSignInGrid.Visibility = Visibility.Visible;
                 }
@@ -469,28 +438,31 @@ namespace PintheCloud.Pages
         {
             base.OnBackKeyPress(e);
 
-            // if (the manager is a popup type && is in signing mode)
-            if (App.IStorageManagers[this.CurrentPlatformIndex].IsPopup() && App.IStorageManagers[this.CurrentPlatformIndex].IsSigningIn())
+            // If it is signing, don't close app.
+            // Otherwise, show close app message.
+            if (App.IStorageManagers[this.CurrentPlatformIndex].IsSigningIn())
             {
-                EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
-                e.Cancel = true;
-                return;
-            }
-
-            // Back file tree
-            if (uiExplorerPivot.SelectedIndex == EventHelper.PIN)
-            {
-                if (this.FolderRootTree.Count > 1)
+                // If it is popup, close popup.
+                if (App.IStorageManagers[this.CurrentPlatformIndex].IsPopup())
                 {
+                    EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
                     e.Cancel = true;
-                    this.TreeUp();
                     return;
                 }
             }
-
-            // Quit app
-            if (!App.IStorageManagers[this.CurrentPlatformIndex].IsSigningIn())
+            else
             {
+                // If some files in list, back tree.
+                if (uiExplorerPivot.SelectedIndex == EventHelper.PIN_PIVOT)
+                {
+                    if (this.FolderRootTree.Count > 1)
+                    {
+                        e.Cancel = true;
+                        this.TreeUp();
+                        return;
+                    }
+                }
+
                 MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
                 if (result != MessageBoxResult.OK)
                     e.Cancel = true;
@@ -566,7 +538,7 @@ namespace PintheCloud.Pages
             this.FoldersTree.Pop();
             this.SelectedFile.Clear();
             this.PinInfoAppBarButton.IsEnabled = false;
-            
+
             // Set previous files to list.
             this.FileObjectViewModel.SetItems(this.FoldersTree.First(), true);
             uiPinInfoCurrentPath.Text = this.GetCurrentPath();
@@ -589,12 +561,12 @@ namespace PintheCloud.Pages
 
                 // Sign in and await that task.
                 IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
-                App.TaskManager.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
-                bool result = await App.TaskManager.WaitSignInTask(iStorageManager.GetStorageName());
+                if (!iStorageManager.IsSigningIn())
+                    App.TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
+                bool result = await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
 
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.
-                //if (iStorageManager.GetAccount() != null)
                 if (result)
                 {
                     this.SetPinInfoListAsync(null, AppResources.Loading, iStorageManager);
@@ -624,29 +596,32 @@ namespace PintheCloud.Pages
             base.SetListUnableAndShowMessage(uiPinInfoList, message, uiPinInfoMessage);
             base.SetProgressIndicator(true);
 
-            // Wait tasks
-            await App.TaskManager.WaitSignInTask(iStorageManager.GetStorageName());
-            await App.TaskManager.WaitSignOutTask(iStorageManager.GetStorageName());
-
-
-            // If it haven't signed out before working below code, do it.
-            if (iStorageManager.GetAccount() != null)
+            // Clear selected file and set pin button false.
+            this.SelectedFile.Clear();
+            base.Dispatcher.BeginInvoke(() =>
             {
-                // Clear selected file and set pin button false.
-                this.SelectedFile.Clear();
                 this.PinInfoAppBarButton.IsEnabled = false;
+            });
 
+            // Wait task
+            await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
+            await App.TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
+
+            // If it wasn't signed out, set list.
+            // Othersie, show sign in grid.
+            if (iStorageManager.GetAccount() != null)  // Wasn't signed out.
+            {
                 // If folder null, set root.
                 if (folder == null)
                 {
-                    this.Dispatcher.BeginInvoke(() =>
+                    this.FolderRootTree.Clear();
+                    this.FoldersTree.Clear();
+                    base.Dispatcher.BeginInvoke(() =>
                     {
                         uiPinInfoCurrentPath.Text = "";
                     });
-                    this.FolderRootTree.Clear();
-                    this.FoldersTree.Clear();
+
                     FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
-                        
                     folder = new FileObjectViewItem();
                     folder.Id = rootFolder.Id;
                 }
@@ -669,7 +644,6 @@ namespace PintheCloud.Pages
                     this.FileObjectViewModel.SetItems(files, true);
                 });
 
-
                 // If there exists file, show it.
                 // Otherwise, show no file message.
                 if (files.Count > 0)
@@ -687,9 +661,9 @@ namespace PintheCloud.Pages
                     });
                 }
             }
-            else
+            else  // Was signed out.
             {
-                this.Dispatcher.BeginInvoke(() =>
+                base.Dispatcher.BeginInvoke(() =>
                 {
                     uiPinInfoListGrid.Visibility = Visibility.Collapsed;
                     uiPinInfoSignInGrid.Visibility = Visibility.Visible;

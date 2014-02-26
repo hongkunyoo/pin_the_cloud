@@ -45,7 +45,7 @@ namespace PintheCloud.Managers
         private Account CurrentAccount;
         private User user;
         private string rootFodlerId = "";
-        TaskCompletionSource<bool> tcs = null;
+        private TaskCompletionSource<bool> tcs = null;
         #endregion
 
         public GoogleDriveManager()
@@ -114,6 +114,7 @@ namespace PintheCloud.Managers
                     await AccountHelper.CreateAccountAsync(account);
                 }
                 this.CurrentAccount = account;
+
                 // Save sign in setting.
                 App.ApplicationSettings[GOOGLE_DRIVE_SIGN_IN_KEY] = true;
                 App.ApplicationSettings.Save();
@@ -139,13 +140,9 @@ namespace PintheCloud.Managers
         public bool IsSigningIn()
         {
             if (this.tcs != null)
-            {
                 return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(GOOGLE_DRIVE_SIGN_IN_KEY);
-            }
             else
-            {
                 return false;
-            }
             
         }
         public void SignOut()

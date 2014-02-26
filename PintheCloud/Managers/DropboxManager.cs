@@ -31,7 +31,7 @@ namespace PintheCloud.Managers
 
         private DropNetClient _client = null;
         private Account CurrentAccount = null;
-        TaskCompletionSource<bool> tcs = null;
+        private TaskCompletionSource<bool> tcs = null;
         #endregion
 
 
@@ -108,21 +108,22 @@ namespace PintheCloud.Managers
             return tcs.Task;
         }
 
+
         public bool IsSigningIn()
         {
             if (this.tcs != null)
-            {
                 return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(DROPBOX_SIGN_IN_KEY);
-            }
             else
-            {
                 return false;
-            }
         }
+
+
         public bool IsPopup()
         {
             return true;
         }
+
+
         public void SignOut()
         {
             // Remove user record

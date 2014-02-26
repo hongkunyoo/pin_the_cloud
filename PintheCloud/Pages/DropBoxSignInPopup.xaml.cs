@@ -39,8 +39,6 @@ namespace PintheCloud.Pages
                 this.popup.IsOpen = false;
                 await uiWebBrowser.ClearCookiesAsync();
             }
-                
-
         }
     }
 }

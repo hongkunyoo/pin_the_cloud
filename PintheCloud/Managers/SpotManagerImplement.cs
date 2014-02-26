@@ -67,14 +67,21 @@ namespace PintheCloud.Managers
             {
                 if (App.IStorageManagers[i].IsSignIn())
                 {
-                    await App.TaskManager.WaitSignInTask(App.IStorageManagers[i].GetStorageName());
-                    ids.Add(App.IStorageManagers[i].GetAccount().account_platform_id);  
+                    // Wait task
+                    IStorageManager iStorageManager = App.IStorageManagers[i];
+                    await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
+                    await App.TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
+
+                    // If it wasn't signed out, set list.
+                    // Othersie, show sign in grid.
+                    if (iStorageManager.GetAccount() != null)  // Wasn't signed out.
+                        ids.Add(iStorageManager.GetAccount().account_platform_id);
                 }
             }
-            if (ids.Count <= 0)
-                return null;
-            else
+            if (ids.Count > 0)
                 return await this.GetMySpotsAsync(ids);
+            else
+                return null;
         }
 
 

@@ -49,7 +49,7 @@ namespace PintheCloud
         public static LocalStorageManager LocalStorageManager = null;
 
         public static IStorageManager[] IStorageManagers = null;
-        public static TaskHelper TaskManager = null;
+        public static TaskHelper TaskHelper = null;
 
         private static OneDriveManager SkyDriveManager = null;
         private static DropboxManager DropBoxManager = null;
@@ -98,7 +98,7 @@ namespace PintheCloud
             DropBoxManager = new DropboxManager();
             GoogleDriveManger = new GoogleDriveManager();
             IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
-            TaskManager = new TaskHelper();
+            TaskHelper = new TaskHelper();
  
 
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.
@@ -152,13 +152,9 @@ namespace PintheCloud
         // 이 코드는 응용 프로그램이 비활성화될 때는 실행되지 않습니다.
         private async void Application_Closing(object sender, ClosingEventArgs e)
         {
-            // Wait sign task.
+            // Wait sign in task.
             for (int i = 0; i < App.IStorageManagers.Length; i++)
-            {
-                IStorageManager istr = App.IStorageManagers[i];
-                await App.TaskManager.WaitSignInTask(istr.GetStorageName());
-                await App.TaskManager.WaitSignOutTask(istr.GetStorageName());
-            }
+                await App.TaskHelper.WaitSignInTask(App.IStorageManagers[i].GetStorageName());
         }
 
         // 탐색이 실패할 때 실행할 코드입니다.
@@ -177,8 +173,6 @@ namespace PintheCloud
             if (Debugger.IsAttached)
             {
                 System.Diagnostics.Debug.WriteLine(e.ExceptionObject.ToString());
-                System.Diagnostics.Debug.WriteLine("-------------------------");
-                //System.Diagnostics.Debug.WriteLine(new StackFrame(1, true));
                 System.Diagnostics.Debug.WriteLine("-------------------------");
 
                 // 처리되지 않은 예외가 발생했습니다. 중단하고 디버거를 실행합니다.
