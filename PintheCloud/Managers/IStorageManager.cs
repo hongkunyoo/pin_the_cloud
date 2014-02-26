@@ -21,6 +21,8 @@ namespace PintheCloud.Managers
         Account GetAccount();
         bool IsSignIn();
         string GetStorageName();
+        string GetStorageImageUri();
+        string GetStorageColorHexString();
         Task<FileObject> GetRootFolderAsync();
         Task<List<FileObject>> GetRootFilesAsync();
         Task<FileObject> GetFileAsync(string fileId);

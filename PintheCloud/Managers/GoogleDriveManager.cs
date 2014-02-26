@@ -29,9 +29,12 @@ namespace PintheCloud.Managers
         #region Variables
         private const string GOOGLE_DRIVE_CLIENT_ID = "109786198225-m8fihmv82b2fmf5k4d69u9039ebn68fn.apps.googleusercontent.com";
         private const string GOOGLE_DRIVE_CLIENT_SECRET = "Tk8M01zlkBRlIsv-1fa9BKiS";
-
+        
         private const string GOOGLE_DRIVE_USER_KEY = "GOOGLE_DRIVE_USER_KEY";
         private const string GOOGLE_DRIVE_SIGN_IN_KEY = "GOOGLE_DRIVE_SIGN_IN_KEY";
+
+        private const string GOOGLE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_googledrive.png";
+        private const string GOOGLE_DRIVE_COLOR_HEX_STRING = "F1AE1D";
 
         public static Dictionary<string, string> GoogleDocMapper;
         public static Dictionary<string, string> MimeTypeMapper;
@@ -157,6 +160,18 @@ namespace PintheCloud.Managers
         public string GetStorageName()
         {
             return AppResources.GoogleDrive;
+        }
+
+
+        public string GetStorageImageUri()
+        {
+            return GOOGLE_DRIVE_IMAGE_URI;
+        }
+
+
+        public string GetStorageColorHexString()
+        {
+            return GOOGLE_DRIVE_COLOR_HEX_STRING;
         }
 
 

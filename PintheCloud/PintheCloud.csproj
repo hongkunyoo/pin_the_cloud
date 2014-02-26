@@ -328,12 +328,6 @@
     <Content Include="Assets\pajeon\pin_the_cloud\screenshot\upload-list.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\screenshot\upload-list_edit.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\screenshot\upload.png" />
-    <Content Include="Assets\pajeon\png\app_ApplicationIcon.png" />
-    <Content Include="Assets\pajeon\png\app_MediumFlipCycleTile.png" />
-    <Content Include="Assets\pajeon\png\app_MediumIconicTile.png" />
-    <Content Include="Assets\pajeon\png\app_SmallFlipCycleTile.png" />
-    <Content Include="Assets\pajeon\png\app_SmallIconicTile.png" />
-    <Content Include="Assets\pajeon\png\app_WideFlipCycleTile.png" />
     <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -445,10 +439,7 @@
       <Name>DropNet.WindowsPhone</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Assets\pajeon\png%402x\" />
-    <Folder Include="Assets\pajeon\screenshot\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

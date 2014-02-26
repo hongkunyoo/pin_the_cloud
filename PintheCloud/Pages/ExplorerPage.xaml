@@ -32,7 +32,7 @@
             <RowDefinition Height="72"/>
         </Grid.RowDefinitions>
         <!--피벗 컨트롤-->
-        <Grid Background="#FF00A4BF">
+        <Grid x:Name="uiPivotTitleGrid" Background="#FF00A4BF">
         	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,7,0,0">
         		<Image x:Name="uiPivotTitleImage" Source="/Assets\pajeon\at_here\png/navi_pick_title.png" Stretch="None"/>
         		<StackPanel Orientation="Horizontal"/>

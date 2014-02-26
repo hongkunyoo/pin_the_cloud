@@ -15,9 +15,16 @@ namespace PintheCloud.Converters
             return new Uri((string)value, UriKind.Relative);
         }
 
+
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException();
+        }
+
+
+        public static Uri Convert(string uri)
+        {
+            return new Uri(uri, UriKind.Relative);
         }
     }
 }

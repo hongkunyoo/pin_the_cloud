@@ -20,6 +20,8 @@ using Newtonsoft.Json.Linq;
 using PintheCloud.Utilities;
 using System.ComponentModel;
 using System.Diagnostics;
+using PintheCloud.Converters;
+using System.Windows.Media;
 
 namespace PintheCloud.Pages
 {
@@ -27,16 +29,7 @@ namespace PintheCloud.Pages
     {
         // Const Instances
         private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_upload.png";
-
-        private const string ONE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_skydrive.png";
-        private const string DROPBOX_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_dropbox.png";
-        private const string GOOGLE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_googledrive.png";
-
-        private const string ONE_DRIVE_NAVI_COLOR = "#2458A7";
-        private const string DROPBOX_NAVI_COLOR = "#26A4DD";
-        private const string GOOGLE_DRIVE_NAVI_COLOR = "#F1AE1D";
-
-
+        private const string PICK_PIVOT_TITLE_GRID_COLOR_HEX_STRING = "00A4BF";
 
         // Instances
         private int MainPlatformIndex = 0;
@@ -76,8 +69,9 @@ namespace PintheCloud.Pages
 
             // Check main platform and set current platform index.
             this.MainPlatformIndex = (int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY];
-            uiCurrentPlatformText.Text = App.IStorageManagers[this.MainPlatformIndex].GetStorageName();
             this.CurrentPlatformIndex = this.MainPlatformIndex;
+            uiCurrentCloudModeImage.Source = new BitmapImage(
+                new Uri(App.IStorageManagers[this.MainPlatformIndex].GetStorageImageUri(), UriKind.Relative));
 
             // Set Datacontext
             uiNearSpotList.DataContext = this.NearSpotViewModel;
@@ -201,7 +195,8 @@ namespace PintheCloud.Pages
                     ApplicationBar.Buttons.Remove(this.PinInfoAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
                         ApplicationBar.MenuItems.Remove(this.AppBarMenuItems[i]);
-                    uiCurrentPlatformText.Visibility = Visibility.Collapsed;
+                    uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(PICK_PIVOT_TITLE_GRID_COLOR_HEX_STRING));
+                    uiCurrentCloudModeImage.Visibility = Visibility.Collapsed;
 
 
                     // If Internet available, Set spot list
@@ -223,12 +218,14 @@ namespace PintheCloud.Pages
                     ApplicationBar.Buttons.Add(this.PinInfoAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
                         ApplicationBar.MenuItems.Add(this.AppBarMenuItems[i]);
-                    uiCurrentPlatformText.Visibility = Visibility.Visible;
+
+                    IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
+                    uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(iStorageManager.GetStorageColorHexString()));
+                    uiCurrentCloudModeImage.Visibility = Visibility.Visible;
 
 
                     // If it wasn't already signed in, show signin button.
                     // Otherwise, load files
-                    IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
                     if (!iStorageManager.IsSignIn())  // wasn't signed in.
                     {
                         uiPinInfoListGrid.Visibility = Visibility.Collapsed;
@@ -411,7 +408,8 @@ namespace PintheCloud.Pages
             if (this.CurrentPlatformIndex != platformIndex && !this.FileObjectViewModel.IsDataLoading && !this.isSignIning)
             {
                 IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
-                uiCurrentPlatformText.Text = iStorageManager.GetStorageName();
+                uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(iStorageManager.GetStorageColorHexString()));
+                uiCurrentCloudModeImage.Source = new BitmapImage(new Uri(iStorageManager.GetStorageImageUri(), UriKind.Relative));
                 this.CurrentPlatformIndex = platformIndex;
 
                 // If it is already signin, load files.

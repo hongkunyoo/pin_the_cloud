@@ -29,8 +29,11 @@ namespace PintheCloud.Managers
         #region Variables
         // Summary:
         //     Object to communicate with OneDrive.
+        private const string LIVE_CLIENT_ID = "0000000044110129";
         private const string ONE_DRIVE_SIGN_IN_KEY = "ONE_DRIVE_SIGN_IN_KEY";
-        private string LIVE_CLIENT_ID = "0000000044110129";
+
+        private const string ONE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_skydrive.png";
+        private const string ONE_DRIVE_COLOR_HEX_STRING = "2458A7";
 
         private LiveConnectClient LiveClient = null;
         private Account CurrentAccount = null;
@@ -40,7 +43,7 @@ namespace PintheCloud.Managers
 
         private async Task<LiveConnectClient> GetLiveConnectClientAsync()
         {
-            LiveAuthClient liveAuthClient = new LiveAuthClient(this.LIVE_CLIENT_ID);
+            LiveAuthClient liveAuthClient = new LiveAuthClient(LIVE_CLIENT_ID);
             string[] scopes = new[] { "wl.basic", "wl.signin", "wl.offline_access", "wl.skydrive", "wl.skydrive_update", "wl.contacts_skydrive" };
             LiveLoginResult liveLoginResult = null;
 
@@ -115,7 +118,7 @@ namespace PintheCloud.Managers
         public void SignOut()
         {
             // Remove user record
-            LiveAuthClient liveAuthClient = new LiveAuthClient(this.LIVE_CLIENT_ID);
+            LiveAuthClient liveAuthClient = new LiveAuthClient(LIVE_CLIENT_ID);
             liveAuthClient.Logout();
 
             // Remove user is signed in record
@@ -136,6 +139,18 @@ namespace PintheCloud.Managers
         public string GetStorageName()
         {
             return AppResources.OneDrive;
+        }
+
+
+        public string GetStorageImageUri()
+        {
+            return ONE_DRIVE_IMAGE_URI;
+        }
+
+
+        public string GetStorageColorHexString()
+        {
+            return ONE_DRIVE_COLOR_HEX_STRING;
         }
 
 
