@@ -198,7 +198,6 @@ namespace PintheCloud.Pages
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
                         ApplicationBar.MenuItems.Remove(this.AppBarMenuItems[i]);
                     uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(PICK_PIVOT_TITLE_GRID_COLOR_HEX_STRING));
-                    uiPivotTitleImage.Source = new BitmapImage(new Uri(PICK_PIVOT_TITLE_IMAGE_URI, UriKind.Relative));
                     uiPivotTitleIndicator.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
                     uiCurrentCloudModeImage.Visibility = Visibility.Collapsed;
 
@@ -224,7 +223,6 @@ namespace PintheCloud.Pages
 
                     IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
                     uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(iStorageManager.GetStorageColorHexString()));
-                    uiPivotTitleImage.Source = new BitmapImage(new Uri(PIN_PIVOT_TITLE_IMAGE_URI, UriKind.Relative));
                     uiPivotTitleIndicator.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
                     uiCurrentCloudModeImage.Visibility = Visibility.Visible;
 

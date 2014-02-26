@@ -213,7 +213,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOAD_FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });  
             }
             
@@ -283,7 +283,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOAD_FAIL_IMAGE_URI;
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                     });  
                 }
             }
@@ -291,7 +291,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOAD_FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 }); 
             }
 
@@ -345,7 +345,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DELET_FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });
             }
 
@@ -445,7 +445,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.UPLOAD_FAIL_IMAGE_URI;
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                     });
                 }
             }
@@ -453,7 +453,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.UPLOAD_FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });
             }
 

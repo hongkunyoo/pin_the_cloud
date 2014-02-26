@@ -203,11 +203,14 @@
     <Content Include="Assets\pajeon\at_here\png\general_checkbox.png" />
     <Content Include="Assets\pajeon\at_here\png\general_checkbox_p.png" />
     <Content Include="Assets\pajeon\at_here\png\general_fail.png" />
+    <Content Include="Assets\pajeon\at_here\png\indicator.png" />
+    <Content Include="Assets\pajeon\at_here\png\indicator_bg.png" />
     <Content Include="Assets\pajeon\at_here\png\navi_ico_dropbox.png" />
     <Content Include="Assets\pajeon\at_here\png\navi_ico_googledrive.png" />
     <Content Include="Assets\pajeon\at_here\png\navi_ico_skydrive.png" />
     <Content Include="Assets\pajeon\at_here\png\navi_pick_title.png" />
     <Content Include="Assets\pajeon\at_here\png\navi_pin_title.png" />
+    <Content Include="Assets\pajeon\at_here\png\path_back.png" />
     <Content Include="Assets\pajeon\at_here\png\setting_account_checkbox.png" />
     <Content Include="Assets\pajeon\at_here\png\setting_account_checkbox_p.png" />
     <Content Include="Assets\pajeon\at_here\png\setting_account_dropbox.png" />
@@ -284,7 +287,7 @@
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_like.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_like_p.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_logo.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\general_transparent.png" />
+    <Content Include="Assets\pajeon\at_here\png\general_transparent.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_view.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\icon_file_doc.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\icon_file_etc.png" />

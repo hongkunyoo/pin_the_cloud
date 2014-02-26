@@ -35,7 +35,10 @@
         <Grid x:Name="uiPivotTitleGrid" Background="#FF00A4BF">
         	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,7,0,0">
         		<Image x:Name="uiPivotTitleImage" Source="/Assets\pajeon\at_here\png/navi_pick_title.png" Stretch="None"/>
-        		<StackPanel Orientation="Horizontal"/>
+        		<Grid>
+        			<Image Source="/Assets\pajeon\at_here\png/indicator_bg.png" Stretch="None"/>
+        			<Image x:Name="uiPivotTitleIndicator" Source="/Assets\pajeon\at_here\png/indicator.png" Stretch="None" HorizontalAlignment="Left"/>
+        		</Grid>
         	</StackPanel>
         	<Image x:Name="uiCurrentCloudModeImage" HorizontalAlignment="Right" Stretch="None"/>
         </Grid>
@@ -48,7 +51,7 @@
                             <RowDefinition Height="1"/>
                         </Grid.RowDefinitions>
                         <Button x:Name="uiSpotButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                            <Grid Margin="32,32,32,20">
+                            <Grid Margin="32,0,32,20">
                                 <StackPanel Margin="0">
                                     <TextBlock x:Name="uiSpotName" TextWrapping="Wrap" Text="{Binding SpotName}" FontSize="32" LineHeight="42" Margin="0,0,0,20" UseLayoutRounding="True" Foreground="#FF404041" FontFamily="Segoe WP"/>
                                     <StackPanel Orientation="Horizontal">
@@ -92,9 +95,9 @@
             </Grid.Resources>
             <phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged" Style="{StaticResource CustomPivotStyle}" Foreground="Black">
             	<phone:PivotItem x:Name="uiPickPivot" Margin="0" >
-            		<Grid>
+            		<Grid Margin="0">
             			<TextBlock x:Name="uiNearSpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Foreground="Black" Visibility="Collapsed" Margin="32,32,0,0" />
-            			<phone:LongListSelector x:Name="uiNearSpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpotList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Margin="0,0,0,525" />
+            			<phone:LongListSelector x:Name="uiNearSpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpotList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Margin="0" Padding="0" />
             		</Grid>
             	</phone:PivotItem>
             	<phone:PivotItem x:Name="uiPinInfoPivot" Margin="0">
@@ -111,13 +114,14 @@
             								<ColumnDefinition Width="60"/>
             								<ColumnDefinition/>
             							</Grid.ColumnDefinitions>
+            							<Image Source="/Assets/pajeon/at_here/png/path_back.png" Stretch="None"/>
             							<TextBlock x:Name="uiPinInfoCurrentPath" FontFamily="Segoe WP Light" Foreground="#FF919FA6" TextTrimming="WordEllipsis" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             						</Grid>
             					</Button>
             				</Grid>
-            				<Grid Grid.Row="1">
-            					<TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Visibility="Collapsed" FontSize="22" />
-            					<phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed"/>
+            				<Grid Grid.Row="1" Margin="0">
+            					<TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Visibility="Collapsed" FontSize="22" Margin="28,25,0,0" />
+            					<phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed" Margin="0" Padding="0"/>
             				</Grid>
             			</Grid>
             			<Grid x:Name="uiPinInfoSignInGrid" Visibility="Collapsed">

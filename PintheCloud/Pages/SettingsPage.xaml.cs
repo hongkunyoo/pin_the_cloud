@@ -488,7 +488,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        spotViewItem.SelectCheckImage = FileObjectViewModel.DELET_FAIL_IMAGE_URI;
+                        spotViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                     });
                 }
             }
@@ -496,7 +496,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    spotViewItem.SelectCheckImage = FileObjectViewModel.DELET_FAIL_IMAGE_URI;
+                    spotViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });
             }
 
