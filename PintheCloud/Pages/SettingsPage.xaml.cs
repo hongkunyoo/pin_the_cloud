@@ -146,8 +146,8 @@ namespace PintheCloud.Pages
 
                 // Sign in and await that task.
                 IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
-                App.TaskManager.AddSignInTask(iStorageManager.SignIn(), platformIndex);
-                await App.TaskManager.WaitSignInTask(platformIndex);
+                App.TaskManager.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
+                await App.TaskManager.WaitSignInTask(iStorageManager.GetStorageName());
 
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.
@@ -185,7 +185,7 @@ namespace PintheCloud.Pages
             {
                 Button signoutButton = (Button)sender;
                 int platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
-                App.TaskManager.AddSignOutTask(this.SignOut(platformIndex, App.IStorageManagers[platformIndex]), platformIndex);
+                App.TaskManager.AddSignOutTask(App.IStorageManagers[platformIndex].GetStorageName(), this.SignOut(platformIndex, App.IStorageManagers[platformIndex]));
             }
         }
 
@@ -201,7 +201,7 @@ namespace PintheCloud.Pages
             });
 
             // Wait task and sign out
-            await App.TaskManager.WaitSignInTask(platformIndex);
+            await App.TaskManager.WaitSignInTask(iStorageManager.GetStorageName());
             iStorageManager.SignOut();
 
             // Hide process indicator

@@ -155,8 +155,9 @@ namespace PintheCloud
             // Wait sign task.
             for (int i = 0; i < App.IStorageManagers.Length; i++)
             {
-                await App.TaskManager.WaitSignInTask(i);
-                await App.TaskManager.WaitSignOutTask(i);
+                IStorageManager istr = App.IStorageManagers[i];
+                await App.TaskManager.WaitSignInTask(istr.GetStorageName());
+                await App.TaskManager.WaitSignOutTask(istr.GetStorageName());
             }
         }
 

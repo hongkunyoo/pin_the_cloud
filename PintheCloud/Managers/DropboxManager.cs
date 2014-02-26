@@ -47,7 +47,7 @@ namespace PintheCloud.Managers
         }
 
 
-        public async Task<bool> SignIn()
+        public Task<bool> SignIn()
         {
             // Get dropbox _client.
             this.tcs = new TaskCompletionSource<bool>();
@@ -61,7 +61,16 @@ namespace PintheCloud.Managers
             if (dropboxUser != null)
             {
                 _client.UserLogin = dropboxUser;
-                this.CurrentAccount = await this.GetMyAccountAsync();
+                //this.CurrentAccount = await this.GetMyAccountAsync();
+                this._client.AccountInfoAsync((info) =>
+                {
+                    //tcs.SetResult(new Account(info.uid.ToString(), Account.StorageAccountType.DROPBOX, info.display_name, 0.0, AccountType.NORMAL_ACCOUNT_TYPE));
+                    this.CurrentAccount = new Account(info.uid.ToString(), Account.StorageAccountType.DROPBOX, info.display_name, 0.0, AccountType.NORMAL_ACCOUNT_TYPE);
+                }, (fail) =>
+                {
+                    //tcs.SetException(new Exception("Account Info Get Failed"));
+                    this.CurrentAccount = null;
+                });
                 tcs.SetResult(true);
             }
             else
@@ -84,6 +93,7 @@ namespace PintheCloud.Managers
                         App.ApplicationSettings[DROPBOX_SIGN_IN_KEY] = true;
                         App.ApplicationSettings[DROPBOX_USER_KEY] = user;
                         App.ApplicationSettings.Save();
+                        tcs.SetResult(true);
                     },
                     (error) =>
                     {
@@ -95,13 +105,19 @@ namespace PintheCloud.Managers
                    tcs.SetResult(false);
                });
             }
-            bool result = await tcs.Task;
-            return result;
+            return tcs.Task;
         }
 
         public bool IsSigningIn()
         {
-            return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(DROPBOX_SIGN_IN_KEY);
+            if (this.tcs != null)
+            {
+                return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(DROPBOX_SIGN_IN_KEY);
+            }
+            else
+            {
+                return false;
+            }
         }
         public bool IsPopup()
         {
