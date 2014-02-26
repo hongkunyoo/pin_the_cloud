@@ -20,21 +20,24 @@
 
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
-        	<shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/pajeon/png/general_bar_setting.png" IsEnabled="True" Text="settings" Click="uiAppBarSettingsButton_Click"/>
-        	<shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/png/general_bar_circle.png" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
+        	<shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/pajeon/pin_the_cloud/png/general_bar_setting.png" IsEnabled="True" Text="settings" Click="uiAppBarSettingsButton_Click"/>
+        	<shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/AppBar/refresh.png" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
 
     <Grid x:Name="LayoutRoot" Background="White">
         <Grid.RowDefinitions>
-            <RowDefinition Height="72"/>
+            <RowDefinition Height="76"/>
             <RowDefinition/>
             <RowDefinition Height="72"/>
         </Grid.RowDefinitions>
         <!--피벗 컨트롤-->
         <Grid Background="#FF00A4BF">
-            <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <TextBlock x:Name="uiCurrentPlatformText" HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Visibility="Collapsed" Margin="0,0,18,0"/>
+        	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,7,0,0">
+        		<Image x:Name="uiPivotTitleImage" Source="/Assets\pajeon\at_here\png/navi_pick_title.png" Stretch="None"/>
+        		<StackPanel Orientation="Horizontal"/>
+        	</StackPanel>
+        	<Image x:Name="uiCurrentCloudModeImage" HorizontalAlignment="Right" Stretch="None"/>
         </Grid>
         <Grid x:Name="ContentPanel" Grid.Row="1">
             <Grid.Resources>
@@ -45,18 +48,18 @@
                             <RowDefinition Height="1"/>
                         </Grid.RowDefinitions>
                         <Button x:Name="uiSpotButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                            <Grid Margin="22,17.5,18,14">
+                            <Grid Margin="32,32,32,20">
                                 <StackPanel Margin="0">
-                                    <TextBlock x:Name="uiSpotName" TextWrapping="Wrap" Text="{Binding SpotName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,8" UseLayoutRounding="True" Foreground="Black"/>
-                                    <TextBlock x:Name="uiSpotAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" Margin="0,0,0,8" FontWeight="Light"/>
+                                    <TextBlock x:Name="uiSpotName" TextWrapping="Wrap" Text="{Binding SpotName}" FontSize="32" LineHeight="42" Margin="0,0,0,20" UseLayoutRounding="True" Foreground="#FF404041" FontFamily="Segoe WP"/>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock x:Name="uiSpotDistance" TextWrapping="Wrap" Text="{Binding SpotDistance}" Foreground="#FFA7B6BE" FontSize="22" FontWeight="Light"/>
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Meter, Source={StaticResource LocalizedStrings}}" Foreground="#FFA7B6BE" FontSize="22" FontWeight="Light"/>
+                                        <TextBlock x:Name="uiSpotAccountName" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FF919FA6" Margin="0,0,18,0" FontFamily="Segoe WP Light"/>
+                                    	<TextBlock x:Name="uiSpotDistance" TextWrapping="Wrap" Text="{Binding SpotDistance}" Foreground="#FF919FA6" FontSize="22" FontFamily="Segoe WP Light"/>
+                                    	<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Meter, Source={StaticResource LocalizedStrings}}" Foreground="#FF919FA6" FontSize="22" FontFamily="Segoe WP Light"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Grid>
                         </Button>
-                        <Grid Grid.Row="1" Background="#FFCED7DD"/>
+                        <Grid Grid.Row="1" Background="#FFA6B5BE" Margin="19,0"/>
                     </Grid>
                 </DataTemplate>
                 <DataTemplate x:Key="uiPinInfoListItemTemplate">
@@ -66,61 +69,62 @@
                             <RowDefinition Height="1"/>
                         </Grid.RowDefinitions>
                         <Button Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                            <Grid Margin="22,0,18,0">
+                            <Grid Margin="28,0,44,0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="114"/>
+                                    <ColumnDefinition Width="105"/>
                                     <ColumnDefinition/>
-                                    <ColumnDefinition Width="49"/>
+                                    <ColumnDefinition Width="31"/>
                                 </Grid.ColumnDefinitions>
-                                <Image x:Name="uiThumnail" Source="{Binding ThumnailType, Converter={StaticResource StringToThumnailUriConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="94" Height="94" Stretch="None"/>
-                                <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,20,0,0">
-                                    <TextBlock x:Name="uiName" Text="{Binding Name}" TextWrapping="Wrap" Margin="0,0,0,8" Foreground="Black" FontSize="22"/>
+                                <Image x:Name="uiThumnail" Source="{Binding ThumnailType, Converter={StaticResource StringToThumnailUriConverter}}" HorizontalAlignment="Left" Width="80" Height="80" VerticalAlignment="Center"/>
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,24.5,0,0">
+                                    <TextBlock x:Name="uiName" Text="{Binding Name}" Margin="0,0,0,10" Foreground="#FF404041" FontSize="22" FontFamily="Segoe WP" TextTrimming="WordEllipsis"/>
                                     <StackPanel Orientation="Horizontal">
-                                        <TextBlock x:Name="uiSize" Text="{Binding Size}" TextWrapping="Wrap" Foreground="#FF3ABDBE" FontSize="22" FontWeight="Light"/>
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF3ABDBE" FontWeight="Light"/>
+                                        <TextBlock x:Name="uiSize" Text="{Binding Size}" TextWrapping="Wrap" Foreground="#FF919FA6" FontSize="22" FontFamily="Segoe WP Light"/>
+                                        <TextBlock TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <Image x:Name="uiSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Stretch="None"/>
                             </Grid>
                         </Button>
-                        <Grid Grid.Row="1" Background="#FFCED7DD"/>
+                        <Grid Grid.Row="1" Background="#FFA6B5BE" Margin="19,0"/>
                     </Grid>
                 </DataTemplate>
             </Grid.Resources>
             <phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged" Style="{StaticResource CustomPivotStyle}" Foreground="Black">
-                <phone:PivotItem x:Name="uiPickPivot" Header="{Binding LocalizedResources.Pick, Source={StaticResource LocalizedStrings}}" Margin="0">
-                    <Grid>
-                        <TextBlock x:Name="uiNearSpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,28,18,0" Foreground="Black" Visibility="Collapsed" />
-                        <phone:LongListSelector x:Name="uiNearSpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpotList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" />
-                    </Grid>
-                </phone:PivotItem>
-                <phone:PivotItem x:Name="uiPinInfoPivot" Header="{Binding LocalizedResources.Pin, Source={StaticResource LocalizedStrings}}" Margin="0">
-                    <Grid>
-                        <Grid x:Name="uiPinInfoListGrid">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="73"/>
-                                <RowDefinition/>
-                            </Grid.RowDefinitions>
-                            <Grid x:Name="uiPinInfoListUpButtonGrid">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition Height="1"/>
-                                </Grid.RowDefinitions>
-                                <Button x:Name="uiPinInfoListUpButton" Foreground="Black" Margin="0" BorderBrush="Transparent" Click="uiPinInfoListUpButton_Click" Style="{StaticResource ListItemButtonStyle}" FontSize="22" HorizontalContentAlignment="Left">
-                                    <Grid Margin="22,0,0,0">
-                                        <TextBlock x:Name="uiPinInfoCurrentPath" TextWrapping="Wrap"/>
-                                    </Grid>
-                                </Button>
-                                <Grid Grid.Row="1" Background="#FFCED7DD"/>
-                            </Grid>
-                            <TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Margin="22,28,18,0" HorizontalAlignment="Left" VerticalAlignment="Top" Grid.Row="1" Visibility="Collapsed" FontSize="22" />
-                            <phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Grid.Row="1"/>
-                        </Grid>
-                        <Grid x:Name="uiPinInfoSignInGrid" Visibility="Collapsed">
-                            <Button x:Name="uiPinInfoSignInButton" Content="{Binding LocalizedResources.SignIn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black" Foreground="Black" Click="uiPinInfoSignInButton_Click"/>
-                        </Grid>
-                    </Grid>
-                </phone:PivotItem>
+            	<phone:PivotItem x:Name="uiPickPivot" Margin="0" >
+            		<Grid>
+            			<TextBlock x:Name="uiNearSpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Foreground="Black" Visibility="Collapsed" Margin="32,32,0,0" />
+            			<phone:LongListSelector x:Name="uiNearSpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpotList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Margin="0,0,0,525" />
+            		</Grid>
+            	</phone:PivotItem>
+            	<phone:PivotItem x:Name="uiPinInfoPivot" Margin="0">
+            		<Grid>
+            			<Grid x:Name="uiPinInfoListGrid" Visibility="Collapsed">
+            				<Grid.RowDefinitions>
+            					<RowDefinition Height="40"/>
+            					<RowDefinition/>
+            				</Grid.RowDefinitions>
+            				<Grid Background="#FFF1F1F2" Opacity="0.8">
+            					<Button x:Name="uiPinInfoListUpButton" Foreground="Black" BorderBrush="Transparent" Click="uiPinInfoListUpButton_Click" Style="{StaticResource ListItemButtonStyle}" FontSize="22" HorizontalContentAlignment="Left">
+            						<Grid>
+            							<Grid.ColumnDefinitions>
+            								<ColumnDefinition Width="60"/>
+            								<ColumnDefinition/>
+            							</Grid.ColumnDefinitions>
+            							<TextBlock x:Name="uiPinInfoCurrentPath" FontFamily="Segoe WP Light" Foreground="#FF919FA6" TextTrimming="WordEllipsis" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            						</Grid>
+            					</Button>
+            				</Grid>
+            				<Grid Grid.Row="1">
+            					<TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Visibility="Collapsed" FontSize="22" />
+            					<phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed"/>
+            				</Grid>
+            			</Grid>
+            			<Grid x:Name="uiPinInfoSignInGrid" Visibility="Collapsed">
+            				<Button x:Name="uiPinInfoSignInButton" Content="{Binding LocalizedResources.SignIn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Center" VerticalAlignment="Center" BorderBrush="Black" Foreground="Black" Click="uiPinInfoSignInButton_Click"/>
+            			</Grid>
+            		</Grid>
+            	</phone:PivotItem>
             </phone:Pivot>
         </Grid>
         <!--피벗 컨트롤-->

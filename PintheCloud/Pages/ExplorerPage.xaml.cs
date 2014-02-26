@@ -26,7 +26,17 @@ namespace PintheCloud.Pages
     public partial class ExplorerPage : PtcPage
     {
         // Const Instances
-        private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_bar_upload.png";
+        private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_upload.png";
+
+        private const string ONE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_skydrive.png";
+        private const string DROPBOX_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_dropbox.png";
+        private const string GOOGLE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_googledrive.png";
+
+        private const string ONE_DRIVE_NAVI_COLOR = "#2458A7";
+        private const string DROPBOX_NAVI_COLOR = "#26A4DD";
+        private const string GOOGLE_DRIVE_NAVI_COLOR = "#F1AE1D";
+
+
 
         // Instances
         private int MainPlatformIndex = 0;
