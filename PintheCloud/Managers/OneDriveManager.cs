@@ -34,6 +34,7 @@ namespace PintheCloud.Managers
 
         private LiveConnectClient LiveClient = null;
         private Account CurrentAccount = null;
+        TaskCompletionSource<bool> tcs = null;
         #endregion
 
 
@@ -76,7 +77,7 @@ namespace PintheCloud.Managers
 
         public async Task<bool> SignIn()
         {
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            this.tcs = new TaskCompletionSource<bool>();
             // If it haven't registerd live client, register
             LiveConnectClient liveClient = await this.GetLiveConnectClientAsync();
             if (liveClient != null){
@@ -101,11 +102,16 @@ namespace PintheCloud.Managers
             {
                 tcs.SetResult(false);
             }
-            
             return tcs.Task.Result;
         }
-
-
+        public bool IsSigningIn()
+        {
+            return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(ONE_DRIVE_SIGN_IN_KEY);
+        }
+        public bool IsPopup()
+        {
+            return false;
+        }
         public void SignOut()
         {
             // Remove user record

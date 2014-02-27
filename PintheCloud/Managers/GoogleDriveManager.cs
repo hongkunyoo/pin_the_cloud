@@ -42,6 +42,7 @@ namespace PintheCloud.Managers
         private Account CurrentAccount;
         private User user;
         private string rootFodlerId = "";
+        TaskCompletionSource<bool> tcs = null;
         #endregion
 
         public GoogleDriveManager()
@@ -74,10 +75,8 @@ namespace PintheCloud.Managers
 
         public async Task<bool> SignIn()
         {
-            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+            this.tcs = new TaskCompletionSource<bool>();
             // Add application settings before work for good UX
-            App.ApplicationSettings[GOOGLE_DRIVE_SIGN_IN_KEY] = true;
-            App.ApplicationSettings.Save();
             try
             {
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
@@ -127,22 +126,27 @@ namespace PintheCloud.Managers
                 Debug.WriteLine(e.ToString());
                 tcs.SetResult(false);
             }
-            catch (System.Threading.Tasks.TaskCanceledException e)
+            catch (System.Threading.Tasks.TaskCanceledException)
             {
-                Debug.WriteLine(e.ToString());
                 tcs.SetResult(false);
             }
             return tcs.Task.Result;
         }
-        
 
+        public bool IsSigningIn()
+        {
+            return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(GOOGLE_DRIVE_SIGN_IN_KEY);
+        }
         public void SignOut()
         {
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_USER_KEY);
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_SIGN_IN_KEY);
             this.CurrentAccount = null;
         }
-
+        public bool IsPopup()
+        {
+            return false;
+        }
 
         public bool IsSignIn()
         {

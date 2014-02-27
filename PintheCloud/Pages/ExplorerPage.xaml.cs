@@ -456,6 +456,14 @@ namespace PintheCloud.Pages
         {
             base.OnBackKeyPress(e);
 
+            // if (the manager is a popup type && is in signing mode)
+            if (App.IStorageManagers[this.CurrentPlatformIndex].IsPopup() && App.IStorageManagers[this.CurrentPlatformIndex].IsSigningIn())
+            {
+                EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
+                e.Cancel = true;
+                return;
+            }
+
             // Back file tree
             if (uiExplorerPivot.SelectedIndex == EventHelper.PIN)
             {
@@ -468,7 +476,7 @@ namespace PintheCloud.Pages
             }
 
             // Quit app
-            if (!isSignIning)
+            if (!App.IStorageManagers[this.CurrentPlatformIndex].IsSigningIn())
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
                 if (result != MessageBoxResult.OK)

@@ -15,7 +15,9 @@ namespace PintheCloud.Managers
     public interface IStorageManager
     {
         Task<bool> SignIn();
+        bool IsSigningIn();
         void SignOut();
+        bool IsPopup();
         Account GetAccount();
         bool IsSignIn();
         string GetStorageName();
