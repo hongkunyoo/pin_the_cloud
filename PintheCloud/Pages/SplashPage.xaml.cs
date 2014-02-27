@@ -36,18 +36,23 @@ namespace PintheCloud.Pages
             base.OnNavigatedTo(e);
 
             // Check main platform at frist login.
-            Account.StorageAccountType mainPlatformType = 0;
-            if (!App.ApplicationSettings.TryGetValue<Account.StorageAccountType>(Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY, out mainPlatformType))
+            if (!App.ApplicationSettings.Contains(Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY))
             {
                 App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.ONE_DRIVE;
                 App.ApplicationSettings.Save();
             }
 
             // Check nick name at frist login.
-            string nickName = null;
-            if (!App.ApplicationSettings.TryGetValue<string>(Account.ACCOUNT_NICK_NAME_KEY, out nickName))
+            if (!App.ApplicationSettings.Contains(Account.ACCOUNT_NICK_NAME_KEY))
             {
                 App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY] = AppResources.AtHere;
+                App.ApplicationSettings.Save();
+            }
+
+            // Check location access consent at frist login.
+            if (!App.ApplicationSettings.Contains(Account.LOCATION_ACCESS_CONSENT_KEY))
+            {
+                App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = false;
                 App.ApplicationSettings.Save();
             }
 
@@ -60,7 +65,7 @@ namespace PintheCloud.Pages
                     // If main platform is signed in, process it.
                     // Otherwise, ignore and go to explorer page.
                     if (App.IStorageManagers[i].IsSignIn())
-                        App.TaskManager.AddSignInTask(App.IStorageManagers[i].SignIn(), i);
+                        App.TaskHelper.AddSignInTask(App.IStorageManagers[i].GetStorageName(), App.IStorageManagers[i].SignIn());
                 }
             }
             NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE, UriKind.Relative));

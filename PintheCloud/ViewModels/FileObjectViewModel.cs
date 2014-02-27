@@ -13,19 +13,15 @@ namespace PintheCloud.ViewModels
     public class FileObjectViewModel : INotifyPropertyChanged
     {
         // Instances
-        public const string CHECK_NOT_IMAGE_URI = "/Assets/pajeon/png/general_checkbox.png";
-        public const string CHECK_IMAGE_URI = "/Assets/pajeon/png/general_checkbox_p.png";
+        public const string CHECK_NOT_IMAGE_URI = "/Assets/pajeon/at_here/png/general_checkbox.png";
+        public const string CHECK_IMAGE_URI = "/Assets/pajeon/at_here/png/general_checkbox_p.png";
 
-        public const string TRANSPARENT_IMAGE_URI = "/Assets/pajeon/png/general_transparent.png";
+        public const string TRANSPARENT_IMAGE_URI = "/Assets/pajeon/at_here/png/general_transparent.png";
+        public const string FAIL_IMAGE_URI = "/Assets/pajeon/at_here/png/general_fail.png";
 
         public const string DELETING_IMAGE_URI = "DELETING_SPOT_IMAGE_URI";
-        public const string DELET_FAIL_IMAGE_URI = "DELET_FAIL_IMAGE_URI";
-
         public const string UPLOADING_IMAGE_URI = "UPLOADING_FILE_IMAGE_URI";
-        public const string UPLOAD_FAIL_IMAGE_URI = "UPLOAD_FAIL_IMAGE_URI";
-
         public const string DOWNLOADING_IMAGE_URI = "DOWNLOADING_FILE_IMAGE_URI";
-        public const string DOWNLOAD_FAIL_IMAGE_URI = "DOWNLOAD_FAIL_IMAGE_URI";
 
         public const string FOLDER = "folder";
 

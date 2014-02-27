@@ -29,18 +29,21 @@ namespace PintheCloud.Managers
         #region Variables
         // Summary:
         //     Object to communicate with OneDrive.
+        private const string LIVE_CLIENT_ID = "0000000044110129";
         private const string ONE_DRIVE_SIGN_IN_KEY = "ONE_DRIVE_SIGN_IN_KEY";
-        private string LIVE_CLIENT_ID = "0000000044110129";
+
+        private const string ONE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_skydrive.png";
+        private const string ONE_DRIVE_COLOR_HEX_STRING = "2458A7";
 
         private LiveConnectClient LiveClient = null;
         private Account CurrentAccount = null;
-        TaskCompletionSource<bool> tcs = null;
+        private TaskCompletionSource<bool> tcs = null;
         #endregion
 
 
         private async Task<LiveConnectClient> GetLiveConnectClientAsync()
         {
-            LiveAuthClient liveAuthClient = new LiveAuthClient(this.LIVE_CLIENT_ID);
+            LiveAuthClient liveAuthClient = new LiveAuthClient(LIVE_CLIENT_ID);
             string[] scopes = new[] { "wl.basic", "wl.signin", "wl.offline_access", "wl.skydrive", "wl.skydrive_update", "wl.contacts_skydrive" };
             LiveLoginResult liveLoginResult = null;
 
@@ -75,13 +78,17 @@ namespace PintheCloud.Managers
                 return new LiveConnectClient(liveLoginResult.Session);
         }
 
+
         public async Task<bool> SignIn()
         {
             this.tcs = new TaskCompletionSource<bool>();
+
             // If it haven't registerd live client, register
             LiveConnectClient liveClient = await this.GetLiveConnectClientAsync();
-            if (liveClient != null){
+            if (liveClient != null)
+            {
                 this.LiveClient = liveClient;
+
                 // Get id and name.
                 LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
                 string accountId = (string)operationResult.Result["id"];
@@ -104,18 +111,27 @@ namespace PintheCloud.Managers
             }
             return tcs.Task.Result;
         }
+
+
         public bool IsSigningIn()
         {
-            return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(ONE_DRIVE_SIGN_IN_KEY);
+            if (this.tcs != null)
+                return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(ONE_DRIVE_SIGN_IN_KEY);
+            else
+                return false;
         }
+
+
         public bool IsPopup()
         {
             return false;
         }
+
+
         public void SignOut()
         {
             // Remove user record
-            LiveAuthClient liveAuthClient = new LiveAuthClient(this.LIVE_CLIENT_ID);
+            LiveAuthClient liveAuthClient = new LiveAuthClient(LIVE_CLIENT_ID);
             liveAuthClient.Logout();
 
             // Remove user is signed in record
@@ -136,6 +152,18 @@ namespace PintheCloud.Managers
         public string GetStorageName()
         {
             return AppResources.OneDrive;
+        }
+
+
+        public string GetStorageImageUri()
+        {
+            return ONE_DRIVE_IMAGE_URI;
+        }
+
+
+        public string GetStorageColorHexString()
+        {
+            return ONE_DRIVE_COLOR_HEX_STRING;
         }
 
 

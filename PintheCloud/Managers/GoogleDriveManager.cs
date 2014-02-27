@@ -29,9 +29,12 @@ namespace PintheCloud.Managers
         #region Variables
         private const string GOOGLE_DRIVE_CLIENT_ID = "109786198225-m8fihmv82b2fmf5k4d69u9039ebn68fn.apps.googleusercontent.com";
         private const string GOOGLE_DRIVE_CLIENT_SECRET = "Tk8M01zlkBRlIsv-1fa9BKiS";
-
+        
         private const string GOOGLE_DRIVE_USER_KEY = "GOOGLE_DRIVE_USER_KEY";
         private const string GOOGLE_DRIVE_SIGN_IN_KEY = "GOOGLE_DRIVE_SIGN_IN_KEY";
+
+        private const string GOOGLE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_googledrive.png";
+        private const string GOOGLE_DRIVE_COLOR_HEX_STRING = "F1AE1D";
 
         public static Dictionary<string, string> GoogleDocMapper;
         public static Dictionary<string, string> MimeTypeMapper;
@@ -42,7 +45,7 @@ namespace PintheCloud.Managers
         private Account CurrentAccount;
         private User user;
         private string rootFodlerId = "";
-        TaskCompletionSource<bool> tcs = null;
+        private TaskCompletionSource<bool> tcs = null;
         #endregion
 
         public GoogleDriveManager()
@@ -111,6 +114,7 @@ namespace PintheCloud.Managers
                     await AccountHelper.CreateAccountAsync(account);
                 }
                 this.CurrentAccount = account;
+
                 // Save sign in setting.
                 App.ApplicationSettings[GOOGLE_DRIVE_SIGN_IN_KEY] = true;
                 App.ApplicationSettings.Save();
@@ -135,7 +139,11 @@ namespace PintheCloud.Managers
 
         public bool IsSigningIn()
         {
-            return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(GOOGLE_DRIVE_SIGN_IN_KEY);
+            if (this.tcs != null)
+                return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(GOOGLE_DRIVE_SIGN_IN_KEY);
+            else
+                return false;
+            
         }
         public void SignOut()
         {
@@ -157,6 +165,18 @@ namespace PintheCloud.Managers
         public string GetStorageName()
         {
             return AppResources.GoogleDrive;
+        }
+
+
+        public string GetStorageImageUri()
+        {
+            return GOOGLE_DRIVE_IMAGE_URI;
+        }
+
+
+        public string GetStorageColorHexString()
+        {
+            return GOOGLE_DRIVE_COLOR_HEX_STRING;
         }
 
 

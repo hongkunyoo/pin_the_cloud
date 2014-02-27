@@ -24,6 +24,7 @@ using System.Net.NetworkInformation;
 using PintheCloud.Resources;
 using System.Diagnostics;
 using PintheCloud.Converters;
+using PintheCloud.Helpers;
 
 namespace PintheCloud.Pages
 {
@@ -70,12 +71,12 @@ namespace PintheCloud.Pages
 
             // Set event by previous page
             Context con = EventHelper.GetContext(EventHelper.FILE_LIST_PAGE);
-            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PICK, () =>
+            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PICK_PIVOT, () =>
             {
                 this.DeleteLock = true;
                 this.SETTINGS_and_EXPLORE_PICK();
             });
-            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PIN, this.EXPLORER_PIN);
+            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PIN_PIVOT, this.EXPLORER_PIN);
             con.HandleEvent(EventHelper.SETTINGS_PAGE, this.SETTINGS_and_EXPLORE_PICK);
         }
 
@@ -213,7 +214,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOAD_FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });  
             }
             
@@ -223,27 +224,23 @@ namespace PintheCloud.Pages
 
 
         // Download files.
-        private async void PickAppBarButton_Click(object sender, EventArgs e)
+        private void PickAppBarButton_Click(object sender, EventArgs e)
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                if (App.IStorageManagers[this.PlatformIndex].IsSignIn())
+                IStorageManager iStr = App.IStorageManagers[this.PlatformIndex];
+                if (iStr.IsSignIn())
                 {
-                    // Wait tasks
-                    bool result = await App.TaskManager.WaitSignInTask(this.PlatformIndex);
-                    await App.TaskManager.WaitSignOutTask(this.PlatformIndex);
-
-                    if (result)
-                    {
-                        foreach (FileObjectViewItem fileObjectViewItem in this.SelectedFile)
-                            this.PickFileAsync(fileObjectViewItem);
-                        this.SelectedFile.Clear();
-                        this.PickAppBarButton.IsEnabled = false;
-                        this.DeleteAppBarButton.IsEnabled = false;
-                        return;
-                    }
+                    foreach (FileObjectViewItem fileObjectViewItem in this.SelectedFile)
+                        this.PickFileAsync(fileObjectViewItem);
+                    this.SelectedFile.Clear();
+                    this.PickAppBarButton.IsEnabled = false;
+                    this.DeleteAppBarButton.IsEnabled = false;
                 }
-                MessageBox.Show(AppResources.NoSignedInMessage, App.IStorageManagers[this.PlatformIndex].GetStorageName(), MessageBoxButton.OK);
+                else
+                {
+                    MessageBox.Show(AppResources.NoSignedInMessage, App.IStorageManagers[this.PlatformIndex].GetStorageName(), MessageBoxButton.OK);
+                }
             }
             else
             {
@@ -283,7 +280,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOAD_FAIL_IMAGE_URI;
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                     });  
                 }
             }
@@ -291,7 +288,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOAD_FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 }); 
             }
 
@@ -345,7 +342,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DELET_FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });
             }
 
@@ -390,7 +387,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
 
             // Pin spot
-            Geoposition geo = await App.GeoHelper.GetCurrentGeopositionAsync();
+            Geoposition geo = await App.Geolocator.GetGeopositionAsync();
             Spot spot = new Spot(this.SpotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
             string spotId = null;
             if (await App.SpotManager.PinSpotAsync(spot))
@@ -398,6 +395,7 @@ namespace PintheCloud.Pages
                 spotId = spot.id;
                 base.Dispatcher.BeginInvoke(() =>
                 {
+                    ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                     uiFileList.Visibility = Visibility.Visible;
                     uiFileListMessage.Visibility = Visibility.Collapsed;
                 });
@@ -445,7 +443,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.UPLOAD_FAIL_IMAGE_URI;
+                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                     });
                 }
             }
@@ -453,7 +451,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.UPLOAD_FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });
             }
 
@@ -473,11 +471,8 @@ namespace PintheCloud.Pages
             string spotId = await this.PinSpotAsync();
             if (spotId != null)
             {
-                // Register spot id
-                // Get selected files from previous page, Upload each files in order.
+                // Register spot id and Get selected files from previous page, Upload each files in order.
                 this.SpotId = spotId;
-                ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
-
                 for (int i = 0; i < fileArray.Length; i++)
                 {
                     FileObjectViewItem fileObjectViewItem = new FileObjectViewItem(fileArray[i]);
@@ -501,7 +496,7 @@ namespace PintheCloud.Pages
                     this.DeleteAppBarButton.IsEnabled = false;
                 }
                 ApplicationBar.Buttons.Remove(this.PickAppBarButton);
-                if (!DeleteLock)
+                if (!this.DeleteLock)
                     ApplicationBar.Buttons.Remove(this.DeleteAppBarButton);
                 uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_URI, UriKind.Relative));
                 
@@ -518,7 +513,7 @@ namespace PintheCloud.Pages
             {
                 // Change mode image and remove app bar buttons.
                 ApplicationBar.Buttons.Add(this.PickAppBarButton);
-                if (!DeleteLock)
+                if (!this.DeleteLock)
                     ApplicationBar.Buttons.Add(this.DeleteAppBarButton);
                 uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_URI, UriKind.Relative));
 

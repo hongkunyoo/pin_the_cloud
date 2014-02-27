@@ -92,7 +92,7 @@
             			</StackPanel>
             		</Grid>
             		<Grid x:Name="uiApplicationMessageGrid" Visibility="Collapsed">
-            			<TextBlock x:Name="uiApplicationMessage" Text="{Binding LocalizedResources.DoingSignIn, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22" Margin="22,28,8,0"/>
+            			<TextBlock x:Name="uiApplicationMessage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22" Margin="22,28,8,0"/>
             		</Grid>
             	</Grid>
             </phone:PivotItem>

@@ -12,17 +12,17 @@ namespace PintheCloud.Converters
     public class StringToThumnailUriConverter : IValueConverter
     {
         // Instances
-        private const string FOLDER_IMAGE_PATH = "/Assets/pajeon/png/icon_file_folder.png";
-        private const string DOC_IMAGE_PATH = "/Assets/pajeon/png/icon_file_doc.png";
-        private const string ETC_IMAGE_PATH = "/Assets/pajeon/png/icon_file_etc.png";
-        private const string HWP_IMAGE_PATH = "/Assets/pajeon/png/icon_file_hwp.png";
-        private const string IMG_IMAGE_PATH = "/Assets/pajeon/png/icon_file_image.png";
-        private const string PDF_IMAGE_PATH = "/Assets/pajeon/png/icon_file_pdf.png";
-        private const string PPT_IMAGE_PATH = "/Assets/pajeon/png/icon_file_ppt.png";
-        private const string SOUND_IMAGE_PATH = "/Assets/pajeon/png/icon_file_sound.png";
-        private const string VIDEO_IMAGE_PATH = "/Assets/pajeon/png/icon_file_video.png";
-        private const string XLS_IMAGE_PATH = "/Assets/pajeon/png/icon_file_xls.png";
-        private const string ZIP_IMAGE_PATH = "/Assets/pajeon/png/icon_file_zip.png";
+        private const string FOLDER_IMAGE_PATH = "/Assets/pajeon/pin_the_cloud/png/icon_file_folder.png";
+        private const string DOC_IMAGE_PATH = "/Assets/pajeon/pin_the_cloud/png/icon_file_doc.png";
+        private const string ETC_IMAGE_PATH = "/Assets/pajeon/pin_the_cloud/png/icon_file_etc.png";
+        private const string HWP_IMAGE_PATH = "/Assets/pajeon/pin_the_cloud/png/icon_file_hwp.png";
+        private const string IMG_IMAGE_PATH = "/Assets/pajeon/pin_the_cloud/png/icon_file_image.png";
+        private const string PDF_IMAGE_PATH = "/Assets/pajeon/pin_the_cloud/png/icon_file_pdf.png";
+        private const string PPT_IMAGE_PATH = "/Assets/pajeon/pin_the_cloud/png/icon_file_ppt.png";
+        private const string SOUND_IMAGE_PATH = "/Assets/pajeon/pin_the_cloud/png/icon_file_sound.png";
+        private const string VIDEO_IMAGE_PATH = "/Assets/pajeon/pin_the_cloud/png/icon_file_video.png";
+        private const string XLS_IMAGE_PATH = "/Assets/pajeon/pin_the_cloud/png/icon_file_xls.png";
+        private const string ZIP_IMAGE_PATH = "/Assets/pajeon/pin_the_cloud/png/icon_file_zip.png";
 
         // Folder
         private const string FOLDER = "folder";

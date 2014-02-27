@@ -26,9 +26,12 @@ namespace PintheCloud.Managers
         private const string DROPBOX_USER_KEY = "DROPBOX_USER_KEY";
         private const string DROPBOX_SIGN_IN_KEY = "DROPBOX_SIGN_IN_KEY";
 
+        private const string DROPBOX_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_dropbox.png";
+        private const string DROPBOX_COLOR_HEX_STRING = "26A4DD";
+
         private DropNetClient _client = null;
         private Account CurrentAccount = null;
-        TaskCompletionSource<bool> tcs = null;
+        private TaskCompletionSource<bool> tcs = null;
         #endregion
 
 
@@ -44,7 +47,7 @@ namespace PintheCloud.Managers
         }
 
 
-        public async Task<bool> SignIn()
+        public Task<bool> SignIn()
         {
             // Get dropbox _client.
             this.tcs = new TaskCompletionSource<bool>();
@@ -58,7 +61,16 @@ namespace PintheCloud.Managers
             if (dropboxUser != null)
             {
                 _client.UserLogin = dropboxUser;
-                this.CurrentAccount = await this.GetMyAccountAsync();
+                //this.CurrentAccount = await this.GetMyAccountAsync();
+                this._client.AccountInfoAsync((info) =>
+                {
+                    //tcs.SetResult(new Account(info.uid.ToString(), Account.StorageAccountType.DROPBOX, info.display_name, 0.0, AccountType.NORMAL_ACCOUNT_TYPE));
+                    this.CurrentAccount = new Account(info.uid.ToString(), Account.StorageAccountType.DROPBOX, info.display_name, 0.0, AccountType.NORMAL_ACCOUNT_TYPE);
+                }, (fail) =>
+                {
+                    //tcs.SetException(new Exception("Account Info Get Failed"));
+                    this.CurrentAccount = null;
+                });
                 tcs.SetResult(true);
             }
             else
@@ -81,6 +93,7 @@ namespace PintheCloud.Managers
                         App.ApplicationSettings[DROPBOX_SIGN_IN_KEY] = true;
                         App.ApplicationSettings[DROPBOX_USER_KEY] = user;
                         App.ApplicationSettings.Save();
+                        tcs.SetResult(true);
                     },
                     (error) =>
                     {
@@ -92,18 +105,25 @@ namespace PintheCloud.Managers
                    tcs.SetResult(false);
                });
             }
-            bool result = await tcs.Task;
-            return result;
+            return tcs.Task;
         }
+
 
         public bool IsSigningIn()
         {
-            return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(DROPBOX_SIGN_IN_KEY);
+            if (this.tcs != null)
+                return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(DROPBOX_SIGN_IN_KEY);
+            else
+                return false;
         }
+
+
         public bool IsPopup()
         {
             return true;
         }
+
+
         public void SignOut()
         {
             // Remove user record
@@ -125,6 +145,18 @@ namespace PintheCloud.Managers
         public string GetStorageName()
         {
             return AppResources.Dropbox;
+        }
+
+
+        public string GetStorageImageUri()
+        {
+            return DROPBOX_IMAGE_URI;
+        }
+
+
+        public string GetStorageColorHexString()
+        {
+            return DROPBOX_COLOR_HEX_STRING;
         }
 
 

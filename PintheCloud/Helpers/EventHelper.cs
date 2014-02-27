@@ -13,10 +13,11 @@ namespace PintheCloud.Managers
         public const string EXPLORER_PAGE = "/Pages/ExplorerPage.xaml";
         public const string SETTINGS_PAGE = "/Pages/SettingsPage.xaml";
         public const string FILE_LIST_PAGE = "/Pages/FileListPage.xaml";
+
         public const string POPUP_CLOSE = "POP_UP_CLOSE";
 
-        public const int PICK = 0;
-        public const int PIN = 1;
+        public const int PICK_PIVOT = 0;
+        public const int PIN_PIVOT = 1;
         public const int NO_PIVOT = 2;
 
         private static Dictionary<string, Context> Map = new Dictionary<string, Context>();
@@ -66,7 +67,7 @@ namespace PintheCloud.Managers
                 return;
             }
             if (!m[previous].ContainsKey(pivot)) return;
-            Debug.WriteLine("firing : {0} {1} {2}", current, previous, pivot == PIN ? "PIN" : "PICK");
+            Debug.WriteLine("firing : {0} {1} {2}", current, previous, pivot == PIN_PIVOT ? "PIN" : "PICK");
             m[previous][pivot]();
         }
     }

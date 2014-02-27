@@ -55,9 +55,7 @@ namespace PintheCloud.Pages
 
 
             // Set location access consent checkbox
-            bool isLocationAccessConsent = false;
-            App.ApplicationSettings.TryGetValue<bool>(Account.LOCATION_ACCESS_CONSENT_KEY, out isLocationAccessConsent);
-            if (isLocationAccessConsent)
+            if ((bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY])
                 uiLocationAccessConsentCheckBox.IsChecked = true;
             else
                 uiLocationAccessConsentCheckBox.IsChecked = false;
@@ -132,28 +130,32 @@ namespace PintheCloud.Pages
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                // Get index
-                Button signoutButton = (Button)sender;
-                int platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
-
-
-                // Set process indicator
+                // Set process indicator and Get index
+                int platformIndex = 0;
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     uiApplicationGrid.Visibility = Visibility.Collapsed;
                     uiApplicationMessageGrid.Visibility = Visibility.Visible;
+                    uiApplicationMessage.Text = AppResources.DoingSignIn;
+
+                    Button signoutButton = (Button)sender;
+                    platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
                 });
 
                 // Sign in and await that task.
-                IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
-                App.TaskManager.AddSignInTask(iStorageManager.SignIn(), platformIndex);
-                await App.TaskManager.WaitSignInTask(platformIndex);
+                IStorageManager iStorageManager = App.IStorageManagers[platformIndex];                
+                if (!iStorageManager.IsSigningIn())
+                    App.TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
+                bool result = await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
 
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.
-                if (iStorageManager.GetAccount() != null)
+                if (result)
                 {
-                    this.SetSignButton(platformIndex, true);
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        this.SetSignButton(platformIndex, true);    
+                    });
                 }
                 else
                 {
@@ -180,38 +182,33 @@ namespace PintheCloud.Pages
         private void SignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             // Sign out
-            MessageBoxResult result = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.OK)
+            MessageBoxResult signOutResult = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
+            if (signOutResult == MessageBoxResult.OK)
             {
+                // Set process indicator and get index
+                uiApplicationGrid.Visibility = Visibility.Collapsed;
+                uiApplicationMessageGrid.Visibility = Visibility.Visible;
+                uiApplicationMessage.Text = AppResources.DoingSignOut;
                 Button signoutButton = (Button)sender;
                 int platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
-                App.TaskManager.AddSignOutTask(this.SignOut(platformIndex, App.IStorageManagers[platformIndex]), platformIndex);
+
+                // Sign out
+                IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
+                App.TaskHelper.AddSignOutTask(iStorageManager.GetStorageName(), this.SignOut(iStorageManager));
+
+                // Hide process indicator
+                ((FileObjectViewModel)PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
+                uiApplicationGrid.Visibility = Visibility.Visible;
+                uiApplicationMessageGrid.Visibility = Visibility.Collapsed;
+                this.SetSignButton(platformIndex, false);
             }
         }
 
 
-        private async Task SignOut(int platformIndex, IStorageManager iStorageManager)
+        private async Task SignOut(IStorageManager iStorageManager)
         {
-            // Set process indicator
-            base.Dispatcher.BeginInvoke(() =>
-            {
-                uiApplicationGrid.Visibility = Visibility.Collapsed;
-                uiApplicationMessageGrid.Visibility = Visibility.Visible;
-                uiApplicationMessage.Text = AppResources.DoingSignOut;
-            });
-
-            // Wait task and sign out
-            await App.TaskManager.WaitSignInTask(platformIndex);
+            bool result = await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
             iStorageManager.SignOut();
-
-            // Hide process indicator
-            base.Dispatcher.BeginInvoke(() =>
-            {
-                uiApplicationGrid.Visibility = Visibility.Visible;
-                uiApplicationMessageGrid.Visibility = Visibility.Collapsed;
-                uiApplicationMessage.Text = AppResources.DoingSignIn;
-                this.SetSignButton(platformIndex, false);
-            });
         }
 
 
@@ -479,7 +476,6 @@ namespace PintheCloud.Pages
                     {
                         this.MySpotViewModel.Items.Remove(spotViewItem);
                         ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
-
                         if (this.MySpotViewModel.Items.Count < 1)
                             base.SetListUnableAndShowMessage(uiMySpotList, AppResources.NoFileInSpotMessage, uiMySpotMessage);
                     });
@@ -488,7 +484,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        spotViewItem.SelectCheckImage = FileObjectViewModel.DELET_FAIL_IMAGE_URI;
+                        spotViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                     });
                 }
             }
@@ -496,7 +492,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    spotViewItem.SelectCheckImage = FileObjectViewModel.DELET_FAIL_IMAGE_URI;
+                    spotViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });
             }
 

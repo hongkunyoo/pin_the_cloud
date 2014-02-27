@@ -31,11 +31,14 @@ namespace PintheCloud.Pages
         }
 
 
-        private void webBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
+        private async void webBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            if (e.Uri.ToString().StartsWith(DropboxManager.DROPBOX_AUTH_URI.Split('.').First())
-                && e.Uri.ToString().Contains(DropboxManager.DROPBOX_AUTH_URI.Split('/').Last()))
+            if (e.Uri.ToString().StartsWith("http://")
+                && e.Uri.ToString().Contains("http://54.214.19.198"))
+            {
                 this.popup.IsOpen = false;
+                await uiWebBrowser.ClearCookiesAsync();
+            }
         }
     }
 }

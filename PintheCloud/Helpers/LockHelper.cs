@@ -10,8 +10,6 @@ namespace PintheCloud.Helpers
     {
         private static string LOCK_KEY = "LOCK_KEY";
         public delegate void Block();
-
-
         public static void Mutex(Block b)
         {
             if(!App.ApplicationSettings.Contains(LOCK_KEY)){
