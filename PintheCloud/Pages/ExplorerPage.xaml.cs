@@ -541,10 +541,11 @@ namespace PintheCloud.Pages
                 // Sign in and await that task.
                 IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
                 App.TaskManager.AddSignInTask(iStorageManager.SignIn(), this.CurrentPlatformIndex);
-                await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);
+                bool result = await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.
-                if (iStorageManager.GetAccount() != null)
+                //if (iStorageManager.GetAccount() != null)
+                if (result)
                 {
                     this.SetPinInfoListAsync(null, AppResources.Loading, iStorageManager);
                 }
@@ -593,6 +594,8 @@ namespace PintheCloud.Pages
                     this.SelectedFile.Clear();
 
                     FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
+                    FileObject.PrintFile(rootFolder);
+                        
                     folder = new FileObjectViewItem();
                     folder.Id = rootFolder.Id;
                 }

@@ -41,7 +41,7 @@ namespace PintheCloud.Managers
         }
 
 
-        public async Task SignIn()
+        public async Task<bool> SignIn()
         {
             // Add application settings before work for good UX
             UserLogin dropboxUser = null;
@@ -92,7 +92,7 @@ namespace PintheCloud.Managers
                 this.CurrentAccount = await this.GetMyAccountAsync();
                 tcs.SetResult(true);
             }
-            await tcs.Task;
+            return tcs.Task.Result;
         }
 
 

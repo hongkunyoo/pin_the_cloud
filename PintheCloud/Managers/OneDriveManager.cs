@@ -73,8 +73,9 @@ namespace PintheCloud.Managers
                 return new LiveConnectClient(liveLoginResult.Session);
         }
 
-        public async Task SignIn()
+        public async Task<bool> SignIn()
         {
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             // Add application settings before work for good UX
             App.ApplicationSettings[ONE_DRIVE_USER_KEY] = true;
             App.ApplicationSettings.Save();
@@ -87,22 +88,29 @@ namespace PintheCloud.Managers
                 if (liveClient != null)
                 {
                     this.LiveClient = liveClient;
+
+                    LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
+                    string accountId = (string)operationResult.Result["id"];
+                    string accountUserName = (string)operationResult.Result["name"];
+                    Account account = await AccountHelper.GetAccountAsync(accountId);
+                    if (account == null)
+                    {
+                        await AccountHelper.CreateAccountAsync(accountId, accountUserName, Account.StorageAccountType.ONE_DRIVE);
+                    }
+                    this.CurrentAccount = account;
+                    tcs.SetResult(true);
                 }
                 else
                 {
                     this.SignOut();
-                    return;
+                    tcs.SetResult(false);
                 }
             }
-            LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
-            string accountId = (string)operationResult.Result["id"];
-            string accountUserName = (string)operationResult.Result["name"];
-            Account account = await AccountHelper.GetAccountAsync(accountId);
-            if (account == null)
+            else
             {
-                await AccountHelper.CreateAccountAsync(accountId, accountUserName, Account.StorageAccountType.ONE_DRIVE);
+                tcs.SetResult(false);
             }
-            this.CurrentAccount = account;
+            return tcs.Task.Result;
         }
 
 
