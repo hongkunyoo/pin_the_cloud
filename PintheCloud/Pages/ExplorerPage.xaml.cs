@@ -511,13 +511,12 @@ namespace PintheCloud.Pages
         }
 
 
-        private string GetCurrentPath()
+        private void SetCurrentPath()
         {
             FileObjectViewItem[] array = this.FolderRootTree.Reverse<FileObjectViewItem>().ToArray<FileObjectViewItem>();
-            string str = String.Empty;
+            uiPinInfoCurrentPath.Text = String.Empty;
             foreach (FileObjectViewItem f in array)
-                str += f.Name + "/";
-            return str;
+                uiPinInfoCurrentPath.Text = uiPinInfoCurrentPath.Text + f.Name + "/";
         }
 
 
@@ -535,7 +534,7 @@ namespace PintheCloud.Pages
 
             // Set previous files to list.
             this.FileObjectViewModel.SetItems(this.FoldersTree.First(), true);
-            uiPinInfoCurrentPath.Text = this.GetCurrentPath();
+            this.SetCurrentPath();
         }
 
 
@@ -585,6 +584,7 @@ namespace PintheCloud.Pages
         private async void SetPinInfoListAsync(FileObjectViewItem folder, string message, IStorageManager iStorageManager)
         {
             // Set Mutex true and Show Process Indicator
+            this.FileObjectViewModel.IsDataLoaded = true;
             this.FileObjectViewModel.IsDataLoading = true;
             base.SetListUnableAndShowMessage(uiPinInfoList, message, uiPinInfoMessage);
             base.SetProgressIndicator(true);
@@ -600,6 +600,7 @@ namespace PintheCloud.Pages
             await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
             await App.TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
 
+
             // If it wasn't signed out, set list.
             // Othersie, show sign in grid.
             if (iStorageManager.GetAccount() != null)  // Wasn't signed out.
@@ -609,10 +610,6 @@ namespace PintheCloud.Pages
                 {
                     this.FolderRootTree.Clear();
                     this.FoldersTree.Clear();
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        uiPinInfoCurrentPath.Text = "";
-                    });
 
                     FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
                     folder = new FileObjectViewItem();
@@ -622,18 +619,16 @@ namespace PintheCloud.Pages
 
                 // Get files and push to stack tree.
                 List<FileObject> files = await iStorageManager.GetFilesFromFolderAsync(folder.Id);
-                if (!message.Equals(AppResources.Refreshing))
-                {
+                if(!this.FolderRootTree.Contains(folder))
                     this.FolderRootTree.Push(folder);
+                if (!message.Equals(AppResources.Refreshing))
                     this.FoldersTree.Push(files);
-                }
 
                 // Set file list visible and current path.
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    this.FileObjectViewModel.IsDataLoaded = true;
                     uiPinInfoList.Visibility = Visibility.Visible;
-                    uiPinInfoCurrentPath.Text = this.GetCurrentPath();
+                    this.SetCurrentPath();
                     this.FileObjectViewModel.SetItems(files, true);
                 });
 

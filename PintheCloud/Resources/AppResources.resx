@@ -128,9 +128,6 @@
   <data name="About" xml:space="preserve">
     <value>About</value>
   </data>
-  <data name="Application" xml:space="preserve">
-    <value>Application</value>
-  </data>
   <data name="BadSignInMessage" xml:space="preserve">
     <value>Sign in process met error. Please try it again</value>
   </data>
@@ -221,11 +218,8 @@
   <data name="AtHere" xml:space="preserve">
     <value>At Here</value>
   </data>
-  <data name="SpotNickName" xml:space="preserve">
-    <value>Spot Nick Name</value>
-  </data>
-  <data name="SpotNickNameMaxLength" xml:space="preserve">
-    <value>(Max 15 length)</value>
+  <data name="Nickname" xml:space="preserve">
+    <value>Nickname</value>
   </data>
   <data name="NoLocationServiceCaption" xml:space="preserve">
     <value>Location Service Off</value>
@@ -292,5 +286,11 @@
   </data>
   <data name="DeleteSpotMessage" xml:space="preserve">
     <value>Do you want to delete the spot?</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profile</value>
   </data>
 </root>

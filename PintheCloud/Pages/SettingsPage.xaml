@@ -1,5 +1,4 @@
 ﻿<local:PtcPage
-    x:Class="PintheCloud.Pages.SettingsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:PintheCloud.Pages"
@@ -7,6 +6,8 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkitPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls.Toolkit" xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+    x:Class="PintheCloud.Pages.SettingsPage"
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -16,161 +17,177 @@
     shell:SystemTray.IsVisible="True" >
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E" IsVisible="False">
-			<shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/png/general_bar_circle.png" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
+        	<shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/png/general_bar_circle.png" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
 
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
-    <Grid x:Name="LayoutRoot" Background="White">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="72"/>
-            <RowDefinition/>
-        </Grid.RowDefinitions>
-        <!--피벗 컨트롤-->
-        <Grid Background="#FF00A4BF">
-            <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <Button x:Name="uiMySpotEditViewButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Visibility="Collapsed" Click="uiMySpotEditViewButton_Click">
-            	<Image x:Name="uiMySpotEditViewButtonImage" Source="/Assets/pajeon/png/general_edit.png" Stretch="None"/>
-            </Button>
+	<Grid x:Name="LayoutRoot" Background="White">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="20"/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+		<!--피벗 컨트롤--><!--피벗 컨트롤-->
+		<Grid Background="#FF00A4BF">
+			<Button x:Name="uiMySpotEditViewButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Visibility="Collapsed" Click="uiMySpotEditViewButton_Click">
+				<Image x:Name="uiMySpotEditViewButtonImage" Source="/Assets/pajeon/png/general_edit.png" Stretch="None"/>
+			</Button>
 		</Grid>
-        <!--피벗 컨트롤-->
-        <phone:Pivot x:Name="uiSettingPivot" Title="{Binding LocalizedResources.Settings, Source={StaticResource LocalizedStrings}}" Grid.Row="1" Foreground="Black" Style="{StaticResource CustomPivotStyle}" SelectionChanged="uiSettingPivot_SelectionChanged">
+		<Grid x:Name="ContentPanel" Grid.Row="1">
+			<phone:Pivot x:Name="uiSettingPivot" Foreground="Black" Style="{StaticResource CustomPivotStyle}" SelectionChanged="uiSettingPivot_SelectionChanged" >
             <!--피벗 항목 1-->
-            <phone:PivotItem Header="{Binding LocalizedResources.Application, Source={StaticResource LocalizedStrings}}">
-            	<Grid>
-            		<Grid x:Name="uiApplicationGrid">
-            			<Grid.RowDefinitions>
-            				<RowDefinition Height="Auto"/>
-            				<RowDefinition/>
-            				<RowDefinition Height="Auto"/>
-            				<RowDefinition Height="72"/>
-            			</Grid.RowDefinitions>
-            			<StackPanel>
-            				<StackPanel Orientation="Horizontal" Margin="18,0,0,0">
-            					<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.SpotNickName, Source={StaticResource LocalizedStrings}}" FontSize="22.667" Margin="0,0,10,0"/>
-            					<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.SpotNickNameMaxLength, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Bottom" FontSize="17.333" FontWeight="Light"/>
-            				</StackPanel>
-            				<Grid>
-            					<Grid.ColumnDefinitions>
-            						<ColumnDefinition/>
-            						<ColumnDefinition Width="82"/>
-            					</Grid.ColumnDefinitions>
-            					<TextBox x:Name="uiSpotNickNameTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="22.667" VerticalAlignment="Top" MaxLength="15" TextChanged="uiSpotNickNameTextBox_TextChanged"/>
-            					<Button x:Name="uiSpotNickNameSetButton" Content="Set" BorderBrush="Black" Foreground="Black" FontSize="22.667" Grid.Column="1" Click="uiSpotNickNameSetButton_Click"/>
-            				</Grid>
-            			</StackPanel>
-            			<StackPanel Grid.Row="1" VerticalAlignment="Center">
-            				<Grid>
-            					<Grid.ColumnDefinitions>
-            						<ColumnDefinition/>
-            						<ColumnDefinition Width="110"/>
-            					</Grid.ColumnDefinitions>
-            					<Button x:Name="uiOneDriveSignButton" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
-            					<Button x:Name="uiOneDriveSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" Grid.Column="1" Click="uiOneDriveSetMainButton_Click"/>
-            				</Grid>
-            				<Grid>
-            					<Grid.ColumnDefinitions>
-            						<ColumnDefinition/>
-            						<ColumnDefinition Width="110"/>
-            					</Grid.ColumnDefinitions>
-            					<Button x:Name="uiDropboxSignButton" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
-            					<Button x:Name="uiDropboxSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" Grid.Column="1" BorderBrush="Black" Foreground="Black" Click="uiDropboxSetMainButton_Click"/>
-            				</Grid>
-							<Grid>
-            					<Grid.ColumnDefinitions>
-            						<ColumnDefinition/>
-            						<ColumnDefinition Width="110"/>
-            					</Grid.ColumnDefinitions>
-            					<Button x:Name="uiGoogleDriveSignButton" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
-            					<Button x:Name="uiGoogleDriveSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" Grid.Column="1" BorderBrush="Black" Foreground="Black" Click="uiGoogleDriveSetMainButton_Click"/>
-            				</Grid>
-            			</StackPanel>
-            			<StackPanel Grid.Row="2">
-            				<CheckBox x:Name="uiLocationAccessConsentCheckBox" Content="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Foreground="Black" BorderBrush="Black" Style="{StaticResource CustomCheckBoxStyle}" Checked="uiLocationAccessConsentCheckBox_Checked" Unchecked="uiLocationAccessConsentCheckBox_Unchecked"/>
-            				<HyperlinkButton Content="{Binding LocalizedResources.TermsOfService, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" Margin="0,0,0,8" />
-            				<HyperlinkButton Content="{Binding LocalizedResources.PrivatePolicy, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF0080FF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" />
-            			</StackPanel>
-            		</Grid>
-            		<Grid x:Name="uiApplicationMessageGrid" Visibility="Collapsed">
-            			<TextBlock x:Name="uiApplicationMessage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22" Margin="22,28,8,0"/>
-            		</Grid>
-            	</Grid>
-            </phone:PivotItem>
-            <phone:PivotItem Header="{Binding LocalizedResources.MySpot, Source={StaticResource LocalizedStrings}}" Margin="0">
-                <Grid>
-                    <Grid.Resources>
-                        <DataTemplate x:Key="uiSpotListItemTemplate">
-                            <Grid x:Name="uiSpotListItem">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition Height="1"/>
-                                </Grid.RowDefinitions>
-                                <Button x:Name="uiSpotButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                    <Grid Margin="22,17.5,18,14">
-                                    	<Grid.ColumnDefinitions>
-                                    		<ColumnDefinition/>
-                                    		<ColumnDefinition Width="49"/>
-                                    	</Grid.ColumnDefinitions>
-                                        <StackPanel Margin="0">
-                                            <TextBlock x:Name="uiSpotName" TextWrapping="Wrap" Text="{Binding SpotName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
-                                            <TextBlock x:Name="uiSpotAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" FontWeight="Bold"/>
-                                        </StackPanel>
-										<Image x:Name="uiSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Stretch="None"/>
-                                    </Grid>
-                                </Button>
-                                <Grid Grid.Row="1" Background="#FFCED7DD"/>
-                            </Grid>
-                        </DataTemplate>
-                    </Grid.Resources>
-                	<Grid.RowDefinitions>
-                		<RowDefinition/>
-                		<RowDefinition Height="72"/>
-                	</Grid.RowDefinitions>
-                    <TextBlock x:Name="uiMySpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,28,18,0" Visibility="Collapsed"/>
-                    <phone:LongListSelector x:Name="uiMySpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpotList_SelectionChanged" />
-                </Grid>
-            </phone:PivotItem>
-            <phone:PivotItem Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
-                <Grid>
-                    <RichTextBox Foreground="Black" HorizontalAlignment="Left" VerticalAlignment="Top" >
-                        <Paragraph>
-                            <Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run FontSize="1.5" Text=""/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run/>
-                            <Run Text="At Here helps you direct share information with people around you."/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run Text="Without any previous settings job, you can see spots nearby you where other who wants to share with you made."/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run Text="You don't need to mind state of others. Just access where you want and give or get information with simple flow."/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run Text="Version : 1.0"/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run/>
-                        </Paragraph>
-                        <Paragraph>
-                            <Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
-                        </Paragraph>
-                    </RichTextBox>
-                </Grid>
-            </phone:PivotItem>
-        </phone:Pivot>
-    </Grid>
+				<phone:PivotItem x:Name="uiApplicationPivot" Header="{Binding LocalizedResources.Profile, Source={StaticResource LocalizedStrings}}" Margin="28,29,28,0">
+					<Grid>
+						<Grid x:Name="uiApplicationGrid">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<StackPanel>
+								<StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+									<Image Source="/Assets/pajeon/at_here/png/setting_icon_nickname.png" Stretch="None" Margin="0,0,7,0"/>
+									<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Nickname, Source={StaticResource LocalizedStrings}}" FontSize="22" Foreground="#FF404041"/>
+								</StackPanel>
+								<Grid Height="54">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition Width="54"/>
+									</Grid.ColumnDefinitions>
+									<TextBox x:Name="uiSpotNickNameTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="25" MaxLength="15" TextChanged="uiSpotNickNameTextBox_TextChanged" Background="#FFE6E7E8" Opacity="0.8" BorderThickness="0" Padding="0" FontFamily="Segoe WP Light" Foreground="#FF6F7A81" Style="{StaticResource CustomTextBoxStyle}" Text="123"/>
+									<Button x:Name="uiSpotNickNameSetButton" BorderBrush="Black" Foreground="Black" Grid.Column="1" Click="uiSpotNickNameSetButton_Click" Style="{StaticResource NoMarginNoPaddingButtonStyle}" Content="Set"/>
+								</Grid>
+							</StackPanel>
+							<StackPanel Grid.Row="1" Margin="0,32,0,0">
+								<StackPanel Orientation="Horizontal">
+									<Image Source="/Assets/pajeon/at_here/png/setting_icon_account.png" Stretch="None" Margin="0,0,7,0"/>
+									<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Account, Source={StaticResource LocalizedStrings}}" Foreground="#FF404041" FontSize="22"/>
+								</StackPanel>
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition Width="110"/>
+									</Grid.ColumnDefinitions>
+									<Button x:Name="uiOneDriveSignButton" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
+									<Button x:Name="uiOneDriveSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" Grid.Column="1" Click="uiOneDriveSetMainButton_Click"/>
+								</Grid>
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition Width="110"/>
+									</Grid.ColumnDefinitions>
+									<Button x:Name="uiDropboxSignButton" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
+									<Button x:Name="uiDropboxSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" Grid.Column="1" BorderBrush="Black" Foreground="Black" Click="uiDropboxSetMainButton_Click"/>
+								</Grid>
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition/>
+										<ColumnDefinition Width="110"/>
+									</Grid.ColumnDefinitions>
+									<Button x:Name="uiGoogleDriveSignButton" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
+									<Button x:Name="uiGoogleDriveSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" Grid.Column="1" BorderBrush="Black" Foreground="Black" Click="uiGoogleDriveSetMainButton_Click"/>
+								</Grid>
+							</StackPanel>
+							<Grid Margin="0,32,0,0" Grid.Row="2">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="25"/>
+									<ColumnDefinition/>
+									<ColumnDefinition Width="68"/>
+								</Grid.ColumnDefinitions>
+								<Image Source="/Assets/pajeon/at_here/png/setting_icon_location.png" Stretch="None" HorizontalAlignment="Left"/>
+								<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Grid.Column="1"/>
+								<toolkitPrimitives:ToggleSwitchButton x:Name="uiLocationAccessConsentToggleSwitchButton" Style="{StaticResource LocationServiceToggleSwitchButtonStyle}" Grid.Column="2" Height="34" Width="68"/>
+							</Grid>
+						</Grid>
+						<Grid x:Name="uiApplicationMessageGrid" Visibility="Collapsed">
+							<TextBlock x:Name="uiApplicationMessage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22" Margin="28,0"/>
+						</Grid>
+					</Grid>
+				</phone:PivotItem>
+				<phone:PivotItem x:Name="uiMySpotPivot" Header="{Binding LocalizedResources.MySpot, Source={StaticResource LocalizedStrings}}" Margin="0">
+					<Grid>
+						<Grid.Resources>
+							<DataTemplate x:Key="uiSpotListItemTemplate">
+								<Grid x:Name="uiSpotListItem">
+									<Grid.RowDefinitions>
+										<RowDefinition/>
+										<RowDefinition Height="1"/>
+									</Grid.RowDefinitions>
+									<Button x:Name="uiSpotButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+										<Grid Margin="22,17.5,18,14">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition/>
+												<ColumnDefinition Width="49"/>
+											</Grid.ColumnDefinitions>
+											<StackPanel Margin="0">
+												<TextBlock x:Name="uiSpotName" TextWrapping="Wrap" Text="{Binding SpotName}" FontSize="30.667" LineHeight="37.333" Margin="0,0,0,10.5" UseLayoutRounding="True" Foreground="Black"/>
+												<TextBlock x:Name="uiSpotAccountId" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FFA7B6BE" FontWeight="Bold"/>
+											</StackPanel>
+											<Image x:Name="uiSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="1" Stretch="None"/>
+										</Grid>
+									</Button>
+									<Grid Grid.Row="1" Background="#FFCED7DD"/>
+								</Grid>
+							</DataTemplate>
+						</Grid.Resources>
+						<Grid.RowDefinitions>
+							<RowDefinition/>
+							<RowDefinition Height="72"/>
+						</Grid.RowDefinitions>
+						<TextBlock x:Name="uiMySpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,28,18,0" Visibility="Collapsed"/>
+						<phone:LongListSelector x:Name="uiMySpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpotList_SelectionChanged" />
+					</Grid>
+				</phone:PivotItem>
+				<phone:PivotItem x:Name="uiAboutPivot" Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition/>
+						</Grid.RowDefinitions>
+						<RichTextBox Foreground="Black" VerticalAlignment="Top" >
+							<Paragraph>
+								<Run FontWeight="Bold" FontSize="30" Text="At Here for Windows Phone"/>
+							</Paragraph>
+							<Paragraph>
+								<Run FontSize="1.5" Text=""/>
+							</Paragraph>
+							<Paragraph>
+								<Run/>
+								<Run Text="At Here helps you direct share information with people around you."/>
+							</Paragraph>
+							<Paragraph>
+								<Run/>
+							</Paragraph>
+							<Paragraph>
+								<Run Text="Without any previous settings job, you can see spots nearby you where other who wants to share with you made."/>
+							</Paragraph>
+							<Paragraph>
+								<Run/>
+							</Paragraph>
+							<Paragraph>
+								<Run Text="You don't need to mind state of others. Just access where you want and give or get information with simple flow."/>
+							</Paragraph>
+							<Paragraph>
+								<Run/>
+							</Paragraph>
+							<Paragraph>
+								<Run Text="Version : 1.0"/>
+							</Paragraph>
+							<Paragraph>
+								<Run/>
+							</Paragraph>
+							<Paragraph>
+								<Run Text="Copyright (c) 2014, Pin the Cloud All rights reserved"/>
+							</Paragraph>
+						</RichTextBox>
+						<StackPanel Grid.Row="1">
+							<HyperlinkButton Content="{Binding LocalizedResources.TermsOfService, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Background="White" Foreground="#FF00A4BF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" FontFamily="Segoe WP Light" FontSize="20" Margin="0,40,0,0" />
+							<HyperlinkButton Content="{Binding LocalizedResources.PrivatePolicy, Source={StaticResource LocalizedStrings}}" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF00A4BF" NavigateUri="http://www.microsoft.com/ko-kr/events/2013/imaginecup/schedule.aspx" TargetName="_blank" Margin="0,15,0,0" FontSize="20" FontFamily="Segoe WP Light" />
+						</StackPanel>
+					</Grid>
+				</phone:PivotItem>
+			</phone:Pivot>
+		</Grid>
+	</Grid>
 
 </local:PtcPage>

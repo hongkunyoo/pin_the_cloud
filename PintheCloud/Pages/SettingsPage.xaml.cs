@@ -56,9 +56,9 @@ namespace PintheCloud.Pages
 
             // Set location access consent checkbox
             if ((bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY])
-                uiLocationAccessConsentCheckBox.IsChecked = true;
+                uiLocationAccessConsentToggleSwitchButton.IsChecked = true;
             else
-                uiLocationAccessConsentCheckBox.IsChecked = false;
+                uiLocationAccessConsentToggleSwitchButton.IsChecked = false;
 
 
 

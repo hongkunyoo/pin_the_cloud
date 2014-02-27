@@ -70,11 +70,11 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Application과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Account과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string Application {
+        public static string Account {
             get {
-                return ResourceManager.GetString("Application", resourceCulture);
+                return ResourceManager.GetString("Account", resourceCulture);
             }
         }
         
@@ -349,6 +349,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Nickname과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Nickname {
+            get {
+                return ResourceManager.GetString("Nickname", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   There is no files in this folder.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoFileInFolderMessage {
@@ -475,6 +484,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Profile과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Profile {
+            get {
+                return ResourceManager.GetString("Profile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Refreshing...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Refreshing {
@@ -552,24 +570,6 @@ namespace PintheCloud.Resources {
         public static string SignOutMessage {
             get {
                 return ResourceManager.GetString("SignOutMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Spot Nick Name과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string SpotNickName {
-            get {
-                return ResourceManager.GetString("SpotNickName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   (Max 15 length)과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string SpotNickNameMaxLength {
-            get {
-                return ResourceManager.GetString("SpotNickNameMaxLength", resourceCulture);
             }
         }
         
