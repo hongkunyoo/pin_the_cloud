@@ -17,6 +17,7 @@ using PintheCloud.Utilities;
 using Microsoft.Phone.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using PintheCloud.Helpers;
 
 namespace PintheCloud
 {
@@ -30,15 +31,12 @@ namespace PintheCloud
 
 
 
-        /*** Public Const instance variable ***/
+        /*** Root static instance variable ***/
 
         // Azure
         private const string AZURE_MOBILE_SERVICE_ID = "MicrosoftAccount:2914cb486d0f9106050de9ad70564d53";
         private const string AZURE_MOBILE_SERVICE_TOKEN
             = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjAifQ.eyJleHAiOjEzOTQ5Nzg4NTcsImlzcyI6InVybjptaWNyb3NvZnQ6d2luZG93cy1henVyZTp6dW1vIiwidmVyIjoyLCJhdWQiOiJNaWNyb3NvZnRBY2NvdW50IiwidWlkIjoiTWljcm9zb2Z0QWNjb3VudDoyOTE0Y2I0ODZkMGY5MTA2MDUwZGU5YWQ3MDU2NGQ1MyIsInVybjptaWNyb3NvZnQ6Y3JlZGVudGlhbHMiOiJrc2VzY21WaXA1b2ZrZDhUenBQQ1h3PT0ifQ.cUrvBbXsHQOiz0ZRu8FxA5HxqpQbPRSQQb8_N0-6eAo";
-
-
-        /*** Root static instance variable ***/
 
         // App
         public static MobileServiceClient MobileService = null;
@@ -46,12 +44,12 @@ namespace PintheCloud
 
         // Manager
         public static SpotManager SpotManager = null;
-        public static GeoCalculateManager GeoCalculateManager = null;
+        public static GeoHelper GeoHelper = null;
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
 
         public static IStorageManager[] IStorageManagers = null;
-        public static TaskManager TaskManager = null;
+        public static TaskHelper TaskManager = null;
 
         private static OneDriveManager SkyDriveManager = null;
         private static DropboxManager DropBoxManager = null;
@@ -92,7 +90,7 @@ namespace PintheCloud
 
             // Manager
             SpotManager = new SpotManagerImplement();
-            GeoCalculateManager = new GeoCalculateManagerImplement();
+            GeoHelper = new GeoHelper();
             BlobStorageManager = new BlobStorageManager();
             LocalStorageManager = new LocalStorageManager();
 
@@ -100,7 +98,7 @@ namespace PintheCloud
             DropBoxManager = new DropboxManager();
             GoogleDriveManger = new GoogleDriveManager();
             IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
-            TaskManager = new TaskManager();
+            TaskManager = new TaskHelper();
  
 
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.
@@ -152,8 +150,14 @@ namespace PintheCloud
 
         // 응용 프로그램이 닫힐 때(예: 사용자가 [뒤로]를 누르는 경우) 실행할 코드입니다.
         // 이 코드는 응용 프로그램이 비활성화될 때는 실행되지 않습니다.
-        private void Application_Closing(object sender, ClosingEventArgs e)
+        private async void Application_Closing(object sender, ClosingEventArgs e)
         {
+            // Wait sign task.
+            for (int i = 0; i < App.IStorageManagers.Length; i++)
+            {
+                await App.TaskManager.WaitSignInTask(i);
+                await App.TaskManager.WaitSignOutTask(i);
+            }
         }
 
         // 탐색이 실패할 때 실행할 코드입니다.

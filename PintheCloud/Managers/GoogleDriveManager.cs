@@ -6,6 +6,8 @@ using Google.Apis.Services;
 using Google.Apis.Upload;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PintheCloud.Converters;
+using PintheCloud.Helpers;
 using PintheCloud.Models;
 using PintheCloud.Resources;
 using PintheCloud.Utilities;
@@ -25,8 +27,9 @@ namespace PintheCloud.Managers
     public class GoogleDriveManager : IStorageManager
     {
         #region Variables
-        private const string CLIENT_ID = "109786198225-m8fihmv82b2fmf5k4d69u9039ebn68fn.apps.googleusercontent.com";
-        private const string CLIENT_SECRET = "Tk8M01zlkBRlIsv-1fa9BKiS";
+        private const string GOOGLE_DRIVE_CLIENT_ID = "109786198225-m8fihmv82b2fmf5k4d69u9039ebn68fn.apps.googleusercontent.com";
+        private const string GOOGLE_DRIVE_CLIENT_SECRET = "Tk8M01zlkBRlIsv-1fa9BKiS";
+
         private const string GOOGLE_DRIVE_USER_KEY = "GOOGLE_DRIVE_USER_KEY";
         private const string GOOGLE_DRIVE_SIGN_IN_KEY = "GOOGLE_DRIVE_SIGN_IN_KEY";
 
@@ -47,9 +50,6 @@ namespace PintheCloud.Managers
             GoogleDriveManager.GoogleDocMapper = new Dictionary<string, string>();
             GoogleDriveManager.ExtensionMapper = new Dictionary<string, string>();
 
-            //GoogleDocMapper.Add("application/vnd.google-apps.form", "Not Supported");
-            //GoogleDocMapper.Add("application/vnd.google-apps.folder", "Folder");
-
             // Document file
             GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.document", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
             // SpreadSheet file
@@ -58,6 +58,9 @@ namespace PintheCloud.Managers
             GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.drawing", "image/png");
             // Presentation file
             GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.presentation", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
+            // Not using
+            //GoogleDocMapper.Add("application/vnd.google-apps.form", "Not Supported");
+            //GoogleDocMapper.Add("application/vnd.google-apps.folder", "Folder");
 
             GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.document", "doc");
             GoogleDriveManager.ExtensionMapper.Add("application/vnd.google-apps.spreadsheet", "xls");
@@ -75,18 +78,18 @@ namespace PintheCloud.Managers
             // Add application settings before work for good UX
             App.ApplicationSettings[GOOGLE_DRIVE_SIGN_IN_KEY] = true;
             App.ApplicationSettings.Save();
-
             try
             {
                 credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                      new ClientSecrets
-                      {
-                          ClientId = CLIENT_ID,
-                          ClientSecret = CLIENT_SECRET
-                      },
-                      new[] { DriveService.Scope.Drive },
-                      this._GetUserSession(),
-                      CancellationToken.None);
+                    new ClientSecrets
+                    {
+                        ClientId = GOOGLE_DRIVE_CLIENT_ID,
+                        ClientSecret = GOOGLE_DRIVE_CLIENT_SECRET
+                    },
+                    new[] { DriveService.Scope.Drive },
+                    this._GetUserSession(),
+                    CancellationToken.None
+                );
 
                 this.service = new DriveService(new BaseClientService.Initializer()
                 {
@@ -101,6 +104,7 @@ namespace PintheCloud.Managers
                 string name = this.user.DisplayName;
                 string id = about.PermissionId;
 
+                // Register account
                 Account account = await AccountHelper.GetAccountAsync(id);
                 if (account == null)
                 {
@@ -108,17 +112,18 @@ namespace PintheCloud.Managers
                     await AccountHelper.CreateAccountAsync(account);
                 }
                 this.CurrentAccount = account;
+                // Save sign in setting.
+                App.ApplicationSettings[GOOGLE_DRIVE_SIGN_IN_KEY] = true;
+                App.ApplicationSettings.Save();
                 tcs.SetResult(true);
             }
             catch (Microsoft.Phone.Controls.WebBrowserNavigationException ex)
             {
-                this.SignOut();
                 Debug.WriteLine(ex.ToString());
                 tcs.SetResult(false);
             }
             catch (Google.GoogleApiException e)
             {
-                this.SignOut();
                 Debug.WriteLine(e.ToString());
                 tcs.SetResult(false);
             }
@@ -135,14 +140,13 @@ namespace PintheCloud.Managers
         {
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_USER_KEY);
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_SIGN_IN_KEY);
-            App.ApplicationSettings.Save();
             this.CurrentAccount = null;
         }
 
 
         public bool IsSignIn()
         {
-            return App.ApplicationSettings.Contains(GOOGLE_DRIVE_USER_KEY);
+            return App.ApplicationSettings.Contains(GOOGLE_DRIVE_SIGN_IN_KEY);
         }
 
 
@@ -267,16 +271,21 @@ namespace PintheCloud.Managers
                 var result = new string(
                     Enumerable.Repeat(chars, 8)
                               .Select(s => s[random.Next(s.Length)])
-                              .ToArray());
+                              .ToArray()
+                );
                 App.ApplicationSettings[GOOGLE_DRIVE_USER_KEY] = result;
                 App.ApplicationSettings.Save();
                 return result;
             }
         }
+
+
         private bool _IsValidFile(Google.Apis.Drive.v2.Data.File file)
         {
             return (this._IsMine(file) && !this._IsTrashed(file) && !"application/vnd.google-apps.form".Equals(file.MimeType));
         }
+
+
         private bool _IsRoot(Google.Apis.Drive.v2.Data.File file)
         {
             bool result = true;
@@ -288,6 +297,8 @@ namespace PintheCloud.Managers
             }
             return result;
         }
+
+
         private bool _IsMine(Google.Apis.Drive.v2.Data.File file)
         {
             bool result = true;
@@ -300,16 +311,22 @@ namespace PintheCloud.Managers
             }
             return result;
         }
+
+
         private bool _IsTrashed(Google.Apis.Drive.v2.Data.File file)
         {
             if (file.ExplicitlyTrashed == null) return false;
             return file.ExplicitlyTrashed.Value;
         }
+
+
         private bool _IsGoolgeDoc(Google.Apis.Drive.v2.Data.File file)
         {
             if (file.MimeType.Contains("application/vnd.google-apps")) return true;
             return false;
         }
+
+
         private bool _IsAbleToDownload(Google.Apis.Drive.v2.Data.File file)
         {
             return !string.Empty.Equals(file.DownloadUrl);

@@ -14,32 +14,24 @@ namespace PintheCloud.Utilities
 {
     public class DropboxWebBrowserTask : ChooserBase<DropboxWebBrowserResult>
     {
+        public string Uri { get; set; }
         private UserControl _this;
-        private string uri;
-        private string url;
 
-        public string Uri
-        {
-            get
-            {
-                return uri;
-            }
-            set
-            {
-                uri = value;
-            }
-        }
+
         public DropboxWebBrowserTask()
         {
-
         }
+
+
         public DropboxWebBrowserTask(string uri)
         {
-            this.uri = uri;
+            this.Uri = uri;
         }
+
+
         public DropboxWebBrowserTask(string uri, UserControl _this)
         {
-            this.uri = uri;
+            this.Uri = uri;
             this._this = _this;
         }
 
@@ -48,12 +40,11 @@ namespace PintheCloud.Utilities
         {
             base.Show();
 
-            Popup p = new Popup();
-            p.Child = new DropBoxSignInPopup(p, this.uri);
-            p.Visibility = System.Windows.Visibility.Visible;
-            p.IsOpen = true;
-
-            p.Closed += (sender, args) =>
+            Popup popup = new Popup();
+            popup.Child = new DropBoxSignInPopup(popup, this.Uri);
+            popup.Visibility = System.Windows.Visibility.Visible;
+            popup.IsOpen = true;
+            popup.Closed += (sender, args) =>
             {
                 this.FireCompleted(this, new DropboxWebBrowserResult(), null);
             };

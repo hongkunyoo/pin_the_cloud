@@ -8,7 +8,6 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using PintheCloud.Managers;
-using PintheCloud.Workers;
 using PintheCloud.Resources;
 using System.Windows.Media.Imaging;
 using System.Net.NetworkInformation;
@@ -72,6 +71,9 @@ namespace PintheCloud.Pages
             this.DeleteAppBarButton.IconUri = new Uri(DELETE_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
             this.DeleteAppBarButton.IsEnabled = false;
             this.DeleteAppBarButton.Click += DeleteAppBarButton_Click;
+
+            // Set datacontext
+            uiMySpotList.DataContext = this.MySpotViewModel;
         }
 
 
@@ -181,12 +183,9 @@ namespace PintheCloud.Pages
             MessageBoxResult result = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
             if (result == MessageBoxResult.OK)
             {
-                // Get index
                 Button signoutButton = (Button)sender;
                 int platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
-
-                IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
-                App.TaskManager.AddSignOutTask(this.SignOut(platformIndex, iStorageManager), platformIndex);
+                App.TaskManager.AddSignOutTask(this.SignOut(platformIndex, App.IStorageManagers[platformIndex]), platformIndex);
             }
         }
 
@@ -201,14 +200,9 @@ namespace PintheCloud.Pages
                 uiApplicationMessage.Text = AppResources.DoingSignOut;
             });
 
-
-            // Delete application settings before work for good UX and Wait signin task
-            //App.ApplicationSettings.Remove(iStorageManager.GetAccountIsSignInKey());
+            // Wait task and sign out
             await App.TaskManager.WaitSignInTask(platformIndex);
-
-            // Signout
             iStorageManager.SignOut();
-
 
             // Hide process indicator
             base.Dispatcher.BeginInvoke(() =>
@@ -255,7 +249,7 @@ namespace PintheCloud.Pages
         {
             App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY] = uiSpotNickNameTextBox.Text;
             App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.SetSpotNickNameMessage, AppResources.SetSpotNickNameCaption, MessageBoxButton.OK);
+            MessageBox.Show(AppResources.SetSpotNickNameMessage, uiSpotNickNameTextBox.Text, MessageBoxButton.OK);
         }
 
 
@@ -275,7 +269,7 @@ namespace PintheCloud.Pages
         {
             App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.ONE_DRIVE;
             App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.OneDrive + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+            MessageBox.Show(AppResources.SetMainCloudMessage, AppResources.OneDrive, MessageBoxButton.OK);
         }
 
 
@@ -283,7 +277,7 @@ namespace PintheCloud.Pages
         {
             App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.DROPBOX;
             App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.Dropbox + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+            MessageBox.Show(AppResources.SetMainCloudMessage, AppResources.Dropbox, MessageBoxButton.OK);
         }
 
 
@@ -291,7 +285,7 @@ namespace PintheCloud.Pages
         {
             App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.GOOGLE_DRIVE;
             App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.GoogleDrive + AppResources.MainCloudChangeMessage, AppResources.MainCloudChangeCpation, MessageBoxButton.OK);
+            MessageBox.Show(AppResources.SetMainCloudMessage, AppResources.GoogleDrive, MessageBoxButton.OK);
         }
 
 
@@ -318,7 +312,7 @@ namespace PintheCloud.Pages
                     if (spotViewItem.SelectCheckImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
                     {
                         string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
-                        NavigationService.Navigate(new Uri(FILE_LIST_PAGE + parameters + "&platform=" +
+                        NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters + "&platform=" +
                             ((int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY]), UriKind.Relative));
                     }
                 }
@@ -371,10 +365,14 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    this.MySpotViewModel.SetItems(spots);
-                    uiMySpotList.DataContext = this.MySpotViewModel;
                     uiMySpotList.Visibility = Visibility.Visible;
                     uiMySpotMessage.Visibility = Visibility.Collapsed;
+
+                    string currentEditViewMode = ((BitmapImage)uiMySpotEditViewButtonImage.Source).UriSource.ToString();
+                    if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
+                        this.MySpotViewModel.SetItems(spots, false);
+                    else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit Mode
+                        this.MySpotViewModel.SetItems(spots, true);
                 });
             }
             else  // No my spots
@@ -432,10 +430,14 @@ namespace PintheCloud.Pages
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                foreach (SpotViewItem spotViewItem in this.SelectedSpot)
-                    this.DeleteSpotAsync(spotViewItem);
-                this.SelectedSpot.Clear();
-                this.DeleteAppBarButton.IsEnabled = false;
+                MessageBoxResult result = MessageBox.Show(AppResources.DeleteSpotMessage, AppResources.DeleteCaption, MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.OK)
+                {
+                    foreach (SpotViewItem spotViewItem in this.SelectedSpot)
+                        this.DeleteSpotAsync(spotViewItem);
+                    this.SelectedSpot.Clear();
+                    this.DeleteAppBarButton.IsEnabled = false;
+                }
             }
             else
             {
@@ -476,6 +478,8 @@ namespace PintheCloud.Pages
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         this.MySpotViewModel.Items.Remove(spotViewItem);
+                        ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
+
                         if (this.MySpotViewModel.Items.Count < 1)
                             base.SetListUnableAndShowMessage(uiMySpotList, AppResources.NoFileInSpotMessage, uiMySpotMessage);
                     });

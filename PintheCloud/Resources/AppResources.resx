@@ -122,7 +122,7 @@
     <comment>Controls the FlowDirection for all elements in the RootFrame. Set to the traditional direction of this resource file's language</comment>
   </data>
   <data name="ResourceLanguage" xml:space="preserve">
-    <value>en-us</value>
+    <value>en-US</value>
     <comment>Controls the Language and ensures that the font for all elements in the RootFrame aligns with the app's language. Set to the language code of this resource file's language.</comment>
   </data>
   <data name="About" xml:space="preserve">
@@ -130,9 +130,6 @@
   </data>
   <data name="Application" xml:space="preserve">
     <value>Application</value>
-  </data>
-  <data name="ApplicationTitle" xml:space="preserve">
-    <value>Pin the Cloud</value>
   </data>
   <data name="BadSignInMessage" xml:space="preserve">
     <value>Sign in process met error. Please try it again</value>
@@ -147,10 +144,7 @@
     <value>Interent unavailable</value>
   </data>
   <data name="InternetUnavailableMessage" xml:space="preserve">
-    <value>Sorry. Could not connect to At Here. Please check WIFI and try again.</value>
-  </data>
-  <data name="Profile" xml:space="preserve">
-    <value>Profile</value>
+    <value>Could not connect to At Here. Please check WIFI and try again.</value>
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
@@ -158,14 +152,14 @@
   <data name="NoMySpotMessage" xml:space="preserve">
     <value>There is no your spot. Make it yours.</value>
   </data>
-  <data name="LocationAccess" xml:space="preserve">
+  <data name="LocationAccessCaption" xml:space="preserve">
     <value>Location Access</value>
   </data>
   <data name="LocationAccessMessage" xml:space="preserve">
-    <value>This app accesses your phone's location. Is that ok?</value>
+    <value>At Here accesses your phone's location. Is that ok?</value>
   </data>
   <data name="SignOutMessage" xml:space="preserve">
-    <value>Do you want sign out? Your setting will be intialized.</value>
+    <value>Do you want sign out? Your setting in this cloud will be intialized.</value>
   </data>
   <data name="NoNearSpotMessage" xml:space="preserve">
     <value>There is no near spot. Make it yours.</value>
@@ -173,17 +167,14 @@
   <data name="Loading" xml:space="preserve">
     <value>Loading...</value>
   </data>
-  <data name="BadGpsMessage" xml:space="preserve">
-    <value>GPS doesn't work. Please load it again.</value>
+  <data name="BadLocationServiceMessage" xml:space="preserve">
+    <value>Location Service met error. Please try it again.</value>
   </data>
-  <data name="NoGpsOnMessage" xml:space="preserve">
-    <value>Location serivces are disabled. Please enable it at your system.</value>
+  <data name="NoLocationServiceMessage" xml:space="preserve">
+    <value>Location serivces are disabled. Please enable it in your system.</value>
   </data>
   <data name="NoLocationAcessConsentMessage" xml:space="preserve">
-    <value>This app requires consent to access location information. Please consent it in settings.</value>
-  </data>
-  <data name="Likes" xml:space="preserve">
-    <value> likes</value>
+    <value>At Here requires consent to access location. Please consent it in settings.</value>
   </data>
   <data name="Refreshing" xml:space="preserve">
     <value>Refreshing...</value>
@@ -203,23 +194,17 @@
   <data name="Pick" xml:space="preserve">
     <value>Pick</value>
   </data>
-  <data name="Path" xml:space="preserve">
-    <value>Path : </value>
-  </data>
-  <data name="RootPath" xml:space="preserve">
-    <value>/</value>
-  </data>
   <data name="GB" xml:space="preserve">
-    <value> GB</value>
+    <value>GB</value>
   </data>
   <data name="KB" xml:space="preserve">
-    <value> KB</value>
+    <value>KB</value>
   </data>
   <data name="MB" xml:space="preserve">
-    <value> MB</value>
+    <value>MB</value>
   </data>
   <data name="Bytes" xml:space="preserve">
-    <value> bytes</value>
+    <value>Bytes</value>
   </data>
   <data name="SignIn" xml:space="preserve">
     <value>Sign In</value>
@@ -227,8 +212,8 @@
   <data name="BadSignInCaption" xml:space="preserve">
     <value>Sign In Error</value>
   </data>
-  <data name="NoFileInCloudMessage" xml:space="preserve">
-    <value>There is no files in this cloud.</value>
+  <data name="NoFileInFolderMessage" xml:space="preserve">
+    <value>There is no files in this folder.</value>
   </data>
   <data name="SignOutCaption" xml:space="preserve">
     <value>Sign Out</value>
@@ -242,8 +227,8 @@
   <data name="SpotNickNameMaxLength" xml:space="preserve">
     <value>(Max 15 length)</value>
   </data>
-  <data name="NoGpsOnCaption" xml:space="preserve">
-    <value>Gps Off</value>
+  <data name="NoLocationServiceCaption" xml:space="preserve">
+    <value>Location Service Off</value>
   </data>
   <data name="NoLocationAcessConsentCaption" xml:space="preserve">
     <value>Location Acess Consent</value>
@@ -251,26 +236,17 @@
   <data name="DoingSignIn" xml:space="preserve">
     <value>Doing sign in...</value>
   </data>
-  <data name="SetSpotNickNameCaption" xml:space="preserve">
-    <value>Nick Name</value>
-  </data>
   <data name="SetSpotNickNameMessage" xml:space="preserve">
-    <value>New nick name is successfully registered. New spot's will be the nick name.</value>
+    <value>Nick name is registered. New spot will be named by this.</value>
   </data>
   <data name="Main" xml:space="preserve">
     <value>Main</value>
   </data>
-  <data name="MainCloudChangeCpation" xml:space="preserve">
-    <value>Main Cloud</value>
-  </data>
-  <data name="MainCloudChangeMessage" xml:space="preserve">
-    <value> is set to main cloud.</value>
+  <data name="SetMainCloudMessage" xml:space="preserve">
+    <value>It is set to main cloud.</value>
   </data>
   <data name="NoFileInSpotMessage" xml:space="preserve">
     <value>There is no files in this spot.</value>
-  </data>
-  <data name="Percentage" xml:space="preserve">
-    <value>%</value>
   </data>
   <data name="PiningSpot" xml:space="preserve">
     <value>Pining Spot...</value>
@@ -294,9 +270,27 @@
     <value>Deleting...</value>
   </data>
   <data name="NoSignedInMessage" xml:space="preserve">
-    <value>Main cloud platform account haven't signed in. Please sign in.</value>
+    <value>Main cloud haven't been signed in. Please sign in.</value>
   </data>
   <data name="BadDeleteSpotMessage" xml:space="preserve">
     <value>Delete spot process met error. Please try it again.</value>
+  </data>
+  <data name="CloseAppCaption" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="CloseAppMessage" xml:space="preserve">
+    <value>Do you want to close At Here?</value>
+  </data>
+  <data name="GoogleDoc" xml:space="preserve">
+    <value>Google Doc</value>
+  </data>
+  <data name="DeleteCaption" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="DeleteFileMessage" xml:space="preserve">
+    <value>Do you want to delete the file?</value>
+  </data>
+  <data name="DeleteSpotMessage" xml:space="preserve">
+    <value>Do you want to delete the spot?</value>
   </data>
 </root>

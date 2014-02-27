@@ -11,7 +11,7 @@ namespace PintheCloud.ViewModels
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public double Size { get; set; }
+        public string Size { get; set; }
         public string SizeUnit { get; set; }
         public string ThumnailType { get; set; }
 

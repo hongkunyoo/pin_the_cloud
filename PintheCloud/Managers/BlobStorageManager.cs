@@ -11,6 +11,8 @@ using PintheCloud.Models;
 using PintheCloud.Utilities;
 using Windows.System;
 using System.Diagnostics;
+using PintheCloud.Helpers;
+using PintheCloud.Converters;
 
 namespace PintheCloud.Managers
 {

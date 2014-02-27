@@ -4,7 +4,6 @@ using PintheCloud.Models;
 using PintheCloud.Pages;
 using PintheCloud.Resources;
 using PintheCloud.ViewModels;
-using PintheCloud.Workers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,23 +16,33 @@ namespace PintheCloud.Managers
 {
     public class SpotManagerImplement : SpotManager
     {
-        /*** Instance ***/
-
-        private SpotWorker CurrentSpotWorker = new SpotWorker();
-
-
-
         /*** Implementation ***/
 
         public async Task<bool> PinSpotAsync(Spot spot)
         {
-            return await this.CurrentSpotWorker.PinSpotAsync(spot);
+            try
+            {
+                await App.MobileService.GetTable<Spot>().InsertAsync(spot);
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+                return false;
+            }
+            return true;
         }
 
 
         public async Task<bool> DeleteSpotAsync(Spot spot)
         {
-            return await this.CurrentSpotWorker.DeleteSpotAsync(spot);
+            try
+            {
+                await App.MobileService.GetTable<Spot>().DeleteAsync(spot);
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+                return false;
+            }
+            return true;
         }
 
 
@@ -45,7 +54,7 @@ namespace PintheCloud.Managers
             double currentLongtitude = currentGeoposition.Coordinate.Longitude;
 
             // Get spots formed JArray
-            return await this.CurrentSpotWorker.GetNearSpotsAsync(currentLatitude, currentLongtitude);
+            return await this.GetNearSpotsAsync(currentLatitude, currentLongtitude);
         }
 
 
@@ -65,10 +74,52 @@ namespace PintheCloud.Managers
             if (ids.Count <= 0)
                 return null;
             else
-                return await this.CurrentSpotWorker.GetMySpotsAsync(ids);
+                return await this.GetMySpotsAsync(ids);
         }
 
 
-        // TODO Sort spot list
+
+        /*** Private Methods ***/
+
+        // Get spots 300m away from here
+        private async Task<JArray> GetNearSpotsAsync(double currentLatitude, double currentLongtitude)
+        {
+            string json = @"{'currentLatitude':" + currentLatitude + ",'currentLongtitude':" + currentLongtitude + "}";
+            JToken jToken = JToken.Parse(json);
+            JArray spots = null;
+            try
+            {
+                // Load near spots use custom api in server script
+                spots = (JArray)await App.MobileService.InvokeApiAsync("select_near_spots_async", jToken);
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+                return null;
+            }
+            if (spots.Count > 0)
+                return spots;
+            else
+                return null;
+        }
+
+
+        // Get spots from DB
+        private async Task<JArray> GetMySpotsAsync(List<string> ids)
+        {
+            JArray spots = null;
+            try
+            {
+                // Load current account's spots
+                spots = (JArray)await App.MobileService.InvokeApiAsync<List<string>, JArray>("select_my_spots_async", ids);
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+                return null;
+            }
+            if (spots.Count > 0)
+                return spots;
+            else
+                return null;
+        }
     }
 }

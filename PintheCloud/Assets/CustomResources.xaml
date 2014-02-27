@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:Utilities="clr-namespace:PintheCloud.Utilities" >
+    xmlns:Converters="clr-namespace:PintheCloud.Converters" >
     
     <Style x:Key="NoMarginNoPaddingButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
@@ -327,10 +327,10 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <Utilities:ColorHexStringToBrushConverter x:Key="ColorHexStringToBrushConverter"/>
-    <Utilities:StringToUriConverter x:Key="StringToUriConverter"/>
-    <Utilities:StringToThumnailUriConverter x:Key="StringToThumnailUriConverter"/>
-    <Utilities:StringToFontWeightConverter x:Key="StringToFontWeightConverter"/>
+    <Converters:ColorHexStringToBrushConverter x:Key="ColorHexStringToBrushConverter"/>
+    <Converters:StringToUriConverter x:Key="StringToUriConverter"/>
+    <Converters:StringToThumnailUriConverter x:Key="StringToThumnailUriConverter"/>
+    <Converters:StringToFontWeightConverter x:Key="StringToFontWeightConverter"/>
     <Style x:Key="CustomLongListSelectorStyle" TargetType="phone:LongListSelector">
     	<Setter Property="Background" Value="Transparent"/>
     	<Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
