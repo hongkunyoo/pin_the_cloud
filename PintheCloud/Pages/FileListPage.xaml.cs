@@ -227,11 +227,12 @@ namespace PintheCloud.Pages
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                if (App.IStorageManagers[this.PlatformIndex].IsSignIn())
+                IStorageManager iStr = App.IStorageManagers[this.PlatformIndex];
+                if (iStr.IsSignIn())
                 {
                     // Wait tasks
-                    bool result = await App.TaskManager.WaitSignInTask(this.PlatformIndex);
-                    await App.TaskManager.WaitSignOutTask(this.PlatformIndex);
+                    bool result = await App.TaskManager.WaitSignInTask(iStr.GetStorageName());
+                    await App.TaskManager.WaitSignOutTask(iStr.GetStorageName());
 
                     if (result)
                     {

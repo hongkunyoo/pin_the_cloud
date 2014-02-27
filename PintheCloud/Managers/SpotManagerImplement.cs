@@ -67,7 +67,7 @@ namespace PintheCloud.Managers
             {
                 if (App.IStorageManagers[i].IsSignIn())
                 {
-                    await App.TaskManager.WaitSignInTask(i);
+                    await App.TaskManager.WaitSignInTask(App.IStorageManagers[i].GetStorageName());
                     ids.Add(App.IStorageManagers[i].GetAccount().account_platform_id);  
                 }
             }

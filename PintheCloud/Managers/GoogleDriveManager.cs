@@ -135,7 +135,15 @@ namespace PintheCloud.Managers
 
         public bool IsSigningIn()
         {
-            return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(GOOGLE_DRIVE_SIGN_IN_KEY);
+            if (this.tcs != null)
+            {
+                return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(GOOGLE_DRIVE_SIGN_IN_KEY);
+            }
+            else
+            {
+                return false;
+            }
+            
         }
         public void SignOut()
         {

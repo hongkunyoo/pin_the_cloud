@@ -106,7 +106,15 @@ namespace PintheCloud.Managers
         }
         public bool IsSigningIn()
         {
-            return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(ONE_DRIVE_SIGN_IN_KEY);
+            if (this.tcs != null)
+            {
+                return !this.tcs.Task.IsCompleted && !App.ApplicationSettings.Contains(ONE_DRIVE_SIGN_IN_KEY);
+            }
+            else
+            {
+                return false;
+            }
+            
         }
         public bool IsPopup()
         {

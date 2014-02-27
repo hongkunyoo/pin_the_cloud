@@ -11,8 +11,10 @@ namespace PintheCloud.Helpers
     {
         // Tasks
         public IDictionary<string, Task> Tasks = new Dictionary<string, Task>();
-        public Task<bool>[] SignInTasks = new Task<bool>[App.IStorageManagers.Length];
-        public Task[] SignOutTasks = new Task[App.IStorageManagers.Length];
+        //public Task<bool>[] SignInTasks = new Task<bool>[App.IStorageManagers.Length];
+        public Dictionary<string ,Task<bool>> SignInTasks = new Dictionary<string, Task<bool>>();
+        //public Task[] SignOutTasks = new Task[App.IStorageManagers.Length];
+        public Dictionary<string, Task> SignOutTasks = new Dictionary<string, Task>();
 
 
         public void AddTask(string name, Task task)
@@ -33,38 +35,51 @@ namespace PintheCloud.Helpers
             }
         }
 
-        public void AddSignInTask(Task<bool> task, int platform)
+        public void AddSignInTask(string key, Task<bool> task)
         {
-            if(this.SignInTasks[platform] == null)
-                this.SignInTasks[platform] = task;
+            if(!this.SignInTasks.ContainsKey(key))
+                this.SignInTasks[key] = task;
         }
 
 
-        public async Task<bool> WaitSignInTask(int platform)
+        public Task<bool> WaitSignInTask(string key)
         {
-            bool result = false;
-            if (this.SignInTasks[platform] != null)
+            if (this.SignInTasks.ContainsKey(key))
             {
-                result = await this.SignInTasks[platform];
-                this.SignInTasks[platform] = null;
+                Task<bool> t = this.SignInTasks[key];
+                this.SignInTasks.Remove(key);
+                return t;
             }
-            return result;
-        }
-
-
-        public void AddSignOutTask(Task task, int platform)
-        {
-            if (this.SignOutTasks[platform] == null)
-                this.SignOutTasks[platform] = task;
-        }
-
-
-        public async Task WaitSignOutTask(int platform)
-        {
-            if (this.SignOutTasks[platform] != null)
+            else
             {
-                await this.SignOutTasks[platform];
-                this.SignOutTasks[platform] = null;
+                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+                tcs.SetResult(true);
+                return tcs.Task;
+            }
+            
+        }
+
+
+        public void AddSignOutTask(string key, Task task)
+        {
+            if (!this.SignOutTasks.ContainsKey(key))
+                this.SignOutTasks[key] = task;
+        }
+
+
+        public Task WaitSignOutTask(string key)
+        {
+            if (this.SignOutTasks.ContainsKey(key))
+            {
+                Task t = this.SignOutTasks[key];
+                this.SignOutTasks.Remove(key);
+                return t;
+            }
+            else
+            {
+                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+                tcs.SetResult(true);
+                return tcs.Task;
             }
         }
     }

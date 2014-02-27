@@ -60,7 +60,7 @@ namespace PintheCloud.Pages
                     // If main platform is signed in, process it.
                     // Otherwise, ignore and go to explorer page.
                     if (App.IStorageManagers[i].IsSignIn())
-                        App.TaskManager.AddSignInTask(App.IStorageManagers[i].SignIn(), i);
+                        App.TaskManager.AddSignInTask(App.IStorageManagers[i].GetStorageName(), App.IStorageManagers[i].SignIn());
                 }
             }
             NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE, UriKind.Relative));

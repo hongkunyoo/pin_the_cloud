@@ -31,7 +31,7 @@ namespace PintheCloud.Pages
         // Instances
         private int MainPlatformIndex = 0;
         private int CurrentPlatformIndex = 0;
-        private bool isSignIning = false;
+        //private bool isSignIning = false;
 
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarMenuItem[] AppBarMenuItems = null;
@@ -398,7 +398,7 @@ namespace PintheCloud.Pages
 
 
             // If it is not in current cloud mode, change it.
-            if (this.CurrentPlatformIndex != platformIndex && !this.FileObjectViewModel.IsDataLoading && !this.isSignIning)
+            if (this.CurrentPlatformIndex != platformIndex && !this.FileObjectViewModel.IsDataLoading && !App.IStorageManagers[this.CurrentPlatformIndex].IsSigningIn())
             {
                 IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
                 uiCurrentPlatformText.Text = iStorageManager.GetStorageName();
@@ -575,11 +575,9 @@ namespace PintheCloud.Pages
                 });
 
                 // Sign in and await that task.
-                this.isSignIning = true;
                 IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
-                App.TaskManager.AddSignInTask(iStorageManager.SignIn(), this.CurrentPlatformIndex);
-                bool result = await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);
-                this.isSignIning = false;
+                App.TaskManager.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
+                bool result = await App.TaskManager.WaitSignInTask(iStorageManager.GetStorageName());
 
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.
@@ -614,8 +612,8 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
 
             // Wait tasks
-            await App.TaskManager.WaitSignInTask(this.CurrentPlatformIndex);
-            await App.TaskManager.WaitSignOutTask(this.CurrentPlatformIndex);
+            await App.TaskManager.WaitSignInTask(iStorageManager.GetStorageName());
+            await App.TaskManager.WaitSignOutTask(iStorageManager.GetStorageName());
 
 
             // If it haven't signed out before working below code, do it.
@@ -635,7 +633,6 @@ namespace PintheCloud.Pages
                     this.FolderRootTree.Clear();
                     this.FoldersTree.Clear();
                     FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
-                    FileObject.PrintFile(rootFolder);
                         
                     folder = new FileObjectViewItem();
                     folder.Id = rootFolder.Id;
