@@ -53,7 +53,7 @@
                         <Button x:Name="uiSpotButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
                             <Grid Margin="32,32,32,20">
                                 <StackPanel Margin="0">
-                                    <TextBlock x:Name="uiSpotName" TextWrapping="Wrap" Text="{Binding SpotName}" FontSize="32" LineHeight="42" Margin="0,0,0,20" UseLayoutRounding="True" Foreground="#FF404041" FontFamily="Segoe WP"/>
+                                    <TextBlock x:Name="uiSpotName" TextWrapping="Wrap" Text="{Binding SpotName}" FontSize="32" LineHeight="42" Margin="0,0,0,20" Foreground="#FF404041" FontFamily="Segoe WP"/>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock x:Name="uiSpotAccountName" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FF919FA6" Margin="0,0,18,0" FontFamily="Segoe WP Light"/>
                                     	<TextBlock x:Name="uiSpotDistance" TextWrapping="Wrap" Text="{Binding SpotDistance}" Foreground="#FF919FA6" FontSize="22" FontFamily="Segoe WP Light"/>

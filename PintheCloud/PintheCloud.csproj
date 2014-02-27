@@ -199,6 +199,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\mimeType.js" />
+    <Content Include="Assets\pajeon\at_here\png\app_ApplicationIcon.png" />
+    <Content Include="Assets\pajeon\at_here\png\app_MediumFlipCycleTile.png" />
+    <Content Include="Assets\pajeon\at_here\png\app_MediumIconicTile.png" />
+    <Content Include="Assets\pajeon\at_here\png\app_SmallFlipCycleTile.png" />
+    <Content Include="Assets\pajeon\at_here\png\app_SmallIconicTile.png" />
+    <Content Include="Assets\pajeon\at_here\png\app_WideFlipCycleTile.png" />
     <Content Include="Assets\pajeon\at_here\png\general_checkbox.png" />
     <Content Include="Assets\pajeon\at_here\png\general_checkbox_p.png" />
     <Content Include="Assets\pajeon\at_here\png\general_fail.png" />
@@ -218,6 +224,7 @@
     <Content Include="Assets\pajeon\at_here\png\setting_icon_account.png" />
     <Content Include="Assets\pajeon\at_here\png\setting_icon_location.png" />
     <Content Include="Assets\pajeon\at_here\png\setting_icon_nickname.png" />
+    <Content Include="Assets\pajeon\at_here\png\splash.png" />
     <Content Include="Assets\pajeon\at_here\screenshot\pick_page.png" />
     <Content Include="Assets\pajeon\at_here\screenshot\pin_page_1.png" />
     <Content Include="Assets\pajeon\at_here\screenshot\pin_page_2.png" />
@@ -260,12 +267,6 @@
     <Content Include="Assets\pajeon\pin_the_cloud\png%402x\map_pin.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png%402x\map_point.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png%402x\splash_logo.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\app_ApplicationIcon.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\app_MediumFlipCycleTile.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\app_MediumIconicTile.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\app_SmallFlipCycleTile.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\app_SmallIconicTile.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\app_WideFlipCycleTile.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\filelist_download.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\filelist_edit.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\filelist_like.png" />
@@ -350,6 +351,7 @@
     <Content Include="Assets\Toolkit.Content\ApplicationBar.Check.png" />
     <Content Include="Assets\Toolkit.Content\ApplicationBar.Delete.png" />
     <Content Include="Assets\Toolkit.Content\ApplicationBar.Select.png" />
+    <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\AppResources.resx">

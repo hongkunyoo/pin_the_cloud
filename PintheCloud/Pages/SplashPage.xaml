@@ -16,13 +16,7 @@
 
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
     <Grid x:Name="LayoutRoot" Background="#FF00A4BF">
-    	<Image x:Name="uiSplashLogo" Source="/Assets/pajeon/png/splash_logo.png" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,221,0,0"/>
-    	<StackPanel x:Name="uiLoginStackPanel" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,305,0,0" Visibility="Collapsed">
-    		<Image Source="/Assets/pajeon/png/login_logo.png" Stretch="None" Margin="0,0,0,5"/>
-    		<Button x:Name="uiMicrosoftLoginButton" Style="{StaticResource NoMarginNoPaddingButtonStyle}">
-    			<Image Stretch="None" Source="/Assets/pajeon/png/login_btn.png"/>
-    		</Button>
-    	</StackPanel>
+    	<Image x:Name="uiSplashLogo" Source="/Assets/pajeon/at_here/png/splash.png"/>
 
         <!-- 지역화 참고:
             표시된 문자열을 지역화하려면 앱의 중립적인 언어 리소스

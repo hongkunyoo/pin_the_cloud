@@ -30,8 +30,9 @@ namespace PintheCloud.Pages
     {
         // Const Instances
         private const string PICK_PIVOT_TITLE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_pick_title.png";
-        private const string PIN_PIVOT_TITLE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_pin_title.png";
         private const string PICK_PIVOT_TITLE_GRID_COLOR_HEX_STRING = "00A4BF";
+
+        private const string PIN_PIVOT_TITLE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_pin_title.png";
         private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_upload.png";
 
         // Instances

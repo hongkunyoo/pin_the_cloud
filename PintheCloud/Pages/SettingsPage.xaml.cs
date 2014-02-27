@@ -48,10 +48,7 @@ namespace PintheCloud.Pages
             // Set OneDrive Sign button
             this.SignButtons = new Button[] { uiOneDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
             for(int i=0 ; i<App.IStorageManagers.Length ; i++)
-            {
-                IStorageManager iStorageManager = App.IStorageManagers[i];
-                this.SetSignButton(i, iStorageManager.IsSignIn());
-            }
+                this.SetSignButton(i, App.IStorageManagers[i].IsSignIn());
 
 
             // Set location access consent checkbox
@@ -96,33 +93,34 @@ namespace PintheCloud.Pages
             {
                 case MY_SPOT_PIVOT_INDEX:
 
-                    // Set My Spot stuff enable
+                    // Set My Spot stuff enable and set list
                     uiMySpotEditViewButton.Visibility = Visibility.Visible;
                     ApplicationBar.IsVisible = true;
-
-
-                    // If Internet available, Set spot list
-                    if (NetworkInterface.GetIsNetworkAvailable())
-                    {
-                        if (!MySpotViewModel.IsDataLoaded)  // Mutex check
-                            this.SetMySpotPivotAsync(AppResources.Loading);
-                    }
-                    else
-                    {
-                        base.SetListUnableAndShowMessage(uiMySpotList, AppResources.InternetUnavailableMessage, uiMySpotMessage);
-                    }
+                    this.SetMySpotPivot();
                     break;
 
                 default:
 
-                    // Set My Spot stuff enable
+                    // Set My Spot stuff unable
                     uiMySpotEditViewButton.Visibility = Visibility.Collapsed;
                     ApplicationBar.IsVisible = false;
                     break;
             }
         }
 
-
+        private void SetMySpotPivot()
+        {
+            // If Internet available, Set spot list
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                if (!MySpotViewModel.IsDataLoaded)  // Mutex check
+                    this.SetMySpotListAsync(AppResources.Loading);
+            }
+            else
+            {
+                base.SetListUnableAndShowMessage(uiMySpotList, AppResources.InternetUnavailableMessage, uiMySpotMessage);
+            }
+        }
 
         /*** Application ***/
 
@@ -134,9 +132,9 @@ namespace PintheCloud.Pages
                 int platformIndex = 0;
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    uiApplicationGrid.Visibility = Visibility.Collapsed;
-                    uiApplicationMessageGrid.Visibility = Visibility.Visible;
-                    uiApplicationMessage.Text = AppResources.DoingSignIn;
+                    uiProfileGrid.Visibility = Visibility.Collapsed;
+                    uiProfileMessageGrid.Visibility = Visibility.Visible;
+                    uiProfileMessage.Text = AppResources.DoingSignIn;
 
                     Button signoutButton = (Button)sender;
                     platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
@@ -168,8 +166,8 @@ namespace PintheCloud.Pages
                 // Hide process indicator
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    uiApplicationGrid.Visibility = Visibility.Visible;
-                    uiApplicationMessageGrid.Visibility = Visibility.Collapsed;
+                    uiProfileGrid.Visibility = Visibility.Visible;
+                    uiProfileMessageGrid.Visibility = Visibility.Collapsed;
                 });
             }
             else
@@ -186,9 +184,9 @@ namespace PintheCloud.Pages
             if (signOutResult == MessageBoxResult.OK)
             {
                 // Set process indicator and get index
-                uiApplicationGrid.Visibility = Visibility.Collapsed;
-                uiApplicationMessageGrid.Visibility = Visibility.Visible;
-                uiApplicationMessage.Text = AppResources.DoingSignOut;
+                uiProfileGrid.Visibility = Visibility.Collapsed;
+                uiProfileMessageGrid.Visibility = Visibility.Visible;
+                uiProfileMessage.Text = AppResources.DoingSignOut;
                 Button signoutButton = (Button)sender;
                 int platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
 
@@ -198,8 +196,8 @@ namespace PintheCloud.Pages
 
                 // Hide process indicator
                 ((FileObjectViewModel)PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
-                uiApplicationGrid.Visibility = Visibility.Visible;
-                uiApplicationMessageGrid.Visibility = Visibility.Collapsed;
+                uiProfileGrid.Visibility = Visibility.Visible;
+                uiProfileMessageGrid.Visibility = Visibility.Collapsed;
                 this.SetSignButton(platformIndex, false);
             }
         }
@@ -231,34 +229,33 @@ namespace PintheCloud.Pages
 
         private void uiSpotNickNameTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            string nickName = uiSpotNickNameTextBox.Text;
-            if (!nickName.Trim().Equals("")) 
-            {
-                if (nickName.Length > 0)
-                    uiSpotNickNameSetButton.IsEnabled = true;
-                else
-                    uiSpotNickNameSetButton.IsEnabled = false;
-            }
+            if (uiSpotNickNameTextBox.Text.Trim().Length > 0)
+                uiSpotNickNameSetButton.IsEnabled = true;
+            else
+                uiSpotNickNameSetButton.IsEnabled = false;
         }
 
 
         private void uiSpotNickNameSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
+            uiSpotNickNameTextBox.Text = uiSpotNickNameTextBox.Text.Trim();
             App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY] = uiSpotNickNameTextBox.Text;
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.SetSpotNickNameMessage, uiSpotNickNameTextBox.Text, MessageBoxButton.OK);
         }
 
 
-        private void uiLocationAccessConsentCheckBox_Checked(object sender, System.Windows.RoutedEventArgs e)
+        private void uiLocationAccessConsentToggleSwitchButton_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
             App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = true;
             App.ApplicationSettings.Save();
         }
 
-        private void uiLocationAccessConsentCheckBox_Unchecked(object sender, System.Windows.RoutedEventArgs e)
+
+        private void uiLocationAccessConsentToggleSwitchButton_Unchecked(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings.Remove(Account.LOCATION_ACCESS_CONSENT_KEY);
+            App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = false;
+            App.ApplicationSettings.Save();
         }
 
 
@@ -339,13 +336,13 @@ namespace PintheCloud.Pages
         {
             // If Internet available, Set spot list
             if (NetworkInterface.GetIsNetworkAvailable())
-                this.SetMySpotPivotAsync(AppResources.Refreshing);
+                this.SetMySpotListAsync(AppResources.Refreshing);
             else
                 base.SetListUnableAndShowMessage(uiMySpotList, AppResources.InternetUnavailableMessage, uiMySpotMessage);
         }
 
 
-        private async void SetMySpotPivotAsync(string message)
+        private async void SetMySpotListAsync(string message)
         {
             // Show progress indicator 
             base.SetListUnableAndShowMessage(uiMySpotList, message, uiMySpotMessage);
