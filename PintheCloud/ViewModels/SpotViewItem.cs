@@ -17,19 +17,19 @@ namespace PintheCloud.ViewModels
         public double SpotDistance { get; set; }
         public string SpotId { get; set; }
 
-        private string selectCheckImage;
-        public string SelectCheckImage
+        private string deleteImage;
+        public string DeleteImage
         {
             get
             {
-                return selectCheckImage;
+                return deleteImage;
             }
             set
             {
-                if (selectCheckImage != value)
+                if (deleteImage != value)
                 {
-                    selectCheckImage = value;
-                    NotifyPropertyChanged("SelectCheckImage");
+                    deleteImage = value;
+                    NotifyPropertyChanged("DeleteImage");
                 }
             }
         }

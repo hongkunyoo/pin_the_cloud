@@ -34,9 +34,8 @@ namespace PintheCloud.Pages
 
         protected const string SELECTED_FILE_KEY = "SELECTED_FILE_KEY";
 
-        protected const string EDIT_IMAGE_URI = "/Assets/pajeon/png/general_edit.png";
-        protected const string VIEW_IMAGE_URI = "/Assets/pajeon/png/general_view.png";
-        protected const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_delete.png";
+        protected const string EDIT_IMAGE_URI = "/Assets/pajeon/pin_the_cloud/png/general_edit.png";
+        protected const string VIEW_IMAGE_URI = "/Assets/pajeon/pin_the_cloud/png/general_view.png";
 
 
         public PtcPage()

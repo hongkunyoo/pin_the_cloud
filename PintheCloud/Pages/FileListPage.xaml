@@ -18,7 +18,7 @@
 
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
-			<shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/AppBar/refresh.png" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
+            <shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/at_here/png/general_bar_refresh.png" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
 			<shell:ApplicationBarIconButton x:Name="uiAppBarPinInfoButton" IconUri="/Assets/pajeon/pin_the_cloud/png/general_bar_upload.png" IsEnabled="True" Text="pin" Click="uiAppBarPinInfoButton_Click"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
@@ -32,7 +32,7 @@
         <Grid Background="#FF00A4BF">
             <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             <Button x:Name="uiFileListEditViewButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Click="uiFileListEditViewButton_Click">
-                <Image x:Name="uiFileListEditViewButtonImage" Source="/Assets/pajeon/png/general_edit.png" Stretch="None"/>
+                <Image x:Name="uiFileListEditViewButtonImage" Source="/Assets/pajeon/pin_the_cloud/png/general_edit.png" Stretch="None"/>
             </Button>
         </Grid>
 
@@ -50,14 +50,14 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="114"/>
                                     <ColumnDefinition/>
-                                    <ColumnDefinition Width="49"/>
+                                    <ColumnDefinition Width="31"/>
                                 </Grid.ColumnDefinitions>
                                 <Image x:Name="uiThumnail" Source="{Binding ThumnailType, Converter={StaticResource StringToThumnailUriConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" Width="94" Height="94" Stretch="None"/>
                                 <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,20,0,0">
-                                    <TextBlock x:Name="uiName" Text="{Binding Name}" TextWrapping="Wrap" Margin="0,0,0,8" FontSize="22" Foreground="#FF404041" FontFamily="Segoe WP"/>
+                                    <TextBlock x:Name="uiName" Text="{Binding Name}" Margin="0,0,0,8" FontSize="22" Foreground="#FF404041" FontFamily="Segoe WP" TextTrimming="WordEllipsis"/>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock x:Name="uiSize" Text="{Binding Size}" TextWrapping="Wrap"  FontSize="22" Foreground="#FF3ABDBE" FontFamily="Segoe WP Light" />
-                                        <TextBlock TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF3ABDBE" FontFamily="Segoe WP Light"/>
+                                        <TextBlock x:Name="uiSizeUnit" TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF3ABDBE" FontFamily="Segoe WP Light"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <Image x:Name="uiSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Stretch="None"/>

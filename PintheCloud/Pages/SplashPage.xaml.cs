@@ -43,9 +43,9 @@ namespace PintheCloud.Pages
             }
 
             // Check nick name at frist login.
-            if (!App.ApplicationSettings.Contains(Account.ACCOUNT_NICK_NAME_KEY))
+            if (!App.ApplicationSettings.Contains(Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY))
             {
-                App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY] = AppResources.AtHere;
+                App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY] = AppResources.AtHere;
                 App.ApplicationSettings.Save();
             }
 

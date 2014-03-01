@@ -364,7 +364,7 @@
 		</Setter>
 	</Style>
     <!-- 리소스 사전 항목은 여기에서 정의해야 합니다. -->
-	<Style x:Key="LocationServiceToggleSwitchButtonStyle" TargetType="toolkitPrimitives:ToggleSwitchButton">
+	<Style x:Key="CustomToggleSwitchButtonStyle" TargetType="toolkitPrimitives:ToggleSwitchButton">
 		<Setter Property="Background" Value="{StaticResource PhoneBackgroundBrush}"/>
 		<Setter Property="IsTabStop" Value="False"/>
 		<Setter Property="SwitchForeground" Value="{StaticResource PhoneAccentBrush}"/>

@@ -265,7 +265,6 @@ namespace PintheCloud.Managers
             do
             {
                 BlobResultSegment blobListSegment = await this.blobClient.ListBlobsSegmentedAsync(prefix, token);
-
                 list.AddRange(_GetDataList(blobListSegment.Results));
                 token = blobListSegment.ContinuationToken;
             } while (token != null);

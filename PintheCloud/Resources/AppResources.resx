@@ -218,8 +218,8 @@
   <data name="AtHere" xml:space="preserve">
     <value>At Here</value>
   </data>
-  <data name="Nickname" xml:space="preserve">
-    <value>Nickname</value>
+  <data name="DefaultSpotName" xml:space="preserve">
+    <value>Default Spot Name</value>
   </data>
   <data name="NoLocationServiceCaption" xml:space="preserve">
     <value>Location Service Off</value>
@@ -230,17 +230,14 @@
   <data name="DoingSignIn" xml:space="preserve">
     <value>Doing sign in...</value>
   </data>
-  <data name="SetSpotNickNameMessage" xml:space="preserve">
-    <value>Nick name is registered. New spot will be named by this.</value>
+  <data name="SetDefaultSpotNameMessage" xml:space="preserve">
+    <value>Default spot name is registered.</value>
   </data>
   <data name="Main" xml:space="preserve">
     <value>Main</value>
   </data>
   <data name="SetMainCloudMessage" xml:space="preserve">
     <value>It is set to main cloud.</value>
-  </data>
-  <data name="NoFileInSpotMessage" xml:space="preserve">
-    <value>There is no files in this spot.</value>
   </data>
   <data name="PiningSpot" xml:space="preserve">
     <value>Pining Spot...</value>
@@ -278,19 +275,31 @@
   <data name="GoogleDoc" xml:space="preserve">
     <value>Google Doc</value>
   </data>
-  <data name="DeleteCaption" xml:space="preserve">
-    <value>Delete</value>
+  <data name="DeleteAllMySpotCaption" xml:space="preserve">
+    <value>Delete All My Spots</value>
   </data>
   <data name="DeleteFileMessage" xml:space="preserve">
-    <value>Do you want to delete the file?</value>
+    <value>Do you want to delete the selected file?</value>
   </data>
-  <data name="DeleteSpotMessage" xml:space="preserve">
-    <value>Do you want to delete the spot?</value>
+  <data name="DeleteAllMySpotMessage" xml:space="preserve">
+    <value>Do you want to delete all my spots?</value>
   </data>
   <data name="Account" xml:space="preserve">
     <value>Account</value>
   </data>
   <data name="Profile" xml:space="preserve">
     <value>Profile</value>
+  </data>
+  <data name="DeleteFileCaption" xml:space="preserve">
+    <value>Delete The Selected File</value>
+  </data>
+  <data name="NoFileInSpotMessage" xml:space="preserve">
+    <value>There is no files in this spot.</value>
+  </data>
+  <data name="DeleteMySpotCaption" xml:space="preserve">
+    <value>Delete My Spot</value>
+  </data>
+  <data name="DeleteMySpotMessage" xml:space="preserve">
+    <value>Do you want to delete the my spot?</value>
   </data>
 </root>

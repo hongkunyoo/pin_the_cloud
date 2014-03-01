@@ -174,6 +174,7 @@ namespace PintheCloud
             if (Debugger.IsAttached)
             {
                 System.Diagnostics.Debug.WriteLine(e.ExceptionObject.ToString());
+                System.Diagnostics.Debug.WriteLine(e.ExceptionObject.Source);                
                 System.Diagnostics.Debug.WriteLine("-------------------------");
 
                 // 처리되지 않은 예외가 발생했습니다. 중단하고 디버거를 실행합니다.

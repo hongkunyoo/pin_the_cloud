@@ -112,6 +112,9 @@
     <Compile Include="Pages\DropBoxSignInPopup.xaml.cs">
       <DependentUpon>DropBoxSignInPopup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\NewSpotPage.xaml.cs">
+      <DependentUpon>NewSpotPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\DropboxWebBrowserResult.cs" />
     <Compile Include="Utilities\DropboxWebBrowserTask.cs" />
     <Compile Include="Helpers\LockHelper.cs" />
@@ -172,6 +175,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\NewSpotPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\SettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -195,9 +202,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\AppBar\refresh.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Assets\mimeType.js" />
     <Content Include="Assets\pajeon\at_here\png\app_ApplicationIcon.png" />
     <Content Include="Assets\pajeon\at_here\png\app_MediumFlipCycleTile.png" />
@@ -205,6 +209,7 @@
     <Content Include="Assets\pajeon\at_here\png\app_SmallFlipCycleTile.png" />
     <Content Include="Assets\pajeon\at_here\png\app_SmallIconicTile.png" />
     <Content Include="Assets\pajeon\at_here\png\app_WideFlipCycleTile.png" />
+    <Content Include="Assets\pajeon\at_here\png\general_bar_refresh.png" />
     <Content Include="Assets\pajeon\at_here\png\general_checkbox.png" />
     <Content Include="Assets\pajeon\at_here\png\general_checkbox_p.png" />
     <Content Include="Assets\pajeon\at_here\png\general_fail.png" />
@@ -215,6 +220,7 @@
     <Content Include="Assets\pajeon\at_here\png\navi_ico_skydrive.png" />
     <Content Include="Assets\pajeon\at_here\png\navi_pick_title.png" />
     <Content Include="Assets\pajeon\at_here\png\navi_pin_title.png" />
+    <Content Include="Assets\pajeon\at_here\png\new_delete.png" />
     <Content Include="Assets\pajeon\at_here\png\path_back.png" />
     <Content Include="Assets\pajeon\at_here\png\setting_account_checkbox.png" />
     <Content Include="Assets\pajeon\at_here\png\setting_account_checkbox_p.png" />

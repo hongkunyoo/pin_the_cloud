@@ -17,6 +17,7 @@ namespace PintheCloud.ViewModels
         public const string CHECK_IMAGE_URI = "/Assets/pajeon/at_here/png/general_checkbox_p.png";
 
         public const string TRANSPARENT_IMAGE_URI = "/Assets/pajeon/at_here/png/general_transparent.png";
+        public const string DELETE_IMAGE_URI = "/Assets/pajeon/at_here/png/new_delete.png";
         public const string FAIL_IMAGE_URI = "/Assets/pajeon/at_here/png/general_fail.png";
 
         public const string DELETING_IMAGE_URI = "DELETING_SPOT_IMAGE_URI";

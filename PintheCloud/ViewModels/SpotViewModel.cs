@@ -30,7 +30,7 @@ namespace PintheCloud.ViewModels
         }
 
 
-        public void SetItems(JArray spots, bool select)
+        public void SetItems(JArray spots)
         {
             // If items have something, clear.
             this.Items.Clear();
@@ -45,13 +45,7 @@ namespace PintheCloud.ViewModels
                 spotViewItem.AccountName = (string)jSpot["account_name"];
                 spotViewItem.SpotId = (string)jSpot["id"];
                 spotViewItem.SpotDistance = (double)jSpot["spot_distance"];
-
-                // If select is on, set check image.
-                // Otherwise, set transparent image.
-                if (select)
-                    spotViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
-                else
-                    spotViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                spotViewItem.DeleteImage = FileObjectViewModel.DELETE_IMAGE_URI;
 
                 this.Items.Add(spotViewItem);
             }

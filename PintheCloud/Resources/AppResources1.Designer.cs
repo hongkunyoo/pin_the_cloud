@@ -160,16 +160,43 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Delete과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Default Spot Name과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string DeleteCaption {
+        public static string DefaultSpotName {
             get {
-                return ResourceManager.GetString("DeleteCaption", resourceCulture);
+                return ResourceManager.GetString("DefaultSpotName", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Do you want to delete the file?과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Delete All My Spots과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DeleteAllMySpotCaption {
+            get {
+                return ResourceManager.GetString("DeleteAllMySpotCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want to delete all my spots?과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DeleteAllMySpotMessage {
+            get {
+                return ResourceManager.GetString("DeleteAllMySpotMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Delete The Selected File과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DeleteFileCaption {
+            get {
+                return ResourceManager.GetString("DeleteFileCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want to delete the selected file?과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string DeleteFileMessage {
             get {
@@ -178,11 +205,20 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Do you want to delete the spot?과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Delete My Spot과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string DeleteSpotMessage {
+        public static string DeleteMySpotCaption {
             get {
-                return ResourceManager.GetString("DeleteSpotMessage", resourceCulture);
+                return ResourceManager.GetString("DeleteMySpotCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want to delete the my spot?과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DeleteMySpotMessage {
+            get {
+                return ResourceManager.GetString("DeleteMySpotMessage", resourceCulture);
             }
         }
         
@@ -349,15 +385,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Nickname과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string Nickname {
-            get {
-                return ResourceManager.GetString("Nickname", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   There is no files in this folder.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoFileInFolderMessage {
@@ -520,20 +547,20 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Default spot name is registered.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string SetDefaultSpotNameMessage {
+            get {
+                return ResourceManager.GetString("SetDefaultSpotNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   It is set to main cloud.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string SetMainCloudMessage {
             get {
                 return ResourceManager.GetString("SetMainCloudMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Nick name is registered. New spot will be named by this.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string SetSpotNickNameMessage {
-            get {
-                return ResourceManager.GetString("SetSpotNickNameMessage", resourceCulture);
             }
         }
         

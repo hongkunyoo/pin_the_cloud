@@ -329,7 +329,7 @@ namespace PintheCloud.Pages
                                 this.NearSpotViewModel.IsDataLoaded = true;
                                 uiNearSpotList.Visibility = Visibility.Visible;
                                 uiNearSpotMessage.Visibility = Visibility.Collapsed;
-                                this.NearSpotViewModel.SetItems(spots, false);
+                                this.NearSpotViewModel.SetItems(spots);
                             });
                         }
                         else  // No near spots

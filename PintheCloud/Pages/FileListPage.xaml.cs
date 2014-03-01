@@ -31,7 +31,8 @@ namespace PintheCloud.Pages
     public partial class FileListPage : PtcPage
     {
         // Const Instances
-        private const string PICK_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/png/general_download.png";
+        private const string PICK_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_download.png";
+        private const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_delete.png";
 
         // Instances
         private string SpotId = null;
@@ -40,7 +41,6 @@ namespace PintheCloud.Pages
         private string AccountName = null;
         private int PlatformIndex = 0;
         private bool LaunchLock = false;
-        private bool DeleteLock = false;
 
         private ApplicationBarIconButton DeleteAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarIconButton PickAppBarButton = new ApplicationBarIconButton();
@@ -71,11 +71,7 @@ namespace PintheCloud.Pages
 
             // Set event by previous page
             Context con = EventHelper.GetContext(EventHelper.FILE_LIST_PAGE);
-            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PICK_PIVOT, () =>
-            {
-                this.DeleteLock = true;
-                this.SETTINGS_and_EXPLORE_PICK();
-            });
+            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PICK_PIVOT, this.SETTINGS_and_EXPLORE_PICK);
             con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PIN_PIVOT, this.EXPLORER_PIN);
             con.HandleEvent(EventHelper.SETTINGS_PAGE, this.SETTINGS_and_EXPLORE_PICK);
         }
@@ -108,7 +104,7 @@ namespace PintheCloud.Pages
             // Get parameters
             this.PlatformIndex = (int)PhoneApplicationService.Current.State[PLATFORM_KEY];
             Account account = App.IStorageManagers[this.PlatformIndex].GetAccount();
-            this.SpotName = (string)App.ApplicationSettings[Account.ACCOUNT_NICK_NAME_KEY];
+            this.SpotName = (string)App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
             this.AccountId = account.account_platform_id;
             this.AccountName = account.account_name;
 
@@ -302,7 +298,7 @@ namespace PintheCloud.Pages
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                MessageBoxResult result = MessageBox.Show(AppResources.DeleteFileMessage, AppResources.DeleteCaption, MessageBoxButton.OKCancel);
+                MessageBoxResult result = MessageBox.Show(AppResources.DeleteFileMessage, AppResources.DeleteFileMessage, MessageBoxButton.OKCancel);
                 if (result == MessageBoxResult.OK)
                 {
                     foreach (FileObjectViewItem fileObjectViewItem in this.SelectedFile)
@@ -464,7 +460,6 @@ namespace PintheCloud.Pages
         {
             // Get selected file list from previous page before pin spot.
             List<FileObjectViewItem> fileList = (List<FileObjectViewItem>)PhoneApplicationService.Current.State[SELECTED_FILE_KEY];
-            FileObjectViewItem[] fileArray = fileList.ToArray<FileObjectViewItem>();
 
             // If pin spot success, upload files.
             // Otherwise, show warning message.
@@ -473,9 +468,9 @@ namespace PintheCloud.Pages
             {
                 // Register spot id and Get selected files from previous page, Upload each files in order.
                 this.SpotId = spotId;
-                for (int i = 0; i < fileArray.Length; i++)
+                for (int i = 0; i < fileList.Count; i++)
                 {
-                    FileObjectViewItem fileObjectViewItem = new FileObjectViewItem(fileArray[i]);
+                    FileObjectViewItem fileObjectViewItem = new FileObjectViewItem(fileList[i]);
                     this.UploadFileAsync(fileObjectViewItem);
                 }
             }
@@ -496,8 +491,7 @@ namespace PintheCloud.Pages
                     this.DeleteAppBarButton.IsEnabled = false;
                 }
                 ApplicationBar.Buttons.Remove(this.PickAppBarButton);
-                if (!this.DeleteLock)
-                    ApplicationBar.Buttons.Remove(this.DeleteAppBarButton);
+                ApplicationBar.Buttons.Remove(this.DeleteAppBarButton);
                 uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_URI, UriKind.Relative));
                 
                 // Change select check image of each file object view item.
@@ -513,7 +507,6 @@ namespace PintheCloud.Pages
             {
                 // Change mode image and remove app bar buttons.
                 ApplicationBar.Buttons.Add(this.PickAppBarButton);
-                if (!this.DeleteLock)
                     ApplicationBar.Buttons.Add(this.DeleteAppBarButton);
                 uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_URI, UriKind.Relative));
 

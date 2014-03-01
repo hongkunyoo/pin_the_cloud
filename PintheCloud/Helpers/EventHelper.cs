@@ -67,7 +67,6 @@ namespace PintheCloud.Managers
                 return;
             }
             if (!m[previous].ContainsKey(pivot)) return;
-            Debug.WriteLine("firing : {0} {1} {2}", current, previous, pivot == PIN_PIVOT ? "PIN" : "PICK");
             m[previous][pivot]();
         }
     }
