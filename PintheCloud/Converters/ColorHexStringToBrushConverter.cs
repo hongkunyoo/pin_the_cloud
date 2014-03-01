@@ -21,7 +21,7 @@ namespace PintheCloud.Converters
             lock (_brushCache)
             {
                 if (!_brushCache.ContainsKey(colorStr))
-                    _brushCache.Add(colorStr, new SolidColorBrush(GetColorFromHex(colorStr)));
+                    _brushCache.Add(colorStr, new SolidColorBrush(GetColorFromHexString(colorStr)));
 
                 return _brushCache[colorStr];
             }
@@ -35,7 +35,7 @@ namespace PintheCloud.Converters
 
 
         // Get color from hex
-        public static Color GetColorFromHex(string hexColorString)
+        public static Color GetColorFromHexString(string hexColorString)
         {
             hexColorString = "FF" + hexColorString;
             var a = System.Convert.ToByte(hexColorString.Substring(0, 2), 16);

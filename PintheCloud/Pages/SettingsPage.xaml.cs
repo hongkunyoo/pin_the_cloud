@@ -19,6 +19,8 @@ using PintheCloud.Models;
 using Newtonsoft.Json.Linq;
 using PintheCloud.Utilities;
 using System.Diagnostics;
+using PintheCloud.Converters;
+using System.Windows.Media;
 
 namespace PintheCloud.Pages
 {
@@ -29,10 +31,25 @@ namespace PintheCloud.Pages
         private const int MY_SPOT_PIVOT_INDEX = 1;
         private const int DELETE_APP_BAR_BUTTON_INDEX = 1;
 
+        private const double SIGN_IN_BUTTON_TEXT_OPACITY = 1.0;
+        private const double SIGN_NOT_IN_BUTTON_TEXT_OPACITY = 0.3;
+
+        private const double MAIN_PLATFORM_BUTTON_OPACITY = 0.2;
+        private const double MAIN_NOT_PLATFORM_BUTTON_OPACITY = 0.8;
+
+        private const string MAIN_PLATFORM_BUTTON_COLOR = "00a4bf";
+        private const string MAIN_NOT_PLATFORM_BUTTON_COLOR = "e6e7e8";
+
+        private const string SETTING_ACCOUNT_MAIN_CHECK_NOT_IMAGE_URI = "/Assets/pajeon/at_here/png/setting_account_checkbox.png";
+        private const string SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI = "/Assets/pajeon/at_here/png/setting_account_checkbox_p.png";
+
         // Instances
         private ApplicationBarIconButton DeleteAppBarButton = new ApplicationBarIconButton();
         private SpotViewModel MySpotViewModel = new SpotViewModel();
         private Button[] SignButtons = null;
+        private Button[] MainButtons = null;
+        private Grid[] SignButtonGrids = null;
+        private TextBlock[] SignButtonTextBlocks = null;
         private bool DeleteSpotButton = false;
 
 
@@ -46,12 +63,11 @@ namespace PintheCloud.Pages
             // Set name
             uiDefaultSpotNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
 
-
-            // Set OneDrive Sign button
+            // Set UIs
             this.SignButtons = new Button[] { uiOneDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
-            for(int i=0 ; i<App.IStorageManagers.Length ; i++)
-                this.SetSignButton(i, App.IStorageManagers[i].IsSignIn());
-
+            this.MainButtons = new Button[] { uiOneDriveMainButton, uiDropboxMainButton, uiGoogleDriveMainButton };
+            this.SignButtonGrids = new Grid[] { uiOneDriveSignButtonGrid, uiDropboxSignButtonGrid, uiGoogleDriveSignButtonGrid };
+            this.SignButtonTextBlocks = new TextBlock[] { uiOneDriveSignButtonText, uiDropboxSignButtonText, uiGoogleDriveSignButtonText };
 
             // Set location access consent checkbox
             if ((bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY])
@@ -72,6 +88,16 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            // Set Sign buttons and Set Main buttons.
+            for (int i = 0; i < App.IStorageManagers.Length; i++)
+            {
+                this.SetSignButtons(i, App.IStorageManagers[i].IsSignIn());
+                this.SetMainButtons(i);
+            }
+                
+
+            // Set My Spot pivot list.
             this.SetMySpotPivot();
         }
 
@@ -124,31 +150,30 @@ namespace PintheCloud.Pages
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                // Set process indicator and Get index
-                int platformIndex = 0;
+                // Set process indicator 
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     uiProfileGrid.Visibility = Visibility.Collapsed;
                     uiProfileMessageGrid.Visibility = Visibility.Visible;
                     uiProfileMessage.Text = AppResources.DoingSignIn;
-
-                    Button signoutButton = (Button)sender;
-                    platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
                 });
 
-                // Sign in and await that task.
+                // Get index
+                Button signButton = (Button)sender;
+                int platformIndex = base.GetPlatformIndexFromString(signButton.Tag.ToString());
+
+                // Sign in
                 IStorageManager iStorageManager = App.IStorageManagers[platformIndex];                
                 if (!iStorageManager.IsSigningIn())
                     App.TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
-                bool result = await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
 
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.
-                if (result)
+                if (await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        this.SetSignButton(platformIndex, true);    
+                        this.SetSignButtons(platformIndex, true);
                     });
                 }
                 else
@@ -183,8 +208,8 @@ namespace PintheCloud.Pages
                 uiProfileGrid.Visibility = Visibility.Collapsed;
                 uiProfileMessageGrid.Visibility = Visibility.Visible;
                 uiProfileMessage.Text = AppResources.DoingSignOut;
-                Button signoutButton = (Button)sender;
-                int platformIndex = base.GetPlatformIndex(signoutButton.Content.ToString().Split(' ')[0]);
+                Button signButton = (Button)sender;
+                int platformIndex = base.GetPlatformIndexFromString(signButton.Tag.ToString());
 
                 // Sign out
                 IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
@@ -194,31 +219,90 @@ namespace PintheCloud.Pages
                 ((FileObjectViewModel)PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                 uiProfileGrid.Visibility = Visibility.Visible;
                 uiProfileMessageGrid.Visibility = Visibility.Collapsed;
-                this.SetSignButton(platformIndex, false);
+                this.SetSignButtons(platformIndex, false);
             }
         }
 
 
         private async Task SignOut(IStorageManager iStorageManager)
         {
-            bool result = await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
-            iStorageManager.SignOut();
+            if(await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
+                iStorageManager.SignOut();
         }
 
 
-        private void SetSignButton(int platformIndex, bool isSignIn)
+        private async void SetSignButtons(int platformIndex, bool isSignIn)
         {
             if (isSignIn)  // It is signed in
             {
-                this.SignButtons[platformIndex].Content = App.IStorageManagers[platformIndex].GetStorageName() + " " + AppResources.SignOutCaption;
-                this.SignButtons[platformIndex].Click += SignOutButton_Click;
-                this.SignButtons[platformIndex].Click -= SignInButton_Click;
+                if (await App.TaskHelper.WaitSignInTask(App.IStorageManagers[platformIndex].GetStorageName()))
+                {
+                    this.SignButtonTextBlocks[platformIndex].Opacity = SIGN_IN_BUTTON_TEXT_OPACITY;
+                    this.SignButtonTextBlocks[platformIndex].Text = App.IStorageManagers[platformIndex].GetAccount().account_name;
+                    this.SignButtons[platformIndex].Click += this.SignOutButton_Click;
+                    this.SignButtons[platformIndex].Click -= this.SignInButton_Click;
+                    return;
+                }
             }
-            else  // It haven't signed in
+
+            // It haven't signed in
+            this.SignButtonTextBlocks[platformIndex].Opacity = SIGN_NOT_IN_BUTTON_TEXT_OPACITY;
+            this.SignButtonTextBlocks[platformIndex].Text = AppResources.SignIn;
+            this.SignButtons[platformIndex].Click -= this.SignOutButton_Click;
+            this.SignButtons[platformIndex].Click += this.SignInButton_Click;
+        }
+
+
+        private void SetMainButtons(int platformIndexindex)
+        {
+            // Set main button click event and image.
+            Button mainButton = this.MainButtons[platformIndexindex];
+            mainButton.Click += this.MainButton_Click;
+
+            Image mainButtonImage = (Image)mainButton.Content;
+            Grid signButtonGrid = this.SignButtonGrids[platformIndexindex];
+            if (platformIndexindex == (int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY])
             {
-                this.SignButtons[platformIndex].Content = App.IStorageManagers[platformIndex].GetStorageName() + " " + AppResources.SignIn;
-                this.SignButtons[platformIndex].Click -= SignOutButton_Click;
-                this.SignButtons[platformIndex].Click += SignInButton_Click;
+                mainButtonImage.Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI, UriKind.Relative));
+                signButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_PLATFORM_BUTTON_COLOR));
+                signButtonGrid.Opacity = MAIN_PLATFORM_BUTTON_OPACITY;
+            }
+            else
+            {
+                mainButtonImage.Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_NOT_IMAGE_URI, UriKind.Relative));
+                signButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_NOT_PLATFORM_BUTTON_COLOR));
+                signButtonGrid.Opacity = MAIN_NOT_PLATFORM_BUTTON_OPACITY;
+            }
+        }
+
+
+        private void MainButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Set check image
+            Button mainButton = (Button)sender;
+            ((Image)mainButton.Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI, UriKind.Relative));
+            
+            // Set Signbutton background
+            int mainButtonPlatformIndex = base.GetPlatformIndexFromString(mainButton.Tag.ToString());
+            Grid signButtonGrid = this.SignButtonGrids[mainButtonPlatformIndex];
+            signButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_PLATFORM_BUTTON_COLOR));
+            signButtonGrid.Opacity = MAIN_PLATFORM_BUTTON_OPACITY;
+
+            // Save main platform index to app settings.
+            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = base.GetStorageAccountTypeFromInt(mainButtonPlatformIndex);
+            App.ApplicationSettings.Save();
+
+            // Set rest button image and backtround
+            for (int i = 0; i < App.IStorageManagers.Length; i++)
+            {
+                if (i != mainButtonPlatformIndex)
+                {
+                    ((Image)this.MainButtons[i].Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_NOT_IMAGE_URI, UriKind.Relative));
+
+                    Grid restSignButtonGrid = (Grid)this.SignButtonGrids[i];
+                    restSignButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_NOT_PLATFORM_BUTTON_COLOR));
+                    restSignButtonGrid.Opacity = MAIN_NOT_PLATFORM_BUTTON_OPACITY;
+                }
             }
         }
 
@@ -261,30 +345,6 @@ namespace PintheCloud.Pages
         {
             App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = false;
             App.ApplicationSettings.Save();
-        }
-
-
-        private void uiOneDriveSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.ONE_DRIVE;
-            App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.SetMainCloudMessage, AppResources.OneDrive, MessageBoxButton.OK);
-        }
-
-
-        private void uiDropboxSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.DROPBOX;
-            App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.SetMainCloudMessage, AppResources.Dropbox, MessageBoxButton.OK);
-        }
-
-
-        private void uiGoogleDriveSetMainButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.GOOGLE_DRIVE;
-            App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.SetMainCloudMessage, AppResources.GoogleDrive, MessageBoxButton.OK);
         }
 
 

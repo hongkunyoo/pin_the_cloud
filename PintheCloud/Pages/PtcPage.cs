@@ -105,12 +105,34 @@ namespace PintheCloud.Pages
         }
 
 
-        public int GetPlatformIndex(string platform)
+        public int GetPlatformIndexFromString(string platform)
         {
             for (int i = 0; i < App.IStorageManagers.Length; i++)
                 if (platform.Equals(App.IStorageManagers[i].GetStorageName()))
                     return i;
             throw new Exception("No Such Storage Name");
+        }
+
+
+        public Account.StorageAccountType GetStorageAccountTypeFromInt(int index)
+        {
+            Account.StorageAccountType type = Account.StorageAccountType.ONE_DRIVE;
+            switch (index)
+            {
+                case (int)Account.StorageAccountType.ONE_DRIVE:
+                    type = Account.StorageAccountType.ONE_DRIVE;
+                    break;
+                case (int)Account.StorageAccountType.DROPBOX:
+                    type = Account.StorageAccountType.DROPBOX;
+                    break;
+                case (int)Account.StorageAccountType.GOOGLE_DRIVE:
+                    type = Account.StorageAccountType.GOOGLE_DRIVE;
+                    break;
+                default:
+                    type = Account.StorageAccountType.ONE_DRIVE;
+                    break;
+            }
+            return type;
         }
     }
 }

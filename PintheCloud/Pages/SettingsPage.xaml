@@ -42,49 +42,83 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <StackPanel>
-                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                    <Image Source="/Assets/pajeon/at_here/png/setting_icon_nickname.png" Stretch="None" Margin="0,0,7,0"/>
-                                    <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.DefaultSpotName, Source={StaticResource LocalizedStrings}}" FontSize="22" Foreground="#FF404041"/>
-                                </StackPanel>
+                            <StackPanel Margin="0,0,0,32">
+                                <Grid Margin="0,0,0,10">
+                            		<Grid.ColumnDefinitions>
+                            			<ColumnDefinition Width="26"/>
+                            			<ColumnDefinition/>
+                            		</Grid.ColumnDefinitions>
+                            		<Image Source="/Assets/pajeon/at_here/png/setting_icon_nickname.png" Stretch="None" HorizontalAlignment="Left"/>
+                            		<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.DefaultSpotName, Source={StaticResource LocalizedStrings}}" FontSize="22" Foreground="#FF404041" Grid.Column="1"/>
+                            	</Grid>
                                 <Grid Height="54">
                                     <TextBox x:Name="uiDefaultSpotNameTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="25" MaxLength="15" TextChanged="uiDefaultSpotNameTextBox_TextChanged" Background="#FFE6E7E8" Opacity="0.8" BorderThickness="0" Padding="0" FontFamily="Segoe WP Light" Foreground="#FF6F7A81" Style="{StaticResource CustomTextBoxStyle}" GotFocus="uiDefaultSpotNameTextBox_GotFocus" LostFocus="uiDefaultSpotNameTextBox_LostFocus"/>
                                     <Button x:Name="uiDefaultSpotNameSetButton" BorderBrush="Black" Foreground="Black" Click="uiDefaultSpotNameSetButton_Click" Style="{StaticResource NoMarginNoPaddingButtonStyle}" Content="Set" HorizontalAlignment="Right" Visibility="Collapsed"/>
                                 </Grid>
                             </StackPanel>
-                            <StackPanel Grid.Row="1" Margin="0,32,0,0">
-                                <StackPanel Orientation="Horizontal">
-                                    <Image Source="/Assets/pajeon/at_here/png/setting_icon_account.png" Stretch="None" Margin="0,0,7,0"/>
-                                    <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Account, Source={StaticResource LocalizedStrings}}" Foreground="#FF404041" FontSize="22"/>
-                                </StackPanel>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="110"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Button x:Name="uiOneDriveSignButton" FontSize="22.667" Background="White" BorderBrush="Black" Foreground="Black"/>
-                                    <Button x:Name="uiOneDriveSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" BorderBrush="Black" Foreground="Black" Grid.Column="1" Click="uiOneDriveSetMainButton_Click"/>
-                                </Grid>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="110"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Button x:Name="uiDropboxSignButton" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
-                                    <Button x:Name="uiDropboxSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" Grid.Column="1" BorderBrush="Black" Foreground="Black" Click="uiDropboxSetMainButton_Click"/>
-                                </Grid>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="110"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Button x:Name="uiGoogleDriveSignButton" BorderBrush="Black" Foreground="Black" FontSize="22.667"/>
-                                    <Button x:Name="uiGoogleDriveSetMainButton" Content="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" Grid.Column="1" BorderBrush="Black" Foreground="Black" Click="uiGoogleDriveSetMainButton_Click"/>
-                                </Grid>
+                            <StackPanel Grid.Row="1" Margin="0,0,0,32">
+                                <Grid Margin="0,0,0,10">
+                            		<Grid.ColumnDefinitions>
+                            			<ColumnDefinition Width="26"/>
+                            			<ColumnDefinition Width="Auto"/>
+                            			<ColumnDefinition Width="Auto"/>
+                            		</Grid.ColumnDefinitions>
+                            		<Image Source="/Assets/pajeon/at_here/png/setting_icon_account.png" Stretch="None" HorizontalAlignment="Left"/>
+                            		<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Account, Source={StaticResource LocalizedStrings}}" Foreground="#FF404041" FontSize="22" Grid.Column="1" Margin="0,0,5,0"/>
+                            		<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.Main, Source={StaticResource LocalizedStrings}}" Foreground="#FF00A4BF" FontSize="22" FontFamily="Segoe WP Light" Grid.Column="2"/>
+                            	</Grid>
+                                <Button x:Name="uiOneDriveSignButton" BorderBrush="Black" Foreground="Black" FontSize="22.667" Style="{StaticResource SignButtonStyle}" Margin="0,0,0,4" Tag="{Binding LocalizedResources.OneDrive, Source={StaticResource LocalizedStrings}}" HorizontalContentAlignment="Stretch">
+                                	<Grid>
+                                		<Grid.ColumnDefinitions>
+                                			<ColumnDefinition Width="54"/>
+                                			<ColumnDefinition/>
+                                		</Grid.ColumnDefinitions>
+                                		<Image Source="/Assets/pajeon/at_here/png/setting_account_skydrive.png" Stretch="None"/>
+                                		<Grid Grid.Column="1">
+                                			<Grid x:Name="uiOneDriveSignButtonGrid" Background="#FFE6E7E8" Opacity="0.8"/>
+                                			<TextBlock x:Name="uiOneDriveSignButtonText" TextWrapping="Wrap" Text="{Binding LocalizedResources.SignIn, Source={StaticResource LocalizedStrings}}" Foreground="#FF6F7A81" FontSize="25" FontFamily="Segoe WP Light" Opacity="0.3" Margin="15,0,0,0" VerticalAlignment="Center"/>
+                                			<Button x:Name="uiOneDriveMainButton" BorderBrush="Black" Foreground="Black" Style="{StaticResource ImageButtonStyle}" Tag="{Binding LocalizedResources.OneDrive, Source={StaticResource LocalizedStrings}}" Margin="0,2,2,0" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                				<Image x:Name="uiOneDriveMainButtonImage" Source="/Assets/pajeon/at_here/png/setting_account_checkbox.png" Stretch="None"/>
+                                			</Button>
+                                		</Grid>
+                                	</Grid>
+                                </Button>
+                                <Button x:Name="uiDropboxSignButton" BorderBrush="Black" Foreground="Black" FontSize="22.667" Style="{StaticResource SignButtonStyle}" Margin="0,0,0,4" Tag="{Binding LocalizedResources.Dropbox, Source={StaticResource LocalizedStrings}}" HorizontalContentAlignment="Stretch">
+                                	<Grid>
+                                		<Grid.ColumnDefinitions>
+                                			<ColumnDefinition Width="54"/>
+                                			<ColumnDefinition/>
+                                		</Grid.ColumnDefinitions>
+                                		<Image Source="/Assets/pajeon/at_here/png/setting_account_dropbox.png" Stretch="None"/>
+                                		<Grid Grid.Column="1">
+                                			<Grid x:Name="uiDropboxSignButtonGrid" Background="#FFE6E7E8" Opacity="0.8" />
+                                			<TextBlock x:Name="uiDropboxSignButtonText" TextWrapping="Wrap" Text="{Binding LocalizedResources.SignIn, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" Foreground="#FF6F7A81" FontSize="25" FontFamily="Segoe WP Light" Opacity="0.3" Margin="15,0,0,0"/>
+                                			<Button x:Name="uiDropboxMainButton" BorderBrush="Black" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ImageButtonStyle}" Tag="{Binding LocalizedResources.Dropbox, Source={StaticResource LocalizedStrings}}" Margin="0,2,2,0">
+                                				<Image x:Name="uiDropboxMainButtonImage" Source="/Assets/pajeon/at_here/png/setting_account_checkbox.png" Stretch="None"/>
+                                			</Button>
+                                		</Grid>
+                                	</Grid>
+                                </Button>
+                                <Button x:Name="uiGoogleDriveSignButton" BorderBrush="Black" Foreground="Black" FontSize="22.667" Style="{StaticResource SignButtonStyle}" Margin="0,0,0,4" Tag="{Binding LocalizedResources.GoogleDrive, Source={StaticResource LocalizedStrings}}" HorizontalContentAlignment="Stretch">
+                                	<Grid>
+                                		<Grid.ColumnDefinitions>
+                                			<ColumnDefinition Width="54"/>
+                                			<ColumnDefinition/>
+                                		</Grid.ColumnDefinitions>
+                                		<Image Source="/Assets/pajeon/at_here/png/setting_account_googledrive.png" Stretch="None"/>
+                                		<Grid Grid.Column="1">
+                                			<Grid x:Name="uiGoogleDriveSignButtonGrid" Background="#FFE6E7E8" Opacity="0.8" />
+                                			<TextBlock x:Name="uiGoogleDriveSignButtonText" TextWrapping="Wrap" Text="{Binding LocalizedResources.SignIn, Source={StaticResource LocalizedStrings}}" VerticalAlignment="Center" Foreground="#FF6F7A81" FontSize="25" FontFamily="Segoe WP Light" Opacity="0.3" Margin="15,0,0,0"/>
+                                			<Button x:Name="uiGoogleDriveMainButton" BorderBrush="Black" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ImageButtonStyle}" Tag="{Binding LocalizedResources.GoogleDrive, Source={StaticResource LocalizedStrings}}" Margin="0,2,2,0">
+                                				<Image x:Name="uiGoogleDriveMainButtonImage" Source="/Assets/pajeon/at_here/png/setting_account_checkbox.png" Stretch="None"/>
+                                			</Button>
+                                		</Grid>
+                                	</Grid>
+                                </Button>
                             </StackPanel>
-                            <Grid Margin="0,32,0,0" Grid.Row="2">
+                            <Grid Margin="0" Grid.Row="2">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="25"/>
+                                    <ColumnDefinition Width="26"/>
                                     <ColumnDefinition/>
                                     <ColumnDefinition Width="68"/>
                                 </Grid.ColumnDefinitions>
@@ -94,7 +128,7 @@
                             </Grid>
                         </Grid>
                         <Grid x:Name="uiProfileMessageGrid" Visibility="Collapsed">
-                            <TextBlock x:Name="uiProfileMessage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22" Margin="28,0"/>
+                            <TextBlock x:Name="uiProfileMessage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22" Margin="0"/>
                         </Grid>
                     </Grid>
                 </phone:PivotItem>
@@ -117,7 +151,7 @@
                         			<TextBlock x:Name="uiSpotName" TextWrapping="Wrap" Text="{Binding SpotName}" FontSize="32" LineHeight="42" Margin="0,0,0,20" Foreground="#FF404041" FontFamily="Segoe WP"/>
                         			<TextBlock x:Name="uiSpotAccountName" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FF919FA6" Margin="0,0,18,0" FontFamily="Segoe WP Light"/>
                         		</StackPanel>
-                        		<Button x:Name="uiDeleteSpotButton" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Grid.Column="1" Click="uiDeleteSpotButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        		<Button x:Name="uiDeleteSpotButton" Style="{StaticResource ImageButtonStyle}" Grid.Column="1" Click="uiDeleteSpotButton_Click" HorizontalAlignment="Right" VerticalAlignment="Center">
                         			<Image x:Name="uiDeleteSpotButtonImage" Source="{Binding DeleteImage, Converter={StaticResource StringToUriConverter}}" Stretch="None"/>
                         		</Button>
                         	</Grid>
@@ -130,7 +164,7 @@
                             <RowDefinition/>
                             <RowDefinition Height="72"/>
                         </Grid.RowDefinitions>
-                        <TextBlock x:Name="uiMySpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="22,28,18,0" Visibility="Collapsed"/>
+                        <TextBlock x:Name="uiMySpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="32,32,32,0" Visibility="Collapsed"/>
                         <phone:LongListSelector x:Name="uiMySpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpotList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" />
                     </Grid>
                 </phone:PivotItem>

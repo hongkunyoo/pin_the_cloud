@@ -233,12 +233,6 @@
   <data name="SetDefaultSpotNameMessage" xml:space="preserve">
     <value>Default spot name is registered.</value>
   </data>
-  <data name="Main" xml:space="preserve">
-    <value>Main</value>
-  </data>
-  <data name="SetMainCloudMessage" xml:space="preserve">
-    <value>It is set to main cloud.</value>
-  </data>
   <data name="PiningSpot" xml:space="preserve">
     <value>Pining Spot...</value>
   </data>
@@ -284,9 +278,6 @@
   <data name="DeleteAllMySpotMessage" xml:space="preserve">
     <value>Do you want to delete all my spots?</value>
   </data>
-  <data name="Account" xml:space="preserve">
-    <value>Account</value>
-  </data>
   <data name="Profile" xml:space="preserve">
     <value>Profile</value>
   </data>
@@ -301,5 +292,11 @@
   </data>
   <data name="DeleteMySpotMessage" xml:space="preserve">
     <value>Do you want to delete the my spot?</value>
+  </data>
+  <data name="Account" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="Main" xml:space="preserve">
+    <value>(Main)</value>
   </data>
 </root>

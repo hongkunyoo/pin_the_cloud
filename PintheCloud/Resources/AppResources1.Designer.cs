@@ -349,7 +349,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Main과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   (Main)과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Main {
             get {
@@ -552,15 +552,6 @@ namespace PintheCloud.Resources {
         public static string SetDefaultSpotNameMessage {
             get {
                 return ResourceManager.GetString("SetDefaultSpotNameMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   It is set to main cloud.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string SetMainCloudMessage {
-            get {
-                return ResourceManager.GetString("SetMainCloudMessage", resourceCulture);
             }
         }
         

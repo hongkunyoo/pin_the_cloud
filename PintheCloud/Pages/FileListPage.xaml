@@ -31,7 +31,7 @@
 
         <Grid Background="#FF00A4BF">
             <Image Source="/Assets/pajeon/png/general_logo.png" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            <Button x:Name="uiFileListEditViewButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NoBorderNoMarginNoPaddingPressEffectButtonStyle}" Click="uiFileListEditViewButton_Click">
+            <Button x:Name="uiFileListEditViewButton" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource ImageButtonStyle}" Click="uiFileListEditViewButton_Click">
                 <Image x:Name="uiFileListEditViewButtonImage" Source="/Assets/pajeon/pin_the_cloud/png/general_edit.png" Stretch="None"/>
             </Button>
         </Grid>

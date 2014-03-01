@@ -117,7 +117,7 @@ namespace PintheCloud.Pages
                     ApplicationBar.Buttons.Remove(this.PinInfoAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
                         ApplicationBar.MenuItems.Remove(this.AppBarMenuItems[i]);
-                    uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(PICK_PIVOT_TITLE_GRID_COLOR_HEX_STRING));
+                    uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(PICK_PIVOT_TITLE_GRID_COLOR_HEX_STRING));
                     uiPivotTitleImage.Source = new BitmapImage(new Uri(PICK_PIVOT_TITLE_IMAGE_URI, UriKind.Relative));
                     uiPivotTitleIndicator.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
                     uiCurrentCloudModeImage.Visibility = Visibility.Collapsed;
@@ -131,7 +131,7 @@ namespace PintheCloud.Pages
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
                         ApplicationBar.MenuItems.Add(this.AppBarMenuItems[i]);
                     uiPivotTitleGrid.Background = new SolidColorBrush(
-                        ColorHexStringToBrushConverter.GetColorFromHex(App.IStorageManagers[this.CurrentPlatformIndex].GetStorageColorHexString()));
+                        ColorHexStringToBrushConverter.GetColorFromHexString(App.IStorageManagers[this.CurrentPlatformIndex].GetStorageColorHexString()));
                     uiPivotTitleImage.Source = new BitmapImage(new Uri(PIN_PIVOT_TITLE_IMAGE_URI, UriKind.Relative));
                     uiPivotTitleIndicator.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
                     uiCurrentCloudModeImage.Visibility = Visibility.Visible;
@@ -365,14 +365,14 @@ namespace PintheCloud.Pages
         {
             // Get index
             ApplicationBarMenuItem appBarMenuItem = (ApplicationBarMenuItem)sender;
-            int platformIndex = base.GetPlatformIndex(appBarMenuItem.Text);
+            int platformIndex = base.GetPlatformIndexFromString(appBarMenuItem.Text);
 
 
             // If it is not in current cloud mode, change it.
             if (this.CurrentPlatformIndex != platformIndex && !this.FileObjectViewModel.IsDataLoading && !App.IStorageManagers[this.CurrentPlatformIndex].IsSigningIn())
             {
                 IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
-                uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHex(iStorageManager.GetStorageColorHexString()));
+                uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(iStorageManager.GetStorageColorHexString()));
                 uiCurrentCloudModeImage.Source = new BitmapImage(new Uri(iStorageManager.GetStorageImageUri(), UriKind.Relative));
                 this.CurrentPlatformIndex = platformIndex;
 
