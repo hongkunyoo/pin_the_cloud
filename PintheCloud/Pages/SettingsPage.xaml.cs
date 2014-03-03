@@ -31,8 +31,11 @@ namespace PintheCloud.Pages
         private const int MY_SPOT_PIVOT_INDEX = 1;
         private const int DELETE_APP_BAR_BUTTON_INDEX = 1;
 
-        private const double SIGN_IN_BUTTON_TEXT_OPACITY = 1.0;
-        private const double SIGN_NOT_IN_BUTTON_TEXT_OPACITY = 0.3;
+        private const string SIGN_IN_BUTTON_TEXT_FONT = "Segoe WP";
+        private const string SIGN_NOT_IN_BUTTON_TEXT_FONT = "Segoe WP Light";
+
+        private const string SIGN_IN_BUTTON_TEXT_COLOR = "404041";
+        private const string SIGN_NOT_IN_BUTTON_TEXT_COLOR = "919FA6";
 
         private const double MAIN_PLATFORM_BUTTON_OPACITY = 0.2;
         private const double MAIN_NOT_PLATFORM_BUTTON_OPACITY = 0.8;
@@ -40,8 +43,8 @@ namespace PintheCloud.Pages
         private const string MAIN_PLATFORM_BUTTON_COLOR = "00a4bf";
         private const string MAIN_NOT_PLATFORM_BUTTON_COLOR = "e6e7e8";
 
-        private const string SETTING_ACCOUNT_MAIN_CHECK_NOT_IMAGE_URI = "/Assets/pajeon/at_here/png/setting_account_checkbox.png";
-        private const string SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI = "/Assets/pajeon/at_here/png/setting_account_checkbox_p.png";
+        private const string SETTING_ACCOUNT_MAIN_CHECK_NOT_IMAGE_URI = "/Assets/pajeon/at_here/png/general_checkbox.png";
+        private const string SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI = "/Assets/pajeon/at_here/png/general_checkbox_p.png";
 
         // Instances
         private ApplicationBarIconButton DeleteAppBarButton = new ApplicationBarIconButton();
@@ -237,8 +240,9 @@ namespace PintheCloud.Pages
             {
                 if (await App.TaskHelper.WaitSignInTask(App.IStorageManagers[platformIndex].GetStorageName()))
                 {
-                    this.SignButtonTextBlocks[platformIndex].Opacity = SIGN_IN_BUTTON_TEXT_OPACITY;
                     this.SignButtonTextBlocks[platformIndex].Text = App.IStorageManagers[platformIndex].GetAccount().account_name;
+                    this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_IN_BUTTON_TEXT_COLOR));
+                    this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_IN_BUTTON_TEXT_FONT);
                     this.SignButtons[platformIndex].Click += this.SignOutButton_Click;
                     this.SignButtons[platformIndex].Click -= this.SignInButton_Click;
                     return;
@@ -246,8 +250,9 @@ namespace PintheCloud.Pages
             }
 
             // It haven't signed in
-            this.SignButtonTextBlocks[platformIndex].Opacity = SIGN_NOT_IN_BUTTON_TEXT_OPACITY;
             this.SignButtonTextBlocks[platformIndex].Text = AppResources.SignIn;
+            this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_NOT_IN_BUTTON_TEXT_COLOR));
+            this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_NOT_IN_BUTTON_TEXT_FONT);
             this.SignButtons[platformIndex].Click -= this.SignOutButton_Click;
             this.SignButtons[platformIndex].Click += this.SignInButton_Click;
         }

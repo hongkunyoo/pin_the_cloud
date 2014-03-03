@@ -5,7 +5,9 @@
     xmlns:Primitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:Converters="clr-namespace:PintheCloud.Converters" xmlns:toolkitPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls.Toolkit"
+    xmlns:Converters="clr-namespace:PintheCloud.Converters"
+	xmlns:Utilities="clr-namespace:PintheCloud.Utilities"
+	xmlns:toolkitPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls.Toolkit"
     mc:Ignorable="d"
     >
     
@@ -50,7 +52,7 @@
 								</VisualState>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
-						<Border x:Name="ButtonBackground" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" CornerRadius="0">
+						<Border x:Name="ButtonBackground" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}" CornerRadius="0">
 							<ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
 						</Border>
 					</Grid>
@@ -58,7 +60,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<Style x:Key="ImageButtonStyle" TargetType="Button">
+    <Style x:Key="ImageButtonPressSmallStyle" TargetType="Button">
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="BorderBrush" Value="{StaticResource PhoneForegroundBrush}"/>
 		<Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
@@ -136,7 +138,7 @@
 						</Grid.RowDefinitions>
 						<Grid Background="{TemplateBinding Background}" Grid.RowSpan="3"/>
 						<ContentControl ContentTemplate="{TemplateBinding TitleTemplate}" Content="{TemplateBinding Title}" HorizontalAlignment="Left" Style="{StaticResource PivotTitleStyle}" FontWeight="Medium"/>
-						<Primitives:PivotHeadersControl x:Name="HeadersListElement" Grid.Row="1" FontFamily="Segoe WP SemiLight"/>
+						<Primitives:PivotHeadersControl x:Name="HeadersListElement" Grid.Row="1" FontFamily="Segoe WP SemiLight" />
 						<ItemsPresenter x:Name="PivotItemPresenter" Margin="{TemplateBinding Padding}" Grid.Row="2"/>
 					</Grid>
 				</ControlTemplate>
@@ -198,7 +200,8 @@
 	<Converters:StringToUriConverter x:Key="StringToUriConverter"/>
 	<Converters:StringToThumnailUriConverter x:Key="StringToThumnailUriConverter"/>
 	<Converters:StringToFontWeightConverter x:Key="StringToFontWeightConverter"/>
-	<Style x:Key="CustomLongListSelectorStyle" TargetType="phone:LongListSelector">
+    <Converters:StringToSpotNameInitialUriConverter x:Key="StringToSpotNameInitialUriConverter"/>
+    <Style x:Key="CustomLongListSelectorStyle" TargetType="phone:LongListSelector">
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
 		<Setter Property="Template">
@@ -333,7 +336,8 @@
 										<ColorAnimation Duration="0" To="#FF00A4BF" Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="SwitchBottom" d:IsOptimized="True"/>
 										<DoubleAnimation Duration="0" To="0.2" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="SwitchBottom" d:IsOptimized="True"/>
 										<ColorAnimation Duration="0" To="#FF00A4BF" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" Storyboard.TargetName="ThumbCenter" d:IsOptimized="True"/>
-										<DoubleAnimation Duration="0" To="34" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="SwitchThumb" d:IsOptimized="True"/>
+										<PointAnimation Duration="0" To="0,0" Storyboard.TargetProperty="(UIElement.RenderTransformOrigin)" Storyboard.TargetName="SwitchThumb" d:IsOptimized="True"/>
+										<DoubleAnimation Duration="0" To="30" Storyboard.TargetProperty="(UIElement.RenderTransform).(CompositeTransform.TranslateX)" Storyboard.TargetName="SwitchThumb" d:IsOptimized="True"/>
 									</Storyboard>
 								</VisualState>
 								<VisualState x:Name="Dragging"/>
@@ -351,7 +355,7 @@
 									<Border.RenderTransform>
 										<CompositeTransform/>
 									</Border.RenderTransform>
-									<Border x:Name="ThumbCenter" BorderBrush="{StaticResource PhoneForegroundBrush}" Margin="2">
+									<Border x:Name="ThumbCenter" BorderBrush="{StaticResource PhoneForegroundBrush}" Margin="4,4,0,4">
 										<Border.RenderTransform>
 											<CompositeTransform/>
 										</Border.RenderTransform>
@@ -367,7 +371,30 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<Style x:Key="SignButtonStyle" TargetType="Button">
+	<Style x:Key="ImageButtonStyle" TargetType="Utilities:ImageButton">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Utilities:ImageButton">
+                    <Grid Background="Transparent">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver" />
+                                <VisualState x:Name="Pressed" />
+                                <VisualState x:Name="Disabled" />
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+                        <Border x:Name="ButtonBackground">
+                            <ContentControl x:Name="ContentContainer"
+                                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                                        Content="{TemplateBinding Content}" />
+                        </Border>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+	<Style x:Key="ImageButtonPressDownStyle" TargetType="Button">
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="BorderBrush" Value="{StaticResource PhoneForegroundBrush}"/>
 		<Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>

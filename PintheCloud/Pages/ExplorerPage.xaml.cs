@@ -170,12 +170,12 @@ namespace PintheCloud.Pages
                 this.PinInfoAppBarButton.IsEnabled = false;
 
                 uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                uiPinInfoSignInPanel.Visibility = Visibility.Visible;
             }
             else  // already signed in.
             {
                 uiPinInfoListGrid.Visibility = Visibility.Visible;
-                uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
+                uiPinInfoSignInPanel.Visibility = Visibility.Collapsed;
 
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
@@ -229,12 +229,12 @@ namespace PintheCloud.Pages
                         this.PinInfoAppBarButton.IsEnabled = false;
 
                         uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                        uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                        uiPinInfoSignInPanel.Visibility = Visibility.Visible;
                     }
                     else  // already signed in.
                     {
                         uiPinInfoListGrid.Visibility = Visibility.Visible;
-                        uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
+                        uiPinInfoSignInPanel.Visibility = Visibility.Collapsed;
 
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
@@ -386,13 +386,13 @@ namespace PintheCloud.Pages
                     this.PinInfoAppBarButton.IsEnabled = false;
 
                     uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                    uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                    uiPinInfoSignInPanel.Visibility = Visibility.Visible;
                 }
                 else
                 {
                     // Show Loading message and save is login true for pivot moving action while sign in.
                     uiPinInfoListGrid.Visibility = Visibility.Visible;
-                    uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
+                    uiPinInfoSignInPanel.Visibility = Visibility.Collapsed;
 
                     if (NetworkInterface.GetIsNetworkAvailable())
                         this.SetPinInfoListAsync(null, AppResources.Loading, iStorageManager);
@@ -550,7 +550,7 @@ namespace PintheCloud.Pages
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     uiPinInfoListGrid.Visibility = Visibility.Visible;
-                    uiPinInfoSignInGrid.Visibility = Visibility.Collapsed;
+                    uiPinInfoSignInPanel.Visibility = Visibility.Collapsed;
                 });
 
                 // Sign in and await that task.
@@ -571,7 +571,7 @@ namespace PintheCloud.Pages
                     {
                         MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
                         uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                        uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                        uiPinInfoSignInPanel.Visibility = Visibility.Visible;
                     });
                 }
             }
@@ -601,7 +601,6 @@ namespace PintheCloud.Pages
             await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
             await App.TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
 
-
             // If it wasn't signed out, set list.
             // Othersie, show sign in grid.
             if (iStorageManager.GetAccount() != null)  // Wasn't signed out.
@@ -616,7 +615,6 @@ namespace PintheCloud.Pages
                     folder = new FileObjectViewItem();
                     folder.Id = rootFolder.Id;
                 }
-
 
                 // Get files and push to stack tree.
                 List<FileObject> files = await iStorageManager.GetFilesFromFolderAsync(folder.Id);
@@ -655,10 +653,9 @@ namespace PintheCloud.Pages
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     uiPinInfoListGrid.Visibility = Visibility.Collapsed;
-                    uiPinInfoSignInGrid.Visibility = Visibility.Visible;
+                    uiPinInfoSignInPanel.Visibility = Visibility.Visible;
                 });
             }
-
 
             // Set Mutex false and Hide Process Indicator
             base.SetProgressIndicator(false);

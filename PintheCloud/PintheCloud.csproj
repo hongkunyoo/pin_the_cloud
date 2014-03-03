@@ -94,6 +94,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\StringToSpotNameInitialUriConverter.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Helpers\EventHelper.cs" />
     <Compile Include="Models\Account.cs" />
@@ -118,6 +119,9 @@
     <Compile Include="Utilities\DropboxWebBrowserResult.cs" />
     <Compile Include="Utilities\DropboxWebBrowserTask.cs" />
     <Compile Include="Helpers\LockHelper.cs" />
+    <Compile Include="Utilities\ImageButton.xaml.cs">
+      <DependentUpon>ImageButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities\ShareException.cs" />
     <Compile Include="Converters\StringToThumnailUriConverter.cs" />
     <Compile Include="Pages\FileListPage.xaml.cs">
@@ -187,6 +191,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Utilities\ImageButton.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Utilities\TestDrive.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -215,6 +223,9 @@
     <Content Include="Assets\pajeon\at_here\png\general_fail.png" />
     <Content Include="Assets\pajeon\at_here\png\indicator.png" />
     <Content Include="Assets\pajeon\at_here\png\indicator_bg.png" />
+    <Content Include="Assets\pajeon\at_here\png\input_set_button_activated.png" />
+    <Content Include="Assets\pajeon\at_here\png\input_set_button_activated_p.png" />
+    <Content Include="Assets\pajeon\at_here\png\input_set_button_inactivated.png" />
     <Content Include="Assets\pajeon\at_here\png\navi_ico_dropbox.png" />
     <Content Include="Assets\pajeon\at_here\png\navi_ico_googledrive.png" />
     <Content Include="Assets\pajeon\at_here\png\navi_ico_skydrive.png" />
@@ -222,8 +233,37 @@
     <Content Include="Assets\pajeon\at_here\png\navi_pin_title.png" />
     <Content Include="Assets\pajeon\at_here\png\new_delete.png" />
     <Content Include="Assets\pajeon\at_here\png\path_back.png" />
-    <Content Include="Assets\pajeon\at_here\png\setting_account_checkbox.png" />
-    <Content Include="Assets\pajeon\at_here\png\setting_account_checkbox_p.png" />
+    <Content Include="Assets\pajeon\at_here\png\pick_empty.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_empty.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_001.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_002.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_003.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_004.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_005.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_006.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_007.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_008.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_009.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_010.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_011.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_012.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_013.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_014.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_015.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_016.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_017.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_018.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_019.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_020.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_021.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_022.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_023.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_024.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_025.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_026.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_label_027.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_login_button.png" />
+    <Content Include="Assets\pajeon\at_here\png\pin_login_button_p.png" />
     <Content Include="Assets\pajeon\at_here\png\setting_account_dropbox.png" />
     <Content Include="Assets\pajeon\at_here\png\setting_account_googledrive.png" />
     <Content Include="Assets\pajeon\at_here\png\setting_account_skydrive.png" />

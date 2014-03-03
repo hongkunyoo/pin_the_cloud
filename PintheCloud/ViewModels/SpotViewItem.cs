@@ -16,6 +16,7 @@ namespace PintheCloud.ViewModels
         public string AccountName { get; set; }
         public double SpotDistance { get; set; }
         public string SpotId { get; set; }
+        public string SpotNameInitialImage { get; set; }
 
         private string deleteImage;
         public string DeleteImage

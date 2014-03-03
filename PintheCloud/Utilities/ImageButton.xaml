@@ -1,0 +1,14 @@
+﻿<Button 
+    x:Class="PintheCloud.Utilities.ImageButton"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    IsEnabledChanged="ButtonIsEnabledChanged"
+    MouseEnter="ButtonMouseEnter"
+    MouseLeave="ButtonMouseLeave">
+
+    <Image Stretch="None"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"
+           x:Name="image" />
+
+</Button>

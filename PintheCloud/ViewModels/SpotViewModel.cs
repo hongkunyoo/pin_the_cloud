@@ -46,7 +46,7 @@ namespace PintheCloud.ViewModels
                 spotViewItem.SpotId = (string)jSpot["id"];
                 spotViewItem.SpotDistance = (double)jSpot["spot_distance"];
                 spotViewItem.DeleteImage = FileObjectViewModel.DELETE_IMAGE_URI;
-
+                spotViewItem.SpotNameInitialImage = spotViewItem.SpotName.Substring(0, 1);
                 this.Items.Add(spotViewItem);
             }
         }
