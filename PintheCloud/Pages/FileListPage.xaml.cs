@@ -31,8 +31,13 @@ namespace PintheCloud.Pages
     public partial class FileListPage : PtcPage
     {
         // Const Instances
-        private const string PICK_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_download.png";
+        private const string PICK_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/at_here/png/general_bar_download.png";
         private const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_delete.png";
+
+        private const string EDIT_IMAGE_URI = "/Assets/pajeon/at_here/png/list_edit.png";
+        private const string EDIT_PRESS_IMAGE_URI = "/Assets/pajeon/at_here/png/list_edit_p.png";
+        private const string VIEW_IMAGE_URI = "/Assets/pajeon/at_here/png/list_view.png";
+        private const string VIEW_PRESS_IMAGE_URI = "/Assets/pajeon/at_here/png/list_view_p.png";
 
         // Instances
         private string SpotId = null;
@@ -148,10 +153,10 @@ namespace PintheCloud.Pages
             {
                 // If it is view mode, click is preview.
                 // If it is edit mode, click is selection.
-                string currentEditViewMode = ((BitmapImage)uiFileListEditViewButtonImage.Source).UriSource.ToString();
+                string currentEditViewMode = uiFileListEditViewImageButton.ImageSource;
                 if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View mode
                 {
-                    if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
+                    if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
                     {
                         // Launch files to other reader app.
                         if (!this.LaunchLock)
@@ -163,18 +168,18 @@ namespace PintheCloud.Pages
                 }
                 else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit mode
                 {
-                    if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
+                    if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
                     {
                         this.SelectedFile.Add(fileObjectViewItem);
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_IMAGE_URI;
+                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_IMAGE_URI;
                         this.PickAppBarButton.IsEnabled = true;
                         this.DeleteAppBarButton.IsEnabled = true;
                     }
 
-                    else if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
+                    else if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
                     {
                         this.SelectedFile.Remove(fileObjectViewItem);
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
                         if (this.SelectedFile.Count < 1)
                         {
                             this.PickAppBarButton.IsEnabled = false;
@@ -193,7 +198,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
             });
 
             // Download file and Launch files to other reader app.
@@ -202,7 +207,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
                 });
                 await Launcher.LaunchFileAsync(downloadFile);
             }
@@ -210,7 +215,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });  
             }
             
@@ -251,7 +256,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
             });
 
             // Download
@@ -265,18 +270,18 @@ namespace PintheCloud.Pages
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         ((FileObjectViewModel)PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
-                        string currentEditViewMode = ((BitmapImage)uiFileListEditViewButtonImage.Source).UriSource.ToString();
+                        string currentEditViewMode = uiFileListEditViewImageButton.ImageSource;
                         if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
-                            fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                            fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
                         else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit Mode
-                            fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                            fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
                     });
                 }
                 else
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
+                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
                     });  
                 }
             }
@@ -284,7 +289,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 }); 
             }
 
@@ -321,7 +326,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectCheckImage = FileObjectViewModel.DELETING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.DELETING_IMAGE_URI;
             });
 
             // Delete
@@ -338,7 +343,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });
             }
 
@@ -375,35 +380,38 @@ namespace PintheCloud.Pages
         }
 
 
-        // Pin spot
-        private async Task<string> PinSpotAsync()
+        private async void InitialPinSpotAndUploadFileAsync()
         {
             // Show Pining message and Progress Indicator
             base.SetListUnableAndShowMessage(uiFileList, AppResources.PiningSpot, uiFileListMessage);
             base.SetProgressIndicator(true);
 
+            // Get selected file list from previous page before pin spot.
+            List<FileObjectViewItem> fileList = new List<FileObjectViewItem>();
+            foreach (FileObjectViewItem fileObjectViewItem in (List<FileObjectViewItem>)PhoneApplicationService.Current.State[SELECTED_FILE_KEY])
+                fileList.Add(fileObjectViewItem);
+
             // Pin spot
             Geoposition geo = await App.Geolocator.GetGeopositionAsync();
             Spot spot = new Spot(this.SpotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
-            string spotId = null;
             if (await App.SpotManager.PinSpotAsync(spot))
             {
-                spotId = spot.id;
+                ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                     uiFileList.Visibility = Visibility.Visible;
                     uiFileListMessage.Visibility = Visibility.Collapsed;
                 });
+
+                // Register spot id and Upload each files in order.
+                this.SpotId = spot.id;
+                foreach(FileObjectViewItem fileObjectViewItem in fileList)
+                    this.UploadFileAsync(new FileObjectViewItem(fileObjectViewItem));
             }
             else
             {
                 base.SetListUnableAndShowMessage(uiFileList, AppResources.BadPinSpotMessage, uiFileListMessage);
             }
-
-            // Hide Progress Indicator and return
-            base.SetProgressIndicator(false);
-            return spotId;
         }
 
 
@@ -414,7 +422,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectCheckImage = FileObjectViewModel.UPLOADING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.UPLOADING_IMAGE_URI;
                 this.FileObjectViewModel.Items.Add(fileObjectViewItem);
             });
 
@@ -428,18 +436,18 @@ namespace PintheCloud.Pages
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         fileObjectViewItem.Id = blobId;
-                        string currentEditViewMode = ((BitmapImage)uiFileListEditViewButtonImage.Source).UriSource.ToString();
+                        string currentEditViewMode = uiFileListEditViewImageButton.ImageSource;
                         if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
-                            fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                            fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
                         else if(currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit Mode
-                            fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                            fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
                     });
                 }
                 else
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
+                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
                     });
                 }
             }
@@ -447,76 +455,12 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.FAIL_IMAGE_URI;
+                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });
             }
 
             // Hide progress message
             base.SetProgressIndicator(false);
-        }
-
-
-        private async void InitialPinSpotAndUploadFileAsync()
-        {
-            // Get selected file list from previous page before pin spot.
-            List<FileObjectViewItem> fileList = (List<FileObjectViewItem>)PhoneApplicationService.Current.State[SELECTED_FILE_KEY];
-
-            // If pin spot success, upload files.
-            // Otherwise, show warning message.
-            string spotId = await this.PinSpotAsync();
-            if (spotId != null)
-            {
-                // Register spot id and Get selected files from previous page, Upload each files in order.
-                this.SpotId = spotId;
-                for (int i = 0; i < fileList.Count; i++)
-                {
-                    FileObjectViewItem fileObjectViewItem = new FileObjectViewItem(fileList[i]);
-                    this.UploadFileAsync(fileObjectViewItem);
-                }
-            }
-        }
-
-
-        private void uiFileListEditViewButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            // Change edit view mode
-            string currentEditViewMode = ((BitmapImage)uiFileListEditViewButtonImage.Source).UriSource.ToString();
-            if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // To View mode
-            {
-                // Change mode image and remove app bar buttons.
-                if (this.SelectedFile.Count > 0)
-                {
-                    this.SelectedFile.Clear();
-                    this.PickAppBarButton.IsEnabled = false;
-                    this.DeleteAppBarButton.IsEnabled = false;
-                }
-                ApplicationBar.Buttons.Remove(this.PickAppBarButton);
-                ApplicationBar.Buttons.Remove(this.DeleteAppBarButton);
-                uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(EDIT_IMAGE_URI, UriKind.Relative));
-                
-                // Change select check image of each file object view item.
-                foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
-                {
-                    if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI)
-                        || fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
-                }
-            }
-
-            else if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // To Edit mode
-            {
-                // Change mode image and remove app bar buttons.
-                ApplicationBar.Buttons.Add(this.PickAppBarButton);
-                    ApplicationBar.Buttons.Add(this.DeleteAppBarButton);
-                uiFileListEditViewButtonImage.Source = new BitmapImage(new Uri(VIEW_IMAGE_URI, UriKind.Relative));
-
-                // Change select check image of each file object view item.
-                foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
-                {
-                    if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
-                }
-            }
         }
 
 
@@ -528,6 +472,73 @@ namespace PintheCloud.Pages
                 this.RefreshAsync(AppResources.Refreshing);
             else
                 base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
+        }
+
+
+        private void uiFileListEditViewImageButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // Change edit view mode
+            string currentEditViewMode = uiFileListEditViewImageButton.ImageSource;
+            if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // To View mode
+            {
+                // Change mode image and remove app bar buttons.
+                if (this.SelectedFile.Count > 0)
+                {
+                    this.SelectedFile.Clear();
+                    this.PickAppBarButton.IsEnabled = false;
+                    this.DeleteAppBarButton.IsEnabled = false;
+                }
+                ApplicationBar.Buttons.Remove(this.PickAppBarButton);
+                ApplicationBar.Buttons.Remove(this.DeleteAppBarButton);
+                uiFileListEditViewImageButton.ImageSource = EDIT_IMAGE_URI;
+                uiFileListEditViewImageButton.ImagePressedSource = EDIT_PRESS_IMAGE_URI;
+
+                // Change select check image of each file object view item.
+                foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
+                {
+                    if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI)
+                        || fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
+                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                }
+            }
+
+            else if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // To Edit mode
+            {
+                // Change mode image and remove app bar buttons.
+                ApplicationBar.Buttons.Add(this.PickAppBarButton);
+                ApplicationBar.Buttons.Add(this.DeleteAppBarButton);
+                uiFileListEditViewImageButton.ImageSource = VIEW_IMAGE_URI;
+                uiFileListEditViewImageButton.ImagePressedSource = VIEW_PRESS_IMAGE_URI;
+
+                // Change select check image of each file object view item.
+                foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
+                {
+                    if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
+                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                }
+            }
+        }
+
+
+        private void uiFileListEditViewButton_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            Button editViewButton = (Button)sender;
+            Uri buttonImageUri = ((BitmapImage)((Image)editViewButton.Content).Source).UriSource;
+            if (buttonImageUri.ToString().Equals(EDIT_IMAGE_URI))
+                ((Image)editViewButton.Content).Source = new BitmapImage(new Uri(EDIT_PRESS_IMAGE_URI, UriKind.Relative));
+            else if (buttonImageUri.ToString().Equals(VIEW_IMAGE_URI))
+                ((Image)editViewButton.Content).Source = new BitmapImage(new Uri(VIEW_PRESS_IMAGE_URI, UriKind.Relative));
+        }
+
+
+        private void uiFileListEditViewButton_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            Button editViewButton = (Button)sender;
+            Uri buttonImageUri = ((BitmapImage)((Image)editViewButton.Content).Source).UriSource;
+            if (buttonImageUri.ToString().Equals(EDIT_PRESS_IMAGE_URI))
+                ((Image)editViewButton.Content).Source = new BitmapImage(new Uri(EDIT_IMAGE_URI, UriKind.Relative));
+            else if(buttonImageUri.ToString().Equals(VIEW_PRESS_IMAGE_URI))
+                ((Image)editViewButton.Content).Source = new BitmapImage(new Uri(VIEW_IMAGE_URI, UriKind.Relative));
         }
 
 

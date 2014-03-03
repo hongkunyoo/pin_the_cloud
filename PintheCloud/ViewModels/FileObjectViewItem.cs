@@ -17,19 +17,19 @@ namespace PintheCloud.ViewModels
 
         public string DownloadUrl { get; set; }
 
-        private string selectCheckImage;
-        public string SelectCheckImage
+        private string selectFileImage;
+        public string SelectFileImage
         {
             get
             {
-                return selectCheckImage;
+                return selectFileImage;
             }
             set
             {
-                if (selectCheckImage != value)
+                if (selectFileImage != value)
                 {
-                    selectCheckImage = value;
-                    NotifyPropertyChanged("SelectCheckImage");
+                    selectFileImage = value;
+                    NotifyPropertyChanged("SelectFileImage");
                 }
             }
         }
@@ -48,7 +48,7 @@ namespace PintheCloud.ViewModels
             this.Size = fileObjectViewItem.Size;
             this.SizeUnit = fileObjectViewItem.SizeUnit;
             this.ThumnailType = fileObjectViewItem.ThumnailType;
-            this.SelectCheckImage = fileObjectViewItem.SelectCheckImage;
+            this.SelectFileImage = fileObjectViewItem.SelectFileImage;
             this.DownloadUrl = fileObjectViewItem.DownloadUrl;
         }
 

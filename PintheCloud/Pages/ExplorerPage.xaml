@@ -94,7 +94,7 @@
                                         <TextBlock TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light"/>
                                     </StackPanel>
                                 </StackPanel>
-                                <Image x:Name="uiSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" Grid.Column="2" Stretch="None"/>
+                                <Image x:Name="SelectFileImage" Source="{Binding SelectFileImage, Converter={StaticResource StringToUriConverter}}" Grid.Column="2" Stretch="None"/>
                             </Grid>
                         </Button>
                         <Grid Grid.Row="1" Background="#FFA6B5BE" Margin="20,0"/>

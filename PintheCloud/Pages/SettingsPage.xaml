@@ -181,7 +181,7 @@
                                             </Grid.ColumnDefinitions>
                                             <Image x:Name="uiSpotNameInitialImage" Source="{Binding SpotNameInitialImage, Converter={StaticResource StringToSpotNameInitialUriConverter}}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                                             <TextBlock x:Name="uiSpotName" TextWrapping="Wrap" Text="{Binding SpotName}" FontSize="32" LineHeight="42" Foreground="#FF404041" FontFamily="Segoe WP" Grid.Column="1"/>
-                                            <Button x:Name="uiDeleteSpotButton" IsEnabled="{Binding DeleteImagePress}" Style="{StaticResource CustomButtonStyle}" Grid.Column="2" Click="uiDeleteSpotButton_Click" MouseEnter="uiDeleteSpotButton_MouseEnter" MouseLeave="uiDeleteSpotButton_MouseLeave" VerticalAlignment="Center">
+                                            <Button x:Name="uiDeleteSpotButton" IsEnabled="{Binding DeleteImagePress}" Style="{StaticResource CustomButtonStyle}" Grid.Column="2" Click="uiDeleteSpotButton_Click" MouseEnter="uiDeleteSpotButton_MouseEnter" MouseLeave="uiDeleteSpotButton_MouseLeave">
                                             	<Image Source="{Binding DeleteImage, Converter={StaticResource StringToUriConverter}}" Stretch="None"/>
                                             </Button>
                                         </Grid>

@@ -194,8 +194,8 @@ namespace PintheCloud.Pages
             foreach (FileObjectViewItem fileObjectViewItem in this.FileObjectViewModel.Items)
             {
                 if (!fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER)
-                    && fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
-                    fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                    && fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
+                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
             }
         }
 
@@ -502,17 +502,17 @@ namespace PintheCloud.Pages
                 }
                 else  // Do selection if file
                 {
-                    if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
+                    if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
                     {
                         this.SelectedFile.Add(fileObjectViewItem);
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_IMAGE_URI;
+                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_IMAGE_URI;
                         this.PinInfoAppBarButton.IsEnabled = true;
                     }
 
-                    else if (fileObjectViewItem.SelectCheckImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
+                    else if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
                     {
                         this.SelectedFile.Remove(fileObjectViewItem);
-                        fileObjectViewItem.SelectCheckImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
                         if (this.SelectedFile.Count < 1)
                             this.PinInfoAppBarButton.IsEnabled = false;
                     }

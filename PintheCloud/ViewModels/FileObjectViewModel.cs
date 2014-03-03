@@ -15,14 +15,15 @@ namespace PintheCloud.ViewModels
         // Instances
         public const string CHECK_NOT_IMAGE_URI = "/Assets/pajeon/at_here/png/general_checkbox.png";
         public const string CHECK_IMAGE_URI = "/Assets/pajeon/at_here/png/general_checkbox_p.png";
-
+        public const string DOWNLOAD_IMAGE_URI = "DOWNLOAD_IMAGE_URI";
         public const string TRANSPARENT_IMAGE_URI = "/Assets/pajeon/at_here/png/general_transparent.png";
-        public const string DELETE_IMAGE_URI = "/Assets/pajeon/at_here/png/upload_list_delete.png";
-        public const string FAIL_IMAGE_URI = "/Assets/pajeon/at_here/png/general_fail.png";
 
+        public const string DELETE_IMAGE_URI = "/Assets/pajeon/at_here/png/upload_list_delete.png";
+        
         public const string DELETING_IMAGE_URI = "DELETING_SPOT_IMAGE_URI";
         public const string UPLOADING_IMAGE_URI = "UPLOADING_FILE_IMAGE_URI";
         public const string DOWNLOADING_IMAGE_URI = "DOWNLOADING_FILE_IMAGE_URI";
+        public const string FAIL_IMAGE_URI = "/Assets/pajeon/at_here/png/general_fail.png";
 
         public const string FOLDER = "folder";
 
@@ -96,13 +97,13 @@ namespace PintheCloud.ViewModels
                 if (select)
                 {
                     if (fileObject.Type == FileObject.FileObjectType.FOLDER)
-                        fileObjectViewItem.SelectCheckImage = TRANSPARENT_IMAGE_URI;
+                        fileObjectViewItem.SelectFileImage = TRANSPARENT_IMAGE_URI;
                     else
-                        fileObjectViewItem.SelectCheckImage = CHECK_NOT_IMAGE_URI;
+                        fileObjectViewItem.SelectFileImage = CHECK_NOT_IMAGE_URI;
                 }
                 else
                 {
-                    fileObjectViewItem.SelectCheckImage = TRANSPARENT_IMAGE_URI;
+                    fileObjectViewItem.SelectFileImage = TRANSPARENT_IMAGE_URI;
                 }
 
                 this.Items.Add(fileObjectViewItem);
