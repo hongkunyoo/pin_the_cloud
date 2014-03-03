@@ -29,6 +29,7 @@ namespace PintheCloud.Pages
         // Const Instances
         private const int APPLICATION_PIVOT_INDEX = 0;
         private const int MY_SPOT_PIVOT_INDEX = 1;
+        private int CurrentPlatformIndex = 0;
 
         private const string SIGN_IN_BUTTON_TEXT_FONT = "Segoe WP";
         private const string SIGN_NOT_IN_BUTTON_TEXT_FONT = "Segoe WP Light";
@@ -110,6 +111,26 @@ namespace PintheCloud.Pages
         }
 
 
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+
+            // If it is signing, don't close app.
+            // Otherwise, show close app message.
+            IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
+            if (iStorageManager.IsSigningIn())
+            {
+                // If it is popup, close popup.
+                if (iStorageManager.IsPopup())
+                {
+                    EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
+                    e.Cancel = true;
+                    return;
+                }
+            }
+        }
+
+
         // Construct pivot item by page index
         private void uiSettingPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -152,7 +173,7 @@ namespace PintheCloud.Pages
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                // Set process indicator 
+                // Set process indicator
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     uiProfileGrid.Visibility = Visibility.Collapsed;
@@ -163,6 +184,7 @@ namespace PintheCloud.Pages
                 // Get index
                 Button signButton = (Button)sender;
                 int platformIndex = base.GetPlatformIndexFromString(signButton.Tag.ToString());
+                this.CurrentPlatformIndex = platformIndex;
 
                 // Sign in
                 IStorageManager iStorageManager = App.IStorageManagers[platformIndex];                

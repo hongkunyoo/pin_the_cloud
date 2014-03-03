@@ -126,11 +126,11 @@
                                 </Grid>
                             </Button>
                         </Grid>
-                        <Grid x:Name="uiPinInfoListGrid" Visibility="Collapsed" Grid.Row="1">
+                        <Grid x:Name="uiPinInfoListGrid" Grid.Row="1" Visibility="Collapsed">
                             <TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Visibility="Collapsed" FontSize="22" Margin="28,25,44,0" />
                             <phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed" Padding="0"/>
                         </Grid>
-                        <StackPanel x:Name="uiPinInfoSignInPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1">
+                        <StackPanel x:Name="uiPinInfoSignInPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Visibility="Collapsed">
                             <Image Source="/Assets/pajeon/at_here/png/pin_empty.png" Stretch="None" Margin="0,0,0,12"/>
 							<Utilities:ImageButton 
 								ImageSource="/Assets/pajeon/at_here/png/pin_login_button.png"
