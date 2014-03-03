@@ -29,7 +29,6 @@ namespace PintheCloud.Pages
         // Const Instances
         private const int APPLICATION_PIVOT_INDEX = 0;
         private const int MY_SPOT_PIVOT_INDEX = 1;
-        private const int DELETE_APP_BAR_BUTTON_INDEX = 1;
 
         private const string SIGN_IN_BUTTON_TEXT_FONT = "Segoe WP";
         private const string SIGN_NOT_IN_BUTTON_TEXT_FONT = "Segoe WP Light";
@@ -46,8 +45,10 @@ namespace PintheCloud.Pages
         private const string SETTING_ACCOUNT_MAIN_CHECK_NOT_IMAGE_URI = "/Assets/pajeon/at_here/png/general_checkbox.png";
         private const string SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI = "/Assets/pajeon/at_here/png/general_checkbox_p.png";
 
+        private const string MY_SPOT_DELETE_BUTTON_IMAGE_URI = "/Assets/pajeon/at_here/png/upload_list_delete.png";
+        private const string MY_SPOT_DELETE_BUTTON_PRESS_IMAGE_URI = "/Assets/pajeon/at_here/png/upload_list_delete_p.png";
+
         // Instances
-        private ApplicationBarIconButton DeleteAppBarButton = new ApplicationBarIconButton();
         private SpotViewModel MySpotViewModel = new SpotViewModel();
         private Button[] SignButtons = null;
         private Button[] MainButtons = null;
@@ -83,7 +84,6 @@ namespace PintheCloud.Pages
             /*** My Spot Pivot ***/
 
             // Set delete app bar button and datacontext
-            this.DeleteAppBarButton = ((ApplicationBarIconButton)ApplicationBar.Buttons[DELETE_APP_BAR_BUTTON_INDEX]);
             uiMySpotList.DataContext = this.MySpotViewModel;
         }
 
@@ -99,7 +99,6 @@ namespace PintheCloud.Pages
                 this.SetMainButtons(i);
             }
                 
-
             // Set My Spot pivot list.
             this.SetMySpotPivot();
         }
@@ -411,10 +410,6 @@ namespace PintheCloud.Pages
             // Show progress indicator 
             base.SetListUnableAndShowMessage(uiMySpotList, message, uiMySpotMessage);
             base.SetProgressIndicator(true);
-            base.Dispatcher.BeginInvoke(() =>
-            {
-                this.DeleteAppBarButton.IsEnabled = false;
-            });
 
             // Before go load, set mutex to true.
             MySpotViewModel.IsDataLoaded = true;
@@ -427,7 +422,6 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    this.DeleteAppBarButton.IsEnabled = true;
                     uiMySpotList.Visibility = Visibility.Visible;
                     uiMySpotMessage.Visibility = Visibility.Collapsed;
                     this.MySpotViewModel.SetItems(spots);
@@ -446,28 +440,6 @@ namespace PintheCloud.Pages
         }
 
 
-        // Delete all spots.
-        private void uiAppBarDeleteButton_Click(object sender, System.EventArgs e)
-        {
-            if (NetworkInterface.GetIsNetworkAvailable())
-            {
-                MessageBoxResult result = MessageBox.Show(AppResources.DeleteAllMySpotMessage, AppResources.DeleteAllMySpotCaption, MessageBoxButton.OKCancel);
-                if (result == MessageBoxResult.OK)
-                {
-                    List<SpotViewItem> items = new List<SpotViewItem>();
-                    foreach (SpotViewItem spotViewItem in this.MySpotViewModel.Items)
-                        items.Add(spotViewItem);
-                    foreach (SpotViewItem spotViewItem in items)
-                        this.DeleteSpotAsync(spotViewItem);
-                }
-            }
-            else
-            {
-                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
-            }
-        }
-
-
         private async void DeleteSpotAsync(SpotViewItem spotViewItem)
         {
             // Show Deleting message
@@ -475,8 +447,8 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                this.DeleteAppBarButton.IsEnabled = false;
                 spotViewItem.DeleteImage = FileObjectViewModel.DELETING_IMAGE_URI;
+                spotViewItem.DeleteImagePress = false;
             });
 
             // Delete
@@ -502,9 +474,7 @@ namespace PintheCloud.Pages
                     {
                         this.MySpotViewModel.Items.Remove(spotViewItem);
                         ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
-                        if (this.MySpotViewModel.Items.Count > 0)
-                            this.DeleteAppBarButton.IsEnabled = true;
-                        else
+                        if (this.MySpotViewModel.Items.Count < 1)
                             base.SetListUnableAndShowMessage(uiMySpotList, AppResources.NoMySpotMessage, uiMySpotMessage);
                     });
                 }
@@ -532,6 +502,16 @@ namespace PintheCloud.Pages
         private void uiDeleteSpotButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             this.DeleteSpotButton = true;
+        }
+
+        private void uiDeleteSpotButton_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ((Image)((Button)sender).Content).Source = new BitmapImage(new Uri(MY_SPOT_DELETE_BUTTON_PRESS_IMAGE_URI, UriKind.Relative));
+        }
+
+        private void uiDeleteSpotButton_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            ((Image)((Button)sender).Content).Source = new BitmapImage(new Uri(MY_SPOT_DELETE_BUTTON_IMAGE_URI, UriKind.Relative));
         }
     }
 }

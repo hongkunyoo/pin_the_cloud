@@ -84,27 +84,27 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="105"/>
                                     <ColumnDefinition/>
-                                    <ColumnDefinition Width="31"/>
+                                    <ColumnDefinition Width="30"/>
                                 </Grid.ColumnDefinitions>
-                                <Image x:Name="uiThumnail" Source="{Binding ThumnailType, Converter={StaticResource StringToThumnailUriConverter}}" HorizontalAlignment="Left" Width="80" Height="80" VerticalAlignment="Center"/>
-                                <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,24.5,0,0">
-                                    <TextBlock x:Name="uiName" Text="{Binding Name}" Margin="0,0,0,10" Foreground="#FF404041" FontSize="22" FontFamily="Segoe WP" TextTrimming="WordEllipsis"/>
+                                <Image x:Name="uiThumnail" Source="{Binding ThumnailType, Converter={StaticResource StringToThumnailUriConverter}}" HorizontalAlignment="Left"/>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock x:Name="uiName" Text="{Binding Name}" Margin="0,0,0,5" Foreground="#FF404041" FontSize="22" FontFamily="Segoe WP" TextTrimming="WordEllipsis"/>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock x:Name="uiSize" Text="{Binding Size}" TextWrapping="Wrap" Foreground="#FF919FA6" FontSize="22" FontFamily="Segoe WP Light"/>
                                         <TextBlock TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light"/>
                                     </StackPanel>
                                 </StackPanel>
-                                <Image x:Name="uiSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Column="2" Stretch="None"/>
+                                <Image x:Name="uiSelectCheckImage" Source="{Binding SelectCheckImage, Converter={StaticResource StringToUriConverter}}" Grid.Column="2" Stretch="None"/>
                             </Grid>
                         </Button>
-                        <Grid Grid.Row="1" Background="#FFA6B5BE" Margin="19,0"/>
+                        <Grid Grid.Row="1" Background="#FFA6B5BE" Margin="20,0"/>
                     </Grid>
                 </DataTemplate>
             </Grid.Resources>
             <phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged" Style="{StaticResource CustomPivotStyle}" Foreground="Black">
                 <phone:PivotItem x:Name="uiPickPivot" Margin="0" >
                     <Grid Margin="0">
-                        <TextBlock x:Name="uiNearSpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Foreground="Black" Visibility="Collapsed" Margin="32,32,32,0" />
+                        <TextBlock x:Name="uiNearSpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Foreground="Black" Visibility="Collapsed" Margin="28,20,28,0" />
                         <phone:LongListSelector x:Name="uiNearSpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpotList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Margin="0" Padding="0" />
                     </Grid>
                 </phone:PivotItem>

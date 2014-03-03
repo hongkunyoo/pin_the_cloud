@@ -1,6 +1,7 @@
 ﻿using Microsoft.Live;
 using Microsoft.Phone.Shell;
 using PintheCloud.Models;
+using PintheCloud.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,6 +24,8 @@ namespace PintheCloud.Managers
         string GetStorageName();
         string GetStorageImageUri();
         string GetStorageColorHexString();
+        Stack<FileObjectViewItem> GetFolderRootTree();
+        Stack<List<FileObject>> GetFoldersTree();
         Task<FileObject> GetRootFolderAsync();
         Task<List<FileObject>> GetRootFilesAsync();
         Task<FileObject> GetFileAsync(string fileId);

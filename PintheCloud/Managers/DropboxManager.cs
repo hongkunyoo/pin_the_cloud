@@ -4,6 +4,7 @@ using PintheCloud.Converters;
 using PintheCloud.Models;
 using PintheCloud.Resources;
 using PintheCloud.Utilities;
+using PintheCloud.ViewModels;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,9 @@ namespace PintheCloud.Managers
 
         private const string DROPBOX_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_dropbox.png";
         private const string DROPBOX_COLOR_HEX_STRING = "26A4DD";
+
+        private Stack<List<FileObject>> FoldersTree = new Stack<List<FileObject>>();
+        private Stack<FileObjectViewItem> FolderRootTree = new Stack<FileObjectViewItem>();
 
         private DropNetClient _client = null;
         private Account CurrentAccount = null;
@@ -157,6 +161,18 @@ namespace PintheCloud.Managers
         public string GetStorageColorHexString()
         {
             return DROPBOX_COLOR_HEX_STRING;
+        }
+
+
+        public Stack<FileObjectViewItem> GetFolderRootTree()
+        {
+            return this.FolderRootTree;
+        }
+
+
+        public Stack<List<FileObject>> GetFoldersTree()
+        {
+            return this.FoldersTree;
         }
 
 

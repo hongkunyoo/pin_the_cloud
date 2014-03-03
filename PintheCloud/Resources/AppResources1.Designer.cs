@@ -169,24 +169,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Delete All My Spots과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string DeleteAllMySpotCaption {
-            get {
-                return ResourceManager.GetString("DeleteAllMySpotCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Do you want to delete all my spots?과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string DeleteAllMySpotMessage {
-            get {
-                return ResourceManager.GetString("DeleteAllMySpotMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Delete The Selected File과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string DeleteFileCaption {

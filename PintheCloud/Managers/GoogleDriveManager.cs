@@ -11,6 +11,7 @@ using PintheCloud.Helpers;
 using PintheCloud.Models;
 using PintheCloud.Resources;
 using PintheCloud.Utilities;
+using PintheCloud.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,6 +36,9 @@ namespace PintheCloud.Managers
 
         private const string GOOGLE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_googledrive.png";
         private const string GOOGLE_DRIVE_COLOR_HEX_STRING = "F1AE1D";
+
+        private Stack<List<FileObject>> FoldersTree = new Stack<List<FileObject>>();
+        private Stack<FileObjectViewItem> FolderRootTree = new Stack<FileObjectViewItem>();
 
         public static Dictionary<string, string> GoogleDocMapper;
         public static Dictionary<string, string> MimeTypeMapper;
@@ -177,6 +181,18 @@ namespace PintheCloud.Managers
         public string GetStorageColorHexString()
         {
             return GOOGLE_DRIVE_COLOR_HEX_STRING;
+        }
+
+
+        public Stack<FileObjectViewItem> GetFolderRootTree()
+        {
+            return this.FolderRootTree;
+        }
+
+
+        public Stack<List<FileObject>> GetFoldersTree()
+        {
+            return this.FoldersTree;
         }
 
 

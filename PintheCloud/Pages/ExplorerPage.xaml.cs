@@ -46,8 +46,8 @@ namespace PintheCloud.Pages
         public SpotViewModel NearSpotViewModel = new SpotViewModel();
         public FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
 
-        private Stack<List<FileObject>> FoldersTree = new Stack<List<FileObject>>();
-        private Stack<FileObjectViewItem> FolderRootTree = new Stack<FileObjectViewItem>();
+        //private Stack<List<FileObject>> FoldersTree = new Stack<List<FileObject>>();
+        //private Stack<FileObjectViewItem> FolderRootTree = new Stack<FileObjectViewItem>();
         public List<FileObjectViewItem> SelectedFile = new List<FileObjectViewItem>();
 
 
@@ -164,8 +164,8 @@ namespace PintheCloud.Pages
             IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
             if (!iStorageManager.IsSignIn())  // wasn't signed in.
             {
-                this.FolderRootTree.Clear();
-                this.FoldersTree.Clear();
+                iStorageManager.GetFolderRootTree().Clear();
+                iStorageManager.GetFoldersTree().Clear();
                 this.SelectedFile.Clear();
                 this.PinInfoAppBarButton.IsEnabled = false;
 
@@ -223,8 +223,8 @@ namespace PintheCloud.Pages
                     IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
                     if (!iStorageManager.IsSignIn())  // wasn't signed in.
                     {
-                        this.FolderRootTree.Clear();
-                        this.FoldersTree.Clear();
+                        iStorageManager.GetFolderRootTree().Clear();
+                        iStorageManager.GetFoldersTree().Clear();
                         this.SelectedFile.Clear();
                         this.PinInfoAppBarButton.IsEnabled = false;
 
@@ -238,8 +238,8 @@ namespace PintheCloud.Pages
 
                         if (NetworkInterface.GetIsNetworkAvailable())
                         {
-                            if (this.FolderRootTree.Count > 0)
-                                this.SetPinInfoListAsync(this.FolderRootTree.First(), AppResources.Refreshing, iStorageManager);
+                            if (iStorageManager.GetFolderRootTree().Count > 0)
+                                this.SetPinInfoListAsync(iStorageManager.GetFolderRootTree().First(), AppResources.Refreshing, iStorageManager);
                             else
                                 this.SetPinInfoListAsync(null, AppResources.Refreshing, iStorageManager);
                         }
@@ -380,8 +380,8 @@ namespace PintheCloud.Pages
                 // Otherwise, show signin button.
                 if (!iStorageManager.IsSignIn())
                 {
-                    this.FolderRootTree.Clear();
-                    this.FoldersTree.Clear();
+                    iStorageManager.GetFolderRootTree().Clear();
+                    iStorageManager.GetFoldersTree().Clear();
                     this.SelectedFile.Clear();
                     this.PinInfoAppBarButton.IsEnabled = false;
 
@@ -435,10 +435,11 @@ namespace PintheCloud.Pages
 
             // If it is signing, don't close app.
             // Otherwise, show close app message.
-            if (App.IStorageManagers[this.CurrentPlatformIndex].IsSigningIn())
+            IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
+            if (iStorageManager.IsSigningIn())
             {
                 // If it is popup, close popup.
-                if (App.IStorageManagers[this.CurrentPlatformIndex].IsPopup())
+                if (iStorageManager.IsPopup())
                 {
                     EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
                     e.Cancel = true;
@@ -450,7 +451,7 @@ namespace PintheCloud.Pages
                 // If some files in list, back tree.
                 if (uiExplorerPivot.SelectedIndex == EventHelper.PIN_PIVOT)
                 {
-                    if (this.FolderRootTree.Count > 1)
+                    if (iStorageManager.GetFolderRootTree().Count > 1)
                     {
                         e.Cancel = true;
                         this.TreeUp();

@@ -35,48 +35,13 @@ namespace PintheCloud.Managers
         private const string ONE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_skydrive.png";
         private const string ONE_DRIVE_COLOR_HEX_STRING = "2458A7";
 
+        private Stack<List<FileObject>> FoldersTree = new Stack<List<FileObject>>();
+        private Stack<FileObjectViewItem> FolderRootTree = new Stack<FileObjectViewItem>();
+
         private LiveConnectClient LiveClient = null;
         private Account CurrentAccount = null;
         private TaskCompletionSource<bool> tcs = null;
         #endregion
-
-
-        private async Task<LiveConnectClient> GetLiveConnectClientAsync()
-        {
-            LiveAuthClient liveAuthClient = new LiveAuthClient(LIVE_CLIENT_ID);
-            string[] scopes = new[] { "wl.basic", "wl.signin", "wl.offline_access", "wl.skydrive", "wl.skydrive_update", "wl.contacts_skydrive" };
-            LiveLoginResult liveLoginResult = null;
-
-            // Get Current live connection session
-            try
-            {
-                liveLoginResult = await liveAuthClient.InitializeAsync(scopes);
-            }
-            catch (LiveAuthException)
-            {
-                return null;
-            }
-
-            // If session doesn't exist, get new one.
-            // Otherwise, get the session.
-            if (liveLoginResult.Status != LiveConnectSessionStatus.Connected)
-            {
-                try
-                {
-                    liveLoginResult = await liveAuthClient.LoginAsync(scopes);
-                }
-                catch (LiveAuthException)
-                {
-                    return null;
-                }
-            }
-
-            // Get Client using session which we get above
-            if (liveLoginResult.Session == null)
-                return null;
-            else
-                return new LiveConnectClient(liveLoginResult.Session);
-        }
 
 
         public async Task<bool> SignIn()
@@ -164,6 +129,18 @@ namespace PintheCloud.Managers
         public string GetStorageColorHexString()
         {
             return ONE_DRIVE_COLOR_HEX_STRING;
+        }
+
+
+        public Stack<FileObjectViewItem> GetFolderRootTree()
+        {
+            return this.FolderRootTree;
+        }
+
+
+        public Stack<List<FileObject>> GetFoldersTree()
+        {
+            return this.FoldersTree;
         }
 
 
@@ -291,6 +268,44 @@ namespace PintheCloud.Managers
         ///////////////////
         // Private Methods
         ///////////////////
+
+        private async Task<LiveConnectClient> GetLiveConnectClientAsync()
+        {
+            LiveAuthClient liveAuthClient = new LiveAuthClient(LIVE_CLIENT_ID);
+            string[] scopes = new[] { "wl.basic", "wl.signin", "wl.offline_access", "wl.skydrive", "wl.skydrive_update", "wl.contacts_skydrive" };
+            LiveLoginResult liveLoginResult = null;
+
+            // Get Current live connection session
+            try
+            {
+                liveLoginResult = await liveAuthClient.InitializeAsync(scopes);
+            }
+            catch (LiveAuthException)
+            {
+                return null;
+            }
+
+            // If session doesn't exist, get new one.
+            // Otherwise, get the session.
+            if (liveLoginResult.Status != LiveConnectSessionStatus.Connected)
+            {
+                try
+                {
+                    liveLoginResult = await liveAuthClient.LoginAsync(scopes);
+                }
+                catch (LiveAuthException)
+                {
+                    return null;
+                }
+            }
+
+            // Get Client using session which we get above
+            if (liveLoginResult.Session == null)
+                return null;
+            else
+                return new LiveConnectClient(liveLoginResult.Session);
+        }
+
 
         // Summary:
         //      List mapping method

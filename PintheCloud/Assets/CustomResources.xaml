@@ -8,10 +8,9 @@
     xmlns:Converters="clr-namespace:PintheCloud.Converters"
 	xmlns:Utilities="clr-namespace:PintheCloud.Utilities"
 	xmlns:toolkitPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls.Toolkit"
-    mc:Ignorable="d"
-    >
+    mc:Ignorable="d" >
     
-	<Style x:Key="NoMarginNoPaddingButtonStyle" TargetType="Button">
+	<Style x:Key="CustomButtonStyle" TargetType="Button">
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="BorderBrush" Value="{StaticResource PhoneForegroundBrush}"/>
 		<Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
@@ -33,7 +32,11 @@
 											<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneButtonBasePressedForegroundBrush}"/>
 										</ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ButtonBackground">
-											<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneAccentBrush}"/>
+											<DiscreteObjectKeyFrame KeyTime="0">
+												<DiscreteObjectKeyFrame.Value>
+													<SolidColorBrush Color="Transparent"/>
+												</DiscreteObjectKeyFrame.Value>
+											</DiscreteObjectKeyFrame>
 										</ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -196,7 +199,7 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
-	<Converters:ColorHexStringToBrushConverter x:Key="ColorHexStringToBrushConverter"/>
+    <Converters:ColorHexStringToBrushConverter x:Key="ColorHexStringToBrushConverter"/>
 	<Converters:StringToUriConverter x:Key="StringToUriConverter"/>
 	<Converters:StringToThumnailUriConverter x:Key="StringToThumnailUriConverter"/>
 	<Converters:StringToFontWeightConverter x:Key="StringToFontWeightConverter"/>

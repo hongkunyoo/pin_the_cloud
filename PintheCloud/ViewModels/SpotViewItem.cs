@@ -18,6 +18,23 @@ namespace PintheCloud.ViewModels
         public string SpotId { get; set; }
         public string SpotNameInitialImage { get; set; }
 
+        private bool deleteImagePress;
+        public bool DeleteImagePress
+        {
+            get
+            {
+                return deleteImagePress;
+            }
+            set
+            {
+                if (deleteImagePress != value)
+                {
+                    deleteImagePress = value;
+                    NotifyPropertyChanged("DeleteImagePress");
+                }
+            }
+        }
+
         private string deleteImage;
         public string DeleteImage
         {

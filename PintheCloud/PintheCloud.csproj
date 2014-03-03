@@ -271,6 +271,8 @@
     <Content Include="Assets\pajeon\at_here\png\setting_icon_location.png" />
     <Content Include="Assets\pajeon\at_here\png\setting_icon_nickname.png" />
     <Content Include="Assets\pajeon\at_here\png\splash.png" />
+    <Content Include="Assets\pajeon\at_here\png\upload_list_delete.png" />
+    <Content Include="Assets\pajeon\at_here\png\upload_list_delete_p.png" />
     <Content Include="Assets\pajeon\at_here\screenshot\pick_page.png" />
     <Content Include="Assets\pajeon\at_here\screenshot\pin_page_1.png" />
     <Content Include="Assets\pajeon\at_here\screenshot\pin_page_2.png" />
