@@ -28,6 +28,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="20" />
 			<RowDefinition Height="*" />
+			<RowDefinition Height="72"/>
 		</Grid.RowDefinitions>
 
 		<Grid Background="#FF00A4BF"/>
@@ -69,7 +70,6 @@
 				<RowDefinition Height="110"/>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition/>
-				<RowDefinition Height="72"/>
 			</Grid.RowDefinitions>
 			<Grid Margin="28,0,44,0" VerticalAlignment="Center">
 				<Grid.ColumnDefinitions>

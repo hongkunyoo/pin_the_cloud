@@ -81,6 +81,7 @@ namespace PintheCloud.Pages
             con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PICK_PIVOT, this.SETTINGS_and_EXPLORE_PICK);
             con.HandleEvent(EventHelper.NEW_SPOT_PAGE, this.EXPLORER_PIN);
             con.HandleEvent(EventHelper.SETTINGS_PAGE, this.SETTINGS_and_EXPLORE_PICK);
+            // TODO Handle from Add File page.
         }
 
 
@@ -558,7 +559,7 @@ namespace PintheCloud.Pages
 
         private void uiAppBarPinInfoButton_Click(object sender, System.EventArgs e)
         {
-            // TODO Have to add pin pop up.
+            NavigationService.Navigate(new Uri(EventHelper.ADD_FILE_PAGE, UriKind.Relative));
         }
     }
 }
