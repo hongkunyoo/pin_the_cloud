@@ -241,6 +241,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   File과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string File {
+            get {
+                return ResourceManager.GetString("File", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   GB과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string GB {
@@ -367,6 +376,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   New Spot과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NewSpot {
+            get {
+                return ResourceManager.GetString("NewSpot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   There is no files in this folder.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoFileInFolderMessage {
@@ -439,11 +457,56 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   No Password과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoPasswordCption {
+            get {
+                return ResourceManager.GetString("NoPasswordCption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Password is blank. Please set it.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoPasswordMessage {
+            get {
+                return ResourceManager.GetString("NoPasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   There is no selected file to pin. Please go back and select again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoSelectedFileMessage {
+            get {
+                return ResourceManager.GetString("NoSelectedFileMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Main cloud haven&apos;t been signed in. Please sign in.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoSignedInMessage {
             get {
                 return ResourceManager.GetString("NoSignedInMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   No Spot Name과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoSpotNameCaption {
+            get {
+                return ResourceManager.GetString("NoSpotNameCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Spot name is blank. Please set it.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoSpotNameMessage {
+            get {
+                return ResourceManager.GetString("NoSpotNameMessage", resourceCulture);
             }
         }
         
@@ -480,6 +543,15 @@ namespace PintheCloud.Resources {
         public static string PiningSpot {
             get {
                 return ResourceManager.GetString("PiningSpot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Pirvate Mode과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string PrivateMode {
+            get {
+                return ResourceManager.GetString("PrivateMode", resourceCulture);
             }
         }
         
@@ -570,6 +642,15 @@ namespace PintheCloud.Resources {
         public static string SignOutMessage {
             get {
                 return ResourceManager.GetString("SignOutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Spot Name과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string SpotName {
+            get {
+                return ResourceManager.GetString("SpotName", resourceCulture);
             }
         }
         

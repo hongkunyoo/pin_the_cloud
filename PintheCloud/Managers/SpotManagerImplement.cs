@@ -91,8 +91,17 @@ namespace PintheCloud.Managers
         // Get spots 300m away from here
         private async Task<JArray> GetNearSpotsAsync(double currentLatitude, double currentLongtitude)
         {
-            string json = @"{'currentLatitude':" + currentLatitude + ",'currentLongtitude':" + currentLongtitude + "}";
-            JToken jToken = JToken.Parse(json);
+            string currentLatitudeString = currentLatitude.ToString().Replace(',', '.');
+            string currentLongtitudeString = currentLongtitude.ToString().Replace(',', '.');
+            string json = @"{'currentLatitude':" + currentLatitudeString + ",'currentLongtitude':" + currentLongtitudeString + "}";
+            JToken jToken = null;
+            try
+            {
+                jToken = JToken.Parse(json);
+            }
+            catch (Exception)
+            { 
+            }
             JArray spots = null;
             try
             {

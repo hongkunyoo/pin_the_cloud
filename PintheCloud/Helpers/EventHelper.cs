@@ -13,6 +13,7 @@ namespace PintheCloud.Managers
         public const string EXPLORER_PAGE = "/Pages/ExplorerPage.xaml";
         public const string SETTINGS_PAGE = "/Pages/SettingsPage.xaml";
         public const string FILE_LIST_PAGE = "/Pages/FileListPage.xaml";
+        public const string NEW_SPOT_PAGE = "/Pages/NewSpotPage.xaml";
 
         public const string POPUP_CLOSE = "POP_UP_CLOSE";
 

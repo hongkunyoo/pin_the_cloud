@@ -415,24 +415,40 @@ namespace PintheCloud.Pages
             // Check whether user consented for location access.
             if (this.GetLocationAccessConsent())  // Got consent of location access.
             {
-                // Check whether GPS is on or not
-                if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
-                {
-                    PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY] = this.NearSpotViewModel;
-                    PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
-                    PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.SelectedFile;
-                    PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
-                    NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE, UriKind.Relative));
-                }
-                else  // GPS is off
-                {
-                    MessageBox.Show(AppResources.NoLocationServiceMessage, AppResources.NoLocationServiceCaption, MessageBoxButton.OK);
-                }
+                PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY] = this.NearSpotViewModel;
+                PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
+                PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.SelectedFile;
+                PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
+                NavigationService.Navigate(new Uri(EventHelper.NEW_SPOT_PAGE, UriKind.Relative));
             }
             else  // First or not consented of access in location information.
             {
                 MessageBox.Show(AppResources.NoLocationAcessConsentMessage, AppResources.NoLocationAcessConsentCaption, MessageBoxButton.OK);
             }
+
+
+
+            //// Check whether user consented for location access.
+            //if (this.GetLocationAccessConsent())  // Got consent of location access.
+            //{
+            //    // Check whether GPS is on or not
+            //    if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
+            //    {
+            //        PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY] = this.NearSpotViewModel;
+            //        PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
+            //        PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.SelectedFile;
+            //        PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
+            //        NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE, UriKind.Relative));
+            //    }
+            //    else  // GPS is off
+            //    {
+            //        MessageBox.Show(AppResources.NoLocationServiceMessage, AppResources.NoLocationServiceCaption, MessageBoxButton.OK);
+            //    }
+            //}
+            //else  // First or not consented of access in location information.
+            //{
+            //    MessageBox.Show(AppResources.NoLocationAcessConsentMessage, AppResources.NoLocationAcessConsentCaption, MessageBoxButton.OK);
+            //}
         }
 
 

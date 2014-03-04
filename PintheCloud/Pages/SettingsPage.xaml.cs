@@ -68,7 +68,7 @@ namespace PintheCloud.Pages
             // Set name
             uiDefaultSpotNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
 
-            // Set UIs
+            // Set UI list
             this.SignButtons = new Button[] { uiOneDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
             this.MainButtons = new Button[] { uiOneDriveMainButton, uiDropboxMainButton, uiGoogleDriveMainButton };
             this.SignButtonGrids = new Grid[] { uiOneDriveSignButtonGrid, uiDropboxSignButtonGrid, uiGoogleDriveSignButtonGrid };

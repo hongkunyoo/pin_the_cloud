@@ -46,6 +46,8 @@ namespace PintheCloud.Pages
         private string AccountName = null;
         private int PlatformIndex = 0;
         private bool LaunchLock = false;
+        private bool IsPrivateMode = false;
+        private string SpotPassword = null;
 
         private ApplicationBarIconButton DeleteAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarIconButton PickAppBarButton = new ApplicationBarIconButton();
@@ -77,7 +79,7 @@ namespace PintheCloud.Pages
             // Set event by previous page
             Context con = EventHelper.GetContext(EventHelper.FILE_LIST_PAGE);
             con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PICK_PIVOT, this.SETTINGS_and_EXPLORE_PICK);
-            con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PIN_PIVOT, this.EXPLORER_PIN);
+            con.HandleEvent(EventHelper.NEW_SPOT_PAGE, this.EXPLORER_PIN);
             con.HandleEvent(EventHelper.SETTINGS_PAGE, this.SETTINGS_and_EXPLORE_PICK);
         }
 
@@ -106,13 +108,25 @@ namespace PintheCloud.Pages
 
         private void EXPLORER_PIN()
         {
+            // Remove New Spot Page from backstack
+            NavigationService.RemoveBackEntry();
+
             // Get parameters
             this.PlatformIndex = (int)PhoneApplicationService.Current.State[PLATFORM_KEY];
             Account account = App.IStorageManagers[this.PlatformIndex].GetAccount();
             this.SpotName = (string)App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
             this.AccountId = account.account_platform_id;
             this.AccountName = account.account_name;
-
+            if (NavigationContext.QueryString["private"].Equals("True"))
+            {
+                this.IsPrivateMode = true;
+                this.SpotPassword = NavigationContext.QueryString["password"];
+            }
+            else
+            {
+                this.IsPrivateMode = false;
+            }
+            
             // Set Binding Instances to UI
             uiSpotName.Text = this.SpotName;
             uiAccountName.Text = this.AccountName;
