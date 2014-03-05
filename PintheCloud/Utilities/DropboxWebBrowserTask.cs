@@ -43,7 +43,7 @@ namespace PintheCloud.Utilities
 
             Popup popup = new Popup();
             popup.Child = new DropBoxSignInPopup(popup, this.Uri);
-            popup.Visibility = System.Windows.Visibility.Visible;
+            popup.Visibility = Visibility.Visible;
             popup.IsOpen = true;
             popup.Closed += (sender, args) =>
             {

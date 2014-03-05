@@ -17,6 +17,7 @@ namespace PintheCloud.ViewModels
         public double SpotDistance { get; set; }
         public string SpotId { get; set; }
         public string SpotNameInitialImage { get; set; }
+        public string IsPrivateImage { get; set; }
 
         private bool deleteImagePress;
         public bool DeleteImagePress
@@ -34,7 +35,7 @@ namespace PintheCloud.ViewModels
                 }
             }
         }
-
+        
         private string deleteImage;
         public string DeleteImage
         {

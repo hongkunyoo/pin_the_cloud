@@ -488,7 +488,7 @@ namespace PintheCloud.Pages
             // Otherwise, show delete fail image.
             if (deleteFileSuccess)
             {
-                Spot spot = new Spot(spotViewItem.SpotName, 0, 0, spotViewItem.AccountId, spotViewItem.AccountName, spotViewItem.SpotDistance);
+                Spot spot = new Spot(spotViewItem.SpotName, 0, 0, spotViewItem.AccountId, spotViewItem.AccountName, spotViewItem.SpotDistance, false, NULL_PASSWORD);
                 spot.id = spotViewItem.SpotId;
                 if (await App.SpotManager.DeleteSpotAsync(spot))
                 {

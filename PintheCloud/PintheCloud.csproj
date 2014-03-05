@@ -116,6 +116,9 @@
     <Compile Include="Pages\DropBoxSignInPopup.xaml.cs">
       <DependentUpon>DropBoxSignInPopup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\EnterSpotPasswordPopup.xaml.cs">
+      <DependentUpon>EnterSpotPasswordPopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\NewSpotPage.xaml.cs">
       <DependentUpon>NewSpotPage.xaml</DependentUpon>
     </Compile>
@@ -171,6 +174,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\AddFilePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EnterSpotPasswordPopup.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -234,6 +241,8 @@
     <Content Include="Assets\pajeon\at_here\png\input_set_button_activated.png" />
     <Content Include="Assets\pajeon\at_here\png\input_set_button_activated_p.png" />
     <Content Include="Assets\pajeon\at_here\png\input_set_button_inactivated.png" />
+    <Content Include="Assets\pajeon\at_here\png\list_download.png" />
+    <Content Include="Assets\pajeon\at_here\png\list_download_p.png" />
     <Content Include="Assets\pajeon\at_here\png\list_edit.png" />
     <Content Include="Assets\pajeon\at_here\png\list_edit_p.png" />
     <Content Include="Assets\pajeon\at_here\png\list_view.png" />

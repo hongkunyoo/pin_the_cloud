@@ -520,6 +520,24 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Password null.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string PasswordNullCaption {
+            get {
+                return ResourceManager.GetString("PasswordNullCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Password can&apos;t be null.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string PasswordNullMessage {
+            get {
+                return ResourceManager.GetString("PasswordNullMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Pick과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Pick {

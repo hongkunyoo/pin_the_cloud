@@ -85,6 +85,29 @@ namespace PintheCloud.Managers
         }
 
 
+        // TODO
+        // Check Spot Password
+        public async Task<JArray> CheckSpotPasswordAsync(string spotId, string spotPassword)
+        {
+            string json = @"{'spotId':" + spotId + ",'spotPassword':" + spotPassword + "}";
+            JToken jToken = JToken.Parse(json);
+            JArray spots = null;
+            try
+            {
+                // Load current account's spots
+                spots = (JArray)await App.MobileService.InvokeApiAsync("check_spot_password_async", jToken);
+            }
+            catch (MobileServiceInvalidOperationException)
+            {
+                return null;
+            }
+            if (spots.Count > 0)
+                return spots;
+            else
+                return null;
+        }
+
+
 
         /*** Private Methods ***/
 
@@ -94,14 +117,7 @@ namespace PintheCloud.Managers
             string currentLatitudeString = currentLatitude.ToString().Replace(',', '.');
             string currentLongtitudeString = currentLongtitude.ToString().Replace(',', '.');
             string json = @"{'currentLatitude':" + currentLatitudeString + ",'currentLongtitude':" + currentLongtitudeString + "}";
-            JToken jToken = null;
-            try
-            {
-                jToken = JToken.Parse(json);
-            }
-            catch (Exception)
-            { 
-            }
+            JToken jToken = JToken.Parse(json);
             JArray spots = null;
             try
             {

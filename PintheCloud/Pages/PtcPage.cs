@@ -34,6 +34,8 @@ namespace PintheCloud.Pages
 
         protected const string SELECTED_FILE_KEY = "SELECTED_FILE_KEY";
 
+        protected const string NULL_PASSWORD = "null";
+
 
         public PtcPage()
         {

@@ -30,8 +30,15 @@ namespace PintheCloud.Models
         [JsonProperty(PropertyName = "spot_distance")]
         public double spot_distance { get; set; }
 
+        [JsonProperty(PropertyName = "spot_password")]
+        public string spot_password { get; set; }
 
-        public Spot(string spot_name, double spot_latitude, double spot_longtitude, string account_id, string account_name, double spot_distance)
+        [JsonProperty(PropertyName = "is_private")]
+        public bool is_private { get; set; }
+
+
+        public Spot(string spot_name, double spot_latitude, double spot_longtitude, 
+            string account_id, string account_name, double spot_distance, bool is_private, string spot_password)
         {
             this.spot_name = spot_name;
             this.spot_latitude = spot_latitude;
@@ -39,6 +46,8 @@ namespace PintheCloud.Models
             this.account_id = account_id;
             this.account_name = account_name;
             this.spot_distance = spot_distance;
+            this.is_private = is_private;
+            this.spot_password = spot_password;
         }
     }
 }

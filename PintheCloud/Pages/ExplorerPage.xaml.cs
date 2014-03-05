@@ -23,6 +23,7 @@ using System.Diagnostics;
 using PintheCloud.Converters;
 using System.Windows.Media;
 using PintheCloud.Helpers;
+using System.Windows.Controls.Primitives;
 
 namespace PintheCloud.Pages
 {
@@ -284,11 +285,23 @@ namespace PintheCloud.Pages
             // Set selected item to null for next selection of list item. 
             uiNearSpotList.SelectedItem = null;
 
-
-            // If selected item isn't null and it doesn't come from like button, goto File list page.
-            // Otherwise, Process Like or Not Like by current state
+            // If it is private mode, get password from user and check it.
+            // Otherwise, goto File list page.
             if (spotViewItem != null)  // Go to FIle List Page
             {
+                if (spotViewItem.IsPrivateImage.Equals(FileObjectViewModel.IS_PRIVATE_IMAGE_URI))
+                {
+                    // Check password
+                    Popup popup = new Popup();
+                    popup.Child = new EnterSpotPasswordPopup(popup);
+                    popup.Visibility = Visibility.Visible;
+                    popup.IsOpen = true;
+                    popup.Closed += (senderObject, args) =>
+                    {
+                        // TODO whether password is right or not
+                    };
+                }
+
                 PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
                 PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
                 string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);

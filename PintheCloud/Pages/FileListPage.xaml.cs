@@ -46,7 +46,7 @@ namespace PintheCloud.Pages
         private string AccountName = null;
         private int PlatformIndex = 0;
         private bool LaunchLock = false;
-        private bool IsPrivateMode = false;
+        private bool IsPrivate = false;
         private string SpotPassword = null;
 
         private ApplicationBarIconButton DeleteAppBarButton = new ApplicationBarIconButton();
@@ -119,14 +119,10 @@ namespace PintheCloud.Pages
             this.AccountId = account.account_platform_id;
             this.AccountName = account.account_name;
             if (NavigationContext.QueryString["private"].Equals("True"))
-            {
-                this.IsPrivateMode = true;
-                this.SpotPassword = NavigationContext.QueryString["password"];
-            }
+                this.IsPrivate = true;
             else
-            {
-                this.IsPrivateMode = false;
-            }
+                this.IsPrivate = false;
+            this.SpotPassword = NavigationContext.QueryString["password"];
             
             // Set Binding Instances to UI
             uiSpotName.Text = this.SpotName;
@@ -408,7 +404,8 @@ namespace PintheCloud.Pages
 
             // Pin spot
             Geoposition geo = await App.Geolocator.GetGeopositionAsync();
-            Spot spot = new Spot(this.SpotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, this.AccountId, this.AccountName, 0);
+            Spot spot = new Spot(this.SpotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude,
+                this.AccountId, this.AccountName, 0, this.IsPrivate, this.SpotPassword);
             if (await App.SpotManager.PinSpotAsync(spot))
             {
                 ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
@@ -427,6 +424,9 @@ namespace PintheCloud.Pages
             {
                 base.SetListUnableAndShowMessage(uiFileList, AppResources.BadPinSpotMessage, uiFileListMessage);
             }
+
+            // Hide progress message
+            base.SetProgressIndicator(false);
         }
 
 

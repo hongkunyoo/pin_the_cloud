@@ -320,4 +320,10 @@
   <data name="NoSpotNameMessage" xml:space="preserve">
     <value>Spot name is blank. Please set it.</value>
   </data>
+  <data name="PasswordNullCaption" xml:space="preserve">
+    <value>Password null.</value>
+  </data>
+  <data name="PasswordNullMessage" xml:space="preserve">
+    <value>Password can't be null.</value>
+  </data>
 </root>

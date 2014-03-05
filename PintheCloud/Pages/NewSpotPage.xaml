@@ -60,7 +60,12 @@
                     <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.SpotName, Source={StaticResource LocalizedStrings}}" FontSize="22" Foreground="#FF404041" Grid.Column="1"/>
                 </Grid>
                 <Grid Height="54">
-                    <TextBox x:Name="uiSpotNameTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="25" MaxLength="20" Background="#FFE6E7E8" Opacity="0.8" BorderThickness="0" Padding="0" FontFamily="Segoe WP Light" Foreground="#FF6F7A81" Style="{StaticResource CustomTextBoxStyle}" />
+                    <TextBox x:Name="uiSpotNameTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="25" MaxLength="20" Background="#FFE6E7E8" Opacity="0.8" BorderThickness="0" Padding="0" FontFamily="Segoe WP Light" Foreground="#FF6F7A81" Style="{StaticResource CustomTextBoxStyle}" GotFocus="uiSpotNameTextBox_GotFocus" LostFocus="uiSpotNameTextBox_LostFocus" TextChanged="uiSpotNameTextBox_TextChanged" />
+                    <Utilities:ImageButton 
+                    	ImageSource="/Assets/pajeon/at_here/png/input_set_button_activated.png"
+                    	ImageDisabledSource="/Assets/pajeon/at_here/png/input_set_button_inactivated.png"
+                    	ImagePressedSource="/Assets/pajeon/at_here/png/input_set_button_activated_p.png"
+                    	Style="{StaticResource ImageButtonStyle}" x:Name="uiSpotNameSetButton" IsEnabled="True" HorizontalAlignment="Right" Visibility="Collapsed" Click="uiSpotNameSetButton_Click" />
                 </Grid>
             </StackPanel>
             <StackPanel Grid.Row="2" Margin="28,0,28,32">
@@ -75,7 +80,12 @@
                     <toolkitPrimitives:ToggleSwitchButton x:Name="uiPrivateModeToggleSwitchButton" Style="{StaticResource CustomToggleSwitchButtonStyle}" Grid.Column="2" Height="38" Width="68" Checked="uiPrivateModeToggleSwitchButton_Checked" Unchecked="uiPrivateModeToggleSwitchButton_Unchecked" />
                 </Grid>
                 <Grid x:Name="uiPrivateModePasswordGrid" Height="54" Visibility="Collapsed">
-                    <TextBox x:Name="uiPrivateModePasswordTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="25" MaxLength="20" Background="#FFE6E7E8" Opacity="0.8" BorderThickness="0" Padding="0" FontFamily="Segoe WP Light" Foreground="#FF6F7A81" Style="{StaticResource CustomTextBoxStyle}" />
+                    <TextBox x:Name="uiPrivateModePasswordTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="25" MaxLength="20" Background="#FFE6E7E8" Opacity="0.8" BorderThickness="0" Padding="0" FontFamily="Segoe WP Light" Foreground="#FF6F7A81" Style="{StaticResource CustomTextBoxStyle}" LostFocus="uiPrivateModePasswordTextBox_LostFocus" TextChanged="uiPrivateModePasswordTextBox_TextChanged" GotFocus="uiPrivateModePasswordTextBox_GotFocus" />
+                    <Utilities:ImageButton 
+                    	ImageSource="/Assets/pajeon/at_here/png/input_set_button_activated.png"
+                    	ImageDisabledSource="/Assets/pajeon/at_here/png/input_set_button_inactivated.png"
+                    	ImagePressedSource="/Assets/pajeon/at_here/png/input_set_button_activated_p.png"
+                    	Style="{StaticResource ImageButtonStyle}" x:Name="uiPrivateModePasswordSetButton" HorizontalAlignment="Right" Visibility="Collapsed" Click="uiPrivateModePasswordSetButton_Click" />
                 </Grid>
             </StackPanel>
             <Grid Grid.Row="3">

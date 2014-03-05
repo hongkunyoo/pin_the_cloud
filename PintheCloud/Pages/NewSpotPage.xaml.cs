@@ -57,6 +57,38 @@ namespace PintheCloud.Pages
         }
 
 
+
+        /*** Spot Name UI Event Handler ***/
+
+        private void uiSpotNameTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (uiSpotNameTextBox.Text.Trim().Length > 0)
+                uiSpotNameSetButton.IsEnabled = true;
+            else
+                uiSpotNameSetButton.IsEnabled = false;
+        }
+
+
+        private void uiSpotNameTextBox_GotFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            uiSpotNameSetButton.Visibility = Visibility.Visible;
+        }
+
+        private void uiSpotNameTextBox_LostFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            uiSpotNameSetButton.Visibility = Visibility.Collapsed;
+        }
+
+
+        private void uiSpotNameSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            uiSpotNameTextBox.Text = uiSpotNameTextBox.Text.Trim();
+        }
+
+
+
+        /*** Private Mode Password UI Event Handler ***/
+
         private void uiPrivateModeToggleSwitchButton_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
             uiPrivateModePasswordGrid.Visibility = Visibility.Visible;
@@ -68,6 +100,36 @@ namespace PintheCloud.Pages
             uiPrivateModePasswordGrid.Visibility = Visibility.Collapsed;
         }
 
+
+        private void uiPrivateModePasswordTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (uiPrivateModePasswordTextBox.Text.Trim().Length > 0)
+                uiPrivateModePasswordSetButton.IsEnabled = true;
+            else
+                uiPrivateModePasswordSetButton.IsEnabled = false;
+        }
+
+
+        private void uiPrivateModePasswordTextBox_GotFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            uiPrivateModePasswordSetButton.Visibility = Visibility.Visible;
+        }
+
+
+        private void uiPrivateModePasswordTextBox_LostFocus(object sender, System.Windows.RoutedEventArgs e)
+        {
+            uiPrivateModePasswordSetButton.Visibility = Visibility.Collapsed;
+        }
+
+
+        private void uiPrivateModePasswordSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            uiPrivateModePasswordTextBox.Text = uiPrivateModePasswordTextBox.Text.Trim();
+        }
+
+
+
+        /*** Client Logic ***/
 
         private void uiNewSpotFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -112,7 +174,10 @@ namespace PintheCloud.Pages
                     string password = uiPrivateModePasswordTextBox.Text.Trim();
                     if (!password.Equals(String.Empty))  // Password is not null
                     {
-                        this.NavigateToFileListPage(spotName, true, password);
+                        if(!password.Equals(NULL_PASSWORD))  // Password is not "null"
+                            this.NavigateToFileListPage(spotName, true, password);
+                        else  // Password is "null"
+                            MessageBox.Show(AppResources.PasswordNullMessage, AppResources.PasswordNullCaption, MessageBoxButton.OK);
                     }
                     else  // Password is null
                     {
@@ -131,13 +196,13 @@ namespace PintheCloud.Pages
         }
 
 
-        private void NavigateToFileListPage(string spotName, bool isPrivateMode, string password = null)
+        private void NavigateToFileListPage(string spotName, bool isPrivate, string password = NULL_PASSWORD)
         {
             // Check whether GPS is on or not
             if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
             {
                 PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.FileObjectViewModel.Items.ToList<FileObjectViewItem>();
-                NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + "?spotName=" + spotName + "&private=" + isPrivateMode + "&password=" + password, UriKind.Relative));
+                NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + "?spotName=" + spotName + "&private=" + isPrivate + "&password=" + password, UriKind.Relative));
             }
             else  // GPS is off
             {

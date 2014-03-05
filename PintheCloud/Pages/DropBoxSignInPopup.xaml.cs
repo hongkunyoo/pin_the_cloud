@@ -16,16 +16,16 @@ namespace PintheCloud.Pages
 {
     public partial class DropBoxSignInPopup : UserControl
     {
-        private Popup popup = null;
+        private Popup Popup = null;
 
 
         public DropBoxSignInPopup(Popup popup, string uri)
         {
             InitializeComponent();
-            this.popup = popup;
+            this.Popup = popup;
             uiWebBrowser.Width = Application.Current.Host.Content.ActualWidth;
             uiWebBrowser.Height = Application.Current.Host.Content.ActualHeight;
-            uiWebBrowser.Margin = new Thickness(0, 30, 0, 0);
+            uiWebBrowser.Margin = new Thickness(0, 34, 0, 0);
             uiWebBrowser.IsScriptEnabled = true;
             uiWebBrowser.Navigate(new Uri(uri, UriKind.RelativeOrAbsolute));
         }
@@ -36,7 +36,7 @@ namespace PintheCloud.Pages
             if (e.Uri.ToString().StartsWith("http://")
                 && e.Uri.ToString().Contains("http://54.214.19.198"))
             {
-                this.popup.IsOpen = false;
+                this.Popup.IsOpen = false;
                 await uiWebBrowser.ClearCookiesAsync();
             }
         }

@@ -48,6 +48,12 @@ namespace PintheCloud.ViewModels
                 spotViewItem.DeleteImage = FileObjectViewModel.DELETE_IMAGE_URI;
                 spotViewItem.DeleteImagePress = true;
                 spotViewItem.SpotNameInitialImage = spotViewItem.SpotName.Substring(0, 1);
+
+                if ((bool)jSpot["is_private"])
+                    spotViewItem.IsPrivateImage = FileObjectViewModel.IS_PRIVATE_IMAGE_URI;
+                else
+                    spotViewItem.IsPrivateImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+
                 this.Items.Add(spotViewItem);
             }
         }
