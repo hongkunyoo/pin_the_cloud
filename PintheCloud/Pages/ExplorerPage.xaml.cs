@@ -255,6 +255,7 @@ namespace PintheCloud.Pages
         {
             PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY] = this.NearSpotViewModel;
             PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
+            EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
             NavigationService.Navigate(new Uri(EventHelper.SETTINGS_PAGE, UriKind.Relative));
         }
 
