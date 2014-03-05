@@ -115,7 +115,7 @@ namespace PintheCloud.Pages
             // Get parameters
             this.PlatformIndex = (int)PhoneApplicationService.Current.State[PLATFORM_KEY];
             Account account = App.IStorageManagers[this.PlatformIndex].GetAccount();
-            this.SpotName = (string)App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
+            this.SpotName = NavigationContext.QueryString["spotName"];
             this.AccountId = account.account_platform_id;
             this.AccountName = account.account_name;
             if (NavigationContext.QueryString["private"].Equals("True"))

@@ -104,14 +104,15 @@ namespace PintheCloud.Pages
 
         private void uiAppBarPinInfoButton_Click(object sender, System.EventArgs e)
         {
-            if (!uiSpotNameTextBox.Text.Trim().Equals(String.Empty))  // Spot name is not null
+            string spotName = uiSpotNameTextBox.Text.Trim();
+            if (!spotName.Equals(String.Empty))  // Spot name is not null
             {
                 if (uiPrivateModePasswordGrid.Visibility == Visibility.Visible)  // Private is checked
                 {
                     string password = uiPrivateModePasswordTextBox.Text.Trim();
                     if (!password.Equals(String.Empty))  // Password is not null
                     {
-                        this.NavigateToFileListPage(true, password);
+                        this.NavigateToFileListPage(spotName, true, password);
                     }
                     else  // Password is null
                     {
@@ -120,7 +121,7 @@ namespace PintheCloud.Pages
                 }
                 else  // private is not checked
                 {
-                    this.NavigateToFileListPage(false);
+                    this.NavigateToFileListPage(spotName, false);
                 }
             }
             else  // Spot name is null
@@ -130,13 +131,13 @@ namespace PintheCloud.Pages
         }
 
 
-        private void NavigateToFileListPage(bool isPrivateMode, string password = null)
+        private void NavigateToFileListPage(string spotName, bool isPrivateMode, string password = null)
         {
             // Check whether GPS is on or not
             if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
             {
                 PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.FileObjectViewModel.Items.ToList<FileObjectViewItem>();
-                NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + "?private=" + isPrivateMode + "&password=" + password, UriKind.Relative));
+                NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + "?spotName=" + spotName + "&private=" + isPrivateMode + "&password=" + password, UriKind.Relative));
             }
             else  // GPS is off
             {
