@@ -110,6 +110,9 @@
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\Spot.cs" />
     <Compile Include="Converters\FileObjectConverter.cs" />
+    <Compile Include="Pages\AddFilePage.xaml.cs">
+      <DependentUpon>AddFilePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\DropBoxSignInPopup.xaml.cs">
       <DependentUpon>DropBoxSignInPopup.xaml</DependentUpon>
     </Compile>
@@ -166,6 +169,10 @@
     <Page Include="Assets\CustomResources.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AddFilePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\ExplorerPage.xaml">
       <SubType>Designer</SubType>

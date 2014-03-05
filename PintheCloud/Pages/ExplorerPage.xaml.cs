@@ -36,7 +36,6 @@ namespace PintheCloud.Pages
         private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_upload.png";
 
         // Instances
-        private int MainPlatformIndex = 0;
         private int CurrentPlatformIndex = 0;
 
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
@@ -68,10 +67,9 @@ namespace PintheCloud.Pages
             }
 
             // Check main platform and set current platform index.
-            this.MainPlatformIndex = (int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY];
-            this.CurrentPlatformIndex = this.MainPlatformIndex;
+            this.CurrentPlatformIndex = (int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY];
             uiCurrentCloudModeImage.Source = new BitmapImage(
-                new Uri(App.IStorageManagers[this.MainPlatformIndex].GetStorageImageUri(), UriKind.Relative));
+                new Uri(App.IStorageManagers[this.CurrentPlatformIndex].GetStorageImageUri(), UriKind.Relative));
 
             // Set Datacontext
             uiNearSpotList.DataContext = this.NearSpotViewModel;
@@ -366,7 +364,6 @@ namespace PintheCloud.Pages
 
 
             // If it is not in current cloud mode, change it.
-            //if (this.CurrentPlatformIndex != platformIndex && !this.FileObjectViewModel.IsDataLoading && !App.IStorageManagers[this.CurrentPlatformIndex].IsSigningIn())
             if (this.CurrentPlatformIndex != platformIndex)
             {
                 // Kill previous job.
@@ -425,30 +422,6 @@ namespace PintheCloud.Pages
             {
                 MessageBox.Show(AppResources.NoLocationAcessConsentMessage, AppResources.NoLocationAcessConsentCaption, MessageBoxButton.OK);
             }
-
-
-
-            //// Check whether user consented for location access.
-            //if (this.GetLocationAccessConsent())  // Got consent of location access.
-            //{
-            //    // Check whether GPS is on or not
-            //    if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
-            //    {
-            //        PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY] = this.NearSpotViewModel;
-            //        PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
-            //        PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.SelectedFile;
-            //        PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
-            //        NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE, UriKind.Relative));
-            //    }
-            //    else  // GPS is off
-            //    {
-            //        MessageBox.Show(AppResources.NoLocationServiceMessage, AppResources.NoLocationServiceCaption, MessageBoxButton.OK);
-            //    }
-            //}
-            //else  // First or not consented of access in location information.
-            //{
-            //    MessageBox.Show(AppResources.NoLocationAcessConsentMessage, AppResources.NoLocationAcessConsentCaption, MessageBoxButton.OK);
-            //}
         }
 
 
@@ -633,7 +606,7 @@ namespace PintheCloud.Pages
                 // If it has to load, load new files.
                 // Otherwise, set existing files to list.
                 List<FileObject> fileObjects = new List<FileObject>();
-                if (load)
+                if (load)  // Load from server
                 {
                     // If folder null, set root.
                     if (folder == null)
@@ -648,15 +621,18 @@ namespace PintheCloud.Pages
 
                     // Get files and push to stack tree.
                     fileObjects = await iStorageManager.GetFilesFromFolderAsync(folder.Id);
-                    if (!iStorageManager.GetFolderRootTree().Contains(folder))
-                        iStorageManager.GetFolderRootTree().Push(folder);
                     if (!message.Equals(AppResources.Refreshing))
+                    {
                         iStorageManager.GetFoldersTree().Push(fileObjects);
+                        if (!iStorageManager.GetFolderRootTree().Contains(folder))
+                            iStorageManager.GetFolderRootTree().Push(folder);
+                    }
                 }
-                else
+                else  // Set existed file to list
                 {
                     fileObjects = iStorageManager.GetFoldersTree().First();
                 }
+
 
                 // If didn't change cloud mode while loading, set it to list.
                 if (iStorageManager.GetStorageName().Equals(App.IStorageManagers[this.CurrentPlatformIndex].GetStorageName()))

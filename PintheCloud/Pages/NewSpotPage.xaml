@@ -87,14 +87,14 @@
                                 <RowDefinition Height="1"/>
                             </Grid.RowDefinitions>
                             <Button Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                <Grid Margin="28,10,44,10">
+                                <Grid Margin="15,0,44,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="105"/>
                                         <ColumnDefinition/>
-                                        <ColumnDefinition Width="30"/>
+                                        <ColumnDefinition Width="50"/>
                                     </Grid.ColumnDefinitions>
                                     <Image x:Name="uiThumnail" Source="{Binding ThumnailType, Converter={StaticResource StringToThumnailUriConverter}}" HorizontalAlignment="Left" Stretch="None"/>
-                                    <StackPanel Grid.Column="1">
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <TextBlock x:Name="uiName" Text="{Binding Name}" Margin="0,0,0,5" FontSize="22" Foreground="#FF404041" FontFamily="Segoe WP" TextTrimming="WordEllipsis"/>
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock x:Name="uiSize" Text="{Binding Size}" TextWrapping="Wrap"  FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light" />
@@ -103,7 +103,7 @@
                                     </StackPanel>
                                     <Utilities:ImageButton x:Name="uiFileDeleteImageButton" 
 									ImageSource="/Assets/pajeon/at_here/png/upload_list_delete.png"
-									ImagePressedSource="/Assets/pajeon/at_here/png/upload_list_delete_p.png" Grid.Column="2" IsEnabled="True" Style="{StaticResource ImageButtonStyle}" Click="uiFileDeleteImageButton_Click" />
+									ImagePressedSource="/Assets/pajeon/at_here/png/upload_list_delete_p.png" Grid.Column="2" IsEnabled="True" Style="{StaticResource ImageButtonStyle}" Click="uiFileDeleteImageButton_Click" HorizontalAlignment="Right" />
                                 </Grid>
                             </Button>
                             <Grid Grid.Row="1" Background="#FFA6B5BE" Margin="20,0"/>

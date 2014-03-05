@@ -28,6 +28,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="20" />
 			<RowDefinition Height="*" />
+			<RowDefinition Height="72"/>
 		</Grid.RowDefinitions>
 
 		<Grid Background="#FF00A4BF"/>
@@ -42,21 +43,21 @@
 							<RowDefinition Height="1"/>
 						</Grid.RowDefinitions>
 						<Button Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-							<Grid Margin="28,10,38,10">
+							<Grid Margin="15,0,44,0">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="105"/>
 									<ColumnDefinition/>
 									<ColumnDefinition Width="60"/>
 								</Grid.ColumnDefinitions>
 								<Image x:Name="uiThumnail" Source="{Binding ThumnailType, Converter={StaticResource StringToThumnailUriConverter}}" HorizontalAlignment="Left" Stretch="None"/>
-								<StackPanel Grid.Column="1">
+								<StackPanel Grid.Column="1" VerticalAlignment="Center">
 									<TextBlock x:Name="uiName" Text="{Binding Name}" Margin="0,0,0,5" FontSize="22" Foreground="#FF404041" FontFamily="Segoe WP" TextTrimming="WordEllipsis"/>
 									<StackPanel Orientation="Horizontal">
 										<TextBlock x:Name="uiSize" Text="{Binding Size}" TextWrapping="Wrap"  FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light" />
 										<TextBlock x:Name="uiSizeUnit" TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light"/>
 									</StackPanel>
 								</StackPanel>
-								<Button x:Name="uiSelectFileButton" Style="{StaticResource CustomButtonStyle}" Grid.Column="2">
+								<Button x:Name="uiSelectFileButton" Style="{StaticResource CustomButtonStyle}" Grid.Column="2" Margin="0" HorizontalAlignment="Right">
 									<Image x:Name="uiSelectFileButtonImage" Source="{Binding SelectFileImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Stretch="None"/>
 								</Button>
 							</Grid>
@@ -66,24 +67,24 @@
 				</DataTemplate>
 			</Grid.Resources>
 			<Grid.RowDefinitions>
-				<RowDefinition Height="110"/>
-				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="125"/>
 				<RowDefinition/>
-				<RowDefinition Height="72"/>
 			</Grid.RowDefinitions>
-			<Grid Margin="28,0,44,0" VerticalAlignment="Center">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition/>
-					<ColumnDefinition Width="45"/>
-				</Grid.ColumnDefinitions>
-				<TextBlock x:Name="uiSpotName" FontSize="50" LineHeight="60" Foreground="#FF404041" FontFamily="Segoe WP" TextTrimming="WordEllipsis" />
-				<Utilities:ImageButton x:Name="uiFileListEditViewImageButton" 
-					ImageSource="/Assets/pajeon/at_here/png/list_edit.png"
-					ImagePressedSource="/Assets/pajeon/at_here/png/list_edit_p.png"
-					HorizontalAlignment="Right" Grid.Column="1" IsEnabled="True" Style="{StaticResource ImageButtonStyle}" Click="uiFileListEditViewImageButton_Click"/>
+			<Grid Margin="26,0,44,0">
+				<Grid VerticalAlignment="Center">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition Width="45"/>
+					</Grid.ColumnDefinitions>
+					<TextBlock x:Name="uiSpotName" FontSize="50" LineHeight="60" Foreground="#FF404041" FontFamily="Segoe WP" TextTrimming="WordEllipsis" />
+					<Utilities:ImageButton x:Name="uiFileListEditViewImageButton" 
+						ImageSource="/Assets/pajeon/at_here/png/list_edit.png"
+						ImagePressedSource="/Assets/pajeon/at_here/png/list_edit_p.png"
+						HorizontalAlignment="Right" Grid.Column="1" IsEnabled="True" Style="{StaticResource ImageButtonStyle}" Click="uiFileListEditViewImageButton_Click"/>
+				</Grid>
+				<TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light" VerticalAlignment="Bottom" Margin="2,0,0,0" />
 			</Grid>
-			<TextBlock x:Name="uiAccountName" TextWrapping="Wrap" FontSize="32" Foreground="#FF919FA6" FontFamily="Segoe WP Light" Grid.Row="1" Margin="28,0,44,22" />
-			<Grid Grid.Row="2">
+			<Grid Grid.Row="1" Margin="0,10,0,0">
 				<TextBlock x:Name="uiFileListMessage" TextWrapping="Wrap" Margin="28,0,44,0" Foreground="Black" FontSize="22" Visibility="Collapsed"/>
 				<phone:LongListSelector x:Name="uiFileList" SelectionChanged="uiFileList_SelectionChanged" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiFileListItemTemplate}" Style="{StaticResource CustomLongListSelectorStyle}"/>
 			</Grid>

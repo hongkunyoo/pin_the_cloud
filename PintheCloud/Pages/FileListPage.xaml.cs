@@ -81,6 +81,7 @@ namespace PintheCloud.Pages
             con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PICK_PIVOT, this.SETTINGS_and_EXPLORE_PICK);
             con.HandleEvent(EventHelper.NEW_SPOT_PAGE, this.EXPLORER_PIN);
             con.HandleEvent(EventHelper.SETTINGS_PAGE, this.SETTINGS_and_EXPLORE_PICK);
+            // TODO Handle from Add File page.
         }
 
 
@@ -114,7 +115,7 @@ namespace PintheCloud.Pages
             // Get parameters
             this.PlatformIndex = (int)PhoneApplicationService.Current.State[PLATFORM_KEY];
             Account account = App.IStorageManagers[this.PlatformIndex].GetAccount();
-            this.SpotName = (string)App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
+            this.SpotName = NavigationContext.QueryString["spotName"];
             this.AccountId = account.account_platform_id;
             this.AccountName = account.account_name;
             if (NavigationContext.QueryString["private"].Equals("True"))
@@ -558,7 +559,7 @@ namespace PintheCloud.Pages
 
         private void uiAppBarPinInfoButton_Click(object sender, System.EventArgs e)
         {
-            // TODO Have to add pin pop up.
+            NavigationService.Navigate(new Uri(EventHelper.ADD_FILE_PAGE, UriKind.Relative));
         }
     }
 }
