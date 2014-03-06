@@ -81,7 +81,20 @@ namespace PintheCloud.Pages
             con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PICK_PIVOT, this.SETTINGS_and_EXPLORE_PICK);
             con.HandleEvent(EventHelper.NEW_SPOT_PAGE, this.EXPLORER_PIN);
             con.HandleEvent(EventHelper.SETTINGS_PAGE, this.SETTINGS_and_EXPLORE_PICK);
-            // TODO Handle from Add File page.
+            con.HandleEvent(EventHelper.ADD_FILE_PAGE, this.ADD_FILE);
+        }
+
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            this.LaunchLock = false;
+        }
+
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
         }
 
 
@@ -138,16 +151,31 @@ namespace PintheCloud.Pages
         }
 
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        private void ADD_FILE()
         {
-            base.OnNavigatedTo(e);
-            this.LaunchLock = false;
-        }
+            // If internet is on, upload file given from previous page.
+            // Otherwise, show internet unavailable message.
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                // Show Progress Indicator
+                base.SetProgressIndicator(true);
 
+                // Get selected file list from previous page before pin spot.
+                List<FileObjectViewItem> fileList = new List<FileObjectViewItem>();
+                foreach (FileObjectViewItem fileObjectViewItem in (List<FileObjectViewItem>)PhoneApplicationService.Current.State[SELECTED_FILE_KEY])
+                    fileList.Add(fileObjectViewItem);
 
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
+                // Upload each files in order.
+                foreach (FileObjectViewItem fileObjectViewItem in fileList)
+                    this.UploadFileAsync(new FileObjectViewItem(fileObjectViewItem));
+
+                // Hide progress message
+                base.SetProgressIndicator(false);
+            }
+            else
+            {
+                base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
+            }
         }
 
 

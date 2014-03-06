@@ -69,8 +69,6 @@ namespace PintheCloud.Pages
 
             // Check main platform and set current platform index.
             this.CurrentPlatformIndex = (int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY];
-            uiCurrentCloudModeImage.Source = new BitmapImage(
-                new Uri(App.IStorageManagers[this.CurrentPlatformIndex].GetStorageImageUri(), UriKind.Relative));
 
             // Set Datacontext
             uiNearSpotList.DataContext = this.NearSpotViewModel;
@@ -129,6 +127,8 @@ namespace PintheCloud.Pages
                         ColorHexStringToBrushConverter.GetColorFromHexString(App.IStorageManagers[this.CurrentPlatformIndex].GetStorageColorHexString()));
                     uiPivotTitleImage.Source = new BitmapImage(new Uri(PIN_PIVOT_TITLE_IMAGE_URI, UriKind.Relative));
                     uiPivotTitleIndicator.HorizontalAlignment = System.Windows.HorizontalAlignment.Right;
+                    uiCurrentCloudModeImage.Source = new BitmapImage(
+                        new Uri(App.IStorageManagers[this.CurrentPlatformIndex].GetStorageImageUri(), UriKind.Relative));
                     uiCurrentCloudModeImage.Visibility = Visibility.Visible;
                     this.SetPinPivot();
                     break;
@@ -175,7 +175,12 @@ namespace PintheCloud.Pages
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
                     if (!this.FileObjectViewModel.IsDataLoaded)
-                        this.SetPinInfoListAsync(iStorageManager, AppResources.Loading, true, null);
+                    {
+                        if (iStorageManager.GetFolderRootTree().Count > 0)
+                            this.SetPinInfoListAsync(iStorageManager, AppResources.Loading, false);
+                        else
+                            this.SetPinInfoListAsync(iStorageManager, AppResources.Loading, true, null);
+                    }
                 }
                 else
                 {
@@ -259,26 +264,11 @@ namespace PintheCloud.Pages
         }
 
 
-        public bool GetLocationAccessConsent()
-        {
-            if (!((bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY]))  // First or not consented of access in location information.
-            {
-                MessageBoxResult result = MessageBox.Show(AppResources.LocationAccessMessage, AppResources.LocationAccessCaption, MessageBoxButton.OKCancel);
-                if (result == MessageBoxResult.OK)
-                    App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = true;
-                else
-                    App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = false;
-                App.ApplicationSettings.Save();
-            }
-            return (bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY];
-        }
-
-
 
         /*** Pick Pivot ***/
 
         // List select event
-        private async void uiNearSpotList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void uiNearSpotList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected Spot View Item
             SpotViewItem spotViewItem = uiNearSpotList.SelectedItem as SpotViewItem;
@@ -318,7 +308,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
 
             // Check whether user consented for location access.
-            if (this.GetLocationAccessConsent())  // Got consent of location access.
+            if (base.GetLocationAccessConsent())  // Got consent of location access.
             {
                 // Check whether GPS is on or not
                 if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
@@ -424,7 +414,7 @@ namespace PintheCloud.Pages
         private void PinInfoAppBarButton_Click(object sender, EventArgs e)
         {
             // Check whether user consented for location access.
-            if (this.GetLocationAccessConsent())  // Got consent of location access.
+            if (base.GetLocationAccessConsent())  // Got consent of location access.
             {
                 PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY] = this.NearSpotViewModel;
                 PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
@@ -598,7 +588,6 @@ namespace PintheCloud.Pages
         {
             // Set Mutex true and Show Process Indicator
             this.FileObjectViewModel.IsDataLoaded = true;
-            this.FileObjectViewModel.IsDataLoading = true;
             base.SetListUnableAndShowMessage(uiPinInfoList, message, uiPinInfoMessage);
             base.SetProgressIndicator(true);
 
@@ -688,7 +677,6 @@ namespace PintheCloud.Pages
 
             // Set Mutex false and Hide Process Indicator
             base.SetProgressIndicator(false);
-            this.FileObjectViewModel.IsDataLoading = false;
         }
     }
 }

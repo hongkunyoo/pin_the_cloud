@@ -74,7 +74,7 @@
 				<Grid VerticalAlignment="Center">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition/>
-						<ColumnDefinition Width="45"/>
+						<ColumnDefinition Width="55"/>
 					</Grid.ColumnDefinitions>
 					<TextBlock x:Name="uiSpotName" FontSize="50" LineHeight="60" Foreground="#FF404041" FontFamily="Segoe WP" TextTrimming="WordEllipsis" />
 					<Utilities:ImageButton x:Name="uiFileListEditViewImageButton" 

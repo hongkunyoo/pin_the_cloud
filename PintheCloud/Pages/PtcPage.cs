@@ -133,5 +133,20 @@ namespace PintheCloud.Pages
             }
             return type;
         }
+
+
+        public bool GetLocationAccessConsent()
+        {
+            if (!((bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY]))  // First or not consented of access in location information.
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.LocationAccessMessage, AppResources.LocationAccessCaption, MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.OK)
+                    App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = true;
+                else
+                    App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = false;
+                App.ApplicationSettings.Save();
+            }
+            return (bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY];
+        }
     }
 }

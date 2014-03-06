@@ -226,6 +226,7 @@ namespace PintheCloud.Managers
             {
                 throw new ShareException(sourceFileId, ShareException.ShareType.DOWNLOAD);
             }
+
             return result.Stream;
         }
 
