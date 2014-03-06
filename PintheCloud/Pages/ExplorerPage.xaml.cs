@@ -278,7 +278,7 @@ namespace PintheCloud.Pages
         /*** Pick Pivot ***/
 
         // List select event
-        private void uiNearSpotList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private async void uiNearSpotList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected Spot View Item
             SpotViewItem spotViewItem = uiNearSpotList.SelectedItem as SpotViewItem;

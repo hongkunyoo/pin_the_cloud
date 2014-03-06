@@ -7,7 +7,9 @@ using PintheCloud.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Geolocation;
@@ -87,24 +89,20 @@ namespace PintheCloud.Managers
 
         // TODO
         // Check Spot Password
-        public async Task<JArray> CheckSpotPasswordAsync(string spotId, string spotPassword)
+        public async Task<bool> CheckSpotPasswordAsync(string spotId, string spotPassword)
         {
-            string json = @"{'spotId':" + spotId + ",'spotPassword':" + spotPassword + "}";
+            string json = @"{'spotId':'" + spotId + "','spotPassword':'" + spotPassword + "'}";
             JToken jToken = JToken.Parse(json);
-            JArray spots = null;
             try
             {
                 // Load current account's spots
-                spots = (JArray)await App.MobileService.InvokeApiAsync("check_spot_password_async", jToken);
+                await App.MobileService.InvokeApiAsync("check_spot_password_async", jToken);
             }
             catch (MobileServiceInvalidOperationException)
             {
-                return null;
+                return false;
             }
-            if (spots.Count > 0)
-                return spots;
-            else
-                return null;
+            return true;
         }
 
 

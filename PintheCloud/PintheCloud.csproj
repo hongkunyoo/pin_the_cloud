@@ -95,6 +95,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\StringToSpotNameInitialUriConverter.cs" />
+    <Compile Include="Helpers\AESHelper.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Helpers\EventHelper.cs" />
     <Compile Include="Models\Account.cs" />
@@ -254,8 +255,6 @@
     <Content Include="Assets\pajeon\at_here\png\navi_pick_title.png" />
     <Content Include="Assets\pajeon\at_here\png\navi_pin_title.png" />
     <Content Include="Assets\pajeon\at_here\png\new_delete.png" />
-    <Content Include="Assets\pajeon\at_here\png\new_icon_file.png" />
-    <Content Include="Assets\pajeon\at_here\png\new_icon_name.png" />
     <Content Include="Assets\pajeon\at_here\png\path_back.png" />
     <Content Include="Assets\pajeon\at_here\png\pick_empty.png" />
     <Content Include="Assets\pajeon\at_here\png\pin_empty.png" />

@@ -12,6 +12,7 @@ using PintheCloud.Resources;
 using PintheCloud.ViewModels;
 using Windows.Devices.Geolocation;
 using PintheCloud.Managers;
+using PintheCloud.Helpers;
 
 namespace PintheCloud.Pages
 {
@@ -202,7 +203,7 @@ namespace PintheCloud.Pages
             if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
             {
                 PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.FileObjectViewModel.Items.ToList<FileObjectViewItem>();
-                NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + "?spotName=" + spotName + "&private=" + isPrivate + "&password=" + password, UriKind.Relative));
+                NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + "?spotName=" + spotName + "&private=" + isPrivate + "&password=" + AESHelper.Encrypt(password), UriKind.Relative));
             }
             else  // GPS is off
             {

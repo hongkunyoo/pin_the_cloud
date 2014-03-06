@@ -1,5 +1,4 @@
-﻿<local:PtcPage 
-    x:Class="PintheCloud.Pages.AddFilePage"
+﻿<local:PtcPage
 	xmlns:local="clr-namespace:PintheCloud.Pages"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,42 +6,109 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    FontFamily="{StaticResource PhoneFontFamilyNormal}"
-    FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
+    xmlns:Utilities="clr-namespace:PintheCloud.Utilities" 
+    x:Class="PintheCloud.Pages.AddFilePage"
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
 	
+	<local:PtcPage.Resources>
+		<DataTemplate x:Key="uiPinInfoListItemTemplate">
+			<Grid x:Name="uiPinInfoListItem">
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+					<RowDefinition Height="1"/>
+				</Grid.RowDefinitions>
+				<Button VerticalContentAlignment="Stretch" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch">
+					<Grid Margin="15,0,44,0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="105"/>
+							<ColumnDefinition/>
+							<ColumnDefinition Width="50"/>
+						</Grid.ColumnDefinitions>
+						<Image x:Name="uiThumnail" Stretch="None" Source="{Binding ThumnailType, Converter={StaticResource StringToThumnailUriConverter}}" HorizontalAlignment="Left"/>
+						<StackPanel Grid.Column="1" VerticalAlignment="Center">
+							<TextBlock x:Name="uiName" TextTrimming="WordEllipsis" Text="{Binding Name}" Margin="0,0,0,5" FontFamily="Segoe WP" FontSize="22" Foreground="#FF404041"/>
+							<StackPanel Orientation="Horizontal">
+								<TextBlock x:Name="uiSize" Text="{Binding Size}" TextWrapping="Wrap" FontFamily="Segoe WP Light" FontSize="22" Foreground="#FF919FA6"/>
+								<TextBlock Text="{Binding SizeUnit}" TextWrapping="Wrap" FontFamily="Segoe WP Light" FontSize="22" Foreground="#FF919FA6"/>
+							</StackPanel>
+						</StackPanel>
+						<Image x:Name="SelectFileImage" Stretch="None" Source="{Binding SelectFileImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" Grid.Column="2"/>
+					</Grid>
+				</Button>
+				<Grid Background="#FFA6B5BE" Margin="20,0" Grid.Row="1"/>
+			</Grid>
+		</DataTemplate>
+	</local:PtcPage.Resources>
+    <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
+	<local:PtcPage.FontFamily>
+		<StaticResource ResourceKey="PhoneFontFamilyNormal"/>
+	</local:PtcPage.FontFamily>
+	<local:PtcPage.FontSize>
+		<StaticResource ResourceKey="PhoneFontSizeNormal"/>
+	</local:PtcPage.FontSize>
+	<local:PtcPage.Foreground>
+		<StaticResource ResourceKey="PhoneForegroundBrush"/>
+	</local:PtcPage.Foreground>
+	
 	<local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
-            <shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/at_here/png/general_bar_refresh.png" IsEnabled="True" Text="refresh"/>
-			<shell:ApplicationBarIconButton x:Name="uiAppBarPinInfoButton" IconUri="/Assets/pajeon/pin_the_cloud/png/general_bar_check.png" IsEnabled="False" Text="pin"/>
+        	<shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/at_here/png/general_bar_refresh.png" IsEnabled="True" Text="refresh"/>
+        	<shell:ApplicationBarIconButton x:Name="uiAppBarPinInfoButton" IconUri="/Assets/pajeon/pin_the_cloud/png/general_bar_check.png" IsEnabled="False" Text="pin"/>
 		</shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
-    <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
-    <Grid x:Name="LayoutRoot" Background="White">
-    	<Grid.RowDefinitions>
-    		<RowDefinition Height="76"/>
-    		<RowDefinition/>
-    		<RowDefinition Height="72"/>
-    	</Grid.RowDefinitions>
+	<Grid x:Name="LayoutRoot" Background="White">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="76"/>
+			<RowDefinition/>
+			<RowDefinition Height="72"/>
+		</Grid.RowDefinitions>
 
-        <!--ContentPanel - 여기에 추가 내용을 배치합니다.-->
+		<!--ContentPanel - 여기에 추가 내용을 배치합니다.-->
     <!--ContentPanel - 여기에 추가 내용을 배치합니다.-->
-        <Grid x:Name="uiPivotTitleGrid" Background="#FF00A4BF">
-        	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,7,0,0">
-        		<Image x:Name="uiPivotTitleImage" Source="/Assets/pajeon/at_here/png/navi_pin_title.png" Stretch="None"/>
-        		<Grid>
-        			<Image Source="/Assets/pajeon/at_here/png/indicator_bg.png" Stretch="None"/>
-        			<Image x:Name="uiPivotTitleIndicator" Source="/Assets/pajeon/at_here/png/indicator.png" Stretch="None" HorizontalAlignment="Right"/>
-        		</Grid>
-        	</StackPanel>
-        	<Image x:Name="uiCurrentCloudModeImage" HorizontalAlignment="Right" Stretch="None"/>
-        </Grid>
+		<Grid x:Name="uiPivotTitleGrid" Background="#FF00A4BF">
+			<StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,7,0,0">
+				<Image x:Name="uiPivotTitleImage" Source="/Assets/pajeon/at_here/png/navi_pin_title.png" Stretch="None"/>
+				<Grid>
+					<Image Source="/Assets/pajeon/at_here/png/indicator_bg.png" Stretch="None"/>
+					<Image x:Name="uiPivotTitleIndicator" Source="/Assets/pajeon/at_here/png/indicator.png" Stretch="None" HorizontalAlignment="Right"/>
+				</Grid>
+			</StackPanel>
+			<Image x:Name="uiCurrentCloudModeImage" HorizontalAlignment="Right" Stretch="None"/>
+		</Grid>
     <!--ContentPanel - 여기에 추가 내용을 배치합니다.-->
-        <Grid x:Name="ContentPanel" Grid.Row="1"/>
-    </Grid>
+		<Grid x:Name="ContentPanel" Grid.Row="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="40"/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			<Grid Background="#FFF1F1F2" Opacity="0.8">
+				<Button x:Name="uiPinInfoListUpButton" Foreground="Black" BorderBrush="Transparent" Click="uiPinInfoListUpButton_Click" Style="{StaticResource ListItemButtonStyle}" FontSize="22" HorizontalContentAlignment="Left">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="60"/>
+							<ColumnDefinition/>
+						</Grid.ColumnDefinitions>
+						<Image Source="/Assets/pajeon/at_here/png/path_back.png" Stretch="None"/>
+						<TextBlock x:Name="uiPinInfoCurrentPath" FontFamily="Segoe WP Light" Foreground="#FF919FA6" TextTrimming="WordEllipsis" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+					</Grid>
+				</Button>
+			</Grid>
+			<Grid x:Name="uiPinInfoListGrid" Grid.Row="1" Visibility="Collapsed">
+				<TextBlock x:Name="uiPinInfoMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Visibility="Collapsed" FontSize="22" Margin="28,25,44,0" />
+				<phone:LongListSelector x:Name="uiPinInfoList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiPinInfoListItemTemplate}" SelectionChanged="uiPinInfoList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed" Padding="0"/>
+			</Grid>
+			<StackPanel x:Name="uiPinInfoSignInPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Visibility="Collapsed">
+				<Image Source="/Assets/pajeon/at_here/png/pin_empty.png" Stretch="None" Margin="0,0,0,12"/>
+				<Utilities:ImageButton 
+					ImageSource="/Assets/pajeon/at_here/png/pin_login_button.png"
+					ImagePressedSource="/Assets/pajeon/at_here/png/pin_login_button_p.png"
+					Style="{StaticResource ImageButtonStyle}"
+					x:Name="uiPinInfoSignInButton" IsEnabled="True" HorizontalAlignment="Center" Click="uiPinInfoSignInButton_Click" />
+			</StackPanel>
+		</Grid>
+	</Grid>
 
 </local:PtcPage>

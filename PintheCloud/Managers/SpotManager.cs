@@ -18,6 +18,6 @@ namespace PintheCloud.Managers
         Task<bool> DeleteSpotAsync(Spot spot);
         Task<JArray> GetNearSpotViewItemsAsync(Geoposition currentGeoposition);
         Task<JArray> GetMySpotViewItemsAsync();
-        Task<JArray> CheckSpotPasswordAsync(string spotId, string spotPassword);
+        Task<bool> CheckSpotPasswordAsync(string spotId, string spotPassword);
     }
 }
