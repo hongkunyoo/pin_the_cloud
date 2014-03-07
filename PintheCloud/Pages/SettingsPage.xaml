@@ -180,7 +180,8 @@
                                                 <ColumnDefinition Width="50"/>
                                             </Grid.ColumnDefinitions>
                                             <Image x:Name="uiSpotNameInitialImage" Source="{Binding SpotNameInitialImage, Converter={StaticResource StringToSpotNameInitialUriConverter}}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                            <TextBlock x:Name="uiSpotName" Text="{Binding SpotName}" FontSize="32" LineHeight="42" Foreground="#FF404041" FontFamily="Segoe WP" Grid.Column="1" TextTrimming="WordEllipsis"/>
+                                            <Image x:Name="uiSpotIsPrivateImage" Source="{Binding IsPrivateImage, Converter={StaticResource StringToUriConverter}}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+											<TextBlock x:Name="uiSpotName" Text="{Binding SpotName}" FontSize="32" LineHeight="42" Foreground="#FF404041" FontFamily="Segoe WP" Grid.Column="1" TextTrimming="WordEllipsis"/>
                                             <Button x:Name="uiDeleteSpotButton" IsEnabled="{Binding DeleteImagePress}" Style="{StaticResource CustomButtonStyle}" Grid.Column="2" Click="uiDeleteSpotButton_Click" MouseEnter="uiDeleteSpotButton_MouseEnter" MouseLeave="uiDeleteSpotButton_MouseLeave" HorizontalAlignment="Right">
                                             	<Image Source="{Binding DeleteImage, Converter={StaticResource StringToUriConverter}}" Stretch="None"/>
                                             </Button>

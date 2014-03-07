@@ -466,7 +466,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Password is blank. Please set it.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Password is blank. Please enter it.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoPasswordMessage {
             get {
@@ -502,7 +502,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Spot name is blank. Please set it.과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Spot name is blank. Please enter it.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoSpotNameMessage {
             get {
@@ -516,6 +516,15 @@ namespace PintheCloud.Resources {
         public static string OneDrive {
             get {
                 return ResourceManager.GetString("OneDrive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Password과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Password {
+            get {
+                return ResourceManager.GetString("Password", resourceCulture);
             }
         }
         
@@ -534,6 +543,24 @@ namespace PintheCloud.Resources {
         public static string PasswordNullMessage {
             get {
                 return ResourceManager.GetString("PasswordNullMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Password Wrong과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string PasswordWrongCaption {
+            get {
+                return ResourceManager.GetString("PasswordWrongCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Password you submitted is wrong.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string PasswordWrongMessage {
+            get {
+                return ResourceManager.GetString("PasswordWrongMessage", resourceCulture);
             }
         }
         

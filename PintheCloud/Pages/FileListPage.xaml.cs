@@ -116,7 +116,7 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
                 this.RefreshAsync(AppResources.Loading);
             else
-                base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
+                base.SetListUnableAndShowMessage(uiFileList, uiFileListMessage, AppResources.InternetUnavailableMessage);
         }
 
 
@@ -147,7 +147,7 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
                 this.InitialPinSpotAndUploadFileAsync();
             else
-                base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
+                base.SetListUnableAndShowMessage(uiFileList, uiFileListMessage, AppResources.InternetUnavailableMessage);
         }
 
 
@@ -157,9 +157,6 @@ namespace PintheCloud.Pages
             // Otherwise, show internet unavailable message.
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                // Show Progress Indicator
-                base.SetProgressIndicator(true);
-
                 // Get selected file list from previous page before pin spot.
                 List<FileObjectViewItem> fileList = new List<FileObjectViewItem>();
                 foreach (FileObjectViewItem fileObjectViewItem in (List<FileObjectViewItem>)PhoneApplicationService.Current.State[SELECTED_FILE_KEY])
@@ -168,13 +165,10 @@ namespace PintheCloud.Pages
                 // Upload each files in order.
                 foreach (FileObjectViewItem fileObjectViewItem in fileList)
                     this.UploadFileAsync(new FileObjectViewItem(fileObjectViewItem));
-
-                // Hide progress message
-                base.SetProgressIndicator(false);
             }
             else
             {
-                base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
+                base.SetListUnableAndShowMessage(uiFileList, uiFileListMessage, AppResources.InternetUnavailableMessage);
             }
         }
 
@@ -375,7 +369,7 @@ namespace PintheCloud.Pages
                 {
                     this.FileObjectViewModel.Items.Remove(fileObjectViewItem);
                     if (this.FileObjectViewModel.Items.Count < 1)
-                        base.SetListUnableAndShowMessage(uiFileList, AppResources.NoFileInSpotMessage, uiFileListMessage);
+                        base.SetListUnableAndShowMessage(uiFileList, uiFileListMessage, AppResources.NoFileInSpotMessage);
                 });
             }
             else
@@ -394,7 +388,7 @@ namespace PintheCloud.Pages
         private async void RefreshAsync(string message)
         {
             // Show Refresh message and Progress Indicator
-            base.SetListUnableAndShowMessage(uiFileList, message, uiFileListMessage);
+            base.SetListUnableAndShowMessage(uiFileList, uiFileListMessage, message);
             base.SetProgressIndicator(true);
 
             // If file exists, show it.
@@ -411,7 +405,7 @@ namespace PintheCloud.Pages
             }
             else
             {
-                base.SetListUnableAndShowMessage(uiFileList, AppResources.NoFileInSpotMessage, uiFileListMessage);
+                base.SetListUnableAndShowMessage(uiFileList, uiFileListMessage, AppResources.NoFileInSpotMessage);
             }
 
             // Hide Progress Indicator
@@ -421,42 +415,51 @@ namespace PintheCloud.Pages
 
         private async void InitialPinSpotAndUploadFileAsync()
         {
-            // Show Pining message and Progress Indicator
-            base.SetListUnableAndShowMessage(uiFileList, AppResources.PiningSpot, uiFileListMessage);
-            base.SetProgressIndicator(true);
-
             // Get selected file list from previous page before pin spot.
             List<FileObjectViewItem> fileList = new List<FileObjectViewItem>();
             foreach (FileObjectViewItem fileObjectViewItem in (List<FileObjectViewItem>)PhoneApplicationService.Current.State[SELECTED_FILE_KEY])
                 fileList.Add(fileObjectViewItem);
 
+            // Pin Spot
+            bool result = await this.PinSpotAsync();
+
+            // If Pin Spot successes, Upload each files in order.
+            if (result)
+                foreach (FileObjectViewItem fileObjectViewItem in fileList)
+                    this.UploadFileAsync(new FileObjectViewItem(fileObjectViewItem));    
+        }
+
+        private async Task<bool> PinSpotAsync()
+        {
+            // Show Pining message and Progress Indicator
+            base.SetListUnableAndShowMessage(uiFileList, uiFileListMessage, AppResources.PiningSpot);
+            base.SetProgressIndicator(true);
+
             // Pin spot
             Geoposition geo = await App.Geolocator.GetGeopositionAsync();
             Spot spot = new Spot(this.SpotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude,
                 this.AccountId, this.AccountName, 0, this.IsPrivate, this.SpotPassword);
-            if (await App.SpotManager.PinSpotAsync(spot))
+            bool result = await App.SpotManager.PinSpotAsync(spot);
+            if (result)
             {
-                ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                 base.Dispatcher.BeginInvoke(() =>
                 {
+                    ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                     uiFileList.Visibility = Visibility.Visible;
                     uiFileListMessage.Visibility = Visibility.Collapsed;
+                    this.SpotId = spot.id;
                 });
-
-                // Register spot id and Upload each files in order.
-                this.SpotId = spot.id;
-                foreach(FileObjectViewItem fileObjectViewItem in fileList)
-                    this.UploadFileAsync(new FileObjectViewItem(fileObjectViewItem));
             }
             else
             {
-                base.SetListUnableAndShowMessage(uiFileList, AppResources.BadPinSpotMessage, uiFileListMessage);
+                base.SetListUnableAndShowMessage(uiFileList, uiFileListMessage, AppResources.BadPinSpotMessage);
             }
 
             // Hide progress message
             base.SetProgressIndicator(false);
+            return result;
         }
-
+        
 
         // Upload. have to wait it.
         private async void UploadFileAsync(FileObjectViewItem fileObjectViewItem)
@@ -514,7 +517,7 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
                 this.RefreshAsync(AppResources.Refreshing);
             else
-                base.SetListUnableAndShowMessage(uiFileList, AppResources.InternetUnavailableMessage, uiFileListMessage);
+                base.SetListUnableAndShowMessage(uiFileList, uiFileListMessage, AppResources.InternetUnavailableMessage);
         }
 
 

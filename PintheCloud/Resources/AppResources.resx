@@ -309,7 +309,7 @@
     <value>No Password</value>
   </data>
   <data name="NoPasswordMessage" xml:space="preserve">
-    <value>Password is blank. Please set it.</value>
+    <value>Password is blank. Please enter it.</value>
   </data>
   <data name="NoSelectedFileMessage" xml:space="preserve">
     <value>There is no selected file to pin. Please go back and select again.</value>
@@ -318,12 +318,21 @@
     <value>No Spot Name</value>
   </data>
   <data name="NoSpotNameMessage" xml:space="preserve">
-    <value>Spot name is blank. Please set it.</value>
+    <value>Spot name is blank. Please enter it.</value>
   </data>
   <data name="PasswordNullCaption" xml:space="preserve">
     <value>Password null.</value>
   </data>
   <data name="PasswordNullMessage" xml:space="preserve">
     <value>Password can't be null.</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="PasswordWrongCaption" xml:space="preserve">
+    <value>Password Wrong</value>
+  </data>
+  <data name="PasswordWrongMessage" xml:space="preserve">
+    <value>Password you submitted is wrong.</value>
   </data>
 </root>

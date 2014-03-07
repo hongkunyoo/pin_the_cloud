@@ -163,7 +163,7 @@ namespace PintheCloud.Pages
             }
             else
             {
-                base.SetListUnableAndShowMessage(uiMySpotList, AppResources.InternetUnavailableMessage, uiMySpotMessage);
+                base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.InternetUnavailableMessage);
             }
         }
 
@@ -187,7 +187,7 @@ namespace PintheCloud.Pages
                 this.CurrentPlatformIndex = platformIndex;
 
                 // Sign in
-                IStorageManager iStorageManager = App.IStorageManagers[platformIndex];                
+                IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
                 if (!iStorageManager.IsSigningIn())
                     App.TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
 
@@ -257,11 +257,12 @@ namespace PintheCloud.Pages
 
         private async void SetSignButtons(int platformIndex, bool isSignIn)
         {
+            IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
             if (isSignIn)  // It is signed in
             {
-                if (await App.TaskHelper.WaitSignInTask(App.IStorageManagers[platformIndex].GetStorageName()))
+                if (await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
                 {
-                    this.SignButtonTextBlocks[platformIndex].Text = App.IStorageManagers[platformIndex].GetAccount().account_name;
+                    this.SignButtonTextBlocks[platformIndex].Text = iStorageManager.GetAccount().account_name;
                     this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_IN_BUTTON_TEXT_COLOR));
                     this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_IN_BUTTON_TEXT_FONT);
                     this.SignButtons[platformIndex].Click += this.SignOutButton_Click;
@@ -423,14 +424,14 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
                 this.SetMySpotListAsync(AppResources.Refreshing);
             else
-                base.SetListUnableAndShowMessage(uiMySpotList, AppResources.InternetUnavailableMessage, uiMySpotMessage);
+                base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.InternetUnavailableMessage);
         }
 
 
         private async void SetMySpotListAsync(string message)
         {
             // Show progress indicator 
-            base.SetListUnableAndShowMessage(uiMySpotList, message, uiMySpotMessage);
+            base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, message);
             base.SetProgressIndicator(true);
 
             // Before go load, set mutex to true.
@@ -453,7 +454,7 @@ namespace PintheCloud.Pages
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    base.SetListUnableAndShowMessage(uiMySpotList, AppResources.NoMySpotMessage, uiMySpotMessage);
+                    base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.NoMySpotMessage);
                 });
             }
 
@@ -497,7 +498,7 @@ namespace PintheCloud.Pages
                         this.MySpotViewModel.Items.Remove(spotViewItem);
                         ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                         if (this.MySpotViewModel.Items.Count < 1)
-                            base.SetListUnableAndShowMessage(uiMySpotList, AppResources.NoMySpotMessage, uiMySpotMessage);
+                            base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.NoMySpotMessage);
                     });
                 }
                 else

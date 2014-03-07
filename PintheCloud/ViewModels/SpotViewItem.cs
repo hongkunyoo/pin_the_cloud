@@ -18,6 +18,7 @@ namespace PintheCloud.ViewModels
         public string SpotId { get; set; }
         public string SpotNameInitialImage { get; set; }
         public string IsPrivateImage { get; set; }
+        public string SpotPassword { get; set; }
 
         private bool deleteImagePress;
         public bool DeleteImagePress

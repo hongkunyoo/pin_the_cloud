@@ -1,6 +1,7 @@
 ﻿using Microsoft.Phone.Tasks;
 using PintheCloud.Managers;
 using PintheCloud.Pages;
+using PintheCloud.Popups;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

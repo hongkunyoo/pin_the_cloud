@@ -5,11 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Navigation;
-
 using System.Net;
 using System.Windows;
 using System.Windows.Controls;
-//using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using PintheCloud.Resources;
 using PintheCloud.Models;
@@ -19,7 +17,6 @@ using Windows.UI;
 using PintheCloud.Utilities;
 using PintheCloud.ViewModels;
 using PintheCloud.Managers;
-//using System.Threading.Tasks;
 
 namespace PintheCloud.Pages
 {
@@ -80,7 +77,7 @@ namespace PintheCloud.Pages
         }
 
 
-        public void SetListUnableAndShowMessage(LongListSelector list, string message, TextBlock messageTextBlock)
+        public void SetListUnableAndShowMessage(LongListSelector list, TextBlock messageTextBlock, string message)
         {
             this.Dispatcher.BeginInvoke(() =>
             {

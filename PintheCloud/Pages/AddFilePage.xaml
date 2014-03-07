@@ -1,4 +1,4 @@
-﻿<local:PtcPage
+﻿<local:PinPage
 	xmlns:local="clr-namespace:PintheCloud.Pages"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -11,8 +11,8 @@
     SupportedOrientations="Portrait" Orientation="Portrait"
     mc:Ignorable="d"
     shell:SystemTray.IsVisible="True">
-	
-	<local:PtcPage.Resources>
+
+    <local:PinPage.Resources>
 		<DataTemplate x:Key="uiPinInfoListItemTemplate">
 			<Grid x:Name="uiPinInfoListItem">
 				<Grid.RowDefinitions>
@@ -40,24 +40,24 @@
 				<Grid Background="#FFA6B5BE" Margin="20,0" Grid.Row="1"/>
 			</Grid>
 		</DataTemplate>
-	</local:PtcPage.Resources>
+	</local:PinPage.Resources>
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
-	<local:PtcPage.FontFamily>
+    <local:PinPage.FontFamily>
 		<StaticResource ResourceKey="PhoneFontFamilyNormal"/>
-	</local:PtcPage.FontFamily>
-	<local:PtcPage.FontSize>
+	</local:PinPage.FontFamily>
+    <local:PinPage.FontSize>
 		<StaticResource ResourceKey="PhoneFontSizeNormal"/>
-	</local:PtcPage.FontSize>
-	<local:PtcPage.Foreground>
+	</local:PinPage.FontSize>
+    <local:PinPage.Foreground>
 		<StaticResource ResourceKey="PhoneForegroundBrush"/>
-	</local:PtcPage.Foreground>
-	
-	<local:PtcPage.ApplicationBar>
+	</local:PinPage.Foreground>
+
+    <local:PinPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
-        	<shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/at_here/png/general_bar_refresh.png" IsEnabled="True" Text="refresh"/>
+        	<shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/at_here/png/general_bar_refresh.png" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
         	<shell:ApplicationBarIconButton x:Name="uiAppBarPinInfoButton" IconUri="/Assets/pajeon/pin_the_cloud/png/general_bar_check.png" IsEnabled="False" Text="pin" Click="uiAppBarPinInfoButton_Click"/>
 		</shell:ApplicationBar>
-    </local:PtcPage.ApplicationBar>
+    </local:PinPage.ApplicationBar>
     <!--LayoutRoot는 모든 페이지 내용이 배치되는 루트 표입니다.-->
 	<Grid x:Name="LayoutRoot" Background="White">
 		<Grid.RowDefinitions>
@@ -111,4 +111,4 @@
 		</Grid>
 	</Grid>
 
-</local:PtcPage>
+</local:PinPage>

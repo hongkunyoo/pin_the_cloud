@@ -87,7 +87,6 @@ namespace PintheCloud.Managers
         }
 
 
-        // TODO
         // Check Spot Password
         public async Task<bool> CheckSpotPasswordAsync(string spotId, string spotPassword)
         {

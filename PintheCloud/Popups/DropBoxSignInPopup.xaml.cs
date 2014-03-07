@@ -12,7 +12,7 @@ using System.Diagnostics;
 using DropNet.Models;
 using PintheCloud.Managers;
 
-namespace PintheCloud.Pages
+namespace PintheCloud.Popups
 {
     public partial class DropBoxSignInPopup : UserControl
     {
