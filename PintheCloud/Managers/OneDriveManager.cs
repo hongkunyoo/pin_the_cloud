@@ -158,7 +158,7 @@ namespace PintheCloud.Managers
         //     Root Folder of OneDrive.
         public async Task<FileObject> GetRootFolderAsync()
         {
-            FileObject root = FileObjectConverter.ConvertToFileObject((await this.LiveClient.GetAsync("me/skydrive")).Result);
+            FileObject root = ConvertToFileObjectHelper.ConvertToFileObject((await this.LiveClient.GetAsync("me/skydrive")).Result);
             root.Name = "";
             return root;
         }
@@ -186,7 +186,7 @@ namespace PintheCloud.Managers
         //     FileObject of the certain file id.
         public async Task<FileObject> GetFileAsync(string fileId)
         {
-            return FileObjectConverter.ConvertToFileObject((await this.LiveClient.GetAsync(fileId)).Result);
+            return ConvertToFileObjectHelper.ConvertToFileObject((await this.LiveClient.GetAsync(fileId)).Result);
         }
 
 
@@ -319,7 +319,7 @@ namespace PintheCloud.Managers
             List<FileObject> list = new List<FileObject>();
             foreach (IDictionary<string, object> content in data)
             {
-                FileObject fileObject = FileObjectConverter.ConvertToFileObject(content);
+                FileObject fileObject = ConvertToFileObjectHelper.ConvertToFileObject(content);
                 if (fileObject != null)
                     list.Add(fileObject);
             }

@@ -314,12 +314,6 @@
   <data name="NoSelectedFileMessage" xml:space="preserve">
     <value>There is no selected file to pin. Please go back and select again.</value>
   </data>
-  <data name="NoSpotNameCaption" xml:space="preserve">
-    <value>No Spot Name</value>
-  </data>
-  <data name="NoSpotNameMessage" xml:space="preserve">
-    <value>Spot name is blank. Please enter it.</value>
-  </data>
   <data name="PasswordNullCaption" xml:space="preserve">
     <value>Password null.</value>
   </data>

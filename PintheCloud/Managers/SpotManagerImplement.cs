@@ -49,21 +49,43 @@ namespace PintheCloud.Managers
 
 
         // Get spot view item from spot list.
-        public async Task<JArray> GetNearSpotViewItemsAsync(Geoposition currentGeoposition)
+        public async Task<List<Spot>> GetNearSpotViewItemsAsync(Geoposition currentGeoposition)
         {
             // Get current coordinate
             double currentLatitude = currentGeoposition.Coordinate.Latitude;
             double currentLongtitude = currentGeoposition.Coordinate.Longitude;
 
             // Get spots formed JArray
-            return await this.GetNearSpotsAsync(currentLatitude, currentLongtitude);
+            JArray jSpots = await this.GetNearSpotsAsync(currentLatitude, currentLongtitude);
+
+            // Convert jarray spots to spot list
+            List<Spot> spots = new List<Spot>();
+            foreach (JObject jSpot in jSpots)
+            {
+                // Set new spot view item
+                string spotId = (string)jSpot["id"];
+                string spotName = (string)jSpot["spot_name"];
+                double spotLatitude = (double)jSpot["spot_latitude"];
+                double spotLongtitude = (double)jSpot["spot_longtitude"];
+                string accountId = (string)jSpot["account_id"];
+                string accountName = (string)jSpot["account_name"];
+                double spotDistance = (double)jSpot["spot_distance"];
+                bool isPrivate = (bool)jSpot["is_private"];
+                string spot_password = (string)jSpot["spot_password"];
+                
+                Spot spot = new Spot(spotName, spotLatitude, spotLongtitude, accountId, accountName, spotDistance, isPrivate, spot_password);
+                spot.id = spotId;
+                spots.Add(spot);
+            }
+
+            return spots;
         }
 
 
         // Get spot view item from spot list.
-        public async Task<JArray> GetMySpotViewItemsAsync()
+        public async Task<List<Spot>> GetMySpotViewItemsAsync()
         {
-            // Get My spots
+            // Get My signed in ids
             List<string> ids = new List<string>();
             for (int i = 0; i < App.IStorageManagers.Length; i++)
             {
@@ -80,10 +102,35 @@ namespace PintheCloud.Managers
                         ids.Add(iStorageManager.GetAccount().account_platform_id);
                 }
             }
+
+            // If signed in id is over one number, get my spots.
+            // Othewise, return null
+            List<Spot> spots = new List<Spot>();
             if (ids.Count > 0)
-                return await this.GetMySpotsAsync(ids);
-            else
-                return null;
+            {
+                // Get spots formed JArray
+                JArray jSpots = await this.GetMySpotsAsync(ids);
+
+                // Convert jarray spots to spot list
+                foreach (JObject jSpot in jSpots)
+                {
+                    // Set new spot view item
+                    string spotId = (string)jSpot["id"];
+                    string spotName = (string)jSpot["spot_name"];
+                    double spotLatitude = (double)jSpot["spot_latitude"];
+                    double spotLongtitude = (double)jSpot["spot_longtitude"];
+                    string accountId = (string)jSpot["account_id"];
+                    string accountName = (string)jSpot["account_name"];
+                    double spotDistance = (double)jSpot["spot_distance"];
+                    bool isPrivate = (bool)jSpot["is_private"];
+                    string spot_password = (string)jSpot["spot_password"];
+
+                    Spot spot = new Spot(spotName, spotLatitude, spotLongtitude, accountId, accountName, spotDistance, isPrivate, spot_password);
+                    spot.id = spotId;
+                    spots.Add(spot);
+                }
+            }
+            return spots;
         }
 
 

@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:Utilities="clr-namespace:PintheCloud.Utilities"
+	xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:toolkitPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls.Toolkit"
     x:Class="PintheCloud.Pages.NewSpotPage"
     SupportedOrientations="Portrait" Orientation="Portrait"
@@ -60,7 +61,7 @@
                     <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.SpotName, Source={StaticResource LocalizedStrings}}" FontSize="22" Foreground="#FF404041" Grid.Column="1"/>
                 </Grid>
                 <Grid Height="54">
-                    <TextBox x:Name="uiSpotNameTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="25" MaxLength="20" Background="#FFE6E7E8" Opacity="0.8" BorderThickness="0" Padding="0" FontFamily="Segoe WP Light" Foreground="#FF6F7A81" Style="{StaticResource CustomTextBoxStyle}" GotFocus="uiSpotNameTextBox_GotFocus" LostFocus="uiSpotNameTextBox_LostFocus" TextChanged="uiSpotNameTextBox_TextChanged" />
+					<toolkit:PhoneTextBox x:Name="uiSpotNameTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="25" MaxLength="20" Background="#FFE6E7E8" Opacity="0.8" BorderThickness="0" Padding="0" FontFamily="Segoe WP Light" Foreground="#FF6F7A81" GotFocus="uiSpotNameTextBox_GotFocus" LostFocus="uiSpotNameTextBox_LostFocus" TextChanged="uiSpotNameTextBox_TextChanged" Style="{StaticResource CustomPhoneTextBoxStyle}" />
                     <Utilities:ImageButton 
                     	ImageSource="/Assets/pajeon/at_here/png/input_set_button_activated.png"
                     	ImageDisabledSource="/Assets/pajeon/at_here/png/input_set_button_inactivated.png"

@@ -40,7 +40,7 @@ namespace PintheCloud.Pages
         /*** Pin Methods ***/
 
         protected void SetPinPivot(IStorageManager iStorageManager, LongListSelector list, TextBlock messageTextBlock, string message,
-            TextBlock pathTextBlock, Grid listGrid, StackPanel signInPanel, ApplicationBarIconButton pinInfoAppBarButton, 
+            TextBlock pathTextBlock, Grid listGrid, StackPanel signInPanel, ApplicationBarIconButton pinInfoAppBarButton,
             FileObjectViewModel viewModel, List<FileObjectViewItem> selectedFile, bool load)
         {
             // If it wasn't already signed in, show signin button.
@@ -66,7 +66,7 @@ namespace PintheCloud.Pages
                     {
                         Stack<FileObjectViewItem> folderRootStack = iStorageManager.GetFolderRootTree();
                         if (folderRootStack.Count > 0)
-                            this.SetPinInfoListAsync(iStorageManager, list, messageTextBlock, message, pathTextBlock, listGrid, signInPanel, pinInfoAppBarButton, 
+                            this.SetPinInfoListAsync(iStorageManager, list, messageTextBlock, message, pathTextBlock, listGrid, signInPanel, pinInfoAppBarButton,
                                 viewModel, selectedFile, folderRootStack.First(), load);
                         else
                             this.SetPinInfoListAsync(iStorageManager, list, messageTextBlock, message, pathTextBlock, listGrid, signInPanel, pinInfoAppBarButton,
@@ -82,7 +82,7 @@ namespace PintheCloud.Pages
 
 
         protected async void SetPinInfoListAsync(IStorageManager iStorageManager, LongListSelector list, TextBlock messageTextBlock, string message,
-            TextBlock pathTextBlock, Grid listGrid, StackPanel signInPanel, ApplicationBarIconButton pinInfoAppBarButton, 
+            TextBlock pathTextBlock, Grid listGrid, StackPanel signInPanel, ApplicationBarIconButton pinInfoAppBarButton,
             FileObjectViewModel viewModel, List<FileObjectViewItem> selectedFile, FileObjectViewItem folder, bool load)
         {
             // Set Mutex true and Show Process Indicator
@@ -179,7 +179,7 @@ namespace PintheCloud.Pages
         }
 
 
-        protected void TreeUp(IStorageManager iStorageManager, TextBlock messageTextBlock, TextBlock pathTextBlock, ApplicationBarIconButton pinInfoAppBarButton, 
+        protected void TreeUp(IStorageManager iStorageManager, TextBlock messageTextBlock, TextBlock pathTextBlock, ApplicationBarIconButton pinInfoAppBarButton,
             FileObjectViewModel viewModel, List<FileObjectViewItem> selectedFile)
         {
             // If message is visible, set collapsed.

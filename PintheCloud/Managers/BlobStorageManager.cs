@@ -57,7 +57,7 @@ namespace PintheCloud.Managers
         public async Task<FileObject> GetFileAsync(string id)
         {
             CloudBlockBlob blockBlob = (CloudBlockBlob)await container.GetBlobReferenceFromServerAsync(id);
-            return FileObjectConverter.ConvertToFileObject(blockBlob);
+            return ConvertToFileObjectHelper.ConvertToFileObject(blockBlob);
         }
 
 
@@ -276,11 +276,11 @@ namespace PintheCloud.Managers
         {
             if (item.GetType() == typeof(CloudBlockBlob))
             {
-                return FileObjectConverter.ConvertToFileObject((CloudBlockBlob)item);
+                return ConvertToFileObjectHelper.ConvertToFileObject((CloudBlockBlob)item);
             }
             else if (item.GetType() == typeof(CloudBlobDirectory))
             {
-                return FileObjectConverter.ConvertToFileObject((CloudBlobDirectory)item);
+                return ConvertToFileObjectHelper.ConvertToFileObject((CloudBlobDirectory)item);
             }
             return null;
         }

@@ -193,7 +193,7 @@ namespace PintheCloud.Managers
         public async Task<FileObject> GetFileAsync(string fileId)
         {
             MetaData metaTask = await _client.GetMetaDataTask(fileId);
-            return FileObjectConverter.ConvertToFileObject(metaTask);
+            return ConvertToFileObjectHelper.ConvertToFileObject(metaTask);
         }
         public async Task<List<FileObject>> GetFilesFromFolderAsync(string folderId)
         {
@@ -204,7 +204,7 @@ namespace PintheCloud.Managers
 
             foreach (MetaData m in metaTask.Contents)
             {
-                list.Add(FileObjectConverter.ConvertToFileObject(m));
+                list.Add(ConvertToFileObjectHelper.ConvertToFileObject(m));
             }
 
             return list;

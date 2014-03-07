@@ -493,24 +493,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   No Spot Name과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string NoSpotNameCaption {
-            get {
-                return ResourceManager.GetString("NoSpotNameCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Spot name is blank. Please enter it.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string NoSpotNameMessage {
-            get {
-                return ResourceManager.GetString("NoSpotNameMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   OneDrive과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string OneDrive {

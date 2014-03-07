@@ -223,7 +223,7 @@ namespace PintheCloud.Managers
                 Debug.WriteLine(file.Title);
                 if (this._IsRoot(file) && this._IsValidFile(file))
                 {
-                    childList.Add(FileObjectConverter.ConvertToFileObject(file));
+                    childList.Add(ConvertToFileObjectHelper.ConvertToFileObject(file));
                 }
             }
             return childList;
@@ -235,7 +235,7 @@ namespace PintheCloud.Managers
             Google.Apis.Drive.v2.Data.File file = await service.Files.Get(fileId).ExecuteAsync();
             if (this._IsValidFile(file))
             {
-                return FileObjectConverter.ConvertToFileObject(file);
+                return ConvertToFileObjectHelper.ConvertToFileObject(file);
             }
             return null;
         }

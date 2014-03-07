@@ -37,7 +37,7 @@ namespace PintheCloud.Pages
             this.PinInfoAppBarButton = (ApplicationBarIconButton)ApplicationBar.Buttons[PIN_INFO_APP_BAR_BUTTON_INDEX];
 
             // Set name and datacontext
-            uiSpotNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
+            uiSpotNameTextBox.Hint = (string)App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
             uiNewSpotFileList.DataContext = this.FileObjectViewModel;
         }
 
@@ -78,6 +78,7 @@ namespace PintheCloud.Pages
         private void uiSpotNameTextBox_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             uiSpotNameSetButton.Visibility = Visibility.Collapsed;
+            uiSpotNameTextBox.Text = uiSpotNameTextBox.Text.Trim();
         }
 
 
@@ -120,6 +121,7 @@ namespace PintheCloud.Pages
         private void uiPrivateModePasswordTextBox_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             uiPrivateModePasswordSetButton.Visibility = Visibility.Collapsed;
+            uiPrivateModePasswordTextBox.Text = uiPrivateModePasswordTextBox.Text.Trim();
         }
 
 
@@ -167,32 +169,33 @@ namespace PintheCloud.Pages
 
         private void uiAppBarPinInfoButton_Click(object sender, System.EventArgs e)
         {
-            string spotName = uiSpotNameTextBox.Text.Trim();
-            if (!spotName.Equals(String.Empty))  // Spot name is not null
+            // Get spot name from text or hint which is default spot name.
+            uiSpotNameTextBox.Text = uiSpotNameTextBox.Text.Trim();
+            string spotName = uiSpotNameTextBox.Text;
+            if (spotName.Equals(String.Empty))
+                spotName = uiSpotNameTextBox.Hint;
+
+            // If Private is checked, get password and go to upload.
+            // Otherwise, go upload.
+            if (uiPrivateModePasswordGrid.Visibility == Visibility.Visible)
             {
-                if (uiPrivateModePasswordGrid.Visibility == Visibility.Visible)  // Private is checked
+                uiPrivateModePasswordTextBox.Text = uiPrivateModePasswordTextBox.Text.Trim();
+                string password = uiPrivateModePasswordTextBox.Text;
+                if (!password.Equals(String.Empty))  // Password is not null
                 {
-                    string password = uiPrivateModePasswordTextBox.Text.Trim();
-                    if (!password.Equals(String.Empty))  // Password is not null
-                    {
-                        if(!password.Equals(NULL_PASSWORD))  // Password is not "null"
-                            this.NavigateToFileListPage(spotName, true, password);
-                        else  // Password is "null"
-                            MessageBox.Show(AppResources.PasswordNullMessage, AppResources.PasswordNullCaption, MessageBoxButton.OK);
-                    }
-                    else  // Password is null
-                    {
-                        MessageBox.Show(AppResources.NoPasswordMessage, AppResources.NoPasswordCption, MessageBoxButton.OK);
-                    }
+                    if (!password.Equals(NULL_PASSWORD))  // Password is not "null"
+                        this.NavigateToFileListPage(spotName, true, password);
+                    else  // Password is "null"
+                        MessageBox.Show(AppResources.PasswordNullMessage, AppResources.PasswordNullCaption, MessageBoxButton.OK);
                 }
-                else  // private is not checked
+                else  // Password is null
                 {
-                    this.NavigateToFileListPage(spotName, false);
+                    MessageBox.Show(AppResources.NoPasswordMessage, AppResources.NoPasswordCption, MessageBoxButton.OK);
                 }
             }
-            else  // Spot name is null
+            else  // private is not checked
             {
-                MessageBox.Show(AppResources.NoSpotNameMessage, AppResources.NoSpotNameCaption, MessageBoxButton.OK);
+                this.NavigateToFileListPage(spotName, false);
             }
         }
 

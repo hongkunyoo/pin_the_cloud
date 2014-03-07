@@ -14,7 +14,7 @@ using System.Windows.Data;
 
 namespace PintheCloud.Converters
 {
-    public class FileObjectConverter
+    public class ConvertToFileObjectHelper
     {
         /// <summary>
         /// Converting OneDrive Model to FileObject.

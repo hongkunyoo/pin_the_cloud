@@ -439,9 +439,9 @@ namespace PintheCloud.Pages
 
             // If there is my spots, Clear and Add spots to list
             // Otherwise, Show none message.
-            JArray spots = await App.SpotManager.GetMySpotViewItemsAsync();
+            List<Spot> spots = await App.SpotManager.GetMySpotViewItemsAsync();
 
-            if (spots != null)  // There are my spots
+            if (spots.Count > 0)  // There are my spots
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
