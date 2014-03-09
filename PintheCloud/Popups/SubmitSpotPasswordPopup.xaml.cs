@@ -18,6 +18,7 @@ namespace PintheCloud.Popups
         private Popup Popup = null;
         private string SpotId = null;
         private string SpotPassword = null;
+
         public bool result = false;
 
 
@@ -28,6 +29,7 @@ namespace PintheCloud.Popups
             this.SpotId = spotId;
             this.SpotPassword = spotPassword;
         }
+
 
         private void uiSubmitPasswordButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
@@ -48,6 +50,12 @@ namespace PintheCloud.Popups
             {
                 MessageBox.Show(AppResources.NoPasswordMessage, AppResources.NoPasswordCption, MessageBoxButton.OK);
             }
+        }
+
+
+        private void uiSubmitSpotPasswordPopupCloseButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            this.Popup.IsOpen = false;
         }
     }
 }

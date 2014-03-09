@@ -233,6 +233,10 @@
     <Content Include="Assets\pajeon\at_here\png\app_SmallFlipCycleTile.png" />
     <Content Include="Assets\pajeon\at_here\png\app_SmallIconicTile.png" />
     <Content Include="Assets\pajeon\at_here\png\app_WideFlipCycleTile.png" />
+    <Content Include="Assets\pajeon\at_here\png\flyout_close.png" />
+    <Content Include="Assets\pajeon\at_here\png\flyout_submit_activated.png" />
+    <Content Include="Assets\pajeon\at_here\png\flyout_submit_activated_p.png" />
+    <Content Include="Assets\pajeon\at_here\png\flyout_submit_inactivated.png" />
     <Content Include="Assets\pajeon\at_here\png\general_bar_download.png" />
     <Content Include="Assets\pajeon\at_here\png\general_bar_refresh.png" />
     <Content Include="Assets\pajeon\at_here\png\general_checkbox.png" />

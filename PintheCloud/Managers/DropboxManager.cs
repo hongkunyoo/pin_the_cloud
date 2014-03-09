@@ -70,12 +70,14 @@ namespace PintheCloud.Managers
                 {
                     //tcs.SetResult(new Account(info.uid.ToString(), Account.StorageAccountType.DROPBOX, info.display_name, 0.0, AccountType.NORMAL_ACCOUNT_TYPE));
                     this.CurrentAccount = new Account(info.uid.ToString(), Account.StorageAccountType.DROPBOX, info.display_name, 0.0, AccountType.NORMAL_ACCOUNT_TYPE);
+                    tcs.SetResult(true);                
                 }, (fail) =>
                 {
                     //tcs.SetException(new Exception("Account Info Get Failed"));
                     this.CurrentAccount = null;
+                    tcs.SetResult(false);
                 });
-                tcs.SetResult(true);
+                
             }
             else
             {

@@ -233,7 +233,7 @@ namespace PintheCloud.Pages
                             PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
                             PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
                             string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
-                            NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));    
+                            NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
                         }
                     };
                 }
@@ -242,7 +242,7 @@ namespace PintheCloud.Pages
                     PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
                     PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
                     string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
-                    NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));    
+                    NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
                 }
             }
         }
@@ -411,7 +411,7 @@ namespace PintheCloud.Pages
                 // Otherwise, add it to list.
                 if (fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER))
                 {
-                    base.SetPinInfoListAsync(App.IStorageManagers[this.CurrentPlatformIndex],  uiPinInfoList, uiPinInfoMessage, AppResources.Loading,
+                    base.SetPinInfoListAsync(App.IStorageManagers[this.CurrentPlatformIndex], uiPinInfoList, uiPinInfoMessage, AppResources.Loading,
                         uiPinInfoCurrentPath, uiPinInfoListGrid, uiPinInfoSignInPanel, this.PinInfoAppBarButton, this.FileObjectViewModel, this.SelectedFile, fileObjectViewItem, true);
                 }
                 else  // Do selection if file

@@ -26,7 +26,7 @@ namespace PintheCloud.Pages
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            base.OnNavigatedFrom(e);
+            base.OnNavigatedTo(e);
         }
 
 
