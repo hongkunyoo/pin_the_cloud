@@ -93,16 +93,14 @@ namespace PintheCloud.Managers
         }
 
 
+        // Remove user and record
         public void SignOut()
         {
-            // Remove user record
             LiveAuthClient liveAuthClient = new LiveAuthClient(LIVE_CLIENT_ID);
             liveAuthClient.Logout();
-
-            // Remove user is signed in record
             App.ApplicationSettings.Remove(ONE_DRIVE_SIGN_IN_KEY);
-
-            // Set null account
+            this.FoldersTree.Clear();
+            this.FolderRootTree.Clear();
             this.LiveClient = null;
             this.CurrentAccount = null;
         }

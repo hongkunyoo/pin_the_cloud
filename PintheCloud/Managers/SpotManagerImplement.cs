@@ -58,26 +58,32 @@ namespace PintheCloud.Managers
             // Get spots formed JArray
             JArray jSpots = await this.GetNearSpotsAsync(currentLatitude, currentLongtitude);
 
-            // Convert jarray spots to spot list
+            // If loading spot doesn't occur error, Convert jarray spots to spot list
             List<Spot> spots = new List<Spot>();
-            foreach (JObject jSpot in jSpots)
+            if (jSpots != null)
             {
-                // Set new spot view item
-                string spotId = (string)jSpot["id"];
-                string spotName = (string)jSpot["spot_name"];
-                double spotLatitude = (double)jSpot["spot_latitude"];
-                double spotLongtitude = (double)jSpot["spot_longtitude"];
-                string accountId = (string)jSpot["account_id"];
-                string accountName = (string)jSpot["account_name"];
-                double spotDistance = (double)jSpot["spot_distance"];
-                bool isPrivate = (bool)jSpot["is_private"];
-                string spot_password = (string)jSpot["spot_password"];
-                
-                Spot spot = new Spot(spotName, spotLatitude, spotLongtitude, accountId, accountName, spotDistance, isPrivate, spot_password);
-                spot.id = spotId;
-                spots.Add(spot);
-            }
+                foreach (JObject jSpot in jSpots)
+                {
+                    // Set new spot view item
+                    string spotId = (string)jSpot["id"];
+                    string spotName = (string)jSpot["spot_name"];
+                    double spotLatitude = (double)jSpot["spot_latitude"];
+                    double spotLongtitude = (double)jSpot["spot_longtitude"];
+                    string accountId = (string)jSpot["account_id"];
+                    string accountName = (string)jSpot["account_name"];
+                    double spotDistance = (double)jSpot["spot_distance"];
+                    bool isPrivate = (bool)jSpot["is_private"];
+                    string spot_password = (string)jSpot["spot_password"];
 
+                    Spot spot = new Spot(spotName, spotLatitude, spotLongtitude, accountId, accountName, spotDistance, isPrivate, spot_password);
+                    spot.id = spotId;
+                    spots.Add(spot);
+                }
+            }
+            else
+            {
+                return null;
+            }
             return spots;
         }
 
@@ -111,23 +117,30 @@ namespace PintheCloud.Managers
                 // Get spots formed JArray
                 JArray jSpots = await this.GetMySpotsAsync(ids);
 
-                // Convert jarray spots to spot list
-                foreach (JObject jSpot in jSpots)
+                // If loading spot doesn't occur error, Convert jarray spots to spot list
+                if (jSpots != null)
                 {
-                    // Set new spot view item
-                    string spotId = (string)jSpot["id"];
-                    string spotName = (string)jSpot["spot_name"];
-                    double spotLatitude = (double)jSpot["spot_latitude"];
-                    double spotLongtitude = (double)jSpot["spot_longtitude"];
-                    string accountId = (string)jSpot["account_id"];
-                    string accountName = (string)jSpot["account_name"];
-                    double spotDistance = (double)jSpot["spot_distance"];
-                    bool isPrivate = (bool)jSpot["is_private"];
-                    string spot_password = (string)jSpot["spot_password"];
+                    foreach (JObject jSpot in jSpots)
+                    {
+                        // Set new spot view item
+                        string spotId = (string)jSpot["id"];
+                        string spotName = (string)jSpot["spot_name"];
+                        double spotLatitude = (double)jSpot["spot_latitude"];
+                        double spotLongtitude = (double)jSpot["spot_longtitude"];
+                        string accountId = (string)jSpot["account_id"];
+                        string accountName = (string)jSpot["account_name"];
+                        double spotDistance = (double)jSpot["spot_distance"];
+                        bool isPrivate = (bool)jSpot["is_private"];
+                        string spot_password = (string)jSpot["spot_password"];
 
-                    Spot spot = new Spot(spotName, spotLatitude, spotLongtitude, accountId, accountName, spotDistance, isPrivate, spot_password);
-                    spot.id = spotId;
-                    spots.Add(spot);
+                        Spot spot = new Spot(spotName, spotLatitude, spotLongtitude, accountId, accountName, spotDistance, isPrivate, spot_password);
+                        spot.id = spotId;
+                        spots.Add(spot);
+                    }
+                }
+                else
+                {
+                    return null;
                 }
             }
             return spots;
@@ -162,7 +175,7 @@ namespace PintheCloud.Managers
             string currentLongtitudeString = currentLongtitude.ToString().Replace(',', '.');
             string json = @"{'currentLatitude':" + currentLatitudeString + ",'currentLongtitude':" + currentLongtitudeString + "}";
             JToken jToken = JToken.Parse(json);
-            JArray spots = null;
+            JArray spots = new JArray();
             try
             {
                 // Load near spots use custom api in server script
@@ -172,17 +185,14 @@ namespace PintheCloud.Managers
             {
                 return null;
             }
-            if (spots.Count > 0)
-                return spots;
-            else
-                return null;
+            return spots;
         }
 
 
         // Get spots from DB
         private async Task<JArray> GetMySpotsAsync(List<string> ids)
         {
-            JArray spots = null;
+            JArray spots = new JArray();
             try
             {
                 // Load current account's spots
@@ -192,10 +202,7 @@ namespace PintheCloud.Managers
             {
                 return null;
             }
-            if (spots.Count > 0)
-                return spots;
-            else
-                return null;
+            return spots;
         }
     }
 }

@@ -268,20 +268,27 @@ namespace PintheCloud.Pages
                         // Otherwise, Show none message.
                         List<Spot> spots = await App.SpotManager.GetNearSpotViewItemsAsync(currentGeoposition);
 
-                        if (spots.Count > 0)  // There are near spots
+                        if (spots != null)
                         {
-                            base.Dispatcher.BeginInvoke(() =>
+                            if (spots.Count > 0)  // There are near spots
+                            {
+                                base.Dispatcher.BeginInvoke(() =>
+                                {
+                                    this.NearSpotViewModel.IsDataLoaded = true;
+                                    uiNearSpotList.Visibility = Visibility.Visible;
+                                    uiNearSpotMessage.Visibility = Visibility.Collapsed;
+                                    this.NearSpotViewModel.SetItems(spots);
+                                });
+                            }
+                            else  // No near spots
                             {
                                 this.NearSpotViewModel.IsDataLoaded = true;
-                                uiNearSpotList.Visibility = Visibility.Visible;
-                                uiNearSpotMessage.Visibility = Visibility.Collapsed;
-                                this.NearSpotViewModel.SetItems(spots);
-                            });
+                                base.SetListUnableAndShowMessage(uiNearSpotList, uiNearSpotMessage, AppResources.NoNearSpotMessage);
+                            }
                         }
-                        else  // No near spots
+                        else
                         {
-                            this.NearSpotViewModel.IsDataLoaded = true;
-                            base.SetListUnableAndShowMessage(uiNearSpotList, uiNearSpotMessage, AppResources.NoNearSpotMessage);
+                            base.SetListUnableAndShowMessage(uiNearSpotList, uiNearSpotMessage, AppResources.BadLoadingSpotMessage);
                         }
                     }
                     else  // GPS works bad

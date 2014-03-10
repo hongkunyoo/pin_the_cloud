@@ -329,4 +329,7 @@
   <data name="PasswordWrongMessage" xml:space="preserve">
     <value>Password you submitted is wrong.</value>
   </data>
+  <data name="BadLoadingSpotMessage" xml:space="preserve">
+    <value>Location Spot met error. Please try it again.</value>
+  </data>
 </root>

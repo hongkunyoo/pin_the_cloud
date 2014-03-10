@@ -198,6 +198,8 @@ namespace PintheCloud.Pages
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         this.SetSignButtons(platformIndex, true);
+                        this.MySpotViewModel.IsDataLoaded = false;
+                        this.SetMySpotPivot();
                     });
                 }
                 else
@@ -238,6 +240,10 @@ namespace PintheCloud.Pages
                 // Sign out
                 IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
                 App.TaskHelper.AddSignOutTask(iStorageManager.GetStorageName(), this.SignOut(iStorageManager));
+
+                // After sign out, set list.
+                this.MySpotViewModel.IsDataLoaded = false;
+                this.SetMySpotPivot();
 
                 // Hide process indicator
                 ((FileObjectViewModel)PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
@@ -441,21 +447,25 @@ namespace PintheCloud.Pages
             // Otherwise, Show none message.
             List<Spot> spots = await App.SpotManager.GetMySpotViewItemsAsync();
 
-            if (spots.Count > 0)  // There are my spots
+            if (spots != null)
             {
-                base.Dispatcher.BeginInvoke(() =>
+                if (spots.Count > 0)  // There are my spots
                 {
-                    uiMySpotList.Visibility = Visibility.Visible;
-                    uiMySpotMessage.Visibility = Visibility.Collapsed;
-                    this.MySpotViewModel.SetItems(spots);
-                });
-            }
-            else  // No my spots
-            {
-                base.Dispatcher.BeginInvoke(() =>
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        uiMySpotList.Visibility = Visibility.Visible;
+                        uiMySpotMessage.Visibility = Visibility.Collapsed;
+                        this.MySpotViewModel.SetItems(spots);
+                    });
+                }
+                else  // No my spots
                 {
                     base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.NoMySpotMessage);
-                });
+                }
+            }
+            else
+            {
+                base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.BadLoadingSpotMessage);
             }
 
             // Hide progress indicator

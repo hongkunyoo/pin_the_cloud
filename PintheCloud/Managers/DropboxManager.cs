@@ -130,13 +130,13 @@ namespace PintheCloud.Managers
         }
 
 
+        // Remove user and record
         public void SignOut()
         {
-            // Remove user record
             App.ApplicationSettings.Remove(DROPBOX_USER_KEY);
             App.ApplicationSettings.Remove(DROPBOX_SIGN_IN_KEY);
-
-            // Set null account
+            this.FoldersTree.Clear();
+            this.FolderRootTree.Clear();
             this._client = null;
             this.CurrentAccount = null;
         }

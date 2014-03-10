@@ -35,6 +35,12 @@ namespace PintheCloud.ViewModels
             // If items have something, clear.
             this.Items.Clear();
 
+            // Sorting spots
+            spots.Sort((s1, s2) => 
+            {
+                return s1.spot_distance.CompareTo(s2.spot_distance);
+            });
+
             // Convert jarray spots to spot view items and set to view model
             foreach (Spot spot in spots)
             {

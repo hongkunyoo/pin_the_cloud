@@ -45,6 +45,16 @@ namespace PintheCloud.ViewModels
             // If items have something, clear.
             this.Items.Clear();
 
+            // Sorting items
+            fileObjectList.Sort((f1, f2) =>
+            {
+                return f1.Name.CompareTo(f2.Name);
+            });
+            fileObjectList.Sort((f1, f2) =>
+            {
+                return f1.Type.CompareTo(f2.Type);
+            });
+
             // Convert jarray spaces to space view items and set to view model
             foreach (FileObject fileObject in fileObjectList)
             {

@@ -47,17 +47,6 @@ namespace PintheCloud.Helpers
 
 
         /// <summary>
-        /// Split the given string to file name and extension.
-        /// </summary>
-        /// <param name="name">The name to parse</param>
-        /// <returns>the name and the extension in string array</returns>
-        public static string[] SplitNameAndExtension(string name)
-        {
-            return name.Split(new char[] { '.' }, 2);
-        }
-
-
-        /// <summary>
         /// Trim "/" character from the both side of the given string
         /// </summary>
         /// <param name="path">The string to trim</param>
