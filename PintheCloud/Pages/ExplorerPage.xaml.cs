@@ -450,6 +450,7 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 // Show Loading message and save is login true for pivot moving action while sign in.
+                base.SetProgressIndicator(true);
                 base.SetListUnableAndShowMessage(uiPinInfoList, uiPinInfoMessage, AppResources.DoingSignIn);
                 base.Dispatcher.BeginInvoke(() =>
                 {
@@ -479,6 +480,8 @@ namespace PintheCloud.Pages
                         uiPinInfoSignInPanel.Visibility = Visibility.Visible;
                     });
                 }
+
+                base.SetProgressIndicator(false);
             }
             else
             {
