@@ -76,7 +76,7 @@
                         <ColumnDefinition/>
                         <ColumnDefinition Width="68"/>
                     </Grid.ColumnDefinitions>
-                    <Image Source="/Assets/pajeon/at_here/png/upload_icon_spotname.png" Stretch="None" HorizontalAlignment="Left"/>
+                    <Image Source="/Assets/pajeon/at_here/png/upload_icon_private.png" Stretch="None" HorizontalAlignment="Left"/>
                     <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.PrivateMode, Source={StaticResource LocalizedStrings}}" FontSize="22" Foreground="#FF404041" Grid.Column="1" VerticalAlignment="Center"/>
                     <toolkitPrimitives:ToggleSwitchButton x:Name="uiPrivateModeToggleSwitchButton" Style="{StaticResource CustomToggleSwitchButtonStyle}" Grid.Column="2" Height="38" Width="68" Checked="uiPrivateModeToggleSwitchButton_Checked" Unchecked="uiPrivateModeToggleSwitchButton_Unchecked" />
                 </Grid>

@@ -10,6 +10,8 @@ using Microsoft.Phone.Shell;
 using System.Windows.Controls.Primitives;
 using PintheCloud.Helpers;
 using PintheCloud.Resources;
+using PintheCloud.Pages;
+using PintheCloud.Managers;
 
 namespace PintheCloud.Popups
 {
@@ -22,21 +24,39 @@ namespace PintheCloud.Popups
         public bool result = false;
 
 
-        public SubmitSpotPasswordPopup(Popup popup, string spotId, string spotPassword)
+        public SubmitSpotPasswordPopup(Popup popup, string spotId, string spotPassword, double width, double height, double topMargin)
         {
             InitializeComponent();
             this.Popup = popup;
             this.SpotId = spotId;
             this.SpotPassword = spotPassword;
+
+            this.Width = width;
+            this.Height = height;
+            this.Margin = new Thickness(0, PtcPage.STATUS_BAR_HEIGHT + topMargin, 0, 0);
+
+            EventHelper.AddEventHandler(EventHelper.POPUP_CLOSE, () =>
+            {
+                this.Popup.IsOpen = false;
+            });
+        }
+
+
+        private void uiSpotPasswordTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (uiSpotPasswordTextBox.Text.Trim().Length > 0)
+                uiSubmitPasswordButton.IsEnabled = true;
+            else
+                uiSubmitPasswordButton.IsEnabled = false;
         }
 
 
         private void uiSubmitPasswordButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            string password = uiSpotPasswordTextBox.Text;
-            if (!password.Trim().Equals(String.Empty))
+            if (uiSubmitPasswordButton.IsEnabled)
             {
-                if (this.SpotPassword.Equals(AESHelper.Encrypt(password)))
+                uiSpotPasswordTextBox.Text = uiSpotPasswordTextBox.Text.Trim();
+                if (this.SpotPassword.Equals(AESHelper.Encrypt(uiSpotPasswordTextBox.Text)))
                 {
                     this.result = true;
                     this.Popup.IsOpen = false;
@@ -45,10 +65,6 @@ namespace PintheCloud.Popups
                 {
                     MessageBox.Show(AppResources.PasswordWrongMessage, AppResources.PasswordWrongCaption, MessageBoxButton.OK);
                 }
-            }
-            else
-            {
-                MessageBox.Show(AppResources.NoPasswordMessage, AppResources.NoPasswordCption, MessageBoxButton.OK);
             }
         }
 

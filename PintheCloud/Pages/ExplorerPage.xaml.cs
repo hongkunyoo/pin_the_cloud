@@ -42,6 +42,7 @@ namespace PintheCloud.Pages
 
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarMenuItem[] AppBarMenuItems = null;
+        private Popup SubmitSpotPasswordParentPopup = new Popup();
 
         public SpotViewModel NearSpotViewModel = new SpotViewModel();
         public FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
@@ -220,13 +221,12 @@ namespace PintheCloud.Pages
             {
                 if (spotViewItem.IsPrivateImage.Equals(FileObjectViewModel.IS_PRIVATE_IMAGE_URI))
                 {
-                    // Check password
-                    SubmitSpotPasswordPopup submitSpotPasswordPopup = new SubmitSpotPasswordPopup(uiSubmitSpotPasswordPopup, spotViewItem.SpotId, spotViewItem.SpotPassword);
-                    uiSubmitSpotPasswordPopup.HorizontalOffset = 80;
-                    uiSubmitSpotPasswordPopup.VerticalOffset = 100;
-                    uiSubmitSpotPasswordPopup.Child = submitSpotPasswordPopup;
-                    uiSubmitSpotPasswordPopup.IsOpen = true;
-                    uiSubmitSpotPasswordPopup.Closed += (senderObject, args) =>
+                    SubmitSpotPasswordPopup submitSpotPasswordPopup = 
+                        new SubmitSpotPasswordPopup(this.SubmitSpotPasswordParentPopup, spotViewItem.SpotId, spotViewItem.SpotPassword, 
+                            uiPickPivot.ActualWidth, uiPickPivot.ActualHeight, uiPivotTitleGrid.ActualHeight);
+                    this.SubmitSpotPasswordParentPopup.Child = submitSpotPasswordPopup;
+                    this.SubmitSpotPasswordParentPopup.IsOpen = true;
+                    this.SubmitSpotPasswordParentPopup.Closed += (senderObject, args) =>
                     {
                         if (submitSpotPasswordPopup.result)
                         {
@@ -320,12 +320,10 @@ namespace PintheCloud.Pages
             ApplicationBarMenuItem appBarMenuItem = (ApplicationBarMenuItem)sender;
             int currentPlatformIndex = base.GetPlatformIndexFromString(appBarMenuItem.Text);
 
-
             // If it is not in current cloud mode, change it.
-            if (this.CurrentPlatformIndex != currentPlatformIndex)
+            if (this.CurrentPlatformIndex != currentPlatformIndex && !App.IStorageManagers[this.CurrentPlatformIndex].IsSigningIn())
             {
                 // Kill previous job.
-
                 IStorageManager iStorageManager = App.IStorageManagers[currentPlatformIndex];
                 uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(iStorageManager.GetStorageColorHexString()));
                 uiCurrentCloudModeImage.Source = new BitmapImage(new Uri(iStorageManager.GetStorageImageUri(), UriKind.Relative));
@@ -365,13 +363,16 @@ namespace PintheCloud.Pages
             IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
             if (iStorageManager.IsSigningIn())
             {
+                e.Cancel = true;
+
                 // If it is popup, close popup.
                 if (iStorageManager.IsPopup())
-                {
                     EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
-                    e.Cancel = true;
-                    return;
-                }
+            }
+            else if (this.SubmitSpotPasswordParentPopup.IsOpen)
+            {
+                e.Cancel = true;
+                this.SubmitSpotPasswordParentPopup.IsOpen = false;
             }
             else
             {

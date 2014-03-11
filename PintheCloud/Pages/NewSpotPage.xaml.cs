@@ -84,7 +84,8 @@ namespace PintheCloud.Pages
 
         private void uiSpotNameSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            uiSpotNameTextBox.Text = uiSpotNameTextBox.Text.Trim();
+            if (uiSpotNameSetButton.IsEnabled)
+                uiSpotNameTextBox.Text = uiSpotNameTextBox.Text.Trim();
         }
 
 
@@ -127,7 +128,8 @@ namespace PintheCloud.Pages
 
         private void uiPrivateModePasswordSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            uiPrivateModePasswordTextBox.Text = uiPrivateModePasswordTextBox.Text.Trim();
+            if (uiPrivateModePasswordSetButton.IsEnabled)
+                uiPrivateModePasswordTextBox.Text = uiPrivateModePasswordTextBox.Text.Trim();
         }
 
 

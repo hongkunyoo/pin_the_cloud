@@ -11,6 +11,7 @@ using System.Windows.Controls.Primitives;
 using System.Diagnostics;
 using DropNet.Models;
 using PintheCloud.Managers;
+using PintheCloud.Pages;
 
 namespace PintheCloud.Popups
 {
@@ -25,7 +26,7 @@ namespace PintheCloud.Popups
             this.Popup = popup;
             uiWebBrowser.Width = Application.Current.Host.Content.ActualWidth;
             uiWebBrowser.Height = Application.Current.Host.Content.ActualHeight;
-            uiWebBrowser.Margin = new Thickness(0, 34, 0, 0);
+            uiWebBrowser.Margin = new Thickness(0, PtcPage.STATUS_BAR_HEIGHT, 0, 0);
             uiWebBrowser.IsScriptEnabled = true;
             uiWebBrowser.Navigate(new Uri(uri, UriKind.RelativeOrAbsolute));
         }

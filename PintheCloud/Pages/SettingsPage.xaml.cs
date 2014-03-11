@@ -356,14 +356,18 @@ namespace PintheCloud.Pages
         private void uiDefaultSpotNameTextBox_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             uiDefaultSpotNameSetButton.Visibility = Visibility.Collapsed;
+            uiDefaultSpotNameTextBox.Text = uiDefaultSpotNameTextBox.Text.Trim();
         }
 
         private void uiDefaultSpotNameSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            uiDefaultSpotNameTextBox.Text = uiDefaultSpotNameTextBox.Text.Trim();
-            App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY] = uiDefaultSpotNameTextBox.Text;
-            App.ApplicationSettings.Save();
-            MessageBox.Show(AppResources.SetDefaultSpotNameMessage, uiDefaultSpotNameTextBox.Text, MessageBoxButton.OK);
+            if (uiDefaultSpotNameSetButton.IsEnabled)
+            {
+                uiDefaultSpotNameTextBox.Text = uiDefaultSpotNameTextBox.Text.Trim();
+                App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY] = uiDefaultSpotNameTextBox.Text;
+                App.ApplicationSettings.Save();
+                MessageBox.Show(AppResources.SetDefaultSpotNameMessage, uiDefaultSpotNameTextBox.Text, MessageBoxButton.OK);
+            }
         }
 
 

@@ -36,6 +36,10 @@ namespace PintheCloud.ViewModels
             this.Items.Clear();
 
             // Sorting spots
+            spots.Sort((s1, s2) =>
+            {
+                return s1.spot_name.CompareTo(s2.spot_name);
+            });
             spots.Sort((s1, s2) => 
             {
                 return s1.spot_distance.CompareTo(s2.spot_distance);
