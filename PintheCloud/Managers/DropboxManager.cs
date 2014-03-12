@@ -55,7 +55,7 @@ namespace PintheCloud.Managers
         {
             // Get dropbox _client.
             this.tcs = new TaskCompletionSource<bool>();
-            _client = new DropNetClient(DROPBOX_CLIENT_KEY, DROPBOX_CLIENT_SECRET);
+            this._client = new DropNetClient(DROPBOX_CLIENT_KEY, DROPBOX_CLIENT_SECRET);
 
             // If dropbox user exists, get it.
             // Otherwise, get from user.
@@ -64,7 +64,7 @@ namespace PintheCloud.Managers
                 dropboxUser = (UserLogin)App.ApplicationSettings[DROPBOX_USER_KEY];
             if (dropboxUser != null)
             {
-                _client.UserLogin = dropboxUser;
+                this._client.UserLogin = dropboxUser;
                 //this.CurrentAccount = await this.GetMyAccountAsync();
                 this._client.AccountInfoAsync((info) =>
                 {
@@ -81,18 +81,18 @@ namespace PintheCloud.Managers
             }
             else
             {
-                _client.GetTokenAsync(async (userLogin) =>
+                this._client.GetTokenAsync(async (userLogin) =>
                 {
-                    string authUri = _client.BuildAuthorizeUrl(DROPBOX_AUTH_URI);
+                    string authUri = this._client.BuildAuthorizeUrl(DROPBOX_AUTH_URI);
                     DropboxWebBrowserTask webBrowser = new DropboxWebBrowserTask(authUri);
                     await webBrowser.ShowAsync();
 
-                    _client.GetAccessTokenAsync(async (accessToken) =>
+                    this._client.GetAccessTokenAsync(async (accessToken) =>
                     {
                         UserLogin user = new UserLogin();
                         user.Token = accessToken.Token;
                         user.Secret = accessToken.Secret;
-                        _client.UserLogin = user;
+                        this._client.UserLogin = user;
 
                         // Save dropbox user got and sign in setting.
                         this.CurrentAccount = await this.GetMyAccountAsync();
@@ -194,12 +194,12 @@ namespace PintheCloud.Managers
         }
         public async Task<FileObject> GetFileAsync(string fileId)
         {
-            MetaData metaTask = await _client.GetMetaDataTask(fileId);
+            MetaData metaTask = await this._client.GetMetaDataTask(fileId);
             return ConvertToFileObjectHelper.ConvertToFileObject(metaTask);
         }
         public async Task<List<FileObject>> GetFilesFromFolderAsync(string folderId)
         {
-            MetaData metaTask = await _client.GetMetaDataTask(folderId);
+            MetaData metaTask = await this._client.GetMetaDataTask(folderId);
             List<FileObject> list = new List<FileObject>();
 
             if (metaTask.Contents == null) return list;
@@ -214,7 +214,7 @@ namespace PintheCloud.Managers
         public Task<Stream> DownloadFileStreamAsync(string sourceFileId)
         {
             TaskCompletionSource<Stream> tcs = new TaskCompletionSource<Stream>();
-            _client.GetFileAsync(sourceFileId, new Action<IRestResponse>((response) =>
+            this._client.GetFileAsync(sourceFileId, new Action<IRestResponse>((response) =>
             {
                 MemoryStream stream = new MemoryStream(response.RawBytes);
                 tcs.SetResult(stream);
@@ -231,7 +231,7 @@ namespace PintheCloud.Managers
             try
             {
                 //MetaData d = await _client.UploadFileTask(folderIdToStore, fileName, CreateStream(outstream).ToArray());
-                MetaData d = await _client.UploadFileTask(folderIdToStore, fileName, outstream);
+                MetaData d = await this._client.UploadFileTask(folderIdToStore, fileName, outstream);
                 return true;
             }
             catch

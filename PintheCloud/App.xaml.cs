@@ -52,7 +52,7 @@ namespace PintheCloud
         public static IStorageManager[] IStorageManagers = null;
         public static TaskHelper TaskHelper = null;
 
-        private static OneDriveManager SkyDriveManager = null;
+        private static OneDriveManager OneDriveManager = null;
         private static DropboxManager DropBoxManager = null;
         private static GoogleDriveManager GoogleDriveManger = null;
 
@@ -95,10 +95,10 @@ namespace PintheCloud
             BlobStorageManager = new BlobStorageManager();
             LocalStorageManager = new LocalStorageManager();
 
-            SkyDriveManager = new OneDriveManager();
+            OneDriveManager = new OneDriveManager();
             DropBoxManager = new DropboxManager();
             GoogleDriveManger = new GoogleDriveManager();
-            IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
+            IStorageManagers = new IStorageManager[] { OneDriveManager, DropBoxManager, GoogleDriveManger };
             TaskHelper = new TaskHelper();
  
 
