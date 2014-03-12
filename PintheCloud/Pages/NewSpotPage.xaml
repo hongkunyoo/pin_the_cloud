@@ -66,7 +66,7 @@
                     	ImageSource="/Assets/pajeon/at_here/png/input_set_button_activated.png"
                     	ImageDisabledSource="/Assets/pajeon/at_here/png/input_set_button_inactivated.png"
                     	ImagePressedSource="/Assets/pajeon/at_here/png/input_set_button_activated_p.png"
-                    	Style="{StaticResource ImageButtonStyle}" x:Name="uiSpotNameSetButton" IsEnabled="True" HorizontalAlignment="Right" Visibility="Collapsed" Click="uiSpotNameSetButton_Click" />
+                    	Style="{StaticResource ImageButtonStyle}" x:Name="uiSpotNameSetButton" HorizontalAlignment="Right" Visibility="Collapsed" Click="uiSpotNameSetButton_Click" />
                 </Grid>
             </StackPanel>
             <StackPanel Grid.Row="2" Margin="28,0,28,32">

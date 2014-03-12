@@ -56,8 +56,9 @@ namespace PintheCloud.Popups
             if (uiSubmitPasswordButton.IsEnabled)
             {
                 uiSpotPasswordTextBox.Text = uiSpotPasswordTextBox.Text.Trim();
-                if (this.SpotPassword.Equals(AESHelper.Encrypt(uiSpotPasswordTextBox.Text)))
+                if (this.SpotPassword.Equals(uiSpotPasswordTextBox.Text))
                 {
+                    uiSpotPasswordTextBox.Text = String.Empty;
                     this.result = true;
                     this.Popup.IsOpen = false;
                 }

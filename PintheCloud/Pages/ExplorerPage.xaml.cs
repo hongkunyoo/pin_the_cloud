@@ -228,23 +228,24 @@ namespace PintheCloud.Pages
                     this.SubmitSpotPasswordParentPopup.IsOpen = true;
                     this.SubmitSpotPasswordParentPopup.Closed += (senderObject, args) =>
                     {
-                        if (submitSpotPasswordPopup.result)
-                        {
-                            PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
-                            PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
-                            string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
-                            NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
-                        }
+                        if (((SubmitSpotPasswordPopup)((Popup)senderObject).Child).result)
+                            this.NavigateToFileListPage(spotViewItem);
                     };
                 }
                 else
                 {
-                    PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
-                    PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
-                    string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
-                    NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
+                    this.NavigateToFileListPage(spotViewItem);
                 }
             }
+        }
+
+
+        private void NavigateToFileListPage(SpotViewItem spotViewItem)
+        {
+            PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
+            PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
+            string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
+            NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
         }
 
 
