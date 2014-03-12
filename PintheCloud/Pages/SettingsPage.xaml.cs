@@ -66,7 +66,7 @@ namespace PintheCloud.Pages
             /*** Application Pivot ***/
 
             // Set name
-            uiDefaultSpotNameTextBox.Text = (string)App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
+            uiDefaultSpotNameTextBox.Text = (string)App.ApplicationSettings[StorageAccount.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
 
             // Set UI list
             this.SignButtons = new Button[] { uiOneDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
@@ -75,7 +75,7 @@ namespace PintheCloud.Pages
             this.SignButtonTextBlocks = new TextBlock[] { uiOneDriveSignButtonText, uiDropboxSignButtonText, uiGoogleDriveSignButtonText };
 
             // Set location access consent checkbox
-            if ((bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY])
+            if ((bool)App.ApplicationSettings[StorageAccount.LOCATION_ACCESS_CONSENT_KEY])
                 uiLocationAccessConsentToggleSwitchButton.IsChecked = true;
             else
                 uiLocationAccessConsentToggleSwitchButton.IsChecked = false;
@@ -262,7 +262,7 @@ namespace PintheCloud.Pages
             {
                 if (await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
                 {
-                    this.SignButtonTextBlocks[platformIndex].Text = iStorageManager.GetAccount().account_name;
+                    this.SignButtonTextBlocks[platformIndex].Text = iStorageManager.GetStorageAccount().StorageName;
                     this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_IN_BUTTON_TEXT_COLOR));
                     this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_IN_BUTTON_TEXT_FONT);
                     this.SignButtons[platformIndex].Click += this.SignOutButton_Click;
@@ -288,7 +288,7 @@ namespace PintheCloud.Pages
 
             Image mainButtonImage = (Image)mainButton.Content;
             Grid signButtonGrid = this.SignButtonGrids[platformIndexindex];
-            if (platformIndexindex == (int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY])
+            if (platformIndexindex == (int)App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY])
             {
                 mainButtonImage.Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI, UriKind.Relative));
                 signButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_PLATFORM_BUTTON_COLOR));
@@ -316,7 +316,8 @@ namespace PintheCloud.Pages
             signButtonGrid.Opacity = MAIN_PLATFORM_BUTTON_OPACITY;
 
             // Save main platform index to app settings.
-            App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = base.GetStorageAccountTypeFromInt(mainButtonPlatformIndex);
+            //App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = base.GetStorageAccountTypeFromInt(mainButtonPlatformIndex);
+            App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (StorageAccount.StorageAccountType)(mainButtonPlatformIndex);
             App.ApplicationSettings.Save();
 
             // Set rest button image and backtround
@@ -355,7 +356,7 @@ namespace PintheCloud.Pages
         private void uiDefaultSpotNameSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             uiDefaultSpotNameTextBox.Text = uiDefaultSpotNameTextBox.Text.Trim();
-            App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY] = uiDefaultSpotNameTextBox.Text;
+            App.ApplicationSettings[StorageAccount.ACCOUNT_DEFAULT_SPOT_NAME_KEY] = uiDefaultSpotNameTextBox.Text;
             App.ApplicationSettings.Save();
             MessageBox.Show(AppResources.SetDefaultSpotNameMessage, uiDefaultSpotNameTextBox.Text, MessageBoxButton.OK);
         }
@@ -363,14 +364,14 @@ namespace PintheCloud.Pages
 
         private void uiLocationAccessConsentToggleSwitchButton_Checked(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = true;
+            App.ApplicationSettings[StorageAccount.LOCATION_ACCESS_CONSENT_KEY] = true;
             App.ApplicationSettings.Save();
         }
 
 
         private void uiLocationAccessConsentToggleSwitchButton_Unchecked(object sender, System.Windows.RoutedEventArgs e)
         {
-            App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = false;
+            App.ApplicationSettings[StorageAccount.LOCATION_ACCESS_CONSENT_KEY] = false;
             App.ApplicationSettings.Save();
         }
 
@@ -396,7 +397,7 @@ namespace PintheCloud.Pages
                     {
                         string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
                         NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters + "&platform=" +
-                            ((int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY]), UriKind.Relative));
+                            ((int)App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY]), UriKind.Relative));
                     }
                 }
                 else

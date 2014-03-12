@@ -49,13 +49,14 @@ namespace PintheCloud
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
 
-        public static IStorageManager[] IStorageManagers = null;
+        public static String[] StorageManagerNames = null;
         public static TaskHelper TaskHelper = null;
 
         private static OneDriveManager SkyDriveManager = null;
         private static DropboxManager DropBoxManager = null;
         private static GoogleDriveManager GoogleDriveManger = null;
 
+        public static AccountManager AccountManager = null;
 
 
         /// <summary>
@@ -98,10 +99,17 @@ namespace PintheCloud
             SkyDriveManager = new OneDriveManager();
             DropBoxManager = new DropboxManager();
             GoogleDriveManger = new GoogleDriveManager();
-            IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
-            TaskHelper = new TaskHelper();
- 
+            //IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
+            Switcher.AddStorage(SkyDriveManager.GetStorageName(), SkyDriveManager);
+            Switcher.AddStorage(DropBoxManager.GetStorageName(), DropBoxManager);
+            Switcher.AddStorage(GoogleDriveManger.GetStorageName(), GoogleDriveManger);
+            Switcher.SetStorageToMainPlatform();
 
+            App.StorageManagerNames = new string[] {SkyDriveManager.GetStorageName(), DropBoxManager.GetStorageName() GoogleDriveManger.GetStorageName()};
+
+            TaskHelper = new TaskHelper();
+
+            AccountManager = new AccountManager();
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.
             if (Debugger.IsAttached)
             {

@@ -37,7 +37,7 @@ namespace PintheCloud.Pages
             this.PinInfoAppBarButton = (ApplicationBarIconButton)ApplicationBar.Buttons[PIN_INFO_APP_BAR_BUTTON_INDEX];
 
             // Set name and datacontext
-            uiSpotNameTextBox.Hint = (string)App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
+            uiSpotNameTextBox.Hint = (string)App.ApplicationSettings[StorageAccount.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
             uiNewSpotFileList.DataContext = this.FileObjectViewModel;
         }
 

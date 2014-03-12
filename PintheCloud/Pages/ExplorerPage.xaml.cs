@@ -38,7 +38,7 @@ namespace PintheCloud.Pages
         private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_upload.png";
 
         // Instances
-        private int CurrentPlatformIndex = 0;
+        //private int CurrentPlatformIndex = 0;
 
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarMenuItem[] AppBarMenuItems = null;
@@ -60,16 +60,17 @@ namespace PintheCloud.Pages
             this.PinInfoAppBarButton.Click += PinInfoAppBarButton_Click;
 
             // Set Cloud Setting selection.
-            this.AppBarMenuItems = new ApplicationBarMenuItem[App.IStorageManagers.Length];
+            this.AppBarMenuItems = new ApplicationBarMenuItem[App.StorageManagerNames.Length];
             for (int i = 0; i < this.AppBarMenuItems.Length; i++)
             {
                 this.AppBarMenuItems[i] = new ApplicationBarMenuItem();
-                this.AppBarMenuItems[i].Text = App.IStorageManagers[i].GetStorageName();
+                this.AppBarMenuItems[i].Text = App.StorageManagerNames[i];
                 this.AppBarMenuItems[i].Click += AppBarMenuItem_Click;
             }
 
             // Check main platform and set current platform index.
-            this.CurrentPlatformIndex = (int)App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY];
+            //this.CurrentPlatformIndex = (int)App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY];
+            //Switcher.SetStorageTo((string)App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY]);
 
             // Set Datacontext
             uiNearSpotList.DataContext = this.NearSpotViewModel;
@@ -90,7 +91,7 @@ namespace PintheCloud.Pages
                 NavigationService.RemoveBackEntry();
 
             this.SetPickPivot(AppResources.Loading);
-            base.SetPinPivot(App.IStorageManagers[this.CurrentPlatformIndex], uiPinInfoList, uiPinInfoMessage, AppResources.Loading,
+            base.SetPinPivot(Switcher.GetCurrentStorage(), uiPinInfoList, uiPinInfoMessage, AppResources.Loading,
                 uiPinInfoCurrentPath, uiPinInfoListGrid, uiPinInfoSignInPanel, this.PinInfoAppBarButton, this.FileObjectViewModel, this.SelectedFile, false);
         }
 
@@ -123,7 +124,7 @@ namespace PintheCloud.Pages
 
                 case EventHelper.PIN_PIVOT:
                     // Set Pin Pivot UI
-                    IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
+                    IStorageManager iStorageManager = Switcher.GetCurrentStorage();
                     ApplicationBar.Buttons.Add(this.PinInfoAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
                         ApplicationBar.MenuItems.Add(this.AppBarMenuItems[i]);
@@ -185,7 +186,7 @@ namespace PintheCloud.Pages
 
                 case EventHelper.PIN_PIVOT:
                     this.FileObjectViewModel.IsDataLoaded = false;
-                    base.SetPinPivot(App.IStorageManagers[this.CurrentPlatformIndex], uiPinInfoList, uiPinInfoMessage, AppResources.Refreshing,
+                    base.SetPinPivot(Switcher.GetCurrentStorage(), uiPinInfoList, uiPinInfoMessage, AppResources.Refreshing,
                         uiPinInfoCurrentPath, uiPinInfoListGrid, uiPinInfoSignInPanel, this.PinInfoAppBarButton, this.FileObjectViewModel, this.SelectedFile, true);
                     break;
             }
@@ -231,7 +232,7 @@ namespace PintheCloud.Pages
                         if (submitSpotPasswordPopup.result)
                         {
                             PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
-                            PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
+                            //PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
                             string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
                             NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
                         }
@@ -240,7 +241,7 @@ namespace PintheCloud.Pages
                 else
                 {
                     PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
-                    PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
+                    //PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
                     string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
                     NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
                 }
@@ -311,23 +312,21 @@ namespace PintheCloud.Pages
         {
             // Get index
             ApplicationBarMenuItem appBarMenuItem = (ApplicationBarMenuItem)sender;
-            int currentPlatformIndex = base.GetPlatformIndexFromString(appBarMenuItem.Text);
+            //int currentPlatformIndex = base.GetPlatformIndexFromString(appBarMenuItem.Text);
 
+            if (Switcher.GetCurrentStorage().GetStorageName().Equals(appBarMenuItem.Text)) return;
+
+            Switcher.SetStorageTo(appBarMenuItem.Text);
 
             // If it is not in current cloud mode, change it.
-            if (this.CurrentPlatformIndex != currentPlatformIndex)
-            {
-                // Kill previous job.
 
-                IStorageManager iStorageManager = App.IStorageManagers[currentPlatformIndex];
-                uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(iStorageManager.GetStorageColorHexString()));
-                uiCurrentCloudModeImage.Source = new BitmapImage(new Uri(iStorageManager.GetStorageImageUri(), UriKind.Relative));
-                this.CurrentPlatformIndex = currentPlatformIndex;
+            IStorageManager iStorageManager = Switcher.GetCurrentStorage();
+            uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(iStorageManager.GetStorageColorHexString()));
+            uiCurrentCloudModeImage.Source = new BitmapImage(new Uri(iStorageManager.GetStorageImageUri(), UriKind.Relative));
 
-                this.FileObjectViewModel.IsDataLoaded = false;
-                base.SetPinPivot(iStorageManager, uiPinInfoList, uiPinInfoMessage, AppResources.Loading,
-                    uiPinInfoCurrentPath, uiPinInfoListGrid, uiPinInfoSignInPanel, this.PinInfoAppBarButton, this.FileObjectViewModel, this.SelectedFile, false);
-            }
+            this.FileObjectViewModel.IsDataLoaded = false;
+            base.SetPinPivot(iStorageManager, uiPinInfoList, uiPinInfoMessage, AppResources.Loading,
+                uiPinInfoCurrentPath, uiPinInfoListGrid, uiPinInfoSignInPanel, this.PinInfoAppBarButton, this.FileObjectViewModel, this.SelectedFile, false);
         }
 
 
@@ -339,7 +338,7 @@ namespace PintheCloud.Pages
                 PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY] = this.NearSpotViewModel;
                 PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
                 PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.SelectedFile;
-                PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
+                //PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
                 NavigationService.Navigate(new Uri(EventHelper.NEW_SPOT_PAGE, UriKind.Relative));
             }
             else  // First or not consented of access in location information.
@@ -355,7 +354,7 @@ namespace PintheCloud.Pages
 
             // If it is signing, don't close app.
             // Otherwise, show close app message.
-            IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
+            IStorageManager iStorageManager = Switcher.GetCurrentStorage();
             if (iStorageManager.IsSigningIn())
             {
                 // If it is popup, close popup.
@@ -388,7 +387,7 @@ namespace PintheCloud.Pages
 
         private void uiPinInfoListUpButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
+            IStorageManager iStorageManager = Switcher.GetCurrentStorage();
             if (iStorageManager.GetFolderRootTree().Count > 1)
                 base.TreeUp(iStorageManager, uiPinInfoMessage, uiPinInfoCurrentPath, this.PinInfoAppBarButton, this.FileObjectViewModel, this.SelectedFile);
         }
@@ -411,7 +410,7 @@ namespace PintheCloud.Pages
                 // Otherwise, add it to list.
                 if (fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER))
                 {
-                    base.SetPinInfoListAsync(App.IStorageManagers[this.CurrentPlatformIndex], uiPinInfoList, uiPinInfoMessage, AppResources.Loading,
+                    base.SetPinInfoListAsync(Switcher.GetCurrentStorage(), uiPinInfoList, uiPinInfoMessage, AppResources.Loading,
                         uiPinInfoCurrentPath, uiPinInfoListGrid, uiPinInfoSignInPanel, this.PinInfoAppBarButton, this.FileObjectViewModel, this.SelectedFile, fileObjectViewItem, true);
                 }
                 else  // Do selection if file
@@ -450,7 +449,7 @@ namespace PintheCloud.Pages
                 });
 
                 // Sign in and await that task.
-                IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
+                IStorageManager iStorageManager = Switcher.GetCurrentStorage();
                 if (!iStorageManager.IsSigningIn())
                     App.TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
                 bool result = await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
@@ -459,7 +458,7 @@ namespace PintheCloud.Pages
                 // Otherwise, show bad sign in message box.
                 if (result)
                 {
-                    base.SetPinInfoListAsync(App.IStorageManagers[this.CurrentPlatformIndex], uiPinInfoList, uiPinInfoMessage, AppResources.Loading,
+                    base.SetPinInfoListAsync(iStorageManager, uiPinInfoList, uiPinInfoMessage, AppResources.Loading,
                         uiPinInfoCurrentPath, uiPinInfoListGrid, uiPinInfoSignInPanel, this.PinInfoAppBarButton, this.FileObjectViewModel, this.SelectedFile, null, true);
                 }
                 else

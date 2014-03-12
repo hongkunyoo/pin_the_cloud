@@ -8,13 +8,6 @@ namespace PintheCloud.Managers
 {
     public class ShareManager
     {
-        public async Task FromStorageToSpot()
-        {
-
-        }
-        public async Task FromSpotToStorage()
-        {
-
-        }
+        
     }
 }

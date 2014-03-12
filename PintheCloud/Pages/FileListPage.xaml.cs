@@ -126,11 +126,11 @@ namespace PintheCloud.Pages
             NavigationService.RemoveBackEntry();
 
             // Get parameters
-            this.PlatformIndex = (int)PhoneApplicationService.Current.State[PLATFORM_KEY];
-            Account account = App.IStorageManagers[this.PlatformIndex].GetAccount();
+            //this.PlatformIndex = (int)PhoneApplicationService.Current.State[PLATFORM_KEY];
+            StorageAccount account = Switcher.GetCurrentStorage().GetStorageAccount();
             this.SpotName = NavigationContext.QueryString["spotName"];
-            this.AccountId = account.account_platform_id;
-            this.AccountName = account.account_name;
+            this.AccountId = account.Id;
+            this.AccountName = account.StorageName;
             if (NavigationContext.QueryString["private"].Equals("True"))
                 this.IsPrivate = true;
             else
@@ -262,7 +262,7 @@ namespace PintheCloud.Pages
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                IStorageManager iStr = App.IStorageManagers[this.PlatformIndex];
+                IStorageManager iStr = Switcher.GetCurrentStorage();
                 if (iStr.IsSignIn())
                 {
                     foreach (FileObjectViewItem fileObjectViewItem in this.SelectedFile)
@@ -273,7 +273,7 @@ namespace PintheCloud.Pages
                 }
                 else
                 {
-                    MessageBox.Show(AppResources.NoSignedInMessage, App.IStorageManagers[this.PlatformIndex].GetStorageName(), MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.NoSignedInMessage, iStr.GetStorageName(), MessageBoxButton.OK);
                 }
             }
             else
@@ -296,7 +296,7 @@ namespace PintheCloud.Pages
             Stream stream = await App.BlobStorageManager.DownloadFileStreamAsync(fileObjectViewItem.Id);
             if (stream != null)
             {
-                IStorageManager iStorageManager = App.IStorageManagers[this.PlatformIndex];
+                IStorageManager iStorageManager = Switcher.GetCurrentStorage();
                 FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
                 if (await iStorageManager.UploadFileStreamAsync(rootFolder.Id, fileObjectViewItem.Name, stream))
                 {
@@ -473,7 +473,7 @@ namespace PintheCloud.Pages
             });
 
             // Upload
-            Stream stream = await App.IStorageManagers[this.PlatformIndex].DownloadFileStreamAsync((fileObjectViewItem.DownloadUrl == null ? fileObjectViewItem.Id : fileObjectViewItem.DownloadUrl));
+            Stream stream = await Switcher.GetCurrentStorage().DownloadFileStreamAsync((fileObjectViewItem.DownloadUrl == null ? fileObjectViewItem.Id : fileObjectViewItem.DownloadUrl));
             if (stream != null)
             {
                 string blobId = await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpotId, fileObjectViewItem.Name, stream);

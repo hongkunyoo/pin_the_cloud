@@ -24,7 +24,7 @@ namespace PintheCloud.Pages
     {
         protected const string PREV_PAGE_KEY = "PREV_PAGE";
         protected const string PIVOT_KEY = "PIVOT_KEY";
-        protected const string PLATFORM_KEY = "PLATFORM_KEY";
+        //protected const string PLATFORM_KEY = "PLATFORM_KEY";
 
         protected const string SPOT_VIEW_MODEL_KEY = "SPOT_VIEW_MODEL_KEY";
         protected const string FILE_OBJECT_VIEW_MODEL_KEY = "FILE_OBJECT_VIEW_MODEL_KEY";
@@ -32,7 +32,6 @@ namespace PintheCloud.Pages
         protected const string SELECTED_FILE_KEY = "SELECTED_FILE_KEY";
 
         protected const string NULL_PASSWORD = "null";
-
 
         public PtcPage()
         {
@@ -101,49 +100,49 @@ namespace PintheCloud.Pages
         }
 
 
-        public int GetPlatformIndexFromString(string platform)
-        {
-            for (int i = 0; i < App.IStorageManagers.Length; i++)
-                if (platform.Equals(App.IStorageManagers[i].GetStorageName()))
-                    return i;
-            throw new Exception("No Such Storage Name");
-        }
+        //public int GetPlatformIndexFromString(string platform)
+        //{
+        //    for (int i = 0; i < App.IStorageManagers.Length; i++)
+        //        if (platform.Equals(App.IStorageManagers[i].GetStorageName()))
+        //            return i;
+        //    throw new Exception("No Such Storage Name");
+        //}
 
 
-        public Account.StorageAccountType GetStorageAccountTypeFromInt(int index)
-        {
-            Account.StorageAccountType type = Account.StorageAccountType.ONE_DRIVE;
-            switch (index)
-            {
-                case (int)Account.StorageAccountType.ONE_DRIVE:
-                    type = Account.StorageAccountType.ONE_DRIVE;
-                    break;
-                case (int)Account.StorageAccountType.DROPBOX:
-                    type = Account.StorageAccountType.DROPBOX;
-                    break;
-                case (int)Account.StorageAccountType.GOOGLE_DRIVE:
-                    type = Account.StorageAccountType.GOOGLE_DRIVE;
-                    break;
-                default:
-                    type = Account.StorageAccountType.ONE_DRIVE;
-                    break;
-            }
-            return type;
-        }
+        //public StorageAccount.StorageAccountType GetStorageAccountTypeFromInt(int index)
+        //{
+        //    Account.StorageAccountType type = Account.StorageAccountType.ONE_DRIVE;
+        //    switch (index)
+        //    {
+        //        case (int)Account.StorageAccountType.ONE_DRIVE:
+        //            type = Account.StorageAccountType.ONE_DRIVE;
+        //            break;
+        //        case (int)Account.StorageAccountType.DROPBOX:
+        //            type = Account.StorageAccountType.DROPBOX;
+        //            break;
+        //        case (int)Account.StorageAccountType.GOOGLE_DRIVE:
+        //            type = Account.StorageAccountType.GOOGLE_DRIVE;
+        //            break;
+        //        default:
+        //            type = Account.StorageAccountType.ONE_DRIVE;
+        //            break;
+        //    }
+        //    return type;
+        //}
 
 
         public bool GetLocationAccessConsent()
         {
-            if (!((bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY]))  // First or not consented of access in location information.
+            if (!((bool)App.ApplicationSettings[StorageAccount.LOCATION_ACCESS_CONSENT_KEY]))  // First or not consented of access in location information.
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.LocationAccessMessage, AppResources.LocationAccessCaption, MessageBoxButton.OKCancel);
                 if (result == MessageBoxResult.OK)
-                    App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = true;
+                    App.ApplicationSettings[StorageAccount.LOCATION_ACCESS_CONSENT_KEY] = true;
                 else
-                    App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = false;
+                    App.ApplicationSettings[StorageAccount.LOCATION_ACCESS_CONSENT_KEY] = false;
                 App.ApplicationSettings.Save();
             }
-            return (bool)App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY];
+            return (bool)App.ApplicationSettings[StorageAccount.LOCATION_ACCESS_CONSENT_KEY];
         }
     }
 }

@@ -10,27 +10,29 @@ namespace PintheCloud.Helpers
     public class TaskHelper
     {
         // Tasks
-        public IDictionary<string, Task> Tasks = new Dictionary<string, Task>();
-        public Dictionary<string ,Task<bool>> SignInTasks = new Dictionary<string, Task<bool>>();
-        public Dictionary<string, Task> SignOutTasks = new Dictionary<string, Task>();
+        private IDictionary<string, Task<bool>> Tasks = new Dictionary<string, Task<bool>>();
+        private Dictionary<string ,Task<bool>> SignInTasks = new Dictionary<string, Task<bool>>();
+        private Dictionary<string, Task> SignOutTasks = new Dictionary<string, Task>();
 
 
-        public void AddTask(string name, Task task)
+        public void AddTask(string name, Task<bool> task)
         {
-            Task existedTask = null;
+            Task<bool> existedTask = null;
             if (!this.Tasks.TryGetValue(name, out existedTask))
                 this.Tasks.Add(name, task);
         }
 
 
-        public async Task WaitTask(string name)
+        public async Task<bool> WaitTask(string name)
         {
-            Task task = null;
+            Task<bool> task = null;
             if (this.Tasks.TryGetValue(name, out task))
             {
                 await task;
                 this.Tasks.Remove(name);
+                return task.Result;
             }
+            throw new Exception();
         }
 
         public void AddSignInTask(string key, Task<bool> task)

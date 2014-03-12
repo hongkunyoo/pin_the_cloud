@@ -39,7 +39,7 @@ namespace PintheCloud.Managers
         private Stack<FileObjectViewItem> FolderRootTree = new Stack<FileObjectViewItem>();
 
         private LiveConnectClient LiveClient = null;
-        private Account CurrentAccount = null;
+        private StorageAccount CurrentAccount = null;
         private TaskCompletionSource<bool> tcs = null;
         #endregion
 
@@ -60,10 +60,18 @@ namespace PintheCloud.Managers
                 string accountUserName = (string)operationResult.Result["name"];
 
                 // Register account
-                Account account = await AccountHelper.GetAccountAsync(accountId);
-                if (account == null)
-                    await AccountHelper.CreateAccountAsync(accountId, accountUserName, Account.StorageAccountType.ONE_DRIVE);
-                this.CurrentAccount = account;
+                StorageAccount storageAccount = await App.AccountManager.GetPtcAccount().GetStorageAccountAsync(accountId);
+                if (storageAccount == null)
+                {
+                    storageAccount = new StorageAccount();
+                    storageAccount.Id = accountId;
+                    storageAccount.StorageName = this.GetStorageName();
+                    storageAccount.UserName = StorageAccount.StorageAccountType.ONE_DRIVE.ToString();
+                    storageAccount.UsedSize = 0.0;
+                    await App.AccountManager.GetPtcAccount().CreateStorageAccountAsync(storageAccount);
+                }
+
+                this.CurrentAccount = storageAccount;
 
                 // Save sign in setting.
                 App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
@@ -144,7 +152,7 @@ namespace PintheCloud.Managers
         }
 
 
-        public Account GetAccount()
+        public StorageAccount GetStorageAccount()
         {
             return this.CurrentAccount;
         }

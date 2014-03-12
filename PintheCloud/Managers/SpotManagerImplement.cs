@@ -98,8 +98,8 @@ namespace PintheCloud.Managers
 
                     // If it wasn't signed out, set list.
                     // Othersie, show sign in grid.
-                    if (iStorageManager.GetAccount() != null)  // Wasn't signed out.
-                        ids.Add(iStorageManager.GetAccount().account_platform_id);
+                    if (iStorageManager.GetStorageAccount() != null)  // Wasn't signed out.
+                        ids.Add(iStorageManager.GetStorageAccount().Id);
                 }
             }
 

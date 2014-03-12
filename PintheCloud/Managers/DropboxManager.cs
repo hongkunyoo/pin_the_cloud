@@ -34,16 +34,16 @@ namespace PintheCloud.Managers
         private Stack<FileObjectViewItem> FolderRootTree = new Stack<FileObjectViewItem>();
 
         private DropNetClient _client = null;
-        private Account CurrentAccount = null;
+        private StorageAccount CurrentAccount = null;
         private TaskCompletionSource<bool> tcs = null;
         #endregion
 
 
-        private Task<Account> GetMyAccountAsync()
+        private Task<StorageAccount> GetMyAccountAsync()
         {
-            TaskCompletionSource<Account> tcs = new TaskCompletionSource<Account>();
+            TaskCompletionSource<StorageAccount> tcs = new TaskCompletionSource<StorageAccount>();
             this._client.AccountInfoAsync((info) => {
-                tcs.SetResult(new Account(info.uid.ToString(),Account.StorageAccountType.DROPBOX,info.display_name,0.0,AccountType.NORMAL_ACCOUNT_TYPE));
+                tcs.SetResult(new StorageAccount(info.uid.ToString(), StorageAccount.StorageAccountType.DROPBOX, info.display_name, 0.0));
             }, (fail) => {
                 tcs.SetException(new Exception("Account Info Get Failed"));
             });
@@ -69,7 +69,7 @@ namespace PintheCloud.Managers
                 this._client.AccountInfoAsync((info) =>
                 {
                     //tcs.SetResult(new Account(info.uid.ToString(), Account.StorageAccountType.DROPBOX, info.display_name, 0.0, AccountType.NORMAL_ACCOUNT_TYPE));
-                    this.CurrentAccount = new Account(info.uid.ToString(), Account.StorageAccountType.DROPBOX, info.display_name, 0.0, AccountType.NORMAL_ACCOUNT_TYPE);
+                    this.CurrentAccount = new StorageAccount(info.uid.ToString(), StorageAccount.StorageAccountType.DROPBOX, info.display_name, 0.0);
                     tcs.SetResult(true);                
                 }, (fail) =>
                 {
@@ -178,7 +178,7 @@ namespace PintheCloud.Managers
         }
 
 
-        public Account GetAccount()
+        public StorageAccount GetStorageAccount()
         {
             return this.CurrentAccount;
         }

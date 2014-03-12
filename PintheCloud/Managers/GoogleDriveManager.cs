@@ -1,4 +1,5 @@
 ﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.Auth.OAuth2.Responses;
 using Google.Apis.Download;
 using Google.Apis.Drive.v2;
 using Google.Apis.Drive.v2.Data;
@@ -46,7 +47,7 @@ namespace PintheCloud.Managers
 
         private DriveService service;
         private UserCredential credential;
-        private Account CurrentAccount;
+        private StorageAccount CurrentAccount;
         private User user;
         private string rootFodlerId = "";
         private TaskCompletionSource<bool> tcs = null;
@@ -102,7 +103,6 @@ namespace PintheCloud.Managers
                     HttpClientInitializer = credential,
                     ApplicationName = "athere",
                 });
-
                 AboutResource aboutResource = service.About;
                 About about = await aboutResource.Get().ExecuteAsync();
                 this.user = about.User;
@@ -111,11 +111,11 @@ namespace PintheCloud.Managers
                 string id = about.PermissionId;
 
                 // Register account
-                Account account = await AccountHelper.GetAccountAsync(id);
+                StorageAccount account = await App.AccountManager.GetPtcAccount().GetStorageAccountAsync(id);
                 if (account == null)
                 {
-                    account = new Account(id, Account.StorageAccountType.GOOGLE_DRIVE, name, 0, AccountType.NORMAL_ACCOUNT_TYPE);
-                    await AccountHelper.CreateAccountAsync(account);
+                    account = new StorageAccount(id, StorageAccount.StorageAccountType.GOOGLE_DRIVE, name, 0);
+                    await App.AccountManager.GetPtcAccount().CreateStorageAccountAsync(account);
                 }
                 this.CurrentAccount = account;
 
@@ -196,7 +196,7 @@ namespace PintheCloud.Managers
         }
 
 
-        public Account GetAccount()
+        public StorageAccount GetStorageAccount()
         {
             return this.CurrentAccount;
         }

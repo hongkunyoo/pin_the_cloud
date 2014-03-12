@@ -103,7 +103,7 @@ namespace PintheCloud.Pages
 
             // If it wasn't signed out, set list.
             // Othersie, show sign in grid.
-            if (iStorageManager.GetAccount() != null)  // Wasn't signed out.
+            if (iStorageManager.GetStorageAccount() != null)  // Wasn't signed out.
             {
                 // If it has to load, load new files.
                 // Otherwise, set existing files to list.

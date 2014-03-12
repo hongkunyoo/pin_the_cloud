@@ -36,45 +36,42 @@ namespace PintheCloud.Pages
             base.OnNavigatedTo(e);
 
             // Check main platform at frist login.
-            if (!App.ApplicationSettings.Contains(Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY))
+            if (!App.ApplicationSettings.Contains(StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY))
             {
-                App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = Account.StorageAccountType.ONE_DRIVE;
+                App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = StorageAccount.StorageAccountType.ONE_DRIVE;
                 App.ApplicationSettings.Save();
             }
 
             // Check nick name at frist login.
-            if (!App.ApplicationSettings.Contains(Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY))
+            if (!App.ApplicationSettings.Contains(StorageAccount.ACCOUNT_DEFAULT_SPOT_NAME_KEY))
             {
-                App.ApplicationSettings[Account.ACCOUNT_DEFAULT_SPOT_NAME_KEY] = AppResources.AtHere;
+                App.ApplicationSettings[StorageAccount.ACCOUNT_DEFAULT_SPOT_NAME_KEY] = AppResources.AtHere;
                 App.ApplicationSettings.Save();
             }
 
             // Check location access consent at frist login.
-            if (!App.ApplicationSettings.Contains(Account.LOCATION_ACCESS_CONSENT_KEY))
+            if (!App.ApplicationSettings.Contains(StorageAccount.LOCATION_ACCESS_CONSENT_KEY))
             {
-                App.ApplicationSettings[Account.LOCATION_ACCESS_CONSENT_KEY] = false;
+                App.ApplicationSettings[StorageAccount.LOCATION_ACCESS_CONSENT_KEY] = false;
                 App.ApplicationSettings.Save();
             }
-
-
-            // SIgn in
-            if (NetworkInterface.GetIsNetworkAvailable())
+            
+            if (App.AccountManager.IsSignIn())
             {
-                for (int i = 0; i < App.IStorageManagers.Length; i++)
+                if (NetworkInterface.GetIsNetworkAvailable())
                 {
-                    // If main platform is signed in, process it.
-                    // Otherwise, ignore and go to explorer page.
-                    if (App.IStorageManagers[i].IsSignIn())
-                        App.TaskHelper.AddSignInTask(App.IStorageManagers[i].GetStorageName(), App.IStorageManagers[i].SignIn());
+                    App.TaskHelper.AddTask(App.AccountManager.GetPtcId(), App.AccountManager.GetPtcAccountAsync());
+                
+                    for (int i = 0; i < App.IStorageManagers.Length; i++)
+                    {
+                        // If main platform is signed in, process it.
+                        // Otherwise, ignore and go to explorer page.
+                        if (App.IStorageManagers[i].IsSignIn())
+                            App.TaskHelper.AddSignInTask(App.IStorageManagers[i].GetStorageName(), App.IStorageManagers[i].SignIn());
+                    }
                 }
             }
             NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE, UriKind.Relative));
-        }
-
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
         }
     }
 }

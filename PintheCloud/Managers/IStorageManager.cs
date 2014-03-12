@@ -19,7 +19,7 @@ namespace PintheCloud.Managers
         bool IsSigningIn();
         void SignOut();
         bool IsPopup();
-        Account GetAccount();
+        StorageAccount GetStorageAccount();
         bool IsSignIn();
         string GetStorageName();
         string GetStorageImageUri();

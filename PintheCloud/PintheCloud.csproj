@@ -98,7 +98,9 @@
     <Compile Include="Helpers\AESHelper.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Helpers\EventHelper.cs" />
-    <Compile Include="Models\Account.cs" />
+    <Compile Include="Managers\AccountManager.cs" />
+    <Compile Include="Managers\ShareManager.cs" />
+    <Compile Include="Models\StorageAccount.cs" />
     <Compile Include="Helpers\AccountHelper.cs" />
     <Compile Include="Managers\DropboxManager.cs" />
     <Compile Include="Managers\GoogleDriveManager.cs" />
@@ -109,12 +111,16 @@
     <Compile Include="Managers\SpotManager.cs" />
     <Compile Include="Managers\SpotManagerImplement.cs" />
     <Compile Include="Models\FileObject.cs" />
+    <Compile Include="Models\PtcAccount.cs" />
     <Compile Include="Models\Spot.cs" />
     <Compile Include="Helpers\ConvertToFileObjectHelper.cs" />
     <Compile Include="Pages\AddFilePage.xaml.cs">
       <DependentUpon>AddFilePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\PinPage.cs" />
+    <Compile Include="Pages\ProfilePage.xaml.cs">
+      <DependentUpon>ProfilePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Popups\DropBoxSignInPopup.xaml.cs">
       <DependentUpon>DropBoxSignInPopup.xaml</DependentUpon>
     </Compile>
@@ -152,7 +158,7 @@
     <Compile Include="ViewModels\FileObjectViewItem.cs" />
     <Compile Include="ViewModels\FileObjectViewModel.cs" />
     <Compile Include="ViewModels\SpotViewItem.cs" />
-    <Compile Include="Models\AccountType.cs" />
+    <Compile Include="Models\StorageAccountType.cs" />
     <Compile Include="Pages\PtcPage.cs" />
     <Compile Include="Pages\ExplorerPage.xaml.cs">
       <DependentUpon>ExplorerPage.xaml</DependentUpon>
@@ -176,6 +182,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\AddFilePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ProfilePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
