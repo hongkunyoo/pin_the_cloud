@@ -25,7 +25,7 @@ namespace PintheCloud.Pages
         private int PIN_INFO_APP_BAR_BUTTON_INDEX = 1;
 
         // Instances
-        private int CurrentPlatformIndex = 0;
+        //private int CurrentPlatformIndex = 0;
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarMenuItem[] AppBarMenuItems = null;
 
@@ -40,13 +40,19 @@ namespace PintheCloud.Pages
 
             // Set Pin Infor app bar button and Cloud Setting selection.
             this.PinInfoAppBarButton = (ApplicationBarIconButton)ApplicationBar.Buttons[PIN_INFO_APP_BAR_BUTTON_INDEX];
-            this.AppBarMenuItems = new ApplicationBarMenuItem[App.StorageManagerNames.Length];
-            for (int i = 0; i < this.AppBarMenuItems.Length; i++)
+            this.AppBarMenuItems = new ApplicationBarMenuItem[StorageHelper.GetStorageSize()];
+            using (var itr = StorageHelper.GetStorageList())
             {
-                this.AppBarMenuItems[i] = new ApplicationBarMenuItem();
-                this.AppBarMenuItems[i].Text = App.StorageManagerNames[i];
-                this.AppBarMenuItems[i].Click += AppBarMenuItem_Click;
+                int i = 0;
+                while(itr.MoveNext())
+                {
+                    this.AppBarMenuItems[i] = new ApplicationBarMenuItem();
+                    this.AppBarMenuItems[i].Text = itr.Current.GetStorageName();
+                    this.AppBarMenuItems[i].Click += AppBarMenuItem_Click;
+                    i++;
+                }
             }
+            
 
             // Check main platform and set current platform index.
             //this.CurrentPlatformIndex = (int)App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY];

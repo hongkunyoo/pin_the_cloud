@@ -20,6 +20,7 @@ using Windows.Storage;
 using System.Xml;
 using System.IO;
 using System.Threading;
+using PintheCloud.Helpers;
 
 namespace PintheCloud.Pages
 {
@@ -36,11 +37,11 @@ namespace PintheCloud.Pages
             base.OnNavigatedTo(e);
 
             // Check main platform at frist login.
-            if (!App.ApplicationSettings.Contains(StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY))
-            {
-                App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = StorageAccount.StorageAccountType.ONE_DRIVE;
-                App.ApplicationSettings.Save();
-            }
+            //if (!App.ApplicationSettings.Contains(StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY))
+            //{
+            //    App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = StorageAccount.StorageAccountType.ONE_DRIVE;
+            //    App.ApplicationSettings.Save();
+            //}
 
             // Check nick name at frist login.
             if (!App.ApplicationSettings.Contains(StorageAccount.ACCOUNT_DEFAULT_SPOT_NAME_KEY))
@@ -61,13 +62,16 @@ namespace PintheCloud.Pages
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
                     App.TaskHelper.AddTask(App.AccountManager.GetPtcId(), App.AccountManager.GetPtcAccountAsync());
-                
-                    for (int i = 0; i < App.IStorageManagers.Length; i++)
+
+                    using (var itr = StorageHelper.GetStorageList())
                     {
-                        // If main platform is signed in, process it.
-                        // Otherwise, ignore and go to explorer page.
-                        if (App.IStorageManagers[i].IsSignIn())
-                            App.TaskHelper.AddSignInTask(App.IStorageManagers[i].GetStorageName(), App.IStorageManagers[i].SignIn());
+                        while (itr.MoveNext())
+                        {
+                            // If main platform is signed in, process it.
+                            // Otherwise, ignore and go to explorer page.
+                            if (itr.Current.IsSignIn())
+                                App.TaskHelper.AddSignInTask(itr.Current.GetStorageName(), itr.Current.SignIn());
+                        }
                     }
                 }
             }

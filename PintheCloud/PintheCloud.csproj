@@ -96,6 +96,9 @@
     </Compile>
     <Compile Include="Converters\StringToSpotNameInitialUriConverter.cs" />
     <Compile Include="Helpers\AESHelper.cs" />
+    <Compile Include="Helpers\IStoragemanager.cs" />
+    <Compile Include="Helpers\StorageHelper.cs" />
+    <Compile Include="Helpers\Switcher.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Helpers\EventHelper.cs" />
     <Compile Include="Managers\AccountManager.cs" />

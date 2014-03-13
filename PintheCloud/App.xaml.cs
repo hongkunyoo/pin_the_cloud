@@ -49,7 +49,7 @@ namespace PintheCloud
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
 
-        public static String[] StorageManagerNames = null;
+        //public static String[] StorageManagerNames = null;
         public static TaskHelper TaskHelper = null;
 
         private static OneDriveManager SkyDriveManager = null;
@@ -100,12 +100,13 @@ namespace PintheCloud
             DropBoxManager = new DropboxManager();
             GoogleDriveManger = new GoogleDriveManager();
             //IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
-            Switcher.AddStorage(SkyDriveManager.GetStorageName(), SkyDriveManager);
-            Switcher.AddStorage(DropBoxManager.GetStorageName(), DropBoxManager);
-            Switcher.AddStorage(GoogleDriveManger.GetStorageName(), GoogleDriveManger);
+            StorageHelper.AddStorageManager(SkyDriveManager.GetStorageName(), SkyDriveManager);
+            StorageHelper.AddStorageManager(DropBoxManager.GetStorageName(), DropBoxManager);
+            StorageHelper.AddStorageManager(GoogleDriveManger.GetStorageName(), GoogleDriveManger);
+
             Switcher.SetStorageToMainPlatform();
 
-            App.StorageManagerNames = new string[] {SkyDriveManager.GetStorageName(), DropBoxManager.GetStorageName() GoogleDriveManger.GetStorageName()};
+            //App.StorageManagerNames = new string[] {SkyDriveManager.GetStorageName(), DropBoxManager.GetStorageName(), GoogleDriveManger.GetStorageName()};
 
             TaskHelper = new TaskHelper();
 
@@ -162,8 +163,11 @@ namespace PintheCloud
         private async void Application_Closing(object sender, ClosingEventArgs e)
         {
             // Wait sign in task.
-            for (int i = 0; i < App.IStorageManagers.Length; i++)
-                await App.TaskHelper.WaitSignInTask(App.IStorageManagers[i].GetStorageName());
+            using (var itr = StorageHelper.GetStorageList())
+            {
+                while (itr.MoveNext())
+                    await App.TaskHelper.WaitSignInTask(itr.Current.GetStorageName());
+            }
         }
 
         // 탐색이 실패할 때 실행할 코드입니다.

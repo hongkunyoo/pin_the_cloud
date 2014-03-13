@@ -21,6 +21,7 @@ using PintheCloud.Utilities;
 using System.Diagnostics;
 using PintheCloud.Converters;
 using System.Windows.Media;
+using PintheCloud.Helpers;
 
 namespace PintheCloud.Pages
 {
@@ -29,7 +30,7 @@ namespace PintheCloud.Pages
         // Const Instances
         private const int APPLICATION_PIVOT_INDEX = 0;
         private const int MY_SPOT_PIVOT_INDEX = 1;
-        private int CurrentPlatformIndex = 0;
+        //private int CurrentPlatformIndex = 0;
 
         private const string SIGN_IN_BUTTON_TEXT_FONT = "Segoe WP";
         private const string SIGN_NOT_IN_BUTTON_TEXT_FONT = "Segoe WP Light";
@@ -94,10 +95,15 @@ namespace PintheCloud.Pages
             base.OnNavigatedTo(e);
 
             // Set Sign buttons and Set Main buttons.
-            for (int i = 0; i < App.IStorageManagers.Length; i++)
+            using (var itr = StorageHelper.GetStorageList())
             {
-                this.SetSignButtons(i, App.IStorageManagers[i].IsSignIn());
-                this.SetMainButtons(i);
+                int i = 0;
+                while (itr.MoveNext())
+                {
+                    this.SetSignButtons(i, itr.Current.IsSignIn(), itr.Current);
+                    this.SetMainButtons(i, itr.Current);
+                    i++;
+                }
             }
                 
             // Set My Spot pivot list.
@@ -117,7 +123,7 @@ namespace PintheCloud.Pages
 
             // If it is signing, don't close app.
             // Otherwise, show close app message.
-            IStorageManager iStorageManager = App.IStorageManagers[this.CurrentPlatformIndex];
+            IStorageManager iStorageManager = Switcher.GetCurrentStorage();
             if (iStorageManager.IsSigningIn())
             {
                 // If it is popup, close popup.
@@ -183,11 +189,12 @@ namespace PintheCloud.Pages
 
                 // Get index
                 Button signButton = (Button)sender;
-                int platformIndex = base.GetPlatformIndexFromString(signButton.Tag.ToString());
-                this.CurrentPlatformIndex = platformIndex;
+                Switcher.SetStorageTo(signButton.Tag.ToString());
+                //int platformIndex = base.GetPlatformIndexFromString(signButton.Tag.ToString());
+                //this.CurrentPlatformIndex = platformIndex;
 
                 // Sign in
-                IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
+                IStorageManager iStorageManager = Switcher.GetCurrentStorage();
                 if (!iStorageManager.IsSigningIn())
                     App.TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
 
@@ -197,7 +204,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        this.SetSignButtons(platformIndex, true);
+                        this.SetSignButtons(Switcher.GetCurrentIndex(), true, Switcher.GetCurrentStorage());
                     });
                 }
                 else
@@ -233,17 +240,19 @@ namespace PintheCloud.Pages
                 uiProfileMessageGrid.Visibility = Visibility.Visible;
                 uiProfileMessage.Text = AppResources.DoingSignOut;
                 Button signButton = (Button)sender;
-                int platformIndex = base.GetPlatformIndexFromString(signButton.Tag.ToString());
+                //int platformIndex = base.GetPlatformIndexFromString(signButton.Tag.ToString());
+                Switcher.SetStorageTo(signButton.Tag.ToString());
 
                 // Sign out
-                IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
+                //IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
+                IStorageManager iStorageManager = Switcher.GetCurrentStorage();
                 App.TaskHelper.AddSignOutTask(iStorageManager.GetStorageName(), this.SignOut(iStorageManager));
 
                 // Hide process indicator
                 ((FileObjectViewModel)PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                 uiProfileGrid.Visibility = Visibility.Visible;
                 uiProfileMessageGrid.Visibility = Visibility.Collapsed;
-                this.SetSignButtons(platformIndex, false);
+                this.SetSignButtons(Switcher.GetCurrentIndex(), false, Switcher.GetCurrentStorage());
             }
         }
 
@@ -255,9 +264,8 @@ namespace PintheCloud.Pages
         }
 
 
-        private async void SetSignButtons(int platformIndex, bool isSignIn)
+        private async void SetSignButtons(int platformIndex, bool isSignIn, IStorageManager iStorageManager)
         {
-            IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
             if (isSignIn)  // It is signed in
             {
                 if (await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
@@ -280,7 +288,7 @@ namespace PintheCloud.Pages
         }
 
 
-        private void SetMainButtons(int platformIndexindex)
+        private void SetMainButtons(int platformIndexindex, IStorageManager StorageManager)
         {
             // Set main button click event and image.
             Button mainButton = this.MainButtons[platformIndexindex];
@@ -288,7 +296,7 @@ namespace PintheCloud.Pages
 
             Image mainButtonImage = (Image)mainButton.Content;
             Grid signButtonGrid = this.SignButtonGrids[platformIndexindex];
-            if (platformIndexindex == (int)App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY])
+            if (StorageManager.Equals(Switcher.GetMainStorage()))
             {
                 mainButtonImage.Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI, UriKind.Relative));
                 signButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_PLATFORM_BUTTON_COLOR));
@@ -310,26 +318,33 @@ namespace PintheCloud.Pages
             ((Image)mainButton.Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI, UriKind.Relative));
             
             // Set Signbutton background
-            int mainButtonPlatformIndex = base.GetPlatformIndexFromString(mainButton.Tag.ToString());
-            Grid signButtonGrid = this.SignButtonGrids[mainButtonPlatformIndex];
+            //int mainButtonPlatformIndex = base.GetPlatformIndexFromString(mainButton.Tag.ToString());
+            Switcher.SetMainPlatform(mainButton.Tag.ToString());
+            Switcher.SetStorageTo(mainButton.Tag.ToString());
+            Grid signButtonGrid = this.SignButtonGrids[Switcher.GetCurrentIndex()];
             signButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_PLATFORM_BUTTON_COLOR));
             signButtonGrid.Opacity = MAIN_PLATFORM_BUTTON_OPACITY;
 
             // Save main platform index to app settings.
             //App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = base.GetStorageAccountTypeFromInt(mainButtonPlatformIndex);
-            App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (StorageAccount.StorageAccountType)(mainButtonPlatformIndex);
-            App.ApplicationSettings.Save();
+            //App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (StorageAccount.StorageAccountType)(mainButtonPlatformIndex);
+            //App.ApplicationSettings.Save();
 
             // Set rest button image and backtround
-            for (int i = 0; i < App.IStorageManagers.Length; i++)
+            using (var itr = StorageHelper.GetStorageList())
             {
-                if (i != mainButtonPlatformIndex)
+                int i = 0;
+                while (itr.MoveNext())
                 {
-                    ((Image)this.MainButtons[i].Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_NOT_IMAGE_URI, UriKind.Relative));
+                    if (!itr.Current.GetStorageName().Equals(Switcher.GetMainStorage().GetStorageName()))
+                    {
+                        ((Image)this.MainButtons[i].Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_NOT_IMAGE_URI, UriKind.Relative));
 
-                    Grid restSignButtonGrid = (Grid)this.SignButtonGrids[i];
-                    restSignButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_NOT_PLATFORM_BUTTON_COLOR));
-                    restSignButtonGrid.Opacity = MAIN_NOT_PLATFORM_BUTTON_OPACITY;
+                        Grid restSignButtonGrid = (Grid)this.SignButtonGrids[i];
+                        restSignButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_NOT_PLATFORM_BUTTON_COLOR));
+                        restSignButtonGrid.Opacity = MAIN_NOT_PLATFORM_BUTTON_OPACITY;
+                    }
+                    i++;
                 }
             }
         }
@@ -396,8 +411,7 @@ namespace PintheCloud.Pages
                     if (spotViewItem.DeleteImage.Equals(FileObjectViewModel.DELETE_IMAGE_URI))
                     {
                         string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
-                        NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters + "&platform=" +
-                            ((int)App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY]), UriKind.Relative));
+                        NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
                     }
                 }
                 else
