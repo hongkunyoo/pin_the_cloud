@@ -14,7 +14,7 @@ using System.Diagnostics;
 
 namespace PintheCloud.Pages
 {
-    public partial class SignInStoragePage : PhoneApplicationPage
+    public partial class SignInStoragePage : PtcPage
     {
         public SignInStoragePage()
         {

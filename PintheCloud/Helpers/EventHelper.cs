@@ -18,6 +18,7 @@ namespace PintheCloud.Managers
         public const string PROFILE_PAGE = "/Pages/ProfilePage.xaml";
         public const string SIGNIN_PAGE = "/Pages/SignInPage.xaml";
         public const string SIGNIN_STORAGE_PAGE = "/Pages/SignInStoragePage.xaml";
+        public const string SPOT_LIST_PAGE = "/Pages/SpotListPage.xaml";
         
 
         public const string POPUP_CLOSE = "POP_UP_CLOSE";

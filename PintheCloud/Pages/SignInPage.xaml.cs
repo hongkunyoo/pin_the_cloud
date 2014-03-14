@@ -12,7 +12,7 @@ using PintheCloud.Managers;
 
 namespace PintheCloud.Pages
 {
-    public partial class SignInPage : PhoneApplicationPage
+    public partial class SignInPage : PtcPage
     {
         public SignInPage()
         {

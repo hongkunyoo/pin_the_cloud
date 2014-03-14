@@ -14,7 +14,7 @@ using Windows.System;
 
 namespace PintheCloud.Pages
 {
-    public partial class LocalExplorer : PhoneApplicationPage
+    public partial class LocalExplorer : PtcPage
     {
         IReadOnlyList<StorageFile> files = null;
         ObservableCollection<string> nameList = new ObservableCollection<string>();

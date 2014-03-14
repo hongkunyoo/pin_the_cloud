@@ -133,6 +133,9 @@
     <Compile Include="Pages\SignInStoragePage.xaml.cs">
       <DependentUpon>SignInStoragePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SpotListPage.xaml.cs">
+      <DependentUpon>SpotListPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Popups\DropBoxSignInPopup.xaml.cs">
       <DependentUpon>DropBoxSignInPopup.xaml</DependentUpon>
     </Compile>
@@ -210,6 +213,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\SignInStoragePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SpotListPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
