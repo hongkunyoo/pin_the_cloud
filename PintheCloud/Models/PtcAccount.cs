@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using PintheCloud.Managers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,10 +35,12 @@ namespace PintheCloud.Models
             try
             {
                 await App.MobileService.GetTable<MSStorageAccount>().InsertAsync(mssa);
+                StorageAccount.Add(sa.StorageName, sa);
                 return true;
             }
-            catch
+            catch(Exception ex)
             {
+                Debug.WriteLine(ex.ToString());
                 return false;
             }
         }
@@ -50,8 +53,9 @@ namespace PintheCloud.Models
                     .Where(a => a.account_platform_id == storageAccountId)
                     .ToCollectionAsync();
             }
-            catch (MobileServiceInvalidOperationException)
+            catch (MobileServiceInvalidOperationException ex)
             {
+                Debug.WriteLine(ex.ToString());
                 throw new Exception("AccountManager.GetAccount() ERROR");
             }
 
@@ -59,6 +63,13 @@ namespace PintheCloud.Models
                 return App.AccountManager.ConvertToStorageAccount(accounts.First());
             else if (accounts.Count > 1)
                 throw new Exception("AccountManager.GetAccount() ERROR");
+            else
+                return null;
+        }
+        public StorageAccount GetStorageAccount(string storageName)
+        {
+            if (StorageAccount.ContainsKey(storageName))
+                return StorageAccount[storageName];
             else
                 return null;
         }

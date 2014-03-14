@@ -53,6 +53,7 @@ namespace PintheCloud.Managers
 
         public Task<bool> SignIn()
         {
+            Debug.WriteLine("SignIn!");
             // Get dropbox _client.
             this.tcs = new TaskCompletionSource<bool>();
             _client = new DropNetClient(DROPBOX_CLIENT_KEY, DROPBOX_CLIENT_SECRET);
@@ -96,6 +97,12 @@ namespace PintheCloud.Managers
 
                         // Save dropbox user got and sign in setting.
                         this.CurrentAccount = await this.GetMyAccountAsync();
+                        StorageAccount account = await App.AccountManager.GetPtcAccount().GetStorageAccountAsync(this.CurrentAccount.Id);
+                        if (account == null)
+                        {
+                            await App.AccountManager.GetPtcAccount().CreateStorageAccountAsync(this.CurrentAccount);
+                        }
+
                         App.ApplicationSettings[DROPBOX_SIGN_IN_KEY] = true;
                         App.ApplicationSettings[DROPBOX_USER_KEY] = user;
                         App.ApplicationSettings.Save();
@@ -103,11 +110,19 @@ namespace PintheCloud.Managers
                     },
                     (error) =>
                     {
+                        Debug.WriteLine(error.ToString());
                         tcs.SetResult(false);
                     });
                 },
                (error) =>
                {
+                   var keys = error.Data.Keys;
+                   for (var i = 0; i < keys.Count; i++ )
+                   {
+                       Debug.WriteLine(error.Data[i]);
+                   }
+                   Debug.WriteLine(error.Message);
+                   Debug.WriteLine(error.StackTrace);
                    tcs.SetResult(false);
                });
             }

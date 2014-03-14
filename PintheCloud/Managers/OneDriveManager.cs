@@ -66,7 +66,7 @@ namespace PintheCloud.Managers
                     storageAccount = new StorageAccount();
                     storageAccount.Id = accountId;
                     storageAccount.StorageName = this.GetStorageName();
-                    storageAccount.UserName = StorageAccount.StorageAccountType.ONE_DRIVE.ToString();
+                    storageAccount.UserName = accountUserName;
                     storageAccount.UsedSize = 0.0;
                     await App.AccountManager.GetPtcAccount().CreateStorageAccountAsync(storageAccount);
                 }

@@ -37,7 +37,13 @@ namespace PintheCloud.Helpers
         public static void SetStorageToMainPlatform()
         {
             if (App.ApplicationSettings.Contains(MAIN_PLATFORM_TYPE_KEY))
+            {
                 SetStorageTo((string)App.ApplicationSettings[MAIN_PLATFORM_TYPE_KEY]);
+            }
+            else
+            {
+                SetStorageTo("DEFAULT");
+            }
         }
         public static int GetCurrentIndex()
         {

@@ -114,7 +114,7 @@ namespace PintheCloud.Managers
                 StorageAccount account = await App.AccountManager.GetPtcAccount().GetStorageAccountAsync(id);
                 if (account == null)
                 {
-                    account = new StorageAccount(id, StorageAccount.StorageAccountType.GOOGLE_DRIVE, name, 0);
+                    account = new StorageAccount(id, StorageAccount.StorageAccountType.GOOGLE_DRIVE, name, 0.0);
                     await App.AccountManager.GetPtcAccount().CreateStorageAccountAsync(account);
                 }
                 this.CurrentAccount = account;

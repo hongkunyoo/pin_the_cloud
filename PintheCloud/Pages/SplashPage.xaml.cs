@@ -63,9 +63,14 @@ namespace PintheCloud.Pages
                 {
                     App.TaskHelper.AddTask(App.AccountManager.GetPtcId(), App.AccountManager.SignIn());
                 }
+                NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE, UriKind.Relative));
             }
-            //NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE, UriKind.Relative));
-            NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
+            else
+            {
+                NavigationService.Navigate(new Uri(EventHelper.PROFILE_PAGE, UriKind.Relative));
+            }
+            
+            //NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
         }
     }
 }
