@@ -100,6 +100,10 @@ namespace PintheCloud
             DropBoxManager = new DropboxManager();
             GoogleDriveManger = new GoogleDriveManager();
             //IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
+
+            /////////////////////////////////////////////////////
+            // This order will be displayed at every App Pages
+            /////////////////////////////////////////////////////
             StorageHelper.AddStorageManager(SkyDriveManager.GetStorageName(), SkyDriveManager);
             StorageHelper.AddStorageManager(DropBoxManager.GetStorageName(), DropBoxManager);
             StorageHelper.AddStorageManager(GoogleDriveManger.GetStorageName(), GoogleDriveManger);
@@ -163,7 +167,7 @@ namespace PintheCloud
         private async void Application_Closing(object sender, ClosingEventArgs e)
         {
             // Wait sign in task.
-            using (var itr = StorageHelper.GetStorageList())
+            using (var itr = StorageHelper.GetStorageEnumerator())
             {
                 while (itr.MoveNext())
                     await App.TaskHelper.WaitSignInTask(itr.Current.GetStorageName());

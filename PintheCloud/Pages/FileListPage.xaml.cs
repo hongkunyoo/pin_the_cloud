@@ -44,7 +44,7 @@ namespace PintheCloud.Pages
         private string SpotName = null;
         private string AccountId = null;
         private string AccountName = null;
-        private int PlatformIndex = 0;
+        //private int PlatformIndex = 0;
         private bool LaunchLock = false;
         private bool IsPrivate = false;
         private string SpotPassword = null;

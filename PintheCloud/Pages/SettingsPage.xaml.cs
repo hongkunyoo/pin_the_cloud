@@ -95,15 +95,11 @@ namespace PintheCloud.Pages
             base.OnNavigatedTo(e);
 
             // Set Sign buttons and Set Main buttons.
-            using (var itr = StorageHelper.GetStorageList())
+            for (var i = 0; i < StorageHelper.GetStorageList().Count; i++ )
             {
-                int i = 0;
-                while (itr.MoveNext())
-                {
-                    this.SetSignButtons(i, itr.Current.IsSignIn(), itr.Current);
-                    this.SetMainButtons(i, itr.Current);
-                    i++;
-                }
+                IStorageManager storage = StorageHelper.GetStorageList()[i];
+                this.SetSignButtons(i, storage.IsSignIn(), storage);
+                this.SetMainButtons(i, storage);
             }
                 
             // Set My Spot pivot list.
@@ -296,7 +292,7 @@ namespace PintheCloud.Pages
 
             Image mainButtonImage = (Image)mainButton.Content;
             Grid signButtonGrid = this.SignButtonGrids[platformIndexindex];
-            if (StorageManager.Equals(Switcher.GetMainStorage()))
+            if (StorageManager.GetStorageName().Equals(Switcher.GetMainStorage().GetStorageName()))
             {
                 mainButtonImage.Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI, UriKind.Relative));
                 signButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_PLATFORM_BUTTON_COLOR));
@@ -331,20 +327,15 @@ namespace PintheCloud.Pages
             //App.ApplicationSettings.Save();
 
             // Set rest button image and backtround
-            using (var itr = StorageHelper.GetStorageList())
+            for (var i = 0; i < StorageHelper.GetStorageList().Count; i++ )
             {
-                int i = 0;
-                while (itr.MoveNext())
+                if (!StorageHelper.GetStorageList()[i].GetStorageName().Equals(Switcher.GetMainStorage().GetStorageName()))
                 {
-                    if (!itr.Current.GetStorageName().Equals(Switcher.GetMainStorage().GetStorageName()))
-                    {
-                        ((Image)this.MainButtons[i].Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_NOT_IMAGE_URI, UriKind.Relative));
+                    ((Image)this.MainButtons[i].Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_NOT_IMAGE_URI, UriKind.Relative));
 
-                        Grid restSignButtonGrid = (Grid)this.SignButtonGrids[i];
-                        restSignButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_NOT_PLATFORM_BUTTON_COLOR));
-                        restSignButtonGrid.Opacity = MAIN_NOT_PLATFORM_BUTTON_OPACITY;
-                    }
-                    i++;
+                    Grid restSignButtonGrid = (Grid)this.SignButtonGrids[i];
+                    restSignButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_NOT_PLATFORM_BUTTON_COLOR));
+                    restSignButtonGrid.Opacity = MAIN_NOT_PLATFORM_BUTTON_OPACITY;
                 }
             }
         }

@@ -24,7 +24,7 @@ namespace PintheCloud.Models
         {
             StorageAccount = new Dictionary<string, StorageAccount>();
             token = new Dictionary<string, string>();
-
+            AccountType = new StorageAccountType();
         }
 
         public async Task<bool> CreateStorageAccountAsync(StorageAccount sa)

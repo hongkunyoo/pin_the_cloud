@@ -41,7 +41,7 @@ namespace PintheCloud.Helpers
         }
         public static int GetCurrentIndex()
         {
-            return StorageHelper.GetStorageIndex(CurrentManager);
+            return StorageHelper.GetStorageList().IndexOf(CurrentManager);
         }
     }
 }

@@ -61,21 +61,11 @@ namespace PintheCloud.Pages
             {
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
-                    App.TaskHelper.AddTask(App.AccountManager.GetPtcId(), App.AccountManager.GetPtcAccountAsync());
-
-                    using (var itr = StorageHelper.GetStorageList())
-                    {
-                        while (itr.MoveNext())
-                        {
-                            // If main platform is signed in, process it.
-                            // Otherwise, ignore and go to explorer page.
-                            if (itr.Current.IsSignIn())
-                                App.TaskHelper.AddSignInTask(itr.Current.GetStorageName(), itr.Current.SignIn());
-                        }
-                    }
+                    App.TaskHelper.AddTask(App.AccountManager.GetPtcId(), App.AccountManager.SignIn());
                 }
             }
-            NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE, UriKind.Relative));
+            //NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE, UriKind.Relative));
+            NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
         }
     }
 }

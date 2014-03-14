@@ -60,18 +60,20 @@ namespace PintheCloud.Pages
             this.PinInfoAppBarButton.Click += PinInfoAppBarButton_Click;
 
             // Set Cloud Setting selection.
-            this.AppBarMenuItems = new ApplicationBarMenuItem[StorageHelper.GetStorageSize()];
-            using (var itr = StorageHelper.GetStorageList())
-            {
-                int i = 0;
-                while (itr.MoveNext())
-                {
-                    this.AppBarMenuItems[i] = new ApplicationBarMenuItem();
-                    this.AppBarMenuItems[i].Text = itr.Current.GetStorageName();
-                    this.AppBarMenuItems[i].Click += AppBarMenuItem_Click;
-                    i = 0;
-                }
-            }
+
+            base.SetStorageBarMenuItem(out this.AppBarMenuItems, AppBarMenuItem_Click);
+            //this.AppBarMenuItems = new ApplicationBarMenuItem[StorageHelper.GetStorageList().Count];
+            //using (var itr = StorageHelper.GetStorageList())
+            //{
+            //    int i = 0;
+            //    while (itr.MoveNext())
+            //    {
+            //        this.AppBarMenuItems[i] = new ApplicationBarMenuItem();
+            //        this.AppBarMenuItems[i].Text = itr.Current.GetStorageName();
+            //        this.AppBarMenuItems[i].Click += AppBarMenuItem_Click;
+            //        i = 0;
+            //    }
+            //}
             
 
             // Check main platform and set current platform index.

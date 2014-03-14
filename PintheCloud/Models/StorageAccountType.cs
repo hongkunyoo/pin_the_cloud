@@ -17,5 +17,12 @@ namespace PintheCloud.Models
         public double MaxSize { get; set; }
 
         public string Id { get; set; }
+
+        public StorageAccountType()
+        {
+            AccountTypeName = NORMAL_ACCOUNT_TYPE;
+            MaxSize = 3000;
+            Id = "1";
+        }
     }
 }

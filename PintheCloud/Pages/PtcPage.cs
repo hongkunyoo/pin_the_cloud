@@ -17,6 +17,7 @@ using Windows.UI;
 using PintheCloud.Utilities;
 using PintheCloud.ViewModels;
 using PintheCloud.Managers;
+using PintheCloud.Helpers;
 
 namespace PintheCloud.Pages
 {
@@ -99,7 +100,17 @@ namespace PintheCloud.Pages
             return parameters;
         }
 
-
+        public void SetStorageBarMenuItem(out ApplicationBarMenuItem[] AppBarMenuItems, EventHandler AppBarMenuItem_Click)
+        {
+            List<IStorageManager> storageList = StorageHelper.GetStorageList();
+            AppBarMenuItems = new ApplicationBarMenuItem[storageList.Count];
+            for (var i = 0; i < storageList.Count; i++)
+            {
+                AppBarMenuItems[i] = new ApplicationBarMenuItem();
+                AppBarMenuItems[i].Text = storageList[i].GetStorageName();
+                AppBarMenuItems[i].Click += AppBarMenuItem_Click;
+            }
+        }
         //public int GetPlatformIndexFromString(string platform)
         //{
         //    for (int i = 0; i < App.IStorageManagers.Length; i++)

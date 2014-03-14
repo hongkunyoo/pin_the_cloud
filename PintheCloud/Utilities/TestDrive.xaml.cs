@@ -27,14 +27,23 @@ namespace PintheCloud.Utilities
             InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             //List<FileObject> list = (List<FileObject>)PhoneApplicationService.Current.State["SELECTED_FILE"];
             //await doit(list);
             //await downfromBlob();
             //await TestStorages();
+            await TestAccount();
         }
 
+        public async Task TestAccount()
+        {
+            if (!App.AccountManager.IsSignIn())
+            {
+                NavigationService.Navigate(new Uri("/Pages/ProfilePage.xaml", UriKind.Relative));
+            }
+            
+        }
 
         private async Task<StorageFile> GetStreamGiveFile(Stream input, string fileName)
         {

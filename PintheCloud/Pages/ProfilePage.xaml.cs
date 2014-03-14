@@ -9,6 +9,7 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using System.Text.RegularExpressions;
 using PintheCloud.Models;
+using PintheCloud.Managers;
 
 namespace PintheCloud.Pages
 {
@@ -27,16 +28,16 @@ namespace PintheCloud.Pages
         private async void ui_create_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
         	// TODO: Add event handler implementation here.
+            ui_email.Text = "mark8625@daum.net";
 
             if (!_CheckValidation())
             {
                 ////////////////////////
-                // TODO : SEUNG_MIN
-                // Show ERROR MESSAGE
+                // TODO : SEUNGMIN
+                // Show ERROR Message
                 ////////////////////////
                 return;
             }
-                
 
             PtcAccount ptcAccount = new PtcAccount();
             ptcAccount.Name = ui_name.Text;
@@ -45,7 +46,24 @@ namespace PintheCloud.Pages
             ptcAccount.ProfilePassword = ui_password.Text;
 
             // Insert to Server
-            await App.AccountManager.InsertPtcAccountAsync(ptcAccount);
+            bool result = await App.AccountManager.CreateNewPtcAccountAsync(ptcAccount);
+
+            ////////////////////////
+            // TODO : SEUNGMIN
+            // Show Progress Status
+            ////////////////////////
+
+            if (result)
+            {
+                NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
+            }
+            else // IF there is a duplicated Email address, it fails.
+            {
+                ////////////////////////
+                // TODO : SEUNGMIN
+                // Show ERROR message
+                ////////////////////////
+            }
         }
 
         private bool _CheckValidation()
@@ -60,6 +78,12 @@ namespace PintheCloud.Pages
             if (string.Empty.Equals(ui_password.Text)) return false;
 
             return true;
+        }
+
+        private void ui_sign_in_btn_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+        	// TODO: Add event handler implementation here.
+            NavigationService.Navigate(new Uri(EventHelper.SIGNIN_PAGE, UriKind.Relative));
         }
     }
 }

@@ -88,7 +88,7 @@ namespace PintheCloud.Managers
         {
             // Get My signed in ids
             List<string> ids = new List<string>();
-            using (var itr = StorageHelper.GetStorageList())
+            using (var itr = StorageHelper.GetStorageEnumerator())
             {
                 while (itr.MoveNext())
                 {

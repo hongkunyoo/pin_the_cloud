@@ -29,21 +29,13 @@ namespace PintheCloud.Helpers
             else
                 return map[DEFAULT_STORAGE];
         }
-        public static IEnumerator<IStorageManager> GetStorageList()
+        public static List<IStorageManager> GetStorageList()
+        {
+            return list;
+        }
+        public static IEnumerator<IStorageManager> GetStorageEnumerator()
         {
             return list.GetEnumerator();
-        }
-        public static Dictionary<string, IStorageManager>.Enumerator GetStorageMap()
-        {
-            return map.GetEnumerator();
-        }
-        public static int GetStorageSize()
-        {
-            return list.Count;
-        }
-        public static int GetStorageIndex(IStorageManager storage)
-        {
-            return list.IndexOf(storage);
         }
     }
 }
