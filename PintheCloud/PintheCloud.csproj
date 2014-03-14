@@ -120,6 +120,9 @@
     <Compile Include="Pages\AddFilePage.xaml.cs">
       <DependentUpon>AddFilePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\LocalExplorer.xaml.cs">
+      <DependentUpon>LocalExplorer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\PinPage.cs" />
     <Compile Include="Pages\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
@@ -191,6 +194,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\AddFilePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\LocalExplorer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

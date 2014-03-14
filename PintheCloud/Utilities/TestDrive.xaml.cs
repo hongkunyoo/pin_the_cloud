@@ -40,7 +40,11 @@ namespace PintheCloud.Utilities
         {
             if (!App.AccountManager.IsSignIn())
             {
-                NavigationService.Navigate(new Uri("/Pages/ProfilePage.xaml", UriKind.Relative));
+                NavigationService.Navigate(new Uri(EventHelper.PROFILE_PAGE, UriKind.Relative));
+            }
+            else
+            {
+                NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
             }
             
         }

@@ -14,6 +14,7 @@ namespace PintheCloud.Managers
     {
         public PtcAccount myAccount { get; set; }
         private string PTCACCOUNT_ID = "PTCACCOUNT_ID";
+        private string PTCACCOUNT_PW = "PTCACCOUNT_PW";
 
         public bool IsSignIn()
         {
@@ -43,6 +44,13 @@ namespace PintheCloud.Managers
             return true;
         }
 
+        public void SavePtcId(string email, string password)
+        {
+            App.ApplicationSettings[PTCACCOUNT_ID] = email;
+            App.ApplicationSettings[PTCACCOUNT_PW] = password;
+            App.ApplicationSettings.Save();
+        }
+
         public async Task<bool> CreateNewPtcAccountAsync(PtcAccount account)
         {
             MSPtcAccount mspa = this.ConvertToMSPtcAccount(account);
@@ -53,8 +61,8 @@ namespace PintheCloud.Managers
             //}
             try
             {
-                //PtcAccount p = await this.GetPtcAccountAsync(account.Email);
-                //if (p != null) return false;
+                PtcAccount p = await this.GetPtcAccountAsync(account.Email);
+                if (p != null) return false;
 
                 await App.MobileService.GetTable<MSPtcAccount>().InsertAsync(mspa);
                 //foreach (var i in saList)
@@ -66,8 +74,7 @@ namespace PintheCloud.Managers
             {
                 return false;
             }
-            App.ApplicationSettings[PTCACCOUNT_ID] = account.Email;
-            App.ApplicationSettings.Save();
+            this.SavePtcId(account.Email, account.ProfilePassword);
             this.myAccount = account;
             return true;
         }
@@ -133,13 +140,18 @@ namespace PintheCloud.Managers
         {
             return this.myAccount;
         }
-        private async Task<PtcAccount> GetPtcAccountAsync(string accountId)
+        public async Task<PtcAccount> GetPtcAccountAsync(string accountId, string password = null)
         {
+            System.Linq.Expressions.Expression<Func<MSPtcAccount, bool>> lamda = (a => a.email == accountId);
+            if(password != null)
+                 lamda = (a => a.email == accountId || a.profile_password == password);
+            
+            System.Linq.Expressions.Expression<Func<MSPtcAccount,bool>> linq = (a => a.email == accountId);
             MobileServiceCollection<MSPtcAccount, MSPtcAccount> msAccounts = null;
             try
             {
                 msAccounts = await App.MobileService.GetTable<MSPtcAccount>()
-                    .Where(a => a.email == accountId)
+                    .Where(lamda)
                     .ToCollectionAsync();
             }
             catch (MobileServiceInvalidOperationException)

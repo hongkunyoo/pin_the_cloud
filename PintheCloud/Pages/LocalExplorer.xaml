@@ -1,5 +1,5 @@
 ﻿<phone:PhoneApplicationPage
-    x:Class="PintheCloud.Pages.SignInStoragePage"
+    x:Class="PintheCloud.Pages.LocalExplorer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
@@ -22,15 +22,12 @@
 
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
-            <TextBlock Text="Storage" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock Text="Choose Storage to use" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}" FontSize="40"/>
+            <TextBlock Text="Local Explorer" Style="{StaticResource PhoneTextNormalStyle}"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-        	<StackPanel HorizontalAlignment="Left" Height="568" VerticalAlignment="Top" Width="456"/>
-        	<phone:LongListSelector x:Name="ui_storage_list" Margin="0,0,0,81" SelectionChanged="ui_storage_list_SelectionChanged" FontSize="46.667"/>
-        	<Button x:Name="ui_finish_btn" Content="Finish" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="310,577,0,0" Width="136" Click="ui_finish_btn_Click"/>
+        	<phone:LongListSelector x:Name="ui_local_list" HorizontalAlignment="Left" Height="696" VerticalAlignment="Top" Width="456" SelectionChanged="ui_local_list_SelectionChanged"/>
 
         </Grid>
     </Grid>
