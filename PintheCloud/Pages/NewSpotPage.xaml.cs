@@ -84,7 +84,8 @@ namespace PintheCloud.Pages
 
         private void uiSpotNameSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            uiSpotNameTextBox.Text = uiSpotNameTextBox.Text.Trim();
+            if (uiSpotNameSetButton.IsEnabled)
+                uiSpotNameTextBox.Text = uiSpotNameTextBox.Text.Trim();
         }
 
 
@@ -127,7 +128,8 @@ namespace PintheCloud.Pages
 
         private void uiPrivateModePasswordSetButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            uiPrivateModePasswordTextBox.Text = uiPrivateModePasswordTextBox.Text.Trim();
+            if (uiPrivateModePasswordSetButton.IsEnabled)
+                uiPrivateModePasswordTextBox.Text = uiPrivateModePasswordTextBox.Text.Trim();
         }
 
 
@@ -206,7 +208,7 @@ namespace PintheCloud.Pages
             if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
             {
                 PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.FileObjectViewModel.Items.ToList<FileObjectViewItem>();
-                NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + "?spotName=" + spotName + "&private=" + isPrivate + "&password=" + AESHelper.Encrypt(password), UriKind.Relative));
+                NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + "?spotName=" + spotName + "&private=" + isPrivate + "&password=" + password, UriKind.Relative));
             }
             else  // GPS is off
             {

@@ -104,8 +104,6 @@
             <phone:Pivot x:Name="uiExplorerPivot" SelectionChanged="uiExplorerPivot_SelectionChanged" Style="{StaticResource CustomPivotStyle}" Foreground="Black">
                 <phone:PivotItem x:Name="uiPickPivot" Margin="0" >
                     <Grid Margin="0">
-                        <Popup x:Name="uiSubmitSpotPasswordPopup" HorizontalAlignment="Left" VerticalAlignment="Top">
-						</Popup>
                         <TextBlock x:Name="uiNearSpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Foreground="Black" Visibility="Collapsed" Margin="28,20,28,0" />
                         <phone:LongListSelector x:Name="uiNearSpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiNearSpotList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Margin="0" Padding="0" />
                     </Grid>

@@ -42,6 +42,7 @@ namespace PintheCloud.Pages
 
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarMenuItem[] AppBarMenuItems = null;
+        private Popup SubmitSpotPasswordParentPopup = new Popup();
 
         public SpotViewModel NearSpotViewModel = new SpotViewModel();
         public FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
@@ -229,31 +230,32 @@ namespace PintheCloud.Pages
             {
                 if (spotViewItem.IsPrivateImage.Equals(FileObjectViewModel.IS_PRIVATE_IMAGE_URI))
                 {
-                    // Check password
-                    SubmitSpotPasswordPopup submitSpotPasswordPopup = new SubmitSpotPasswordPopup(uiSubmitSpotPasswordPopup, spotViewItem.SpotId, spotViewItem.SpotPassword);
-                    uiSubmitSpotPasswordPopup.HorizontalOffset = 80;
-                    uiSubmitSpotPasswordPopup.VerticalOffset = 100;
-                    uiSubmitSpotPasswordPopup.Child = submitSpotPasswordPopup;
-                    uiSubmitSpotPasswordPopup.IsOpen = true;
-                    uiSubmitSpotPasswordPopup.Closed += (senderObject, args) =>
+                    SubmitSpotPasswordPopup submitSpotPasswordPopup = 
+                        new SubmitSpotPasswordPopup(this.SubmitSpotPasswordParentPopup, spotViewItem.SpotId, spotViewItem.SpotPassword, 
+                            uiPickPivot.ActualWidth, uiPickPivot.ActualHeight, uiPivotTitleGrid.ActualHeight);
+                    this.SubmitSpotPasswordParentPopup.Child = submitSpotPasswordPopup;
+                    this.SubmitSpotPasswordParentPopup.IsOpen = true;
+                    this.SubmitSpotPasswordParentPopup.Closed += (senderObject, args) =>
                     {
-                        if (submitSpotPasswordPopup.result)
-                        {
-                            PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
-                            //PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
-                            string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
-                            NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
-                        }
+
+                        if (((SubmitSpotPasswordPopup)((Popup)senderObject).Child).result)
+                            this.NavigateToFileListPage(spotViewItem);
                     };
                 }
                 else
                 {
-                    PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
-                    //PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
-                    string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
-                    NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
+                    this.NavigateToFileListPage(spotViewItem);
                 }
             }
+        }
+
+
+        private void NavigateToFileListPage(SpotViewItem spotViewItem)
+        {
+            PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
+            //PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
+            string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
+            NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
         }
 
 
@@ -277,20 +279,27 @@ namespace PintheCloud.Pages
                         // Otherwise, Show none message.
                         List<Spot> spots = await App.SpotManager.GetNearSpotViewItemsAsync(currentGeoposition);
 
-                        if (spots.Count > 0)  // There are near spots
+                        if (spots != null)
                         {
-                            base.Dispatcher.BeginInvoke(() =>
+                            if (spots.Count > 0)  // There are near spots
+                            {
+                                base.Dispatcher.BeginInvoke(() =>
+                                {
+                                    this.NearSpotViewModel.IsDataLoaded = true;
+                                    uiNearSpotList.Visibility = Visibility.Visible;
+                                    uiNearSpotMessage.Visibility = Visibility.Collapsed;
+                                    this.NearSpotViewModel.SetItems(spots);
+                                });
+                            }
+                            else  // No near spots
                             {
                                 this.NearSpotViewModel.IsDataLoaded = true;
-                                uiNearSpotList.Visibility = Visibility.Visible;
-                                uiNearSpotMessage.Visibility = Visibility.Collapsed;
-                                this.NearSpotViewModel.SetItems(spots);
-                            });
+                                base.SetListUnableAndShowMessage(uiNearSpotList, uiNearSpotMessage, AppResources.NoNearSpotMessage);
+                            }
                         }
-                        else  // No near spots
+                        else
                         {
-                            this.NearSpotViewModel.IsDataLoaded = true;
-                            base.SetListUnableAndShowMessage(uiNearSpotList, uiNearSpotMessage, AppResources.NoNearSpotMessage);
+                            base.SetListUnableAndShowMessage(uiNearSpotList, uiNearSpotMessage, AppResources.BadLoadingSpotMessage);
                         }
                     }
                     else  // GPS works bad
@@ -323,6 +332,8 @@ namespace PintheCloud.Pages
             //int currentPlatformIndex = base.GetPlatformIndexFromString(appBarMenuItem.Text);
 
             if (Switcher.GetCurrentStorage().GetStorageName().Equals(appBarMenuItem.Text)) return;
+
+            if(Switcher.GetCurrentStorage().IsSigningIn()) return;
 
             Switcher.SetStorageTo(appBarMenuItem.Text);
 
@@ -365,13 +376,16 @@ namespace PintheCloud.Pages
             IStorageManager iStorageManager = Switcher.GetCurrentStorage();
             if (iStorageManager.IsSigningIn())
             {
+                e.Cancel = true;
+
                 // If it is popup, close popup.
                 if (iStorageManager.IsPopup())
-                {
                     EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
-                    e.Cancel = true;
-                    return;
-                }
+            }
+            else if (this.SubmitSpotPasswordParentPopup.IsOpen)
+            {
+                e.Cancel = true;
+                this.SubmitSpotPasswordParentPopup.IsOpen = false;
             }
             else
             {
@@ -449,6 +463,7 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 // Show Loading message and save is login true for pivot moving action while sign in.
+                base.SetProgressIndicator(true);
                 base.SetListUnableAndShowMessage(uiPinInfoList, uiPinInfoMessage, AppResources.DoingSignIn);
                 base.Dispatcher.BeginInvoke(() =>
                 {
@@ -478,6 +493,8 @@ namespace PintheCloud.Pages
                         uiPinInfoSignInPanel.Visibility = Visibility.Visible;
                     });
                 }
+
+                base.SetProgressIndicator(false);
             }
             else
             {

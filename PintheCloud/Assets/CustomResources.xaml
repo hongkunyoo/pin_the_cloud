@@ -302,10 +302,10 @@
 								<VisualState x:Name="Unfocused"/>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
-						<Border x:Name="MainBorder" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"/>
-						<Border x:Name="ReadonlyBorder" BorderBrush="{StaticResource PhoneDisabledBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent" Visibility="Collapsed"/>
-						<Border BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}" Background="Transparent">
-							<ContentControl x:Name="ContentElement" BorderThickness="0" HorizontalContentAlignment="Left" Padding="{TemplateBinding Padding}" Margin="15,0,0,0"/>
+						<Border x:Name="MainBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}"/>
+						<Border x:Name="ReadonlyBorder" BorderBrush="{StaticResource PhoneDisabledBrush}" Background="Transparent" Visibility="Collapsed"/>
+						<Border BorderBrush="Transparent" Background="Transparent">
+							<ContentControl x:Name="ContentElement" BorderThickness="0" HorizontalContentAlignment="Left" Margin="15,0,0,0"/>
 						</Border>
 					</Grid>
 				</ControlTemplate>

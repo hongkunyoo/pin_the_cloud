@@ -36,6 +36,8 @@ namespace PintheCloud.Converters
 
             return new FileObject(id, name, size, type, extension, updateAt);
         }
+
+
         /// <summary>
         /// Converting Windows Azure Blob Storage Model to FileObject.
         /// </summary>
@@ -47,19 +49,13 @@ namespace PintheCloud.Converters
             string name = ParseHelper.ParseName(id);
             double size = (double)blob.Properties.Length;
             FileObject.FileObjectType type = FileObject.FileObjectType.FILE;
-            string extension;
-            if (name.Contains("."))
-            {
-                extension = ParseHelper.SplitNameAndExtension(name)[1];
-            }
-            else
-            {
-                extension = "";
-            }
+            string extension = name.Split('.').Last();
             string updateAt = blob.Properties.LastModified.ToString();
 
             return new FileObject(id, name, size, type, extension, updateAt);
         }
+
+
         /// <summary>
         /// Converting Windows Azure Blob Storage Directory Model to FileObject.
         /// </summary>
@@ -76,6 +72,8 @@ namespace PintheCloud.Converters
 
             return new FileObject(id, name, size, type, extension, updateAt);
         }
+
+
         /// <summary>
         /// Converting DropBox Model to FileObject
         /// </summary>
@@ -93,6 +91,8 @@ namespace PintheCloud.Converters
 
             return new FileObject(Id,Name,Size,Type,Extension,UpdateAt);
         }
+
+
         /// <summary>
         /// Converting GoogleDrive Model to FileObject
         /// </summary>

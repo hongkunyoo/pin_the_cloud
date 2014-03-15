@@ -343,6 +343,7 @@
     <Content Include="Assets\pajeon\at_here\png\setting_icon_nickname.png" />
     <Content Include="Assets\pajeon\at_here\png\splash.png" />
     <Content Include="Assets\pajeon\at_here\png\upload_icon_file.png" />
+    <Content Include="Assets\pajeon\at_here\png\upload_icon_private.png" />
     <Content Include="Assets\pajeon\at_here\png\upload_icon_spotname.png" />
     <Content Include="Assets\pajeon\at_here\png\upload_list_delete.png" />
     <Content Include="Assets\pajeon\at_here\png\upload_list_delete_p.png" />

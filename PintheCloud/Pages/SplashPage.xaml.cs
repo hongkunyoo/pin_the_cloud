@@ -57,7 +57,8 @@ namespace PintheCloud.Pages
                 App.ApplicationSettings.Save();
             }
 
-            NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
+            //NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
+
             if (App.AccountManager.IsSignIn())
             {
                 if (NetworkInterface.GetIsNetworkAvailable())

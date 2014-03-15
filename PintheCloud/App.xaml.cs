@@ -52,7 +52,7 @@ namespace PintheCloud
         //public static String[] StorageManagerNames = null;
         public static TaskHelper TaskHelper = null;
 
-        private static OneDriveManager SkyDriveManager = null;
+        private static OneDriveManager OneDriveManager = null;
         private static DropboxManager DropBoxManager = null;
         private static GoogleDriveManager GoogleDriveManger = null;
 
@@ -96,7 +96,7 @@ namespace PintheCloud
             BlobStorageManager = new BlobStorageManager();
             LocalStorageManager = new LocalStorageManager();
 
-            SkyDriveManager = new OneDriveManager();
+            OneDriveManager = new OneDriveManager();
             DropBoxManager = new DropboxManager();
             GoogleDriveManger = new GoogleDriveManager();
             //IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
@@ -104,7 +104,7 @@ namespace PintheCloud
             /////////////////////////////////////////////////////
             // This order will be displayed at every App Pages
             /////////////////////////////////////////////////////
-            StorageHelper.AddStorageManager(SkyDriveManager.GetStorageName(), SkyDriveManager);
+            StorageHelper.AddStorageManager(OneDriveManager.GetStorageName(), OneDriveManager);
             StorageHelper.AddStorageManager(DropBoxManager.GetStorageName(), DropBoxManager);
             StorageHelper.AddStorageManager(GoogleDriveManger.GetStorageName(), GoogleDriveManger);
 
@@ -112,6 +112,7 @@ namespace PintheCloud
 
             //App.StorageManagerNames = new string[] {SkyDriveManager.GetStorageName(), DropBoxManager.GetStorageName(), GoogleDriveManger.GetStorageName()};
 
+            //IStorageManagers = new IStorageManager[] { OneDriveManager, DropBoxManager, GoogleDriveManger };
             TaskHelper = new TaskHelper();
 
             AccountManager = new AccountManager();

@@ -34,6 +34,8 @@ namespace PintheCloud.Pages
 
         protected const string NULL_PASSWORD = "null";
 
+        public const double STATUS_BAR_HEIGHT = 32.0;
+
         public PtcPage()
         {
         }

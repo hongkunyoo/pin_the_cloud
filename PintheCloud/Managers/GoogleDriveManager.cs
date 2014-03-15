@@ -141,6 +141,7 @@ namespace PintheCloud.Managers
             return tcs.Task.Result;
         }
 
+
         public bool IsSigningIn()
         {
             if (this.tcs != null)
@@ -149,16 +150,24 @@ namespace PintheCloud.Managers
                 return false;
             
         }
+
+
+        // Remove user and record
         public void SignOut()
         {
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_USER_KEY);
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_SIGN_IN_KEY);
+            this.FoldersTree.Clear();
+            this.FolderRootTree.Clear();
             this.CurrentAccount = null;
         }
+
+
         public bool IsPopup()
         {
             return false;
         }
+
 
         public bool IsSignIn()
         {
@@ -275,8 +284,8 @@ namespace PintheCloud.Managers
                 p.Id = folderId;
                 file.Parents = new List<ParentReference>();
                 file.Parents.Add(p);
-                
-                string extension = ParseHelper.SplitNameAndExtension(fileName)[1];
+
+                string extension = fileName.Split('.').Last();
                 var insert = service.Files.Insert(file, inputStream, GoogleDriveManager.MimeTypeMapper[extension]);
                 var task = await insert.UploadAsync();
             }
