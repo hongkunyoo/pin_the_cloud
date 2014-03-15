@@ -146,7 +146,6 @@ namespace PintheCloud.Managers
             if(password != null)
                  lamda = (a => a.email == accountId || a.profile_password == password);
             
-            System.Linq.Expressions.Expression<Func<MSPtcAccount,bool>> linq = (a => a.email == accountId);
             MobileServiceCollection<MSPtcAccount, MSPtcAccount> msAccounts = null;
             try
             {
@@ -173,6 +172,7 @@ namespace PintheCloud.Managers
         }
 
        #region Private Methods
+
         private async Task<Dictionary<string, StorageAccount>> GetStorageAccountsAsync(String ptc_account_id)
         {
             Dictionary<string, StorageAccount> map = new Dictionary<string,StorageAccount>();
@@ -194,7 +194,6 @@ namespace PintheCloud.Managers
             }
             return map;
         }
-       
 
         public MSStorageAccount ConvertToMSStorageAccount(StorageAccount sa)
         {

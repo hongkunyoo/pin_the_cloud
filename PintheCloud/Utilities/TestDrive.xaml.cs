@@ -17,6 +17,7 @@ using System.Windows.Controls.Primitives;
 using System.Diagnostics;
 using System.IO;
 using PintheCloud.Managers;
+using System.Collections;
 
 namespace PintheCloud.Utilities
 {
@@ -38,15 +39,17 @@ namespace PintheCloud.Utilities
 
         public async Task TestAccount()
         {
-            if (!App.AccountManager.IsSignIn())
+            await App.AccountManager.GetPtcAccountAsync();
+
+            PtcAccount pa = App.AccountManager.GetPtcAccount();
+
+            using (var itr = App.AccountManager.GetPtcAccount().GetStorageAccountEnumerator())
             {
-                NavigationService.Navigate(new Uri(EventHelper.PROFILE_PAGE, UriKind.Relative));
+                while (itr.MoveNext())
+                {
+                    Debug.WriteLine(itr.Current.Value.StorageName);
+                }
             }
-            else
-            {
-                NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
-            }
-            
         }
 
         private async Task<StorageFile> GetStreamGiveFile(Stream input, string fileName)

@@ -34,7 +34,7 @@ namespace PintheCloud.Popups
         private async void webBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             if (e.Uri.ToString().StartsWith("http://")
-                && e.Uri.ToString().Contains("http://54.214.19.198"))
+                && e.Uri.ToString().Contains(DropboxManager.DROPBOX_AUTH_URI))
             {
                 this.Popup.IsOpen = false;
                 await uiWebBrowser.ClearCookiesAsync();

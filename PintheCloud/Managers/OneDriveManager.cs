@@ -60,7 +60,7 @@ namespace PintheCloud.Managers
                 string accountUserName = (string)operationResult.Result["name"];
 
                 // Register account
-                StorageAccount storageAccount = await App.AccountManager.GetPtcAccount().GetStorageAccountAsync(accountId);
+                StorageAccount storageAccount = App.AccountManager.GetPtcAccount().GetStorageAccountById(accountId);
                 if (storageAccount == null)
                 {
                     storageAccount = new StorageAccount();

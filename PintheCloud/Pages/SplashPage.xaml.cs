@@ -56,7 +56,8 @@ namespace PintheCloud.Pages
                 App.ApplicationSettings[StorageAccount.LOCATION_ACCESS_CONSENT_KEY] = false;
                 App.ApplicationSettings.Save();
             }
-            
+
+            NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
             if (App.AccountManager.IsSignIn())
             {
                 if (NetworkInterface.GetIsNetworkAvailable())
@@ -70,7 +71,7 @@ namespace PintheCloud.Pages
                 NavigationService.Navigate(new Uri(EventHelper.PROFILE_PAGE, UriKind.Relative));
             }
             
-            //NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
+            
         }
     }
 }

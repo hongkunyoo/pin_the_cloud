@@ -22,7 +22,7 @@ namespace PintheCloud.Managers
         #region Variables
         private const string DROPBOX_CLIENT_KEY = "gxjfureco8noyle";
         private const string DROPBOX_CLIENT_SECRET = "iskekcebjky6vbm";
-        public const string DROPBOX_AUTH_URI = "http://54.214.19.198";
+        public const string DROPBOX_AUTH_URI = "http://www.pinthecloud.com/index.html";
 
         private const string DROPBOX_USER_KEY = "DROPBOX_USER_KEY";
         private const string DROPBOX_SIGN_IN_KEY = "DROPBOX_SIGN_IN_KEY";
@@ -97,7 +97,7 @@ namespace PintheCloud.Managers
 
                         // Save dropbox user got and sign in setting.
                         this.CurrentAccount = await this.GetMyAccountAsync();
-                        StorageAccount account = await App.AccountManager.GetPtcAccount().GetStorageAccountAsync(this.CurrentAccount.Id);
+                        StorageAccount account = App.AccountManager.GetPtcAccount().GetStorageAccountById(this.CurrentAccount.Id);
                         if (account == null)
                         {
                             await App.AccountManager.GetPtcAccount().CreateStorageAccountAsync(this.CurrentAccount);

@@ -44,7 +44,7 @@ namespace PintheCloud.Models
                 return false;
             }
         }
-        public async Task<StorageAccount> GetStorageAccountAsync(string storageAccountId)
+        private async Task<StorageAccount> GetStorageAccountAsync(string storageAccountId)
         {
             MobileServiceCollection<MSStorageAccount, MSStorageAccount> accounts = null;
             try
@@ -66,12 +66,31 @@ namespace PintheCloud.Models
             else
                 return null;
         }
-        public StorageAccount GetStorageAccount(string storageName)
+
+        public StorageAccount GetStorageAccountById(string storageAccountId)
+        {
+            if(storageAccountId == null || string.Empty.Equals(storageAccountId)) return null;
+            using (var itr = StorageAccount.GetEnumerator())
+            {
+                while (itr.MoveNext())
+                {
+                    if (storageAccountId.Equals(itr.Current.Value.Id))
+                        return itr.Current.Value;
+                }
+            }
+            return null;
+        }
+
+        public StorageAccount GetStorageAccountByName(string storageName)
         {
             if (StorageAccount.ContainsKey(storageName))
                 return StorageAccount[storageName];
             else
                 return null;
+        }
+        public IEnumerator<KeyValuePair<string, StorageAccount>> GetStorageAccountEnumerator()
+        {
+            return StorageAccount.GetEnumerator();
         }
     }
 }
