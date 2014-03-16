@@ -63,7 +63,7 @@ namespace PintheCloud.Pages
             {
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
-                    App.TaskHelper.AddTask(App.AccountManager.GetPtcId(), App.AccountManager.SignIn());
+                    TaskHelper.AddTask(App.AccountManager.GetPtcId(), App.AccountManager.SignIn());
                 }
                 NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE, UriKind.Relative));
             }

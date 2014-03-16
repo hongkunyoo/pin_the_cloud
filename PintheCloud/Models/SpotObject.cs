@@ -13,7 +13,7 @@ namespace PintheCloud.Models
     {
         public string Id { get; set; }
         public string SpotName { get; set; }
-        public double Latitue { get; set; }
+        public double Latitude { get; set; }
         public double Longtitude { get; set; }
         public string PtcAccountId { get; set; }
         public string PtcAccountName { get; set; }
@@ -25,6 +25,24 @@ namespace PintheCloud.Models
         private List<FileObject> fileObjectList;
         private List<ProfileObject> profileObjectList;
         private List<NoteObject> noteObjectList;
+
+
+        public SpotObject()
+        {
+
+        }
+        public SpotObject(string SpotName, double Latitude, double Longtitude, string PtcAccountId, string PtcAccountName, double SpotDistance, bool IsPrivate, string Password, string CreateAt)
+        {
+            this.SpotName = SpotName;
+            this.Latitude = Latitude;
+            this.Longtitude = Longtitude;
+            this.PtcAccountId = PtcAccountId;
+            this.PtcAccountName = PtcAccountName;
+            this.SpotDistance = SpotDistance;
+            this.Password = Password;
+            this.IsPrivate = IsPrivate;
+            this.CreateAt = CreateAt;
+        }
 
         public FileObject GetFileObject(string fileObjectId)
         {
@@ -65,62 +83,62 @@ namespace PintheCloud.Models
 
 
         #region Managing Contents Async Methods
-        public async Task<bool> AddFileObjectAsync(FileObject fo)
-        {
-            return null;
-        }
+        //public async Task<bool> AddFileObjectAsync(FileObject fo)
+        //{
+        //    return null;
+        //}
 
-        public async Task<bool> DeleteFileObjectAsync(FileObject fo)
-        {
-            return null;
-        }
+        //public async Task<bool> DeleteFileObjectAsync(FileObject fo)
+        //{
+        //    return null;
+        //}
 
-        public List<FileObject> ListFileObjectsAsync()
-        {
-            return null;
-        }
+        //public List<FileObject> ListFileObjectsAsync()
+        //{
+        //    return null;
+        //}
 
-        public async Task<bool> PutProfileObjectAsync(ProfileObject po)
-        {
-            return null;
-        }
+        //public async Task<bool> PutProfileObjectAsync(ProfileObject po)
+        //{
+        //    return null;
+        //}
 
-        public List<ProfileObject> ListProfileObjectsAsync()
-        {
-            return null;
-        }
-        public async Task<bool> AddNoteObjectAsync(NoteObject no)
-        {
-            return null;
-        }
+        //public List<ProfileObject> ListProfileObjectsAsync()
+        //{
+        //    return null;
+        //}
+        //public async Task<bool> AddNoteObjectAsync(NoteObject no)
+        //{
+        //    return null;
+        //}
 
-        public async Task<bool> AddLogObjectAsync(LogObject log)
-        {
+        //public async Task<bool> AddLogObjectAsync(LogObject log)
+        //{
 
-            return null;
-        }
+        //    return null;
+        //}
 
-        public async Task<LogObject> ListLogObjectsAsync()
-        {
-            return null;
-        }
+        //public async Task<LogObject> ListLogObjectsAsync()
+        //{
+        //    return null;
+        //}
 
-        public async Task<bool> SaveLogObjectsAsync(string location)
-        {
-            return null;
-        }
+        //public async Task<bool> SaveLogObjectsAsync(string location)
+        //{
+        //    return null;
+        //}
         #endregion
 
         public static MSSpotObject ConvertToMSSpotObject(SpotObject so)
         {
-            return new MSSpotObject(so.SpotName, so.Latitue, so.Longtitude, so.PtcAccountId, so.PtcAccountName, so.SpotDistance, so.IsPrivate, so.Password, so.CreateAt);
+            return new MSSpotObject(so.SpotName, so.Latitude, so.Longtitude, so.PtcAccountId, so.PtcAccountName, so.SpotDistance, so.IsPrivate, so.Password, so.CreateAt);
         }
         public static SpotObject ConvertToSpotObject(MSSpotObject msso)
         {
             SpotObject so = new SpotObject();
             so.Id = msso.id;
             so.SpotName = msso.spot_name;
-            so.Latitue = msso.spot_latitude;
+            so.Latitude = msso.spot_latitude;
             so.Longtitude = msso.spot_longtitude;
             so.PtcAccountId = msso.account_id;
             so.PtcAccountName = msso.account_name;

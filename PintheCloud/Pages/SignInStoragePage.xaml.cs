@@ -45,7 +45,7 @@ namespace PintheCloud.Pages
             string SelectedStorageName = ui_storage_list.SelectedItem as string;
 
             IStorageManager Storage = StorageHelper.GetStorageManager(SelectedStorageName);
-            App.TaskHelper.AddSignInTask(Storage.GetStorageName(), Storage.SignIn());
+            TaskHelper.AddSignInTask(Storage.GetStorageName(), Storage.SignIn());
 
         }
 

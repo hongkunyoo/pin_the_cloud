@@ -15,6 +15,7 @@ using System.Windows;
 using PintheCloud.Resources;
 using PintheCloud.Models;
 using Microsoft.Phone.Shell;
+using PintheCloud.Helpers;
 
 namespace PintheCloud.Pages
 {
@@ -98,8 +99,8 @@ namespace PintheCloud.Pages
             });
 
             // Wait task
-            await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
-            await App.TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
+            await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
+            await TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
 
             // If it wasn't signed out, set list.
             // Othersie, show sign in grid.

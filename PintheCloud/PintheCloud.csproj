@@ -102,12 +102,11 @@
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Helpers\EventHelper.cs" />
     <Compile Include="Managers\AccountManager.cs" />
-    <Compile Include="Managers\ShareManager.cs" />
     <Compile Include="Models\LogObject.cs" />
-    <Compile Include="Models\ShareObject.cs" />
+    <Compile Include="Models\NoteObject.cs" />
+    <Compile Include="Models\ProfileObject.cs" />
     <Compile Include="Models\SpotObject.cs" />
     <Compile Include="Models\StorageAccount.cs" />
-    <Compile Include="Helpers\AccountHelper.cs" />
     <Compile Include="Managers\DropboxManager.cs" />
     <Compile Include="Managers\GoogleDriveManager.cs" />
     <Compile Include="Managers\IStorageManager.cs" />
@@ -115,7 +114,6 @@
     <Compile Include="Managers\LocalStorageManager.cs" />
     <Compile Include="Managers\OneDriveManager.cs" />
     <Compile Include="Managers\SpotManager.cs" />
-    <Compile Include="Managers\SpotManagerImplement.cs" />
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\PtcAccount.cs" />
     <Compile Include="Models\Spot.cs" />
@@ -148,12 +146,14 @@
     <Compile Include="Pages\NewSpotPage.xaml.cs">
       <DependentUpon>NewSpotPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\ConvertTemplate.cs" />
     <Compile Include="Utilities\DropboxWebBrowserResult.cs" />
     <Compile Include="Utilities\DropboxWebBrowserTask.cs" />
     <Compile Include="Helpers\LockHelper.cs" />
     <Compile Include="Utilities\ImageButton.xaml.cs">
       <DependentUpon>ImageButton.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\IStoragemanager.cs" />
     <Compile Include="Utilities\ShareException.cs" />
     <Compile Include="Converters\StringToThumnailUriConverter.cs" />
     <Compile Include="Pages\FileListPage.xaml.cs">
@@ -164,6 +164,7 @@
     <Compile Include="Converters\StringToFontWeightConverter.cs" />
     <Compile Include="Converters\StringToUriConverter.cs" />
     <Compile Include="Helpers\TaskHelper.cs" />
+    <Compile Include="Utilities\StorageExplorer.cs" />
     <Compile Include="Utilities\TestDrive.xaml.cs">
       <DependentUpon>TestDrive.xaml</DependentUpon>
     </Compile>
@@ -568,7 +569,9 @@
       <Name>DropNet.WindowsPhone</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

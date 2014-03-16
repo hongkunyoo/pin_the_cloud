@@ -12,7 +12,7 @@ namespace PintheCloud.Helpers
         // Tasks
         private static IDictionary<string, Task<bool>> Tasks = new Dictionary<string, Task<bool>>();
         private static Dictionary<string ,Task<bool>> SignInTasks = new Dictionary<string, Task<bool>>();
-        //private static Dictionary<string, Task> SignOutTasks = new Dictionary<string, Task>();
+        private static Dictionary<string, Task> SignOutTasks = new Dictionary<string, Task>();
 
 
         public static void AddTask(string name, Task<bool> task)
@@ -71,27 +71,27 @@ namespace PintheCloud.Helpers
             return result;
         }
 
-        //public static void AddSignOutTask(string key, Task task)
-        //{
-        //    if (!SignOutTasks.ContainsKey(key))
-        //        SignOutTasks.Add(key, task);
-        //}
+        public static void AddSignOutTask(string key, Task task)
+        {
+            if (!SignOutTasks.ContainsKey(key))
+                SignOutTasks.Add(key, task);
+        }
 
 
-        //public static Task WaitSignOutTask(string key)
-        //{
-        //    if (SignOutTasks.ContainsKey(key))
-        //    {
-        //        Task task = this.SignOutTasks[key];
-        //        SignOutTasks.Remove(key);
-        //        return task;
-        //    }
-        //    else
-        //    {
-        //        TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-        //        tcs.SetResult(true);
-        //        return tcs.Task;
-        //    }
-        //}
+        public static Task WaitSignOutTask(string key)
+        {
+            if (SignOutTasks.ContainsKey(key))
+            {
+                Task task = SignOutTasks[key];
+                SignOutTasks.Remove(key);
+                return task;
+            }
+            else
+            {
+                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+                tcs.SetResult(true);
+                return tcs.Task;
+            }
+        }
     }
 }

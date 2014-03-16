@@ -171,7 +171,7 @@ namespace PintheCloud
             using (var itr = StorageHelper.GetStorageEnumerator())
             {
                 while (itr.MoveNext())
-                    await App.TaskHelper.WaitSignInTask(itr.Current.GetStorageName());
+                    await TaskHelper.WaitSignInTask(itr.Current.GetStorageName());
             }
         }
 

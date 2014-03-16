@@ -86,6 +86,7 @@ namespace PintheCloud.Utilities
         }
 
 
+
         public static void SetConvertToFileObject(PintheCloud.Utilities.ConvertTemplate.ConvertFirstToSecond<T, FileObject> convert)
         {
             ConvertToFileObject = convert;

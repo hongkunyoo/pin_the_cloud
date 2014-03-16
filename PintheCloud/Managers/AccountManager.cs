@@ -37,7 +37,7 @@ namespace PintheCloud.Managers
                 {
                     if (itr.Current.IsSignIn())
                     {
-                        App.TaskHelper.AddSignInTask(itr.Current.GetStorageName(), itr.Current.SignIn());
+                        TaskHelper.AddSignInTask(itr.Current.GetStorageName(), itr.Current.SignIn());
                     }
                 }
             }
@@ -82,7 +82,7 @@ namespace PintheCloud.Managers
         {
             MSPtcAccount mspa = PtcAccount.ConvertToMSPtcAccount(account);
             List<MSStorageAccount> saList = new List<MSStorageAccount>();
-            foreach (var i in account.StorageAccount)
+            foreach (var i in account.StorageAccounts)
             {
                 saList.Add(StorageAccount.ConvertToMSStorageAccount(i.Value));
             }
@@ -107,7 +107,7 @@ namespace PintheCloud.Managers
         {
             MSPtcAccount mspa = PtcAccount.ConvertToMSPtcAccount(account);
             List<MSStorageAccount> saList = new List<MSStorageAccount>();
-            foreach (var i in account.StorageAccount)
+            foreach (var i in account.StorageAccounts)
             {
                 saList.Add(StorageAccount.ConvertToMSStorageAccount(i.Value));
             }
@@ -161,7 +161,7 @@ namespace PintheCloud.Managers
             if (msAccounts.Count == 1)
             {
                 PtcAccount account = PtcAccount.ConvertToPtcAccount(msAccounts.First());
-                account.StorageAccount = await this.GetStorageAccountsAsync(account.Email);
+                account.StorageAccounts = await this.GetStorageAccountsAsync(account.Email);
                 this.myAccount = account;
                 return account;
             }

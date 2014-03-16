@@ -437,9 +437,10 @@ namespace PintheCloud.Pages
 
             // Pin spot
             Geoposition geo = await App.Geolocator.GetGeopositionAsync();
-            Spot spot = new Spot(this.SpotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude,
-                this.AccountId, this.AccountName, 0, this.IsPrivate, this.SpotPassword);
-            bool result = await App.SpotManager.PinSpotAsync(spot);
+            SpotObject spot = new SpotObject(this.SpotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude,
+                this.AccountId, this.AccountName, 0, this.IsPrivate, this.SpotPassword, DateTime.Now.ToString());
+
+            bool result = await App.SpotManager.CreateSpotAsync(spot);
             if (result)
             {
                 base.Dispatcher.BeginInvoke(() =>
@@ -447,7 +448,7 @@ namespace PintheCloud.Pages
                     ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                     uiFileList.Visibility = Visibility.Visible;
                     uiFileListMessage.Visibility = Visibility.Collapsed;
-                    this.SpotId = spot.id;
+                    this.SpotId = spot.Id;
                 });
             }
             else

@@ -234,8 +234,8 @@ namespace PintheCloud.Pages
                 // Sign in and await that task.
                 IStorageManager iStorageManager = Switcher.GetCurrentStorage();
                 if (!iStorageManager.IsSigningIn())
-                    App.TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
-                bool result = await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
+                    TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
+                bool result = await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
 
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.

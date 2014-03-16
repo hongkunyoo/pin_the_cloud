@@ -27,134 +27,134 @@ namespace PintheCloud.Managers
 
         /*** Implementation ***/
 
-        public async Task<bool> PinSpotAsync(Spot spot)
-        {
-            try
-            {
-                await App.MobileService.GetTable<Spot>().InsertAsync(spot);
-            }
-            catch (MobileServiceInvalidOperationException)
-            {
-                return false;
-            }
-            return true;
-        }
+        //public async Task<bool> PinSpotAsync(Spot spot)
+        //{
+        //    try
+        //    {
+        //        await App.MobileService.GetTable<Spot>().InsertAsync(spot);
+        //    }
+        //    catch (MobileServiceInvalidOperationException)
+        //    {
+        //        return false;
+        //    }
+        //    return true;
+        //}
 
 
-        public async Task<bool> DeleteSpotAsync(Spot spot)
-        {
-            try
-            {
-                await App.MobileService.GetTable<Spot>().DeleteAsync(spot);
-            }
-            catch (MobileServiceInvalidOperationException)
-            {
-                return false;
-            }
-            return true;
-        }
-
-
-        // Get spot view item from spot list.
-        public async Task<List<Spot>> GetNearSpotViewItemsAsync(Geoposition currentGeoposition)
-        {
-            // Get current coordinate
-            double currentLatitude = currentGeoposition.Coordinate.Latitude;
-            double currentLongtitude = currentGeoposition.Coordinate.Longitude;
-
-            // Get spots formed JArray
-            JArray jSpots = await this.GetNearSpotsAsync(currentLatitude, currentLongtitude);
-
-            // If loading spot doesn't occur error, Convert jarray spots to spot list
-            List<Spot> spots = new List<Spot>();
-            if (jSpots != null)
-            {
-                foreach (JObject jSpot in jSpots)
-                {
-                    // Set new spot view item
-                    string spotId = (string)jSpot["id"];
-                    string spotName = (string)jSpot["spot_name"];
-                    double spotLatitude = (double)jSpot["spot_latitude"];
-                    double spotLongtitude = (double)jSpot["spot_longtitude"];
-                    string accountId = (string)jSpot["account_id"];
-                    string accountName = (string)jSpot["account_name"];
-                    double spotDistance = (double)jSpot["spot_distance"];
-                    bool isPrivate = (bool)jSpot["is_private"];
-                    string spot_password = (string)jSpot["spot_password"];
-
-                    Spot spot = new Spot(spotName, spotLatitude, spotLongtitude, accountId, accountName, spotDistance, isPrivate, spot_password);
-                    spot.id = spotId;
-                    spots.Add(spot);
-                }
-            }
-            else
-            {
-                return null;
-            }
-            return spots;
-        }
+        //public async Task<bool> DeleteSpotAsync(Spot spot)
+        //{
+        //    try
+        //    {
+        //        await App.MobileService.GetTable<Spot>().DeleteAsync(spot);
+        //    }
+        //    catch (MobileServiceInvalidOperationException)
+        //    {
+        //        return false;
+        //    }
+        //    return true;
+        //}
 
 
         // Get spot view item from spot list.
-        public async Task<List<Spot>> GetMySpotViewItemsAsync()
-        {
-            // Get My signed in ids
-            List<string> ids = new List<string>();
-            using (var itr = StorageHelper.GetStorageEnumerator())
-            {
-                while (itr.MoveNext())
-                {
-                    if (itr.Current.IsSignIn())
-                    {
-                        // Wait task
-                        IStorageManager iStorageManager = itr.Current;
-                        await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
-                        await App.TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
+        //public async Task<List<Spot>> GetNearSpotViewItemsAsync(Geoposition currentGeoposition)
+        //{
+        //    // Get current coordinate
+        //    double currentLatitude = currentGeoposition.Coordinate.Latitude;
+        //    double currentLongtitude = currentGeoposition.Coordinate.Longitude;
 
-                        // If it wasn't signed out, set list.
-                        // Othersie, show sign in grid.
-                        if (iStorageManager.GetStorageAccount() != null)  // Wasn't signed out.
-                            ids.Add(iStorageManager.GetStorageAccount().Id);
-                    }
-                }
-            }
+        //    // Get spots formed JArray
+        //    JArray jSpots = await this.GetNearSpotsAsync(currentLatitude, currentLongtitude);
 
-            // If signed in id is over one number, get my spots.
-            // Othewise, return null
-            List<Spot> spots = new List<Spot>();
-            if (ids.Count > 0)
-            {
-                // Get spots formed JArray
-                JArray jSpots = await this.GetMySpotsAsync(ids);
+        //    // If loading spot doesn't occur error, Convert jarray spots to spot list
+        //    List<Spot> spots = new List<Spot>();
+        //    if (jSpots != null)
+        //    {
+        //        foreach (JObject jSpot in jSpots)
+        //        {
+        //            // Set new spot view item
+        //            string spotId = (string)jSpot["id"];
+        //            string spotName = (string)jSpot["spot_name"];
+        //            double spotLatitude = (double)jSpot["spot_latitude"];
+        //            double spotLongtitude = (double)jSpot["spot_longtitude"];
+        //            string accountId = (string)jSpot["account_id"];
+        //            string accountName = (string)jSpot["account_name"];
+        //            double spotDistance = (double)jSpot["spot_distance"];
+        //            bool isPrivate = (bool)jSpot["is_private"];
+        //            string spot_password = (string)jSpot["spot_password"];
 
-                // If loading spot doesn't occur error, Convert jarray spots to spot list
-                if (jSpots != null)
-                {
-                    foreach (JObject jSpot in jSpots)
-                    {
-                        // Set new spot view item
-                        string spotId = (string)jSpot["id"];
-                        string spotName = (string)jSpot["spot_name"];
-                        double spotLatitude = (double)jSpot["spot_latitude"];
-                        double spotLongtitude = (double)jSpot["spot_longtitude"];
-                        string accountId = (string)jSpot["account_id"];
-                        string accountName = (string)jSpot["account_name"];
-                        double spotDistance = (double)jSpot["spot_distance"];
-                        bool isPrivate = (bool)jSpot["is_private"];
-                        string spot_password = (string)jSpot["spot_password"];
+        //            Spot spot = new Spot(spotName, spotLatitude, spotLongtitude, accountId, accountName, spotDistance, isPrivate, spot_password);
+        //            spot.id = spotId;
+        //            spots.Add(spot);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return null;
+        //    }
+        //    return spots;
+        //}
 
-                        Spot spot = new Spot(spotName, spotLatitude, spotLongtitude, accountId, accountName, spotDistance, isPrivate, spot_password);
-                        spot.id = spotId;
-                        spots.Add(spot);
-                    }
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            return spots;
-        }
+
+        // Get spot view item from spot list.
+        //public async Task<List<Spot>> GetMySpotViewItemsAsync()
+        //{
+        //    // Get My signed in ids
+        //    List<string> ids = new List<string>();
+        //    using (var itr = StorageHelper.GetStorageEnumerator())
+        //    {
+        //        while (itr.MoveNext())
+        //        {
+        //            if (itr.Current.IsSignIn())
+        //            {
+        //                // Wait task
+        //                IStorageManager iStorageManager = itr.Current;
+        //                await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
+        //                await TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
+
+        //                // If it wasn't signed out, set list.
+        //                // Othersie, show sign in grid.
+        //                if (iStorageManager.GetStorageAccount() != null)  // Wasn't signed out.
+        //                    ids.Add(iStorageManager.GetStorageAccount().Id);
+        //            }
+        //        }
+        //    }
+
+        //    // If signed in id is over one number, get my spots.
+        //    // Othewise, return null
+        //    List<Spot> spots = new List<Spot>();
+        //    if (ids.Count > 0)
+        //    {
+        //        // Get spots formed JArray
+        //        JArray jSpots = await this.GetMySpotsAsync(ids);
+
+        //        // If loading spot doesn't occur error, Convert jarray spots to spot list
+        //        if (jSpots != null)
+        //        {
+        //            foreach (JObject jSpot in jSpots)
+        //            {
+        //                // Set new spot view item
+        //                string spotId = (string)jSpot["id"];
+        //                string spotName = (string)jSpot["spot_name"];
+        //                double spotLatitude = (double)jSpot["spot_latitude"];
+        //                double spotLongtitude = (double)jSpot["spot_longtitude"];
+        //                string accountId = (string)jSpot["account_id"];
+        //                string accountName = (string)jSpot["account_name"];
+        //                double spotDistance = (double)jSpot["spot_distance"];
+        //                bool isPrivate = (bool)jSpot["is_private"];
+        //                string spot_password = (string)jSpot["spot_password"];
+
+        //                Spot spot = new Spot(spotName, spotLatitude, spotLongtitude, accountId, accountName, spotDistance, isPrivate, spot_password);
+        //                spot.id = spotId;
+        //                spots.Add(spot);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return null;
+        //        }
+        //    }
+        //    return spots;
+        //}
 
 
         // Check Spot Password
@@ -173,6 +173,9 @@ namespace PintheCloud.Managers
             }
             return true;
         }
+
+
+
 
 
 
@@ -237,11 +240,13 @@ namespace PintheCloud.Managers
             }
             return true;
         }
-        public async Task<bool> DeleteSpotAsync(SpotObject so)
+        public async Task<bool> DeleteSpotAsync(string spotId)
         {
+            MSSpotObject msso = new MSSpotObject("", 0, 0, "", "", 0, false, "");
+            msso.id = spotId;
             try
             {
-                await App.MobileService.GetTable<MSSpotObject>().DeleteAsync(SpotObject.ConvertToMSSpotObject(so));
+                await App.MobileService.GetTable<MSSpotObject>().DeleteAsync(msso);
             }
             catch (MobileServiceInvalidOperationException)
             {
@@ -249,7 +254,7 @@ namespace PintheCloud.Managers
             }
             return true;
         }
-        public async Task<List<SpotObject>> GetSpotListAsync(Geoposition currentGeoposition)
+        public async Task<List<SpotObject>> GetNearSpotListAsync(Geoposition currentGeoposition)
         {
             List<SpotObject> list = new List<SpotObject>();
             // Get current coordinate
@@ -276,17 +281,8 @@ namespace PintheCloud.Managers
                     string spot_password = (string)jSpot["spot_password"];
                     string create_at = (string)jSpot["create_at"];
 
-                    SpotObject spot = new SpotObject(); //(spotName, spotLatitude, spotLongtitude, accountId, accountName, spotDistance, isPrivate, spot_password);
+                    SpotObject spot = new SpotObject(spotName, spotLatitude, spotLongtitude, accountId, accountName, spotDistance, isPrivate, spot_password, create_at);
                     spot.Id = spotId;
-                    spot.SpotName = spotName;
-                    spot.Latitue = spotLatitude;
-                    spot.Longtitude = spotLongtitude;
-                    spot.PtcAccountId = accountId;
-                    spot.PtcAccountName = accountName;
-                    spot.SpotDistance = spotDistance;
-                    spot.IsPrivate = isPrivate;
-                    spot.Password = spot_password;
-                    spot.CreateAt = create_at;
 
                     list.Add(spot);
                 }
@@ -326,7 +322,7 @@ namespace PintheCloud.Managers
                     SpotObject spot = new SpotObject();
                     spot.Id = spotId;
                     spot.SpotName = spotName;
-                    spot.Latitue = spotLatitude;
+                    spot.Latitude = spotLatitude;
                     spot.Longtitude = spot.Longtitude;
                     spot.PtcAccountId = accountId;
                     spot.PtcAccountName = accountName;
