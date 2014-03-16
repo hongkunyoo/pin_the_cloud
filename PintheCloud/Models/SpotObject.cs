@@ -1,7 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using Newtonsoft.Json;
+using PintheCloud.Helpers;
 using PintheCloud.Managers;
+using PintheCloud.Resources;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -83,50 +87,99 @@ namespace PintheCloud.Models
 
 
         #region Managing Contents Async Methods
-        //public async Task<bool> AddFileObjectAsync(FileObject fo)
-        //{
-        //    return null;
-        //}
+        public async Task<bool> AddFileObjectAsync(FileObject fo)
+        {
+            try
+            {
+                IStorageManager StorageManager = Switcher.GetCurrentStorage();
+                string sourceId = fo.Id;
+                if (StorageManager.GetStorageName().Equals(AppResources.GoogleDrive))
+                    sourceId = fo.DownloadUrl;
+                await App.BlobStorageManager.UploadFileStreamAsync(this.PtcAccountId, this.Id, fo.Name, await StorageManager.DownloadFileStreamAsync(fo.Id));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            /////////////////////////////////////////////////////////////////////////////////////////////////
+            /// In the future, Maybe there will be codes for the mobile service table insertion. BUT Not NOW
+            /// /////////////////////////////////////////////////////////////////////////////////////////////
+        }
 
-        //public async Task<bool> DeleteFileObjectAsync(FileObject fo)
-        //{
-        //    return null;
-        //}
+        public async Task<bool> DeleteFileObjectAsync(FileObject fo)
+        {
+            return await App.BlobStorageManager.DeleteFileAsync(fo.Id);
 
-        //public List<FileObject> ListFileObjectsAsync()
-        //{
-        //    return null;
-        //}
+            /////////////////////////////////////////////////////////////////////////////////////////////////
+            /// In the future, Maybe there will be codes for the mobile service table insertion. BUT Not NOW
+            /// /////////////////////////////////////////////////////////////////////////////////////////////
+        }
 
-        //public async Task<bool> PutProfileObjectAsync(ProfileObject po)
-        //{
-        //    return null;
-        //}
+        public async Task<List<FileObject>> ListFileObjectsAsync()
+        {
+            return await App.BlobStorageManager.GetFilesFromSpotAsync(this.PtcAccountId, this.Id);
 
-        //public List<ProfileObject> ListProfileObjectsAsync()
-        //{
-        //    return null;
-        //}
-        //public async Task<bool> AddNoteObjectAsync(NoteObject no)
-        //{
-        //    return null;
-        //}
+            /////////////////////////////////////////////////////////////////////////////////////////////////
+            /// In the future, Maybe there will be codes for the mobile service table insertion. BUT Not NOW
+            /// /////////////////////////////////////////////////////////////////////////////////////////////
+        }
 
-        //public async Task<bool> AddLogObjectAsync(LogObject log)
-        //{
+        public async Task<bool> PutProfileObjectAsync(ProfileObject po)
+        {
+            try
+            {
+                MSProfileObject mspo = po.ToMSObject();
+                mspo.spot_id = this.Id;
+                await App.MobileService.GetTable<MSProfileObject>().InsertAsync(mspo);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
-        //    return null;
-        //}
+        public async Task<List<ProfileObject>> ListProfileObjectsAsync()
+        {
+            List<ProfileObject> list = new List<ProfileObject>();
+            MobileServiceCollection<MSProfileObject, MSProfileObject> msprofileList = null;
+            try
+            {
+                msprofileList = await App.MobileService.GetTable<MSProfileObject>()
+                     .Where(item => item.spot_id == this.Id)
+                     .ToCollectionAsync();
+            }
+            catch
+            {
+                return null;
+            }
+            for (var i = 0; i < msprofileList.Count; i++)
+            {
+                list.Add(ProfileObject.ConvertToProfileObject(msprofileList[i]));
+            }
+            return list;
+        }
+        public async Task<bool> AddNoteObjectAsync(NoteObject no)
+        {
+            return null;
+        }
 
-        //public async Task<LogObject> ListLogObjectsAsync()
-        //{
-        //    return null;
-        //}
+        public async Task<bool> AddLogObjectAsync(LogObject log)
+        {
 
-        //public async Task<bool> SaveLogObjectsAsync(string location)
-        //{
-        //    return null;
-        //}
+            return null;
+        }
+
+        public async Task<LogObject> ListLogObjectsAsync()
+        {
+            return null;
+        }
+
+        public async Task<bool> SaveLogObjectsAsync(string location)
+        {
+            return null;
+        }
         #endregion
 
         public static MSSpotObject ConvertToMSSpotObject(SpotObject so)
