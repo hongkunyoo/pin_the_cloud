@@ -103,6 +103,9 @@
     <Compile Include="Helpers\EventHelper.cs" />
     <Compile Include="Managers\AccountManager.cs" />
     <Compile Include="Managers\ShareManager.cs" />
+    <Compile Include="Models\LogObject.cs" />
+    <Compile Include="Models\ShareObject.cs" />
+    <Compile Include="Models\SpotObject.cs" />
     <Compile Include="Models\StorageAccount.cs" />
     <Compile Include="Helpers\AccountHelper.cs" />
     <Compile Include="Managers\DropboxManager.cs" />

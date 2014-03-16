@@ -53,7 +53,7 @@ namespace PintheCloud.Managers
 
         public async Task<bool> CreateNewPtcAccountAsync(PtcAccount account)
         {
-            MSPtcAccount mspa = this.ConvertToMSPtcAccount(account);
+            MSPtcAccount mspa = PtcAccount.ConvertToMSPtcAccount(account);
             //List<MSStorageAccount> saList = new List<MSStorageAccount>();
             //foreach (var i in account.StorageAccount)
             //{
@@ -80,11 +80,11 @@ namespace PintheCloud.Managers
         }
         public async Task<bool> DeletePtcAccount(PtcAccount account)
         {
-            MSPtcAccount mspa = this.ConvertToMSPtcAccount(account);
+            MSPtcAccount mspa = PtcAccount.ConvertToMSPtcAccount(account);
             List<MSStorageAccount> saList = new List<MSStorageAccount>();
             foreach (var i in account.StorageAccount)
             {
-                saList.Add(this.ConvertToMSStorageAccount(i.Value));
+                saList.Add(StorageAccount.ConvertToMSStorageAccount(i.Value));
             }
             try
             {
@@ -105,11 +105,11 @@ namespace PintheCloud.Managers
         }
         public async Task<bool> UpdatePtcAccount(PtcAccount account)
         {
-            MSPtcAccount mspa = this.ConvertToMSPtcAccount(account);
+            MSPtcAccount mspa = PtcAccount.ConvertToMSPtcAccount(account);
             List<MSStorageAccount> saList = new List<MSStorageAccount>();
             foreach (var i in account.StorageAccount)
             {
-                saList.Add(this.ConvertToMSStorageAccount(i.Value));
+                saList.Add(StorageAccount.ConvertToMSStorageAccount(i.Value));
             }
             try
             {
@@ -160,7 +160,7 @@ namespace PintheCloud.Managers
 
             if (msAccounts.Count == 1)
             {
-                PtcAccount account = this.ConvertToPtcAccount(msAccounts.First());
+                PtcAccount account = PtcAccount.ConvertToPtcAccount(msAccounts.First());
                 account.StorageAccount = await this.GetStorageAccountsAsync(account.Email);
                 this.myAccount = account;
                 return account;
@@ -190,154 +190,10 @@ namespace PintheCloud.Managers
 
             foreach(var i in sas)
             {
-                map.Add(i.account_platform_id_type, this.ConvertToStorageAccount(i));
+                map.Add(i.account_platform_id_type, StorageAccount.ConvertToStorageAccount(i));
             }
             return map;
         }
-
-        public MSStorageAccount ConvertToMSStorageAccount(StorageAccount sa)
-        {
-            MSStorageAccount mssa = new MSStorageAccount(sa.Id, sa.StorageName, sa.UserName ,sa.UsedSize);
-            return mssa;
-        }
-        public MSPtcAccount ConvertToMSPtcAccount(PtcAccount pa)
-        {
-            MSPtcAccount mspa = new MSPtcAccount(pa.Name, pa.Email, pa.PhoneNumber, pa.ProfilePassword, 0.0, pa.AccountType.Id, "for_later_develop");
-            return mspa;
-        }
-        public MSAccountType ConvertToMSAccountType(StorageAccountType sat)
-        {
-            MSAccountType msat = new MSAccountType();
-            msat.account_type_id = sat.Id;
-            msat.account_type_name = sat.AccountTypeName;
-            msat.account_type_max_size = sat.MaxSize;
-            return msat;
-        }
-        public StorageAccount ConvertToStorageAccount(MSStorageAccount mssa)
-        {
-            StorageAccount sa = new StorageAccount();
-            sa.Id = mssa.account_platform_id;
-            sa.StorageName = mssa.account_platform_id_type;
-            sa.UserName = mssa.account_name;
-            sa.UsedSize = mssa.account_used_size;
-            return sa;
-        }
-        private StorageAccountType ConvertToStorageAccountType(MSAccountType msat)
-        {
-            StorageAccountType sat = new StorageAccountType();
-            sat.Id = msat.account_type_id;
-            sat.AccountTypeName = msat.account_type_name;
-            sat.MaxSize = msat.account_type_max_size;
-            return sat;    
-        }
-        private PtcAccount ConvertToPtcAccount(MSPtcAccount mspa)
-        {
-            PtcAccount account = new PtcAccount();
-            account.Name = mspa.name;
-            account.Email = mspa.email;
-            account.PhoneNumber = mspa.phone_number;
-            account.ProfilePassword = mspa.profile_password;
-            account.UsedSize = mspa.used_size;
-            account.AccountType = new StorageAccountType();
-            return account;
-        }
         #endregion
     }
-
-    #region Mobile Service Models
-    /// <summary>
-    /// Mobile Service Storage Account
-    /// This class will be stored in the mobile service table
-    /// </summary>
-    public class MSStorageAccount
-    {
-        public enum StorageAccountType { ONE_DRIVE, DROPBOX, GOOGLE_DRIVE }
-        public const string ACCOUNT_MAIN_PLATFORM_TYPE_KEY = "ACCOUNT_MAIN_PLATFORM_TYPE_KEY";
-        public const string LOCATION_ACCESS_CONSENT_KEY = "LOCATION_ACCESS_CONSENT_KEY";
-        public const string ACCOUNT_DEFAULT_SPOT_NAME_KEY = "ACCOUNT_DEFAULT_SPOT_NAME_KEY";
-
-
-        public string id { get; set; }
-
-        [JsonProperty(PropertyName = "account_platform_id")]
-        public string account_platform_id { get; set; }
-
-        [JsonProperty(PropertyName = "account_platform_id_type")]
-        public string account_platform_id_type { get; set; }
-
-        [JsonProperty(PropertyName = "account_name")]
-        public string account_name { get; set; }
-
-        [JsonProperty(PropertyName = "account_used_size")]
-        public double account_used_size { get; set; }
-        [JsonProperty(PropertyName = "ptc_account_id")]
-        public string ptc_account_id { get; set; }
-
-        public MSStorageAccount(string account_platform_id, string account_platform_id_type, string account_name, 
-            double account_used_size)
-        {
-            this.account_platform_id = account_platform_id;
-            this.account_platform_id_type = account_platform_id_type;
-            this.account_name = account_name;
-            this.account_used_size = account_used_size;
-            this.ptc_account_id = "";
-        }
-    }
-    /// <summary>
-    /// Mobile Service AccountType
-    /// </summary>
-    public class MSAccountType
-    {
-        public string id { get; set; }
-
-        [JsonProperty(PropertyName = "account_type_name")]
-        public string account_type_name { get; set; }
-
-        [JsonProperty(PropertyName = "account_type_max_size")]
-        public double account_type_max_size { get; set; }
-        [JsonProperty(PropertyName = "account_type_id")]
-        public string account_type_id { get; set; }
-
-    }
-    /// <summary>
-    /// Mobile Service PtcAccount
-    /// This class will be stored in the mobile service table
-    /// </summary>
-    public class MSPtcAccount
-    {
-        public string id { get; set; }
-
-        [JsonProperty(PropertyName = "name")]
-        public string name { get; set; }
-
-        [JsonProperty(PropertyName = "email")]
-        public string email { get; set; }
-
-        [JsonProperty(PropertyName = "phone_number")]
-        public string phone_number { get; set; }
-
-        [JsonProperty(PropertyName = "profile_password")]
-        public string profile_password { get; set; }
-
-        [JsonProperty(PropertyName = "used_size")]
-        public double used_size { get; set; } 
-
-        [JsonProperty(PropertyName = "account_type_id")]
-        public string account_type_id { get; set; }
-
-        [JsonProperty(PropertyName = "token_id")]
-        public string token_id { get; set; }
-
-        public MSPtcAccount(string name, string email, string phone_number, string profile_password, double used_size, string account_type_id, string token_id)
-        {
-            this.name = name;
-            this.email = email;
-            this.phone_number = phone_number;
-            this.profile_password = profile_password;
-            this.used_size = used_size;
-            this.account_type_id = account_type_id;
-            this.token_id = token_id;
-        }
-    }
-    #endregion
 }

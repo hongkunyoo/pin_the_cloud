@@ -1,13 +1,18 @@
-﻿using PintheCloud.Resources;
+﻿using Newtonsoft.Json;
+using PintheCloud.Helpers;
+using PintheCloud.Managers;
+using PintheCloud.Resources;
 using PintheCloud.Utilities;
 using PintheCloud.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace PintheCloud.Models
 {
@@ -62,6 +67,9 @@ namespace PintheCloud.Models
         /// <summary>
         /// The child list of the folder.
         /// </summary>
+        public ProfileObject Owner { get; set; }
+
+        public string SpotId { get; set; }
         public List<FileObject> FileList { get; set; }
         #endregion
 
@@ -80,6 +88,54 @@ namespace PintheCloud.Models
             this.Thumbnail = Thumbnail;
             this.DownloadUrl = DownloadUrl;
             this.MimeType = MimeType;
+        }
+
+
+        public async Task<StorageFile> DownloadToLocal(StorageFile file = null)
+        {
+            if (file == null)
+            {
+                file = await ApplicationData.Current.LocalFolder.CreateFileAsync(this.Name, CreationCollisionOption.ReplaceExisting);
+            }
+            return await App.BlobStorageManager.DownloadFileAsync(this.Id, file);
+        }
+
+        public async Task<bool> DownloadToCloud(IStorageManager storageManager = null)
+        {
+            try
+            {
+                if (storageManager == null)
+                    storageManager = Switcher.GetMainStorage();
+                Stream instream = await App.BlobStorageManager.DownloadFileStreamAsync(this.Id);
+                FileObject root = await storageManager.GetRootFolderAsync();
+                await storageManager.UploadFileStreamAsync(root.Id, this.Name, instream);
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public static FileObject ConvertToFileObject(MSFileObject msfo)
+        {
+            FileObject fo = new FileObject();
+            fo.Id = msfo.id;
+            fo.Name = msfo.name;
+            fo.Type = (FileObjectType)Enum.Parse(typeof(FileObjectType), msfo.file_type);
+            fo.Size = msfo.size;
+            fo.Extension = msfo.extension;
+            fo.UpdateAt = msfo.update_at;
+            fo.DownloadUrl = msfo.download_url;
+            fo.MimeType = msfo.mime_type;
+            fo.SpotId = msfo.spot_id;
+            fo.Owner = new ProfileObject(msfo.owner_account_id,msfo.owner_account_name);
+            return fo;
+        }
+
+        public static MSFileObject ConvertToMSFileObject(FileObject fo)
+        {
+            return new MSFileObject(fo.Name,fo.Type.ToString(),fo.Size,fo.Extension,fo.UpdateAt,fo.DownloadUrl,fo.MimeType,fo.Owner.Id,fo.Owner.Name,fo.SpotId);
         }
 
 
@@ -110,4 +166,56 @@ namespace PintheCloud.Models
         }
         #endregion
     }
+
+    #region Mobile Service Object
+    public class MSFileObject
+    {
+        public string id { get; set; }
+
+        [JsonProperty(PropertyName = "name")]
+        public string name { get; set; }
+
+        [JsonProperty(PropertyName = "file_type")]
+        public string file_type { get; set; }
+
+        [JsonProperty(PropertyName = "size")]
+        public double size { get; set; }
+
+        [JsonProperty(PropertyName = "extension")]
+        public string extension { get; set; }
+
+        [JsonProperty(PropertyName = "update_at")]
+        public string update_at { get; set; }
+
+        [JsonProperty(PropertyName = "download_url")]
+        public string download_url { get; set; }
+
+        [JsonProperty(PropertyName = "mime_type")]
+        public string mime_type { get; set; }
+
+        [JsonProperty(PropertyName = "owner_account_id")]
+        public string owner_account_id { get; set; }
+
+        [JsonProperty(PropertyName = "owner_account_name")]
+        public string owner_account_name { get; set; }
+
+        [JsonProperty(PropertyName = "spot_id")]
+        public string spot_id { get; set; }
+
+        public MSFileObject(string name, string file_type, double size, string extension, string update_at, string download_url,
+            string mime_type, string owner_account_id, string owner_account_name, string spot_id)
+        {
+            this.name = name;
+            this.file_type = file_type;
+            this.size = size;
+            this.extension = extension;
+            this.update_at = update_at;
+            this.download_url = download_url;
+            this.mime_type = mime_type;
+            this.owner_account_id = owner_account_id;
+            this.owner_account_name = owner_account_name;
+            this.spot_id = spot_id;
+        }
+    }
+    #endregion
 }
