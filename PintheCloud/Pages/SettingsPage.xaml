@@ -16,6 +16,32 @@
     SupportedOrientations="Portrait"  
 	Orientation="Portrait"
     shell:SystemTray.IsVisible="True" >
+	<local:PtcPage.Resources>
+		<DataTemplate x:Key="uiSpotListItemTemplate">
+			<Grid x:Name="uiSpotListItem">
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+					<RowDefinition Height="1"/>
+				</Grid.RowDefinitions>
+				<Button x:Name="uiSpotButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+					<Grid Margin="28,20,44,15">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="78"/>
+							<ColumnDefinition/>
+							<ColumnDefinition Width="50"/>
+						</Grid.ColumnDefinitions>
+						<Image x:Name="uiSpotNameInitialImage" Source="{Binding SpotNameInitialImage, Converter={StaticResource StringToSpotNameInitialUriConverter}}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<Image x:Name="uiSpotIsPrivateImage" Source="{Binding IsPrivateImage, Converter={StaticResource StringToUriConverter}}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+						<TextBlock x:Name="uiSpotName" Text="{Binding SpotName}" FontSize="32" LineHeight="42" Foreground="#FF404041" FontFamily="Segoe WP" Grid.Column="1" TextTrimming="WordEllipsis"/>
+						<Button x:Name="uiDeleteSpotButton" IsEnabled="{Binding DeleteImagePress}" Style="{StaticResource CustomButtonStyle}" Grid.Column="2" Click="uiDeleteSpotButton_Click" MouseEnter="uiDeleteSpotButton_MouseEnter" MouseLeave="uiDeleteSpotButton_MouseLeave" HorizontalAlignment="Right">
+							<Image Source="{Binding DeleteImage, Converter={StaticResource StringToUriConverter}}" Stretch="None"/>
+						</Button>
+					</Grid>
+				</Button>
+				<Grid Grid.Row="1" Background="#FFA6B5BE" Margin="20,0"/>
+			</Grid>
+		</DataTemplate>
+	</local:PtcPage.Resources>
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E" IsVisible="False">
             <shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/at_here/png/general_bar_refresh.png" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
@@ -60,7 +86,17 @@
 									Style="{StaticResource ImageButtonStyle}" x:Name="uiDefaultSpotNameSetButton" IsEnabled="True" Click="uiDefaultSpotNameSetButton_Click" HorizontalAlignment="Right" Visibility="Collapsed" />
                                 </Grid>
                             </StackPanel>
-                            <StackPanel Grid.Row="1" Margin="0,0,0,32">
+                            <Grid Margin="0,0,0,32" Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                	<ColumnDefinition Width="26"/>
+                                	<ColumnDefinition/>
+                                	<ColumnDefinition Width="68"/>
+                                </Grid.ColumnDefinitions>
+                            	<Image Source="/Assets/pajeon/at_here/png/setting_icon_location.png" Stretch="None" HorizontalAlignment="Left"/>
+                            	<TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Grid.Column="1" FontSize="22" Foreground="#FF404041"/>
+                            	<toolkitPrimitives:ToggleSwitchButton x:Name="uiLocationAccessConsentToggleSwitchButton" Style="{StaticResource CustomToggleSwitchButtonStyle}" Grid.Column="2" Height="38" Width="68" Checked="uiLocationAccessConsentToggleSwitchButton_Checked" Unchecked="uiLocationAccessConsentToggleSwitchButton_Unchecked"/>
+                            </Grid>
+                            <StackPanel Grid.Row="2">
                                 <Grid Margin="0,0,0,10">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="26"/>
@@ -147,16 +183,6 @@
                                 	</Button>
                                 </Grid>
                             </StackPanel>
-                            <Grid Margin="0" Grid.Row="2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="26"/>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="68"/>
-                                </Grid.ColumnDefinitions>
-                                <Image Source="/Assets/pajeon/at_here/png/setting_icon_location.png" Stretch="None" HorizontalAlignment="Left"/>
-                                <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.LocationService, Source={StaticResource LocalizedStrings}}" Grid.Column="1" FontSize="22" Foreground="#FF404041"/>
-                                <toolkitPrimitives:ToggleSwitchButton x:Name="uiLocationAccessConsentToggleSwitchButton" Style="{StaticResource CustomToggleSwitchButtonStyle}" Grid.Column="2" Height="38" Width="68" Checked="uiLocationAccessConsentToggleSwitchButton_Checked" Unchecked="uiLocationAccessConsentToggleSwitchButton_Unchecked"/>
-                            </Grid>
                         </Grid>
                         <Grid x:Name="uiProfileMessageGrid" Visibility="Collapsed">
                             <TextBlock x:Name="uiProfileMessage" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="22" Margin="0"/>
@@ -198,6 +224,9 @@
                         <TextBlock x:Name="uiMySpotMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="28,20,44,0" Visibility="Collapsed"/>
                         <phone:LongListSelector x:Name="uiMySpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpotList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" />
                     </Grid>
+                </phone:PivotItem>
+                <phone:PivotItem x:Name="uiMyFilePivot" Header="{Binding LocalizedResources.MyFile, Source={StaticResource LocalizedStrings}}" Margin="0">
+                	<Grid/>
                 </phone:PivotItem>
                 <phone:PivotItem x:Name="uiAboutPivot" Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
                     <Grid>

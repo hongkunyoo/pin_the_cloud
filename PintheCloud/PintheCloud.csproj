@@ -117,13 +117,9 @@
     <Compile Include="Models\PtcAccount.cs" />
     <Compile Include="Models\Spot.cs" />
     <Compile Include="Helpers\ConvertToFileObjectHelper.cs" />
-    <Compile Include="Pages\AddFilePage.xaml.cs">
-      <DependentUpon>AddFilePage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\LocalExplorer.xaml.cs">
       <DependentUpon>LocalExplorer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\PinPage.cs" />
     <Compile Include="Pages\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
     </Compile>
@@ -195,10 +191,6 @@
     <Page Include="Assets\CustomResources.xaml">
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Pages\AddFilePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\LocalExplorer.xaml">
       <SubType>Designer</SubType>

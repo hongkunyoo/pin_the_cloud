@@ -332,4 +332,7 @@
   <data name="NoPasswordMessage" xml:space="preserve">
     <value>Password is blank. Please enter it.</value>
   </data>
+  <data name="MyFile" xml:space="preserve">
+    <value>My File</value>
+  </data>
 </root>

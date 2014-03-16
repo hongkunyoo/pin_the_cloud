@@ -16,7 +16,7 @@
 
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
-            <shell:ApplicationBarIconButton x:Name="uiAppBarPinInfoButton" IconUri="/Assets/pajeon/pin_the_cloud/png/general_bar_check.png" IsEnabled="True" Text="pin" Click="uiAppBarPinInfoButton_Click"/>
+            <shell:ApplicationBarIconButton x:Name="uiAppBarMakeSpotButton" IconUri="/Assets/pajeon/pin_the_cloud/png/general_bar_check.png" IsEnabled="True" Text="make" Click="uiAppBarMakeSpotButton_Click"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
 

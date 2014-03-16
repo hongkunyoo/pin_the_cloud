@@ -44,7 +44,7 @@ namespace PintheCloud.Pages
         private string SpotName = null;
         private string AccountId = null;
         private string AccountName = null;
-        //private int PlatformIndex = 0;
+
         private bool LaunchLock = false;
         private bool IsPrivate = false;
         private string SpotPassword = null;
@@ -126,7 +126,6 @@ namespace PintheCloud.Pages
             NavigationService.RemoveBackEntry();
 
             // Get parameters
-            //this.PlatformIndex = (int)PhoneApplicationService.Current.State[PLATFORM_KEY];
             StorageAccount account = Switcher.GetCurrentStorage().GetStorageAccount();
             this.SpotName = NavigationContext.QueryString["spotName"];
             this.AccountId = account.Id;
@@ -302,7 +301,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        ((FileObjectViewModel)PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
+                        ((FileObjectViewModel)PhoneApplicationService.Current.State[PIN_FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                         string currentEditViewMode = uiFileListEditViewImageButton.ImageSource;
                         if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
                             fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;

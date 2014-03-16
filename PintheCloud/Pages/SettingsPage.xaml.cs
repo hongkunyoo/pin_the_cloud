@@ -251,7 +251,7 @@ namespace PintheCloud.Pages
                 this.SetMySpotPivot();
 
                 // Hide process indicator
-                ((FileObjectViewModel)PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
+                ((FileObjectViewModel)PhoneApplicationService.Current.State[PIN_FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                 uiProfileGrid.Visibility = Visibility.Visible;
                 uiProfileMessageGrid.Visibility = Visibility.Collapsed;
                 this.SetSignButtons(Switcher.GetCurrentIndex(), false, Switcher.GetCurrentStorage());

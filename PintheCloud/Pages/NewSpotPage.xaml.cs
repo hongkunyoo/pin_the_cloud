@@ -20,20 +20,13 @@ namespace PintheCloud.Pages
 {
     public partial class NewSpotPage : PtcPage
     {
-        // Const Instances
-        private const int PIN_INFO_APP_BAR_BUTTON_INDEX = 0;
-        
         // Instances
-        private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
         private string SpotId = null;
 
 
         public NewSpotPage()
         {
             InitializeComponent();
-
-            // Set Pin info app bar button
-            this.PinInfoAppBarButton = (ApplicationBarIconButton)ApplicationBar.Buttons[PIN_INFO_APP_BAR_BUTTON_INDEX];
 
             // Set name and datacontext
             uiSpotNameTextBox.Hint = (string)App.ApplicationSettings[StorageAccount.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
@@ -130,40 +123,7 @@ namespace PintheCloud.Pages
 
         /*** Client Logic ***/
 
-        //private void uiNewSpotFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        //{
-        //    // Get Selected File Object
-        //    FileObjectViewItem fileObjectViewItem = uiNewSpotFileList.SelectedItem as FileObjectViewItem;
-
-        //    // Set selected item to null for next selection of list item. 
-        //    uiNewSpotFileList.SelectedItem = null;
-
-        //    // If selected item isn't null, Do something
-        //    if (fileObjectViewItem != null)
-        //    {
-        //        // If it is clicked from delete button, delete file
-        //        if (this.DeleteFileButton)
-        //        {
-        //            this.FileObjectViewModel.Items.Remove(fileObjectViewItem);
-        //            this.DeleteFileButton = false;
-        //            if (this.FileObjectViewModel.Items.Count < 1)
-        //            {
-        //                uiNewSpotFileListMessage.Visibility = Visibility.Visible;
-        //                uiNewSpotFileListMessage.Text = AppResources.NoSelectedFileMessage;
-        //                this.PinInfoAppBarButton.IsEnabled = false;
-        //            }
-        //        }
-        //    }
-        //}
-
-
-        //private void uiFileDeleteImageButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        //{
-        //    this.DeleteFileButton = true;
-        //}
-
-
-        private void uiAppBarPinInfoButton_Click(object sender, System.EventArgs e)
+        private void uiAppBarMakeSpotButton_Click(object sender, System.EventArgs e)
         {
             // Get spot name from text or hint which is default spot name.
             uiSpotNameTextBox.Text = uiSpotNameTextBox.Text.Trim();
