@@ -89,55 +89,7 @@
                     	Style="{StaticResource ImageButtonStyle}" x:Name="uiPrivateModePasswordSetButton" HorizontalAlignment="Right" Visibility="Collapsed" Click="uiPrivateModePasswordSetButton_Click" />
                 </Grid>
             </StackPanel>
-            <Grid Grid.Row="3">
-                <Grid.Resources>
-                    <DataTemplate x:Key="uiFileListItemTemplate">
-                        <Grid x:Name="uiFileListItem">
-                            <Grid.RowDefinitions>
-                                <RowDefinition/>
-                                <RowDefinition Height="1"/>
-                            </Grid.RowDefinitions>
-                            <Button Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-                                <Grid Margin="15,0,44,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="105"/>
-                                        <ColumnDefinition/>
-                                        <ColumnDefinition Width="50"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Image x:Name="uiThumnail" Source="{Binding ThumnailType, Converter={StaticResource StringToThumnailUriConverter}}" HorizontalAlignment="Left" Stretch="None"/>
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock x:Name="uiName" Text="{Binding Name}" Margin="0,0,0,5" FontSize="22" Foreground="#FF404041" FontFamily="Segoe WP" TextTrimming="WordEllipsis"/>
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock x:Name="uiSize" Text="{Binding Size}" TextWrapping="Wrap"  FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light" />
-                                            <TextBlock x:Name="uiSizeUnit" TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light"/>
-                                        </StackPanel>
-                                    </StackPanel>
-                                    <Utilities:ImageButton x:Name="uiFileDeleteImageButton" 
-									ImageSource="/Assets/pajeon/at_here/png/upload_list_delete.png"
-									ImagePressedSource="/Assets/pajeon/at_here/png/upload_list_delete_p.png" Grid.Column="2" IsEnabled="True" Style="{StaticResource ImageButtonStyle}" Click="uiFileDeleteImageButton_Click" HorizontalAlignment="Right" />
-                                </Grid>
-                            </Button>
-                            <Grid Grid.Row="1" Background="#FFA6B5BE" Margin="20,0"/>
-                        </Grid>
-                    </DataTemplate>
-                </Grid.Resources>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Grid Margin="28,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="26"/>
-                        <ColumnDefinition/>
-                    </Grid.ColumnDefinitions>
-                    <Image Source="/Assets/pajeon/at_here/png/upload_icon_file.png" Stretch="None" HorizontalAlignment="Left"/>
-                    <TextBlock TextWrapping="Wrap" Text="{Binding LocalizedResources.File, Source={StaticResource LocalizedStrings}}" FontSize="22" Foreground="#FF404041" Grid.Column="1"/>
-                </Grid>
-                <Grid Grid.Row="1">
-                	<TextBlock x:Name="uiNewSpotFileListMessage" TextWrapping="Wrap" Foreground="Black" FontSize="22" Visibility="Collapsed" Margin="28,10,28,0"/>
-                	<phone:LongListSelector x:Name="uiNewSpotFileList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiFileListItemTemplate}" Style="{StaticResource CustomLongListSelectorStyle}" SelectionChanged="uiNewSpotFileList_SelectionChanged"/>
-                </Grid>
-            </Grid>
+            <TextBlock x:Name="uiNewSpotMessage" TextWrapping="Wrap" Foreground="Black" FontSize="22" Margin="28,10,28,0" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed"/>
         </Grid>
     </Grid>
 

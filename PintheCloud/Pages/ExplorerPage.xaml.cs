@@ -38,8 +38,6 @@ namespace PintheCloud.Pages
         private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_upload.png";
 
         // Instances
-        //private int CurrentPlatformIndex = 0;
-
         private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarMenuItem[] AppBarMenuItems = null;
         private Popup SubmitSpotPasswordParentPopup = new Popup();
@@ -253,7 +251,6 @@ namespace PintheCloud.Pages
         private void NavigateToFileListPage(SpotViewItem spotViewItem)
         {
             PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
-            //PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
             string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
             NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
         }
@@ -357,7 +354,6 @@ namespace PintheCloud.Pages
                 PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY] = this.NearSpotViewModel;
                 PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY] = this.FileObjectViewModel;
                 PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.SelectedFile;
-                //PhoneApplicationService.Current.State[PLATFORM_KEY] = this.CurrentPlatformIndex;
                 NavigationService.Navigate(new Uri(EventHelper.NEW_SPOT_PAGE, UriKind.Relative));
             }
             else  // First or not consented of access in location information.

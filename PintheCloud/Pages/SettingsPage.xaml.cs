@@ -30,7 +30,6 @@ namespace PintheCloud.Pages
         // Const Instances
         private const int APPLICATION_PIVOT_INDEX = 0;
         private const int MY_SPOT_PIVOT_INDEX = 1;
-        //private int CurrentPlatformIndex = 0;
 
         private const string SIGN_IN_BUTTON_TEXT_FONT = "Segoe WP";
         private const string SIGN_NOT_IN_BUTTON_TEXT_FONT = "Segoe WP Light";

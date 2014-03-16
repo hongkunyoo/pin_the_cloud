@@ -85,7 +85,6 @@ namespace PintheCloud.Pages
 
         private void ui_sign_in_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-        	// TODO: Add event handler implementation here.
             NavigationService.Navigate(new Uri(EventHelper.SIGNIN_PAGE, UriKind.Relative));
         }
     }
