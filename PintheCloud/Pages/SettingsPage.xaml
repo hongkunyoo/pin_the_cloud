@@ -58,7 +58,7 @@
         <!--피벗 컨트롤-->
         <Grid Background="#FF00A4BF"/>
         <Grid x:Name="ContentPanel" Grid.Row="1">
-            <phone:Pivot x:Name="uiSettingPivot" Foreground="Black" Style="{StaticResource CustomPivotStyle}" SelectionChanged="uiSettingPivot_SelectionChanged" >
+            <phone:Pivot x:Name="uiSettingsPivot" Foreground="Black" Style="{StaticResource CustomPivotStyle}" SelectionChanged="uiSettingsPivot_SelectionChanged" >
                 <!--피벗 항목 1-->
                 <phone:PivotItem x:Name="uiProfilePivot" Header="{Binding LocalizedResources.Profile, Source={StaticResource LocalizedStrings}}" Margin="28,29,28,0">
                     <Grid>
