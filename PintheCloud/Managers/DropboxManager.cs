@@ -255,7 +255,32 @@ namespace PintheCloud.Managers
             }
         }
 
+        public async Task<FileObject> Synchronize()
+        {
+            FileObject fileObject = await GetRootFolderAsync();
+            fileObject.FileList = await _GetChildAsync(fileObject);
+            return fileObject;
+        }
+
         #region Private Methods
+
+        private async Task<List<FileObject>> _GetChildAsync(FileObject fileObject)
+        {
+            if (FileObjectViewModel.FOLDER.Equals(fileObject.Type))
+            {
+                List<FileObject> list = await this.GetFilesFromFolderAsync(fileObject.Id);
+                foreach (FileObject file in list)
+                {
+                    file.FileList = await _GetChildAsync(file);
+                }
+                return list;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         private bool _Streaming(Stream input, Stream output)
         {
             byte[] buffer = new byte[1024000];
