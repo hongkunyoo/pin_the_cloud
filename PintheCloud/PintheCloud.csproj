@@ -118,13 +118,9 @@
     <Compile Include="Models\PtcAccount.cs" />
     <Compile Include="Models\Spot.cs" />
     <Compile Include="Helpers\ConvertToFileObjectHelper.cs" />
-    <Compile Include="Pages\AddFilePage.xaml.cs">
-      <DependentUpon>AddFilePage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\LocalExplorer.xaml.cs">
       <DependentUpon>LocalExplorer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\PinPage.cs" />
     <Compile Include="Pages\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>
     </Compile>
@@ -200,10 +196,6 @@
       <Generator>MSBuild:MarkupCompilePass1</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\AddFilePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\LocalExplorer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -262,6 +254,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\pajeon\at_here\130315_guide\1_pick_guide.pdf" />
+    <None Include="Assets\pajeon\at_here\130315_guide\1_pick_navi_guide.pdf" />
+    <None Include="Assets\pajeon\at_here\130315_guide\1_pick_title_guide.pdf" />
+    <None Include="Assets\pajeon\at_here\130315_guide\2_pin_guide.pdf" />
+    <None Include="Assets\pajeon\at_here\130315_guide\2_pin_path_guide.pdf" />
+    <None Include="Assets\pajeon\at_here\130315_guide\3_spots_navi_guide.pdf" />
     <None Include="Assets\pajeon\at_here\gui_guide.pdf" />
     <None Include="Fonts\LiveSymbol.ttf" />
     <None Include="packages.config" />
@@ -272,6 +270,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\mimeType.js" />
+    <Content Include="Assets\pajeon\at_here\130315_png\navi_spots.png" />
+    <Content Include="Assets\pajeon\at_here\130315_png\path_back.png" />
+    <Content Include="Assets\pajeon\at_here\130315_png\path_bg.png" />
+    <Content Include="Assets\pajeon\at_here\130315_png\tab_pick.png" />
+    <Content Include="Assets\pajeon\at_here\130315_png\tab_pick_highlight.png" />
+    <Content Include="Assets\pajeon\at_here\130315_png\tab_pin.png" />
+    <Content Include="Assets\pajeon\at_here\130315_png\tab_pin_highlight.png" />
+    <Content Include="Assets\pajeon\at_here\130315_screenshot\mobile-pick-page.png" />
+    <Content Include="Assets\pajeon\at_here\130315_screenshot\mobile-pin-page.png" />
+    <Content Include="Assets\pajeon\at_here\130315_screenshot\spot-list-page.png" />
     <Content Include="Assets\pajeon\at_here\png\app_ApplicationIcon.png" />
     <Content Include="Assets\pajeon\at_here\png\app_MediumFlipCycleTile.png" />
     <Content Include="Assets\pajeon\at_here\png\app_MediumIconicTile.png" />

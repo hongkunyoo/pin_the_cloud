@@ -25,10 +25,10 @@ namespace PintheCloud.Pages
     {
         protected const string PREV_PAGE_KEY = "PREV_PAGE";
         protected const string PIVOT_KEY = "PIVOT_KEY";
-        //protected const string PLATFORM_KEY = "PLATFORM_KEY";
 
         protected const string SPOT_VIEW_MODEL_KEY = "SPOT_VIEW_MODEL_KEY";
-        protected const string FILE_OBJECT_VIEW_MODEL_KEY = "FILE_OBJECT_VIEW_MODEL_KEY";
+        protected const string PICK_FILE_OBJECT_VIEW_MODEL_KEY = "PICK_FILE_OBJECT_VIEW_MODEL_KEY";
+        protected const string PIN_FILE_OBJECT_VIEW_MODEL_KEY = "PIN_FILE_OBJECT_VIEW_MODEL_KEY";
 
         protected const string SELECTED_FILE_KEY = "SELECTED_FILE_KEY";
 
@@ -113,35 +113,6 @@ namespace PintheCloud.Pages
                 AppBarMenuItems[i].Click += AppBarMenuItem_Click;
             }
         }
-        //public int GetPlatformIndexFromString(string platform)
-        //{
-        //    for (int i = 0; i < App.IStorageManagers.Length; i++)
-        //        if (platform.Equals(App.IStorageManagers[i].GetStorageName()))
-        //            return i;
-        //    throw new Exception("No Such Storage Name");
-        //}
-
-
-        //public StorageAccount.StorageAccountType GetStorageAccountTypeFromInt(int index)
-        //{
-        //    Account.StorageAccountType type = Account.StorageAccountType.ONE_DRIVE;
-        //    switch (index)
-        //    {
-        //        case (int)Account.StorageAccountType.ONE_DRIVE:
-        //            type = Account.StorageAccountType.ONE_DRIVE;
-        //            break;
-        //        case (int)Account.StorageAccountType.DROPBOX:
-        //            type = Account.StorageAccountType.DROPBOX;
-        //            break;
-        //        case (int)Account.StorageAccountType.GOOGLE_DRIVE:
-        //            type = Account.StorageAccountType.GOOGLE_DRIVE;
-        //            break;
-        //        default:
-        //            type = Account.StorageAccountType.ONE_DRIVE;
-        //            break;
-        //    }
-        //    return type;
-        //}
 
 
         public bool GetLocationAccessConsent()

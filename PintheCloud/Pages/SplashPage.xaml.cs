@@ -36,13 +36,6 @@ namespace PintheCloud.Pages
         {
             base.OnNavigatedTo(e);
 
-            // Check main platform at frist login.
-            //if (!App.ApplicationSettings.Contains(StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY))
-            //{
-            //    App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = StorageAccount.StorageAccountType.ONE_DRIVE;
-            //    App.ApplicationSettings.Save();
-            //}
-
             // Check nick name at frist login.
             if (!App.ApplicationSettings.Contains(StorageAccount.ACCOUNT_DEFAULT_SPOT_NAME_KEY))
             {
@@ -57,22 +50,16 @@ namespace PintheCloud.Pages
                 App.ApplicationSettings.Save();
             }
 
-            //NavigationService.Navigate(new Uri("/Utilities/TestDrive.xaml", UriKind.Relative));
-
             if (App.AccountManager.IsSignIn())
             {
                 if (NetworkInterface.GetIsNetworkAvailable())
-                {
                     TaskHelper.AddTask(App.AccountManager.GetPtcId(), App.AccountManager.SignIn());
-                }
-                NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE, UriKind.Relative));
+                NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));
             }
             else
             {
                 NavigationService.Navigate(new Uri(EventHelper.PROFILE_PAGE, UriKind.Relative));
             }
-            
-            
         }
     }
 }

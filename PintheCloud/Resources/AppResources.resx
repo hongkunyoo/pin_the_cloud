@@ -324,12 +324,15 @@
     <value>Password you submitted is wrong.</value>
   </data>
   <data name="BadLoadingSpotMessage" xml:space="preserve">
-    <value>Location Spot met error. Please try it again.</value>
+    <value>Loading Spot met error. Please try it again.</value>
   </data>
   <data name="NoPasswordCption" xml:space="preserve">
     <value>No Password</value>
   </data>
   <data name="NoPasswordMessage" xml:space="preserve">
     <value>Password is blank. Please enter it.</value>
+  </data>
+  <data name="MyFile" xml:space="preserve">
+    <value>My File</value>
   </data>
 </root>

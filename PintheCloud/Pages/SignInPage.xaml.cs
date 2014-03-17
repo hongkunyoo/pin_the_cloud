@@ -40,7 +40,6 @@ namespace PintheCloud.Pages
             // TODO : SEUNGMIN
             // Show ERROR message
             ////////////////////////
-
         }
     }
 }

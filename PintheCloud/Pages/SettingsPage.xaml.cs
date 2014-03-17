@@ -30,7 +30,6 @@ namespace PintheCloud.Pages
         // Const Instances
         private const int APPLICATION_PIVOT_INDEX = 0;
         private const int MY_SPOT_PIVOT_INDEX = 1;
-        //private int CurrentPlatformIndex = 0;
 
         private const string SIGN_IN_BUTTON_TEXT_FONT = "Segoe WP";
         private const string SIGN_NOT_IN_BUTTON_TEXT_FONT = "Segoe WP Light";
@@ -103,7 +102,7 @@ namespace PintheCloud.Pages
             }
                 
             // Set My Spot pivot list.
-            this.SetMySpotPivot();
+            this.SetMySpotPivot(AppResources.Loading);
         }
 
 
@@ -134,17 +133,17 @@ namespace PintheCloud.Pages
 
 
         // Construct pivot item by page index
-        private void uiSettingPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void uiSettingsPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Set View model for dispaly,
             // One time loading.
-            switch (uiSettingPivot.SelectedIndex)
+            switch (uiSettingsPivot.SelectedIndex)
             {
                 case MY_SPOT_PIVOT_INDEX:
 
                     // Set My Spot stuff enable and set list
                     ApplicationBar.IsVisible = true;
-                    this.SetMySpotPivot();
+                    this.SetMySpotPivot(AppResources.Loading);
                     break;
 
                 default:
@@ -155,13 +154,13 @@ namespace PintheCloud.Pages
             }
         }
 
-        private void SetMySpotPivot()
+        private void SetMySpotPivot(string message)
         {
             // If Internet available, Set spot list
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 if (!MySpotViewModel.IsDataLoaded)  // Mutex check
-                    this.SetMySpotListAsync(AppResources.Loading);
+                    this.SetMySpotListAsync(message);
             }
             else
             {
@@ -186,8 +185,6 @@ namespace PintheCloud.Pages
                 // Get index
                 Button signButton = (Button)sender;
                 Switcher.SetStorageTo(signButton.Tag.ToString());
-                //int platformIndex = base.GetPlatformIndexFromString(signButton.Tag.ToString());
-                //this.CurrentPlatformIndex = platformIndex;
 
                 // Sign in
                 IStorageManager iStorageManager = Switcher.GetCurrentStorage();
@@ -201,9 +198,8 @@ namespace PintheCloud.Pages
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         this.SetSignButtons(Switcher.GetCurrentIndex(), true, Switcher.GetCurrentStorage());
-                        //this.SetSignButtons(platformIndex, true);
                         this.MySpotViewModel.IsDataLoaded = false;
-                        this.SetMySpotPivot();
+                        this.SetMySpotPivot(AppResources.Loading);
                     });
                 }
                 else
@@ -238,22 +234,21 @@ namespace PintheCloud.Pages
                 uiProfileGrid.Visibility = Visibility.Collapsed;
                 uiProfileMessageGrid.Visibility = Visibility.Visible;
                 uiProfileMessage.Text = AppResources.DoingSignOut;
+
                 Button signButton = (Button)sender;
-                //int platformIndex = base.GetPlatformIndexFromString(signButton.Tag.ToString());
                 Switcher.SetStorageTo(signButton.Tag.ToString());
 
                 // Sign out
-                //IStorageManager iStorageManager = App.IStorageManagers[platformIndex];
                 IStorageManager iStorageManager = Switcher.GetCurrentStorage();
                 TaskHelper.AddSignOutTask(iStorageManager.GetStorageName(), this.SignOut(iStorageManager));
                 
 
                 // After sign out, set list.
                 this.MySpotViewModel.IsDataLoaded = false;
-                this.SetMySpotPivot();
+                this.SetMySpotPivot(AppResources.Loading);
 
                 // Hide process indicator
-                ((FileObjectViewModel)PhoneApplicationService.Current.State[FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
+                ((FileObjectViewModel)PhoneApplicationService.Current.State[PIN_FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                 uiProfileGrid.Visibility = Visibility.Visible;
                 uiProfileMessageGrid.Visibility = Visibility.Collapsed;
                 this.SetSignButtons(Switcher.GetCurrentIndex(), false, Switcher.GetCurrentStorage());
@@ -322,17 +317,11 @@ namespace PintheCloud.Pages
             ((Image)mainButton.Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI, UriKind.Relative));
             
             // Set Signbutton background
-            //int mainButtonPlatformIndex = base.GetPlatformIndexFromString(mainButton.Tag.ToString());
             Switcher.SetMainPlatform(mainButton.Tag.ToString());
             Switcher.SetStorageTo(mainButton.Tag.ToString());
             Grid signButtonGrid = this.SignButtonGrids[Switcher.GetCurrentIndex()];
             signButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_PLATFORM_BUTTON_COLOR));
             signButtonGrid.Opacity = MAIN_PLATFORM_BUTTON_OPACITY;
-
-            // Save main platform index to app settings.
-            //App.ApplicationSettings[Account.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = base.GetStorageAccountTypeFromInt(mainButtonPlatformIndex);
-            //App.ApplicationSettings[StorageAccount.ACCOUNT_MAIN_PLATFORM_TYPE_KEY] = (StorageAccount.StorageAccountType)(mainButtonPlatformIndex);
-            //App.ApplicationSettings.Save();
 
             // Set rest button image and backtround
             for (var i = 0; i < StorageHelper.GetStorageList().Count; i++ )
@@ -438,11 +427,8 @@ namespace PintheCloud.Pages
         // Refresh spot list.
         private void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
         {
-            // If Internet available, Set spot list
-            if (NetworkInterface.GetIsNetworkAvailable())
-                this.SetMySpotListAsync(AppResources.Refreshing);
-            else
-                base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.InternetUnavailableMessage);
+            this.MySpotViewModel.IsDataLoaded = false;
+            this.SetMySpotPivot(AppResources.Refreshing);
         }
 
 
@@ -451,9 +437,6 @@ namespace PintheCloud.Pages
             // Show progress indicator 
             base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, message);
             base.SetProgressIndicator(true);
-
-            // Before go load, set mutex to true.
-            MySpotViewModel.IsDataLoaded = true;
 
             // If there is my spots, Clear and Add spots to list
             // Otherwise, Show none message.
@@ -465,6 +448,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
+                        this.MySpotViewModel.IsDataLoaded = true;
                         uiMySpotList.Visibility = Visibility.Visible;
                         uiMySpotMessage.Visibility = Visibility.Collapsed;
                         this.MySpotViewModel.SetItems(spots);

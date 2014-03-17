@@ -13,42 +13,29 @@ using PintheCloud.ViewModels;
 using Windows.Devices.Geolocation;
 using PintheCloud.Managers;
 using PintheCloud.Helpers;
+using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 
 namespace PintheCloud.Pages
 {
     public partial class NewSpotPage : PtcPage
     {
-        // Const Instances
-        private const int PIN_INFO_APP_BAR_BUTTON_INDEX = 0;
-
         // Instances
-        private bool DeleteFileButton = false;
-
-        private ApplicationBarIconButton PinInfoAppBarButton = new ApplicationBarIconButton();
-        private FileObjectViewModel FileObjectViewModel = new FileObjectViewModel();
-        
+        private string SpotId = null;
 
 
         public NewSpotPage()
         {
             InitializeComponent();
 
-            // Set Pin info app bar button
-            this.PinInfoAppBarButton = (ApplicationBarIconButton)ApplicationBar.Buttons[PIN_INFO_APP_BAR_BUTTON_INDEX];
-
             // Set name and datacontext
             uiSpotNameTextBox.Hint = (string)App.ApplicationSettings[StorageAccount.ACCOUNT_DEFAULT_SPOT_NAME_KEY];
-            uiNewSpotFileList.DataContext = this.FileObjectViewModel;
         }
 
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            // Set list
-            foreach (FileObjectViewItem fileObjectViewItem in (List<FileObjectViewItem>)PhoneApplicationService.Current.State[SELECTED_FILE_KEY])
-                this.FileObjectViewModel.Items.Add(fileObjectViewItem);
         }
 
 
@@ -136,40 +123,7 @@ namespace PintheCloud.Pages
 
         /*** Client Logic ***/
 
-        private void uiNewSpotFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            // Get Selected File Object
-            FileObjectViewItem fileObjectViewItem = uiNewSpotFileList.SelectedItem as FileObjectViewItem;
-
-            // Set selected item to null for next selection of list item. 
-            uiNewSpotFileList.SelectedItem = null;
-
-            // If selected item isn't null, Do something
-            if (fileObjectViewItem != null)
-            {
-                // If it is clicked from delete button, delete file
-                if (this.DeleteFileButton)
-                {
-                    this.FileObjectViewModel.Items.Remove(fileObjectViewItem);
-                    this.DeleteFileButton = false;
-                    if (this.FileObjectViewModel.Items.Count < 1)
-                    {
-                        uiNewSpotFileListMessage.Visibility = Visibility.Visible;
-                        uiNewSpotFileListMessage.Text = AppResources.NoSelectedFileMessage;
-                        this.PinInfoAppBarButton.IsEnabled = false;
-                    }
-                }
-            }
-        }
-
-
-        private void uiFileDeleteImageButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            this.DeleteFileButton = true;
-        }
-
-
-        private void uiAppBarPinInfoButton_Click(object sender, System.EventArgs e)
+        private void uiAppBarMakeSpotButton_Click(object sender, System.EventArgs e)
         {
             // Get spot name from text or hint which is default spot name.
             uiSpotNameTextBox.Text = uiSpotNameTextBox.Text.Trim();
@@ -186,7 +140,7 @@ namespace PintheCloud.Pages
                 if (!password.Equals(String.Empty))  // Password is not null
                 {
                     if (!password.Equals(NULL_PASSWORD))  // Password is not "null"
-                        this.NavigateToFileListPage(spotName, true, password);
+                        this.MakeNewSpot(spotName, true, password);
                     else  // Password is "null"
                         MessageBox.Show(AppResources.PasswordNullMessage, AppResources.PasswordNullCaption, MessageBoxButton.OK);
                 }
@@ -197,23 +151,73 @@ namespace PintheCloud.Pages
             }
             else  // private is not checked
             {
-                this.NavigateToFileListPage(spotName, false);
+                this.MakeNewSpot(spotName, false);
             }
         }
 
 
-        private void NavigateToFileListPage(string spotName, bool isPrivate, string password = NULL_PASSWORD)
+        private async void MakeNewSpot(string spotName, bool isPrivate, string spotPassword = NULL_PASSWORD)
         {
-            // Check whether GPS is on or not
-            if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
+            StorageAccount account = Switcher.GetCurrentStorage().GetStorageAccount();
+            if (NetworkInterface.GetIsNetworkAvailable())
             {
-                PhoneApplicationService.Current.State[SELECTED_FILE_KEY] = this.FileObjectViewModel.Items.ToList<FileObjectViewItem>();
-                NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + "?spotName=" + spotName + "&private=" + isPrivate + "&password=" + password, UriKind.Relative));
+                // Check whether GPS is on or not
+                if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
+                {
+                    if (await this.PinSpotAsync(spotName, account.Id, account.StorageName, isPrivate, spotPassword))
+                    {
+                        string parameters = "?spotId=" + this.SpotId + "&spotName=" + spotName + "&accountId=" + account.Id + "&accountName=" + account.StorageName;
+                        NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE + parameters, UriKind.Relative));
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(AppResources.NoLocationServiceMessage, AppResources.NoLocationServiceCaption, MessageBoxButton.OK);
+                }
             }
-            else  // GPS is off
+            else
             {
-                MessageBox.Show(AppResources.NoLocationServiceMessage, AppResources.NoLocationServiceCaption, MessageBoxButton.OK);
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
             }
+        }
+
+
+        private async Task<bool> PinSpotAsync(string spotName, string accountId, string accountName, bool isPrivate, string spotPassword)
+        {
+            // Show Pining message and Progress Indicator
+            base.Dispatcher.BeginInvoke(() =>
+            {
+                uiNewSpotMessage.Text = AppResources.PiningSpot;
+                uiNewSpotMessage.Visibility = Visibility.Visible;
+            });
+            
+            base.SetProgressIndicator(true);
+
+            // Pin spot
+            Geoposition geo = await App.Geolocator.GetGeopositionAsync();
+            //Spot spot = new Spot(spotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, accountId, accountName, 0, isPrivate, spotPassword);
+            SpotObject spotObject = new SpotObject(spotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, accountId, accountName, 0, isPrivate, spotPassword, DateTime.Now.ToString());
+            //bool result = await App.SpotManager.PinSpotAsync(spot);
+            bool result = await App.SpotManager.CreateSpotAsync(spotObject);
+            if (result)
+            {
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
+                    this.SpotId = spotObject.Id;
+                });
+            }
+            else
+            {
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    uiNewSpotMessage.Text = AppResources.BadPinSpotMessage;
+                });
+            }
+
+            // Hide progress message
+            base.SetProgressIndicator(false);
+            return result;
         }
     }
 }
