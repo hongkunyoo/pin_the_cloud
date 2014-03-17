@@ -89,6 +89,9 @@ namespace PintheCloud.Models
         #region Managing Contents Async Methods
         public async Task<bool> AddFileObjectAsync(FileObject fo)
         {
+            /////////////////////////////////////////
+            // TODO : Need to add Storage Capacity
+            /////////////////////////////////////////
             try
             {
                 IStorageManager StorageManager = Switcher.GetCurrentStorage();
@@ -109,6 +112,10 @@ namespace PintheCloud.Models
 
         public async Task<bool> DeleteFileObjectAsync(FileObject fo)
         {
+            //////////////////////////////////////////////
+            // TODO : Need to substract Storage Capacity
+            //////////////////////////////////////////////
+
             return await App.BlobStorageManager.DeleteFileAsync(fo.Id);
 
             /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,26 +167,67 @@ namespace PintheCloud.Models
             }
             return list;
         }
-        //public async Task<bool> AddNoteObjectAsync(NoteObject no)
-        //{
-        //    return null;
-        //}
+        public async Task<bool> AddNoteObjectAsync(NoteObject no)
+        {
+            MSNoteObject msno = NoteObject.ConvertToMSNoteObject(no);
+            msno.spot_id = this.Id;
+            try
+            {
+                await App.MobileService.GetTable<MSNoteObject>().InsertAsync(msno);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
-        //public async Task<bool> AddLogObjectAsync(LogObject log)
-        //{
+        public async Task<bool> AddLogObjectAsync(LogObject log)
+        {
+            MSLogObject msno = LogObject.ConvertToMSLogObject(log);
+            msno.spot_id = this.Id;
+            try
+            {
+                await App.MobileService.GetTable<MSLogObject>().InsertAsync(msno);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
-        //    return null;
-        //}
+        public async Task<List<LogObject>> ListLogObjectsAsync()
+        {
+            List<LogObject> list = new List<LogObject>();
+            MobileServiceCollection<MSLogObject, MSLogObject> mobileList = null;
+            try
+            {
+                mobileList = await App.MobileService.GetTable<MSLogObject>()
+                     .Where(item => item.spot_id == this.Id)
+                     .ToCollectionAsync();
+            }
+            catch
+            {
+                return null;
+            }
+            for (var i = 0; i < mobileList.Count; i++)
+            {
+                list.Add(LogObject.ConvertToLogObject(mobileList[i]));
+            }
+            return list;
+        }
 
-        //public async Task<LogObject> ListLogObjectsAsync()
-        //{
-        //    return null;
-        //}
+        public async Task<bool> SaveLogObjectsAsync(string location)
+        {
+            List<LogObject> list = await ListLogObjectsAsync();
 
-        //public async Task<bool> SaveLogObjectsAsync(string location)
-        //{
-        //    return null;
-        //}
+            /////////////////////////////////////////////////////////////
+            // TODO : Need to Save to Cloud Storage With Certain Format
+            /////////////////////////////////////////////////////////////
+
+            return true;
+        }
         #endregion
 
         public static MSSpotObject ConvertToMSSpotObject(SpotObject so)

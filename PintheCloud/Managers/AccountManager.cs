@@ -4,6 +4,7 @@ using PintheCloud.Helpers;
 using PintheCloud.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -146,26 +147,27 @@ namespace PintheCloud.Managers
             if(password != null)
                  lamda = (a => a.email == accountId || a.profile_password == password);
             
-            MobileServiceCollection<MSPtcAccount, MSPtcAccount> msAccounts = null;
+            //MobileServiceCollection<MSPtcAccount, MSPtcAccount> msAccounts = null;
+            List<MSPtcAccount> list = null;
             try
             {
-                msAccounts = await App.MobileService.GetTable<MSPtcAccount>()
-                    .Where(lamda)
-                    .ToCollectionAsync();
+                list = await App.MobileService.GetTable<MSPtcAccount>()
+                    .ToListAsync();
             }
-            catch (MobileServiceInvalidOperationException)
+            catch (MobileServiceInvalidOperationException ex)
             {
+                Debug.WriteLine(ex.ToString());
                 throw new Exception("AccountManager.GetAccount() ERROR");
             }
 
-            if (msAccounts.Count == 1)
+            if (list.Count == 1)
             {
-                PtcAccount account = PtcAccount.ConvertToPtcAccount(msAccounts.First());
+                PtcAccount account = PtcAccount.ConvertToPtcAccount(list.First());
                 account.StorageAccounts = await this.GetStorageAccountsAsync(account.Email);
                 this.myAccount = account;
                 return account;
             }
-            else if (msAccounts.Count > 1)
+            else if (list.Count > 1)
                 throw new Exception("AccountManager.GetAccount() ERROR");
             else
                 return null;

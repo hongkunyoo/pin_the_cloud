@@ -49,6 +49,9 @@ namespace PintheCloud.Models
         [JsonProperty(PropertyName = "verb")]
         public string verb { get; set; }
 
+        [JsonProperty(PropertyName = "spot_id")]
+        public string spot_id { get; set; }
+
         public MSLogObject(string who, string when, string what, string verb)
         {
             this.who = who;

@@ -319,17 +319,8 @@ namespace PintheCloud.Managers
                     string spot_password = (string)jSpot["spot_password"];
                     string create_at = (string)jSpot["create_at"];
 
-                    SpotObject spot = new SpotObject();
+                    SpotObject spot = new SpotObject(spotName,spotLatitude,spotLongtitude,accountId,accountName,spotDistance,isPrivate,spot_password,create_at);
                     spot.Id = spotId;
-                    spot.SpotName = spotName;
-                    spot.Latitude = spotLatitude;
-                    spot.Longtitude = spot.Longtitude;
-                    spot.PtcAccountId = accountId;
-                    spot.PtcAccountName = accountName;
-                    spot.SpotDistance = spotDistance;
-                    spot.IsPrivate = isPrivate;
-                    spot.Password = spot_password;
-                    spot.CreateAt = create_at;
                     spots.Add(spot);
                 }
             }

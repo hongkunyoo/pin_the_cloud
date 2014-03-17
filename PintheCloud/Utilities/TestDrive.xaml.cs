@@ -39,17 +39,7 @@ namespace PintheCloud.Utilities
 
         public async Task TestAccount()
         {
-            await App.AccountManager.GetPtcAccountAsync();
-
-            PtcAccount pa = App.AccountManager.GetPtcAccount();
-
-            using (var itr = App.AccountManager.GetPtcAccount().GetStorageAccountEnumerator())
-            {
-                while (itr.MoveNext())
-                {
-                    Debug.WriteLine(itr.Current.Value.StorageName);
-                }
-            }
+            List<Spot> list = await App.MobileService.GetTable<Spot>().ToListAsync();
         }
 
         private async Task<StorageFile> GetStreamGiveFile(Stream input, string fileName)
