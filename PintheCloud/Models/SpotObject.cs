@@ -160,26 +160,26 @@ namespace PintheCloud.Models
             }
             return list;
         }
-        public async Task<bool> AddNoteObjectAsync(NoteObject no)
-        {
-            return null;
-        }
+        //public async Task<bool> AddNoteObjectAsync(NoteObject no)
+        //{
+        //    return null;
+        //}
 
-        public async Task<bool> AddLogObjectAsync(LogObject log)
-        {
+        //public async Task<bool> AddLogObjectAsync(LogObject log)
+        //{
 
-            return null;
-        }
+        //    return null;
+        //}
 
-        public async Task<LogObject> ListLogObjectsAsync()
-        {
-            return null;
-        }
+        //public async Task<LogObject> ListLogObjectsAsync()
+        //{
+        //    return null;
+        //}
 
-        public async Task<bool> SaveLogObjectsAsync(string location)
-        {
-            return null;
-        }
+        //public async Task<bool> SaveLogObjectsAsync(string location)
+        //{
+        //    return null;
+        //}
         #endregion
 
         public static MSSpotObject ConvertToMSSpotObject(SpotObject so)
