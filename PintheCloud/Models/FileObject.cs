@@ -70,6 +70,7 @@ namespace PintheCloud.Models
         public ProfileObject Owner { get; set; }
 
         public string SpotId { get; set; }
+
         public List<FileObject> FileList { get; set; }
         #endregion
 

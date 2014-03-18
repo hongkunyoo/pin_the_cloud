@@ -158,9 +158,6 @@ namespace PintheCloud.Pages
 
         private async void MakeNewSpot(string spotName, bool isPrivate, string spotPassword = NULL_PASSWORD)
         {
-            //await TaskHelper.WaitSignInTask(Switcher.GetCurrentStorage().GetStorageName());
-            //StorageAccount account = Switcher.GetCurrentStorage().GetStorageAccount();
-            
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 // Check whether GPS is on or not
@@ -198,17 +195,12 @@ namespace PintheCloud.Pages
         {
             // Pin spot
             Geoposition geo = await App.Geolocator.GetGeopositionAsync();
-            //Spot spot = new Spot(spotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, accountId, accountName, 0, isPrivate, spotPassword);
             SpotObject spotObject = new SpotObject(spotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, accountId, accountName, 0, isPrivate, spotPassword, DateTime.Now.ToString());
-            //bool result = await App.SpotManager.PinSpotAsync(spot);
             bool result = await App.SpotManager.CreateSpotAsync(spotObject);
             if (result)
             {
-                base.Dispatcher.BeginInvoke(() =>
-                {
-                    ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
-                    this.SpotId = spotObject.Id;
-                });
+                ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
+                this.SpotId = spotObject.Id;
             }
             else
             {

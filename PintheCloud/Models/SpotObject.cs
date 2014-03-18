@@ -35,6 +35,8 @@ namespace PintheCloud.Models
         {
 
         }
+
+
         public SpotObject(string SpotName, double Latitude, double Longtitude, string PtcAccountId, string PtcAccountName, double SpotDistance, bool IsPrivate, string Password, string CreateAt)
         {
             this.SpotName = SpotName;
@@ -48,6 +50,7 @@ namespace PintheCloud.Models
             this.CreateAt = CreateAt;
         }
 
+
         public FileObject GetFileObject(string fileObjectId)
         {
             using (var itr = fileObjectList.GetEnumerator())
@@ -60,6 +63,8 @@ namespace PintheCloud.Models
             }
             return null;
         }
+
+
         public ProfileObject GetProfileObject(string profileObjectId)
         {
             using (var itr = profileObjectList.GetEnumerator())
@@ -72,6 +77,8 @@ namespace PintheCloud.Models
             }
             return null;
         }
+
+
         public NoteObject GetNoteObject(string noteObjectId)
         {
             using (var itr = noteObjectList.GetEnumerator())
@@ -234,6 +241,8 @@ namespace PintheCloud.Models
         {
             return new MSSpotObject(so.SpotName, so.Latitude, so.Longtitude, so.PtcAccountId, so.PtcAccountName, so.SpotDistance, so.IsPrivate, so.Password, so.CreateAt);
         }
+
+
         public static SpotObject ConvertToSpotObject(MSSpotObject msso)
         {
             SpotObject so = new SpotObject();

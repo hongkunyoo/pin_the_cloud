@@ -149,7 +149,6 @@
     <Compile Include="Utilities\ImageButton.xaml.cs">
       <DependentUpon>ImageButton.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\IStoragemanager.cs" />
     <Compile Include="Utilities\ShareException.cs" />
     <Compile Include="Converters\StringToThumnailUriConverter.cs" />
     <Compile Include="Pages\FileListPage.xaml.cs">

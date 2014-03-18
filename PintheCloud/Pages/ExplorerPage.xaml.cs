@@ -67,6 +67,9 @@ namespace PintheCloud.Pages
         public List<FileObjectViewItem> PinSelectedFileList = new List<FileObjectViewItem>();
 
         private SpotObject CurrentSpot;
+
+
+
         // Constructer
         public ExplorerPage()
         {
@@ -92,7 +95,7 @@ namespace PintheCloud.Pages
         }
 
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             
@@ -101,9 +104,8 @@ namespace PintheCloud.Pages
             this.AccountId = NavigationContext.QueryString["accountId"];
             this.AccountName = NavigationContext.QueryString["accountName"];
             uiSpotNameText.Text = this.SpotName;
-            
+
             this.CurrentSpot = App.SpotManager.GetSpotObject(this.SpotId);
-            await TaskHelper.WaitTask(STORAGE_EXPLORER_SYNC);
             this.SetPickPivot(AppResources.Loading);
             this.SetPinPivot(AppResources.Loading);
         }
@@ -177,13 +179,10 @@ namespace PintheCloud.Pages
             base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, message);
             base.SetProgressIndicator(true);
 
-            // If file exists, show it.
-            // Otherwise, show no file in spot message.
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // IMPORTANT CHANGE : Now Every Spot Operation between Server and Client will be communicated with SpotObject(CurrentSpot)
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            //List<FileObject> fileList = await App.BlobStorageManager.GetFilesFromSpotAsync(this.AccountId, this.SpotId);
             List<FileObject> fileList = await this.CurrentSpot.ListFileObjectsAsync();
 
             if (fileList.Count > 0)
@@ -214,8 +213,6 @@ namespace PintheCloud.Pages
             IStorageManager iStorageManager = Switcher.GetCurrentStorage();
             if (!iStorageManager.IsSignIn())  // wasn't signed in.
             {
-                //iStorageManager.GetFolderRootTree().Clear();
-                //iStorageManager.GetFoldersTree().Clear();
                 this.PinSelectedFileList.Clear();
                 this.PinFileAppBarButton.IsEnabled = false;
 
@@ -230,14 +227,7 @@ namespace PintheCloud.Pages
                 if (NetworkInterface.GetIsNetworkAvailable())
                 {
                     if (!this.PinFileObjectViewModel.IsDataLoaded)
-                    {
-                        //Stack<FileObjectViewItem> folderRootStack = iStorageManager.GetFolderRootTree();
-                        //if (folderRootStack.Count > 0)
-                        //    this.SetPinFileListAsync(iStorageManager, message, folderRootStack.First(), load);
-                        //else
-                        //    this.SetPinFileListAsync(iStorageManager, message, null, true);
                         this.SetPinFileListAsync(iStorageManager, message, null);
-                    }
                 }
                 else
                 {
@@ -261,7 +251,7 @@ namespace PintheCloud.Pages
             });
 
             // Wait task
-            await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
+            await TaskHelper.WaitTask(STORAGE_EXPLORER_SYNC);
             await TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
 
             // If it wasn't signed out, set list.
@@ -278,40 +268,12 @@ namespace PintheCloud.Pages
                 return;
             }
 
-
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // If folder null, set root.
-            
-
-            // If there is near spots, Clear and Add spots to list
-            // Otherwise, Show none message.
-            //List<SpotObject> spots = await App.SpotManager.GetNearSpotListAsync(currentGeoposition);
-
-            //iStorageManager.GetFolderRootTree().Clear();
-            //iStorageManager.GetFoldersTree().Clear();
-
-
-            //FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
-            //folder = new FileObjectViewItem();
-            //folder.Id = rootFolder.Id;
-            
-
             // Get files and push to stack tree.
-            //List<FileObject> fileObjects = await iStorageManager.GetFilesFromFolderAsync(folder.Id);
             List<FileObject> fileObjects = null;
             if(folder == null)
                 fileObjects = StorageExplorer.GetFilesFromRootFolder();
             else
                 fileObjects = StorageExplorer.GetTreeForFolder(this.CurrentSpot.GetFileObject(folder.Id));
-            //if (!message.Equals(AppResources.Refreshing))
-            //{
-            //    iStorageManager.GetFoldersTree().Push(fileObjects);
-            //    if (!iStorageManager.GetFolderRootTree().Contains(folder))
-            //        iStorageManager.GetFolderRootTree().Push(folder);
-            //}
-
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
             if (fileObjects == null) System.Diagnostics.Debugger.Break();
@@ -510,8 +472,6 @@ namespace PintheCloud.Pages
                 uiPinFileMessage.Visibility = Visibility.Collapsed;
 
             // Clear trees.
-            //iStorageManager.GetFolderRootTree().Pop();
-            //iStorageManager.GetFoldersTree().Pop();
             this.PinSelectedFileList.Clear();
             this.PinFileAppBarButton.IsEnabled = false;
 
@@ -523,10 +483,7 @@ namespace PintheCloud.Pages
 
         private void SetCurrentPath()
         {
-            //FileObjectViewItem[] array = iStorageManager.GetFolderRootTree().Reverse<FileObjectViewItem>().ToArray<FileObjectViewItem>();
             uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
-            //foreach (FileObjectViewItem f in array)
-                //uiPinFileCurrentPath.Text = uiPinFileCurrentPath.Text + f.Name + "/";
         }
 
 
