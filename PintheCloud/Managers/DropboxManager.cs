@@ -53,7 +53,6 @@ namespace PintheCloud.Managers
 
         public Task<bool> SignIn()
         {
-            Debug.WriteLine("SignIn!");
             // Get dropbox _client.
             this.tcs = new TaskCompletionSource<bool>();
             this._client = new DropNetClient(DROPBOX_CLIENT_KEY, DROPBOX_CLIENT_SECRET);
@@ -266,7 +265,7 @@ namespace PintheCloud.Managers
 
         private async Task<List<FileObject>> _GetChildAsync(FileObject fileObject)
         {
-            if (FileObjectViewModel.FOLDER.Equals(fileObject.Type))
+            if (FileObjectViewModel.FOLDER.Equals(fileObject.Type.ToString()))
             {
                 List<FileObject> list = await this.GetFilesFromFolderAsync(fileObject.Id);
                 foreach (FileObject file in list)

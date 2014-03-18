@@ -53,7 +53,7 @@ namespace PintheCloud.Pages
         {
         	// TODO: Add event handler implementation here.
 
-            NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE, UriKind.Relative));
+            NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));
         }
     }
 }

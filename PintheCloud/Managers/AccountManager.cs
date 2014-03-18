@@ -30,19 +30,7 @@ namespace PintheCloud.Managers
         {
             if (!this.IsSignIn()) return false;
 
-            await this.GetPtcAccountAsync();
-
-            using (var itr = StorageHelper.GetStorageEnumerator())
-            {
-                while (itr.MoveNext())
-                {
-                    if (itr.Current.IsSignIn())
-                    {
-                        TaskHelper.AddSignInTask(itr.Current.GetStorageName(), itr.Current.SignIn());
-                    }
-                }
-            }
-            return true;
+            return await this.GetPtcAccountAsync();
         }
 
         public void SavePtcId(string email, string password)
@@ -146,17 +134,19 @@ namespace PintheCloud.Managers
             System.Linq.Expressions.Expression<Func<MSPtcAccount, bool>> lamda = (a => a.email == accountId);
             if(password != null)
                  lamda = (a => a.email == accountId || a.profile_password == password);
-            
-            //MobileServiceCollection<MSPtcAccount, MSPtcAccount> msAccounts = null;
-            List<MSPtcAccount> list = null;
+
+            MobileServiceCollection<MSPtcAccount, MSPtcAccount> list = null;
+            //List<MSPtcAccount> list = null;
             try
             {
                 list = await App.MobileService.GetTable<MSPtcAccount>()
-                    .ToListAsync();
+                    .Where(lamda)
+                    .ToCollectionAsync();
             }
             catch (MobileServiceInvalidOperationException ex)
             {
                 Debug.WriteLine(ex.ToString());
+                System.Diagnostics.Debugger.Break();
                 throw new Exception("AccountManager.GetAccount() ERROR");
             }
 

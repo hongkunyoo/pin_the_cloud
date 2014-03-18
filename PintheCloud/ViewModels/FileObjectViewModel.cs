@@ -25,7 +25,7 @@ namespace PintheCloud.ViewModels
         public const string DOWNLOADING_IMAGE_URI = "DOWNLOADING_FILE_IMAGE_URI";
         public const string FAIL_IMAGE_URI = "/Assets/pajeon/at_here/png/general_fail.png";
 
-        public const string FOLDER = "folder";
+        public const string FOLDER = "FOLDER";
 
 
         public ObservableCollection<FileObjectViewItem> Items { get; set; }

@@ -10,37 +10,61 @@ using System.Threading.Tasks;
 
 namespace PintheCloud.Utilities
 {
-    public static class StorageExplorer<T>
+    public static class StorageExplorer
     {
-        private static FileObject Root;
-        private static Stack<FileObject> FolderTree = new Stack<FileObject>();
-        private static PintheCloud.Utilities.ConvertTemplate.ConvertFirstToSecond<FileObject, T> ReverseFileObject;
-        private static PintheCloud.Utilities.ConvertTemplate.ConvertFirstToSecond<T, FileObject> ConvertToFileObject;
-        private static string SQL_DATABASE_SET = "SQL_DATABASE_SET";
+        private static Dictionary<string,FileObject> DictionaryRoot = new Dictionary<string,FileObject>();
+        private static Dictionary<string, Stack<FileObject>> DictionaryTree = new Dictionary<string, Stack<FileObject>>();
+        //private static PintheCloud.Utilities.ConvertTemplate.ConvertFirstToSecond<FileObject, T> ReverseFileObject;
+        //private static PintheCloud.Utilities.ConvertTemplate.ConvertFirstToSecond<T, FileObject> ConvertToFileObject;
+        //private static string SQL_DATABASE_SET = "SQL_DATABASE_SET";
 
         public async static Task<bool> Synchronize()
         {
-            if (App.ApplicationSettings.Contains(SQL_DATABASE_SET))
+            if (App.ApplicationSettings.Contains("0"))
             {
                 ////////////////////////////////////////////
                 // TODO : Retrieve Data from DATABASE;
                 ////////////////////////////////////////////
 
-                App.ApplicationSettings[SQL_DATABASE_SET] = true;
+                
                 return true;
             }
             else
             {
                 try
                 {
-                    await TaskHelper.WaitSignInTask(Switcher.GetCurrentStorage().GetStorageName());
-                    IStorageManager storageManager = Switcher.GetCurrentStorage();
-                    Root = await storageManager.Synchronize();
+                    //await TaskHelper.WaitSignInTask(Switcher.GetCurrentStorage().GetStorageName());
+                    //bool result = await TaskHelper.WaitTask(App.AccountManager.GetPtcId());
+                    //bool result = await TaskHelper.WaitForAllSignIn();
+                    //if (!result) return false;
+                    System.Diagnostics.Debug.WriteLine("Sychronizing!");
+                    using (var itr = StorageHelper.GetStorageEnumerator())
+                    {
+                        while (itr.MoveNext())
+                        {
+                            if (itr.Current.IsSignIn())
+                            {
+                                if (await TaskHelper.WaitSignInTask(itr.Current.GetStorageName()))
+                                {
+                                    FileObject rootFolder = await itr.Current.Synchronize();
+                                    DictionaryRoot.Add(itr.Current.GetStorageName(), rootFolder);
+                                    Stack<FileObject> stack = new Stack<FileObject>();
+                                    stack.Push(rootFolder);
+                                    DictionaryTree.Add(itr.Current.GetStorageName(),stack);
+                                }
+                                
+                            }
+                            
+                        }
+                    }
 
                     ////////////////////////////////////////////
                     // TODO : SAVE Data to DATABASE;
                     ////////////////////////////////////////////
 
+
+                    //App.ApplicationSettings[SQL_DATABASE_SET] = true;
+                    System.Diagnostics.Debug.WriteLine("Sychronizing Finished!!");
                     return true;
                 }
                 catch
@@ -52,56 +76,52 @@ namespace PintheCloud.Utilities
         }
         public async static Task Refresh()
         {
-            App.ApplicationSettings.Remove(SQL_DATABASE_SET);
+            //App.ApplicationSettings.Remove(SQL_DATABASE_SET);
             await Synchronize();
         }
         public static FileObject GetRootFile()
         {
-            return Root;
+            return GetCurrentRoot();
+        }
+        public static List<FileObject> GetFilesFromRootFolder()
+        {
+            if (GetRootFile().FileList == null) System.Diagnostics.Debugger.Break();
+            return GetRootFile().FileList;
         }
 
-        public static List<FileObject> GetTreeForFolder(FileObject folder, Action<FileObject> action, ObservableCollection<T> viewList)
+        public static List<FileObject> GetTreeForFolder(FileObject folder)
         {
             List<FileObject> list = folder.FileList;
-            action(folder);
 
-            for (var i = 0; i < list.Count; i++)
-            {
-                viewList.Add(ConvertTo(list[i]));
-            }
 
-            if (!FolderTree.Contains(folder))
-                FolderTree.Push(folder);
-
+            if (!GetCurrentTree().Contains(folder))
+                GetCurrentTree().Push(folder);
+            if (list == null) System.Diagnostics.Debugger.Break();
             return list;
         }
-        public static List<FileObject> TreeUp(Action<FileObject> action, ObservableCollection<T> viewList)
+        public static List<FileObject> TreeUp()
         {
-            if (FolderTree.Count > 1)
+            if (GetCurrentTree().Count > 1)
             {
-                FolderTree.Pop();
-                return GetTreeForFolder(FolderTree.First(), action, viewList);
+                GetCurrentTree().Pop();
+                return GetTreeForFolder(GetCurrentTree().First());
             }
             return null;
         }
 
+        public static string GetCurrentPath()
+        {
+            return null;
+        }
 
+        private static FileObject GetCurrentRoot()
+        {
+            return DictionaryRoot[Switcher.GetCurrentStorage().GetStorageName()];
+        }
 
-        public static void SetConvertToFileObject(PintheCloud.Utilities.ConvertTemplate.ConvertFirstToSecond<T, FileObject> convert)
+        private static Stack<FileObject> GetCurrentTree()
         {
-            ConvertToFileObject = convert;
-        }
-        public static void SetReverseFileObject(PintheCloud.Utilities.ConvertTemplate.ConvertFirstToSecond<FileObject, T> reverse)
-        {
-            ReverseFileObject = reverse;
-        }
-        public static T ConvertTo(FileObject file)
-        {
-            return ReverseFileObject(file);
-        }
-        public static FileObject ConvertTo(T tt)
-        {
-            return ConvertToFileObject(tt);
+            return DictionaryTree[Switcher.GetCurrentStorage().GetStorageName()];
         }
     }
 }

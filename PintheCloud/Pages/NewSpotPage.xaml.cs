@@ -158,15 +158,27 @@ namespace PintheCloud.Pages
 
         private async void MakeNewSpot(string spotName, bool isPrivate, string spotPassword = NULL_PASSWORD)
         {
-            StorageAccount account = Switcher.GetCurrentStorage().GetStorageAccount();
+            //await TaskHelper.WaitSignInTask(Switcher.GetCurrentStorage().GetStorageName());
+            //StorageAccount account = Switcher.GetCurrentStorage().GetStorageAccount();
+            
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 // Check whether GPS is on or not
                 if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
                 {
-                    if (await this.PinSpotAsync(spotName, account.Id, account.StorageName, isPrivate, spotPassword))
+                    // Show Pining message and Progress Indicator
+                    base.Dispatcher.BeginInvoke(() =>
                     {
-                        string parameters = "?spotId=" + this.SpotId + "&spotName=" + spotName + "&accountId=" + account.Id + "&accountName=" + account.StorageName;
+                        uiNewSpotMessage.Text = AppResources.PiningSpot;
+                        uiNewSpotMessage.Visibility = Visibility.Visible;
+                    });
+                    base.SetProgressIndicator(true);
+
+                    await TaskHelper.WaitTask(App.AccountManager.GetPtcId());
+                    PtcAccount account = App.AccountManager.GetPtcAccount();
+                    if (await this.PinSpotAsync(spotName, account.Email, account.Name, isPrivate, spotPassword))
+                    {
+                        string parameters = "?spotId=" + this.SpotId + "&spotName=" + spotName + "&accountId=" + account.Email + "&accountName=" + account.Name;
                         NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE + parameters, UriKind.Relative));
                     }
                 }
@@ -184,15 +196,6 @@ namespace PintheCloud.Pages
 
         private async Task<bool> PinSpotAsync(string spotName, string accountId, string accountName, bool isPrivate, string spotPassword)
         {
-            // Show Pining message and Progress Indicator
-            base.Dispatcher.BeginInvoke(() =>
-            {
-                uiNewSpotMessage.Text = AppResources.PiningSpot;
-                uiNewSpotMessage.Visibility = Visibility.Visible;
-            });
-            
-            base.SetProgressIndicator(true);
-
             // Pin spot
             Geoposition geo = await App.Geolocator.GetGeopositionAsync();
             //Spot spot = new Spot(spotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, accountId, accountName, 0, isPrivate, spotPassword);

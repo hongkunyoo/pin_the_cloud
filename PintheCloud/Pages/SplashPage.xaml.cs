@@ -53,7 +53,21 @@ namespace PintheCloud.Pages
             if (App.AccountManager.IsSignIn())
             {
                 if (NetworkInterface.GetIsNetworkAvailable())
+                {
                     TaskHelper.AddTask(App.AccountManager.GetPtcId(), App.AccountManager.SignIn());
+                    using (var itr = StorageHelper.GetStorageEnumerator())
+                    {
+                        while (itr.MoveNext())
+                        {
+                            if (itr.Current.IsSignIn())
+                            {
+                                TaskHelper.AddSignInTask(itr.Current.GetStorageName(), itr.Current.SignIn());
+                            }
+                        }
+                    }
+                    TaskHelper.AddTask(STORAGE_EXPLORER_SYNC,StorageExplorer.Synchronize());
+                }
+                    
                 NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));
             }
             else

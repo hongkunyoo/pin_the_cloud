@@ -36,6 +36,8 @@ namespace PintheCloud.Pages
 
         public const double STATUS_BAR_HEIGHT = 32.0;
 
+        protected const string STORAGE_EXPLORER_SYNC = "STORAGE_EXPLORER_SYNC";
+
         public PtcPage()
         {
         }

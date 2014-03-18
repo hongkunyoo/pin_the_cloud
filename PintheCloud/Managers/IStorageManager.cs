@@ -24,8 +24,8 @@ namespace PintheCloud.Managers
         string GetStorageName();
         string GetStorageImageUri();
         string GetStorageColorHexString();
-        Stack<FileObjectViewItem> GetFolderRootTree();
-        Stack<List<FileObject>> GetFoldersTree();
+        //Stack<FileObjectViewItem> GetFolderRootTree();
+        //Stack<List<FileObject>> GetFoldersTree();
         Task<FileObject> GetRootFolderAsync();
         Task<List<FileObject>> GetRootFilesAsync();
         Task<FileObject> GetFileAsync(string fileId);

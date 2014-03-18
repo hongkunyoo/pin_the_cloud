@@ -21,7 +21,7 @@ namespace PintheCloud.Managers
     {
         private List<SpotObject> spotList;
         private List<SpotObject> mySpotList;
-
+        private SpotObject newSpot;
 
 
 
@@ -191,7 +191,7 @@ namespace PintheCloud.Managers
             string currentLongtitudeString = currentLongtitude.ToString().Replace(',', '.');
             string json = @"{'currentLatitude':" + currentLatitudeString + ",'currentLongtitude':" + currentLongtitudeString + "}";
             JToken jToken = JToken.Parse(json);
-            JArray spots = new JArray();
+            JArray spots = null;
             try
             {
                 // Load near spots use custom api in server script
@@ -234,10 +234,12 @@ namespace PintheCloud.Managers
             {
                 await App.MobileService.GetTable<MSSpotObject>().InsertAsync(spot);
             }
-            catch (MobileServiceInvalidOperationException)
+            catch (MobileServiceInvalidOperationException ex)
             {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
                 return false;
             }
+            this.newSpot = so;
             return true;
         }
         public async Task<bool> DeleteSpotAsync(string spotId)
@@ -274,8 +276,8 @@ namespace PintheCloud.Managers
                     string spotName = (string)jSpot["spot_name"];
                     double spotLatitude = (double)jSpot["spot_latitude"];
                     double spotLongtitude = (double)jSpot["spot_longtitude"];
-                    string accountId = (string)jSpot["account_id"];
-                    string accountName = (string)jSpot["account_name"];
+                    string accountId = (string)jSpot["ptcaccount_id"];
+                    string accountName = (string)jSpot["ptcaccount_name"];
                     double spotDistance = (double)jSpot["spot_distance"];
                     bool isPrivate = (bool)jSpot["is_private"];
                     string spot_password = (string)jSpot["spot_password"];
@@ -341,6 +343,8 @@ namespace PintheCloud.Managers
             {
                 if (mySpotList[i].Id.Equals(spotId)) return mySpotList[i];
             }
+            if (this.newSpot.Id.Equals(spotId)) return this.newSpot;
+
             return null;
         }
 

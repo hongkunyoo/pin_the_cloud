@@ -87,7 +87,7 @@ namespace PintheCloud
             );
             MobileServiceUser mobileServiceUser = new MobileServiceUser(App.AZURE_MOBILE_SERVICE_ID);
             mobileServiceUser.MobileServiceAuthenticationToken = App.AZURE_MOBILE_SERVICE_TOKEN;
-            MobileService.CurrentUser = mobileServiceUser;
+            //MobileService.CurrentUser = mobileServiceUser;
             ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
 
             // Manager

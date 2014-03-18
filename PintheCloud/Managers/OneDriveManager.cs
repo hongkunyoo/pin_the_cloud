@@ -351,7 +351,7 @@ namespace PintheCloud.Managers
         //      Children list of given FileObject.
         private async Task<List<FileObject>> _GetChildAsync(FileObject fileObject)
         {
-            if (FileObjectViewModel.FOLDER.Equals(fileObject.Type))
+            if (FileObjectViewModel.FOLDER.Equals(fileObject.Type.ToString()))
             {
                 List<FileObject> list = await this.GetFilesFromFolderAsync(fileObject.Id);
                 foreach (FileObject file in list)

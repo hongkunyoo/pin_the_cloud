@@ -39,7 +39,7 @@ namespace PintheCloud.Utilities
 
         public async Task TestAccount()
         {
-            List<Spot> list = await App.MobileService.GetTable<Spot>().ToListAsync();
+            //List<Spot> list = await App.MobileService.GetTable<Spot>().ToListAsync();
         }
 
         private async Task<StorageFile> GetStreamGiveFile(Stream input, string fileName)

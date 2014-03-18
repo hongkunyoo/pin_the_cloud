@@ -30,7 +30,7 @@ namespace PintheCloud.Converters
             string id = (string)(dic["id"] ?? "");
             string name = (string)(dic["name"] ?? "");
             double size = Convert.ToDouble(dic["size"] + ".0");
-            FileObject.FileObjectType type = (id.Split('.').First().Equals(FileObjectViewModel.FOLDER) ? FileObject.FileObjectType.FOLDER : FileObject.FileObjectType.FILE);
+            FileObject.FileObjectType type = (id.Split('.').First().Equals("folder") ? FileObject.FileObjectType.FOLDER : FileObject.FileObjectType.FILE);
             string extension = name.Split('.').Last();
             string updateAt = (string)dic["updated_time"] ?? DateTime.Now.ToString();
 
