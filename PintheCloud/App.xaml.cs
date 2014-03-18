@@ -50,7 +50,7 @@ namespace PintheCloud
         public static LocalStorageManager LocalStorageManager = null;
 
         //public static String[] StorageManagerNames = null;
-        public static TaskHelper TaskHelper = null;
+        //public static TaskHelper TaskHelper = null;
 
         private static OneDriveManager OneDriveManager = null;
         private static DropboxManager DropBoxManager = null;
@@ -91,7 +91,7 @@ namespace PintheCloud
             ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
 
             // Manager
-            SpotManager = new SpotManagerImplement();
+            SpotManager = new SpotManager();
             Geolocator = new Geolocator();
             BlobStorageManager = new BlobStorageManager();
             LocalStorageManager = new LocalStorageManager();
@@ -113,7 +113,7 @@ namespace PintheCloud
             //App.StorageManagerNames = new string[] {SkyDriveManager.GetStorageName(), DropBoxManager.GetStorageName(), GoogleDriveManger.GetStorageName()};
 
             //IStorageManagers = new IStorageManager[] { OneDriveManager, DropBoxManager, GoogleDriveManger };
-            TaskHelper = new TaskHelper();
+            //TaskHelper = new TaskHelper();
 
             AccountManager = new AccountManager();
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.
@@ -171,7 +171,7 @@ namespace PintheCloud
             using (var itr = StorageHelper.GetStorageEnumerator())
             {
                 while (itr.MoveNext())
-                    await App.TaskHelper.WaitSignInTask(itr.Current.GetStorageName());
+                    await TaskHelper.WaitSignInTask(itr.Current.GetStorageName());
             }
         }
 

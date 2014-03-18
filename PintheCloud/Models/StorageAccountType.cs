@@ -24,5 +24,40 @@ namespace PintheCloud.Models
             MaxSize = 3000;
             Id = "1";
         }
+
+        public static MSAccountType ConvertToMSAccountType(StorageAccountType sat)
+        {
+            MSAccountType msat = new MSAccountType();
+            msat.account_type_id = sat.Id;
+            msat.account_type_name = sat.AccountTypeName;
+            msat.account_type_max_size = sat.MaxSize;
+            return msat;
+        }
+
+        private static StorageAccountType ConvertToStorageAccountType(MSAccountType msat)
+        {
+            StorageAccountType sat = new StorageAccountType();
+            sat.Id = msat.account_type_id;
+            sat.AccountTypeName = msat.account_type_name;
+            sat.MaxSize = msat.account_type_max_size;
+            return sat;
+        }
     }
+    /// <summary>
+    /// Mobile Service AccountType
+    /// </summary>
+    public class MSAccountType
+    {
+        public string id { get; set; }
+
+        [JsonProperty(PropertyName = "account_type_name")]
+        public string account_type_name { get; set; }
+
+        [JsonProperty(PropertyName = "account_type_max_size")]
+        public double account_type_max_size { get; set; }
+        [JsonProperty(PropertyName = "account_type_id")]
+        public string account_type_id { get; set; }
+
+    }
+
 }

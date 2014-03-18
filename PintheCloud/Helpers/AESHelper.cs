@@ -44,7 +44,7 @@ namespace PintheCloud.Helpers
                 cryptoStream.FlushFinalBlock();
 
                 //Return Base 64 String
-                return Convert.ToBase64String(memoryStream.ToArray());
+                return Convert.ToBase64String(memoryStream.ToArray()).Replace("=","$");
             }
             finally
             {

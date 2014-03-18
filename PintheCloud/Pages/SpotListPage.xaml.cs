@@ -122,7 +122,7 @@ namespace PintheCloud.Pages
                     {
                         // If there is near spots, Clear and Add spots to list
                         // Otherwise, Show none message.
-                        List<Spot> spots = await App.SpotManager.GetNearSpotViewItemsAsync(currentGeoposition);
+                        List<SpotObject> spots = await App.SpotManager.GetNearSpotListAsync(currentGeoposition);
 
                         if (spots != null)
                         {

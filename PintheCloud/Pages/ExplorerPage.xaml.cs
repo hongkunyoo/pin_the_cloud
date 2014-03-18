@@ -251,8 +251,8 @@ namespace PintheCloud.Pages
             });
 
             // Wait task
-            await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
-            await App.TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
+            await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
+            await TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
 
             // If it wasn't signed out, set list.
             // Othersie, show sign in grid.
@@ -266,8 +266,14 @@ namespace PintheCloud.Pages
                     // If folder null, set root.
                     if (folder == null)
                     {
+
+                        // If there is near spots, Clear and Add spots to list
+                        // Otherwise, Show none message.
+                        //List<SpotObject> spots = await App.SpotManager.GetNearSpotListAsync(currentGeoposition);
+
                         iStorageManager.GetFolderRootTree().Clear();
                         iStorageManager.GetFoldersTree().Clear();
+
 
                         FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
                         folder = new FileObjectViewItem();
@@ -583,8 +589,8 @@ namespace PintheCloud.Pages
                 // Sign in and await that task.
                 IStorageManager iStorageManager = Switcher.GetCurrentStorage();
                 if (!iStorageManager.IsSigningIn())
-                    App.TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
-                bool result = await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
+                    TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
+                bool result = await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
 
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.

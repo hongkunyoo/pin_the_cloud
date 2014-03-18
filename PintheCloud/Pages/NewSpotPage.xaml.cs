@@ -195,14 +195,16 @@ namespace PintheCloud.Pages
 
             // Pin spot
             Geoposition geo = await App.Geolocator.GetGeopositionAsync();
-            Spot spot = new Spot(spotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, accountId, accountName, 0, isPrivate, spotPassword);
-            bool result = await App.SpotManager.PinSpotAsync(spot);
+            //Spot spot = new Spot(spotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, accountId, accountName, 0, isPrivate, spotPassword);
+            SpotObject spotObject = new SpotObject(spotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, accountId, accountName, 0, isPrivate, spotPassword, DateTime.Now.ToString());
+            //bool result = await App.SpotManager.PinSpotAsync(spot);
+            bool result = await App.SpotManager.CreateSpotAsync(spotObject);
             if (result)
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
-                    this.SpotId = spot.id;
+                    this.SpotId = spotObject.Id;
                 });
             }
             else

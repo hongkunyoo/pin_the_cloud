@@ -18,24 +18,24 @@ namespace PintheCloud.Models
         public string ProfilePassword { get; set; }
         public double UsedSize { get; set; }
         public StorageAccountType AccountType { get; set; }
-        public IDictionary<string, StorageAccount> StorageAccount { get; set; }
+        public IDictionary<string, StorageAccount> StorageAccounts { get; set; }
         public IDictionary<string,string> token { get; set; }
 
         public PtcAccount()
         {
-            StorageAccount = new Dictionary<string, StorageAccount>();
+            StorageAccounts = new Dictionary<string, StorageAccount>();
             token = new Dictionary<string, string>();
             AccountType = new StorageAccountType();
         }
 
         public async Task<bool> CreateStorageAccountAsync(StorageAccount sa)
         {
-            MSStorageAccount mssa = App.AccountManager.ConvertToMSStorageAccount(sa);
+            MSStorageAccount mssa = StorageAccount.ConvertToMSStorageAccount(sa);
             mssa.ptc_account_id = this.Email;
             try
             {
                 await App.MobileService.GetTable<MSStorageAccount>().InsertAsync(mssa);
-                StorageAccount.Add(sa.StorageName, sa);
+                StorageAccounts.Add(sa.StorageName, sa);
                 return true;
             }
             catch(Exception ex)
@@ -60,7 +60,7 @@ namespace PintheCloud.Models
             }
 
             if (accounts.Count == 1)
-                return App.AccountManager.ConvertToStorageAccount(accounts.First());
+                return StorageAccount.ConvertToStorageAccount(accounts.First());
             else if (accounts.Count > 1)
                 throw new Exception("AccountManager.GetAccount() ERROR");
             else
@@ -70,7 +70,7 @@ namespace PintheCloud.Models
         public StorageAccount GetStorageAccountById(string storageAccountId)
         {
             if(storageAccountId == null || string.Empty.Equals(storageAccountId)) return null;
-            using (var itr = StorageAccount.GetEnumerator())
+            using (var itr = StorageAccounts.GetEnumerator())
             {
                 while (itr.MoveNext())
                 {
@@ -83,14 +83,73 @@ namespace PintheCloud.Models
 
         public StorageAccount GetStorageAccountByName(string storageName)
         {
-            if (StorageAccount.ContainsKey(storageName))
-                return StorageAccount[storageName];
+            if (StorageAccounts.ContainsKey(storageName))
+                return StorageAccounts[storageName];
             else
                 return null;
         }
         public IEnumerator<KeyValuePair<string, StorageAccount>> GetStorageAccountEnumerator()
         {
-            return StorageAccount.GetEnumerator();
+            return StorageAccounts.GetEnumerator();
+        }
+
+        public static MSPtcAccount ConvertToMSPtcAccount(PtcAccount pa)
+        {
+            MSPtcAccount mspa = new MSPtcAccount(pa.Name, pa.Email, pa.PhoneNumber, pa.ProfilePassword, 0.0, pa.AccountType.Id, "for_later_develop");
+            return mspa;
+        }
+
+        public static PtcAccount ConvertToPtcAccount(MSPtcAccount mspa)
+        {
+            PtcAccount account = new PtcAccount();
+            account.Name = mspa.name;
+            account.Email = mspa.email;
+            account.PhoneNumber = mspa.phone_number;
+            account.ProfilePassword = mspa.profile_password;
+            account.UsedSize = mspa.used_size;
+            account.AccountType = new StorageAccountType();
+            return account;
+        }
+    }
+
+    /// <summary>
+    /// Mobile Service PtcAccount
+    /// This class will be stored in the mobile service table
+    /// </summary>
+    public class MSPtcAccount
+    {
+        public string id { get; set; }
+
+        [JsonProperty(PropertyName = "name")]
+        public string name { get; set; }
+
+        [JsonProperty(PropertyName = "email")]
+        public string email { get; set; }
+
+        [JsonProperty(PropertyName = "phone_number")]
+        public string phone_number { get; set; }
+
+        [JsonProperty(PropertyName = "profile_password")]
+        public string profile_password { get; set; }
+
+        [JsonProperty(PropertyName = "used_size")]
+        public double used_size { get; set; }
+
+        [JsonProperty(PropertyName = "account_type_id")]
+        public string account_type_id { get; set; }
+
+        [JsonProperty(PropertyName = "token_id")]
+        public string token_id { get; set; }
+
+        public MSPtcAccount(string name, string email, string phone_number, string profile_password, double used_size, string account_type_id, string token_id)
+        {
+            this.name = name;
+            this.email = email;
+            this.phone_number = phone_number;
+            this.profile_password = profile_password;
+            this.used_size = used_size;
+            this.account_type_id = account_type_id;
+            this.token_id = token_id;
         }
     }
 }

@@ -30,7 +30,7 @@ namespace PintheCloud.ViewModels
         }
 
 
-        public void SetItems(List<Spot> spots)
+        public void SetItems(List<SpotObject> spots)
         {
             // If items have something, clear.
             this.Items.Clear();
@@ -38,29 +38,21 @@ namespace PintheCloud.ViewModels
             // Sorting spots
             spots.Sort((s1, s2) =>
             {
-                return s1.spot_name.CompareTo(s2.spot_name);
+                return s1.SpotName.CompareTo(s2.SpotName);
             });
             spots.Sort((s1, s2) => 
             {
-                return s1.spot_distance.CompareTo(s2.spot_distance);
+                return s1.SpotDistance.CompareTo(s2.SpotDistance);
             });
 
             // Convert jarray spots to spot view items and set to view model
-            foreach (Spot spot in spots)
+            foreach (SpotObject spot in spots)
             {
                 // Set new spot view item
-                SpotViewItem spotViewItem = new SpotViewItem();
-                spotViewItem.SpotName = spot.spot_name;
-                spotViewItem.AccountId = spot.account_id;
-                spotViewItem.AccountName = spot.account_name;
-                spotViewItem.SpotId = spot.id;
-                spotViewItem.SpotDistance = spot.spot_distance;
-                spotViewItem.DeleteImage = FileObjectViewModel.DELETE_IMAGE_URI;
-                spotViewItem.DeleteImagePress = true;
-                spotViewItem.SpotNameInitialImage = spotViewItem.SpotName.Substring(0, 1);
-                spotViewItem.SpotPassword = spot.spot_password;
+                SpotViewItem spotViewItem = new SpotViewItem(spot);
+                
 
-                if (spot.is_private)
+                if (spot.IsPrivate)
                     spotViewItem.IsPrivateImage = FileObjectViewModel.IS_PRIVATE_IMAGE_URI;
                 else
                     spotViewItem.IsPrivateImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;

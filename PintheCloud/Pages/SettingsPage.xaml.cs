@@ -189,11 +189,11 @@ namespace PintheCloud.Pages
                 // Sign in
                 IStorageManager iStorageManager = Switcher.GetCurrentStorage();
                 if (!iStorageManager.IsSigningIn())
-                    App.TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
+                    TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
 
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.
-                if (await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
+                if (await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
@@ -240,7 +240,8 @@ namespace PintheCloud.Pages
 
                 // Sign out
                 IStorageManager iStorageManager = Switcher.GetCurrentStorage();
-                App.TaskHelper.AddSignOutTask(iStorageManager.GetStorageName(), this.SignOut(iStorageManager));
+                TaskHelper.AddSignOutTask(iStorageManager.GetStorageName(), this.SignOut(iStorageManager));
+                
 
                 // After sign out, set list.
                 this.MySpotViewModel.IsDataLoaded = false;
@@ -257,7 +258,7 @@ namespace PintheCloud.Pages
 
         private async Task SignOut(IStorageManager iStorageManager)
         {
-            if(await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
+            if(await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
                 iStorageManager.SignOut();
         }
 
@@ -266,7 +267,7 @@ namespace PintheCloud.Pages
         {
             if (isSignIn)  // It is signed in
             {
-                if (await App.TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
+                if (await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
                 {
                     this.SignButtonTextBlocks[platformIndex].Text = iStorageManager.GetStorageAccount().StorageName;
                     this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_IN_BUTTON_TEXT_COLOR));
@@ -439,7 +440,7 @@ namespace PintheCloud.Pages
 
             // If there is my spots, Clear and Add spots to list
             // Otherwise, Show none message.
-            List<Spot> spots = await App.SpotManager.GetMySpotViewItemsAsync();
+            List<SpotObject> spots = await App.SpotManager.GetMySpotList();
 
             if (spots != null)
             {
@@ -494,9 +495,8 @@ namespace PintheCloud.Pages
             // Otherwise, show delete fail image.
             if (deleteFileSuccess)
             {
-                Spot spot = new Spot(spotViewItem.SpotName, 0, 0, spotViewItem.AccountId, spotViewItem.AccountName, spotViewItem.SpotDistance, false, NULL_PASSWORD);
-                spot.id = spotViewItem.SpotId;
-                if (await App.SpotManager.DeleteSpotAsync(spot))
+                ;
+                if (await App.SpotManager.DeleteSpotAsync(spotViewItem.SpotId))
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {

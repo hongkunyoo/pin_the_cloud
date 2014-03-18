@@ -1,4 +1,5 @@
-﻿using PintheCloud.Utilities;
+﻿using PintheCloud.Models;
+using PintheCloud.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,6 +20,8 @@ namespace PintheCloud.ViewModels
         public string SpotNameInitialImage { get; set; }
         public string IsPrivateImage { get; set; }
         public string SpotPassword { get; set; }
+        public string CreateAt { get; set; }
+
 
         private bool deleteImagePress;
         public bool DeleteImagePress
@@ -63,6 +66,23 @@ namespace PintheCloud.ViewModels
             {
                 handler(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+        public SpotViewItem(SpotObject spot)
+        {
+            this.SpotName = spot.SpotName;
+            this.AccountId = spot.PtcAccountId;
+            this.AccountName = spot.PtcAccountName;
+            this.SpotId = spot.Id;
+            this.SpotDistance = spot.SpotDistance;
+            this.DeleteImage = FileObjectViewModel.DELETE_IMAGE_URI;
+            this.DeleteImagePress = true;
+            this.SpotNameInitialImage = this.SpotName.Substring(0, 1);
+            this.SpotPassword = spot.Password;
+            this.CreateAt = spot.CreateAt;
+        }
+        public SpotViewItem()
+        {
+
         }
     }
 }

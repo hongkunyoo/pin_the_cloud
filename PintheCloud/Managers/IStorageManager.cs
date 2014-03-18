@@ -32,6 +32,7 @@ namespace PintheCloud.Managers
         Task<List<FileObject>> GetFilesFromFolderAsync(string folderId);
         Task<Stream> DownloadFileStreamAsync(string sourceFileId);
         Task<bool> UploadFileStreamAsync(string folderIdToStore, string fileName, Stream outstream);
+        Task<FileObject> Synchronize();
 
         # region Not Using Methos
         //Task<StorageFile> DownloadFileAsync(string sourceFileId, Uri destinationUri);

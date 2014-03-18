@@ -270,6 +270,17 @@ namespace PintheCloud.Managers
             return true;
         }
 
+        // Summary:
+        //     Get the file meta information from the root to the node of the file tree.
+        //
+        // Returns:
+        //     Root FileObject of OneDrive.
+        public async Task<FileObject> Synchronize()
+        {
+            FileObject fileObject = await GetRootFolderAsync();
+            fileObject.FileList = await _GetChildAsync(fileObject);
+            return fileObject;
+        }
 
         #region Private Methods
         ///////////////////
@@ -356,17 +367,7 @@ namespace PintheCloud.Managers
         }
 
 
-        // Summary:
-        //     Get the file meta information from the root to the node of the file tree.
-        //
-        // Returns:
-        //     Root FileObject of OneDrive.
-        private async Task<FileObject> Synchronize()
-        {
-            FileObject fileObject = await GetRootFolderAsync();
-            fileObject.FileList = await _GetChildAsync(fileObject);
-            return fileObject;
-        }
+        
         #endregion
 
         #region Not Using Methods
