@@ -137,7 +137,7 @@ namespace PintheCloud.Pages
         {
             // Set View model for dispaly,
             // One time loading.
-            switch (uiSettingPivot.SelectedIndex)
+            switch (uiSettingsPivot.SelectedIndex)
             {
                 case MY_SPOT_PIVOT_INDEX:
 
