@@ -208,11 +208,13 @@ namespace PintheCloud.Managers
         // Get spots from DB
         private async Task<JArray> GetMySpotsAsync(string ptcAccountId)
         {
+            string json = @"{'ptcAccountId':'" + ptcAccountId + "'}";
+            JToken jToken = JToken.Parse(json);
             JArray spots = new JArray();
             try
             {
                 // Load current account's spots
-                spots = (JArray)await App.MobileService.InvokeApiAsync<string, JArray>("select_my_spots_async", ptcAccountId);
+                spots = (JArray)await App.MobileService.InvokeApiAsync("select_my_spots_async", jToken);
             }
             catch (MobileServiceInvalidOperationException)
             {

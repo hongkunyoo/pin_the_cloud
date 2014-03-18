@@ -49,9 +49,6 @@ namespace PintheCloud
         public static BlobStorageManager BlobStorageManager = null;
         public static LocalStorageManager LocalStorageManager = null;
 
-        //public static String[] StorageManagerNames = null;
-        //public static TaskHelper TaskHelper = null;
-
         private static OneDriveManager OneDriveManager = null;
         private static DropboxManager DropBoxManager = null;
         private static GoogleDriveManager GoogleDriveManger = null;

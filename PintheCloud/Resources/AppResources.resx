@@ -335,4 +335,37 @@
   <data name="MyPick" xml:space="preserve">
     <value>My Pick</value>
   </data>
+  <data name="BadEmailAddressCaption" xml:space="preserve">
+    <value>Wrong Email Address</value>
+  </data>
+  <data name="BadEmailAddressMessage" xml:space="preserve">
+    <value>Please confirm right email address.</value>
+  </data>
+  <data name="BadPasswordConfirmCaption" xml:space="preserve">
+    <value>Password Confirm</value>
+  </data>
+  <data name="BadPasswordConfirmMessage" xml:space="preserve">
+    <value>Password is not same with confirm box.</value>
+  </data>
+  <data name="Cloud" xml:space="preserve">
+    <value>Cloud</value>
+  </data>
+  <data name="CreateProfile" xml:space="preserve">
+    <value>Creating Profile...</value>
+  </data>
+  <data name="DuplicateEmailAddressCaption" xml:space="preserve">
+    <value>Duplicated Email Address</value>
+  </data>
+  <data name="DuplicateEmailAddressMessage" xml:space="preserve">
+    <value>This email address already existed. Please use another email address.</value>
+  </data>
+  <data name="NoEmailAddressCaption" xml:space="preserve">
+    <value>The email address doesn't exist in At Here. Please confirm your email.</value>
+  </data>
+  <data name="NoEmailAddressMessage" xml:space="preserve">
+    <value>Email doesn't exist</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
 </root>

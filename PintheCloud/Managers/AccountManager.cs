@@ -40,24 +40,15 @@ namespace PintheCloud.Managers
             App.ApplicationSettings.Save();
         }
 
+
         public async Task<bool> CreateNewPtcAccountAsync(PtcAccount account)
         {
             MSPtcAccount mspa = PtcAccount.ConvertToMSPtcAccount(account);
-            //List<MSStorageAccount> saList = new List<MSStorageAccount>();
-            //foreach (var i in account.StorageAccount)
-            //{
-            //    saList.Add(this.ConvertToMSStorageAccount(i.Value));
-            //}
             try
             {
                 PtcAccount p = await this.GetPtcAccountAsync(account.Email);
                 if (p != null) return false;
-
                 await App.MobileService.GetTable<MSPtcAccount>().InsertAsync(mspa);
-                //foreach (var i in saList)
-                //{
-                //    await App.MobileService.GetTable<MSStorageAccount>().InsertAsync(i);
-                //}
             }
             catch (MobileServiceInvalidOperationException)
             {
@@ -67,6 +58,8 @@ namespace PintheCloud.Managers
             this.myAccount = account;
             return true;
         }
+
+
         public async Task<bool> DeletePtcAccount(PtcAccount account)
         {
             MSPtcAccount mspa = PtcAccount.ConvertToMSPtcAccount(account);
@@ -125,10 +118,14 @@ namespace PintheCloud.Managers
             else
                 return false;
         }
+
+
         public PtcAccount GetPtcAccount()
         {
             return this.myAccount;
         }
+
+
         public async Task<PtcAccount> GetPtcAccountAsync(string accountId, string password = null)
         {
             System.Linq.Expressions.Expression<Func<MSPtcAccount, bool>> lamda = (a => a.email == accountId);
@@ -142,10 +139,8 @@ namespace PintheCloud.Managers
                     .Where(lamda)
                     .ToCollectionAsync();
             }
-            catch (MobileServiceInvalidOperationException ex)
+            catch (MobileServiceInvalidOperationException)
             {
-                Debug.WriteLine(ex.ToString());
-                System.Diagnostics.Debugger.Break();
                 throw new Exception("AccountManager.GetAccount() ERROR");
             }
 

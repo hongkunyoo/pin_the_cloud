@@ -29,12 +29,14 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-        	<TextBox x:Name="ui_name" TextWrapping="Wrap" Text="Name" Margin="0,0,0,560"/>
-        	<TextBox x:Name="ui_email" HorizontalAlignment="Left" Height="72" TextWrapping="Wrap" Text="Email" VerticalAlignment="Top" Width="456" Margin="0,72,0,0"/>
-        	<TextBox x:Name="ui_phone_num" HorizontalAlignment="Left" Height="72" TextWrapping="Wrap" Text="Phone Number" VerticalAlignment="Top" Width="456" Margin="0,144,0,0"/>
-        	<TextBox x:Name="ui_password" HorizontalAlignment="Left" Height="72" TextWrapping="Wrap" Text="Check Profile" VerticalAlignment="Top" Width="456" Margin="0,216,0,0"/>
-        	<Button x:Name="ui_create_btn" Content="Create" HorizontalAlignment="Left" Margin="119,386,0,0" VerticalAlignment="Top" Click="ui_create_btn_Click" Width="219"/>
-        	<Button x:Name="ui_sign_in_btn" Content="SignIn" HorizontalAlignment="Left" Margin="118,463,0,0" VerticalAlignment="Top" Click="ui_sign_in_btn_Click" Width="220"/>
+        	<StackPanel>
+        		<TextBox x:Name="ui_name" TextWrapping="Wrap" Text="User Name" TextChanged="ui_name_TextChanged"/>
+        		<TextBox x:Name="ui_email" TextWrapping="Wrap" Text="Email" TextChanged="ui_email_TextChanged"/>
+        		<PasswordBox x:Name="ui_password" PasswordChanged="ui_password_PasswordChanged" Password="Password"/>
+        		<PasswordBox x:Name="ui_password_confirm" PasswordChanged="ui_password_confirm_PasswordChanged" Password="Password Check"/>
+        		<Button x:Name="ui_create_btn" Content="Create" Click="ui_create_btn_Click" IsEnabled="False"/>
+        		<Button x:Name="ui_sign_in_btn" Content="SignIn" Click="ui_sign_in_btn_Click"/>
+        	</StackPanel>
 
         </Grid>
     </Grid>

@@ -29,9 +29,8 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-        	<StackPanel HorizontalAlignment="Left" Height="568" VerticalAlignment="Top" Width="456"/>
         	<phone:LongListSelector x:Name="ui_storage_list" Margin="0,0,0,81" SelectionChanged="ui_storage_list_SelectionChanged" FontSize="46.667"/>
-        	<Button x:Name="ui_finish_btn" Content="Finish" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="310,577,0,0" Width="136" Click="ui_finish_btn_Click"/>
+        	<Button x:Name="ui_skip_btn" Content="Skip" HorizontalAlignment="Right" VerticalAlignment="Bottom" Click="ui_skip_btn_Click"/>
 
         </Grid>
     </Grid>

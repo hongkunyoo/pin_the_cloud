@@ -11,7 +11,6 @@ namespace PintheCloud.Helpers
     public static class Switcher
     {
         private static IStorageManager CurrentManager = null;
-        //private static Dictionary<string, IStorageManager> map = new Dictionary<string, IStorageManager>();
         private static string MAIN_PLATFORM_TYPE_KEY = "MAIN_PLATFORM_TYPE_KEY";
         
 

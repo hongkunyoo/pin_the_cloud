@@ -170,6 +170,8 @@
       <DependentUpon>AppResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Converters\ColorHexStringToBrushConverter.cs" />
+    <Compile Include="ViewModels\CloudModeViewItem.cs" />
+    <Compile Include="ViewModels\CloudModeViewModel.cs" />
     <Compile Include="ViewModels\FileObjectViewItem.cs" />
     <Compile Include="ViewModels\FileObjectViewModel.cs" />
     <Compile Include="ViewModels\SpotViewItem.cs" />

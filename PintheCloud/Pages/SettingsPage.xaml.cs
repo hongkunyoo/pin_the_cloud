@@ -30,6 +30,7 @@ namespace PintheCloud.Pages
         // Const Instances
         private const int APPLICATION_PIVOT_INDEX = 0;
         private const int MY_SPOT_PIVOT_INDEX = 1;
+        private const int MY_PICK_PIVOT_INDEX = 2;
 
         private const string SIGN_IN_BUTTON_TEXT_FONT = "Segoe WP";
         private const string SIGN_NOT_IN_BUTTON_TEXT_FONT = "Segoe WP Light";
@@ -146,6 +147,11 @@ namespace PintheCloud.Pages
                     this.SetMySpotPivot(AppResources.Loading);
                     break;
 
+                case MY_PICK_PIVOT_INDEX:
+                    // Set My Pick stuff enable and set list
+                    ApplicationBar.IsVisible = true;
+                    break;
+
                 default:
 
                     // Set My Spot stuff unable
@@ -170,16 +176,16 @@ namespace PintheCloud.Pages
 
         /*** Application ***/
 
-        private async void SignInButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private async void CloudSignInButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 // Set process indicator
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    uiProfileGrid.Visibility = Visibility.Collapsed;
-                    uiProfileMessageGrid.Visibility = Visibility.Visible;
-                    uiProfileMessage.Text = AppResources.DoingSignIn;
+                    uiCloudPanel.Visibility = Visibility.Collapsed;
+                    uiCloudMessageGrid.Visibility = Visibility.Visible;
+                    uiCloudMessage.Text = AppResources.DoingSignIn;
                 });
 
                 // Get index
@@ -213,8 +219,8 @@ namespace PintheCloud.Pages
                 // Hide process indicator
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    uiProfileGrid.Visibility = Visibility.Visible;
-                    uiProfileMessageGrid.Visibility = Visibility.Collapsed;
+                    uiCloudPanel.Visibility = Visibility.Visible;
+                    uiCloudMessageGrid.Visibility = Visibility.Collapsed;
                 });
             }
             else
@@ -224,16 +230,16 @@ namespace PintheCloud.Pages
         }
 
 
-        private void SignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void CloudSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             // Sign out
             MessageBoxResult signOutResult = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
             if (signOutResult == MessageBoxResult.OK)
             {
                 // Set process indicator and get index
-                uiProfileGrid.Visibility = Visibility.Collapsed;
-                uiProfileMessageGrid.Visibility = Visibility.Visible;
-                uiProfileMessage.Text = AppResources.DoingSignOut;
+                uiCloudPanel.Visibility = Visibility.Collapsed;
+                uiCloudMessageGrid.Visibility = Visibility.Visible;
+                uiCloudMessage.Text = AppResources.DoingSignOut;
 
                 Button signButton = (Button)sender;
                 Switcher.SetStorageTo(signButton.Tag.ToString());
@@ -249,8 +255,8 @@ namespace PintheCloud.Pages
 
                 // Hide process indicator
                 ((FileObjectViewModel)PhoneApplicationService.Current.State[PIN_FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
-                uiProfileGrid.Visibility = Visibility.Visible;
-                uiProfileMessageGrid.Visibility = Visibility.Collapsed;
+                uiCloudPanel.Visibility = Visibility.Visible;
+                uiCloudMessageGrid.Visibility = Visibility.Collapsed;
                 this.SetSignButtons(Switcher.GetCurrentIndex(), false, Switcher.GetCurrentStorage());
             }
         }
@@ -272,8 +278,8 @@ namespace PintheCloud.Pages
                     this.SignButtonTextBlocks[platformIndex].Text = iStorageManager.GetStorageAccount().StorageName;
                     this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_IN_BUTTON_TEXT_COLOR));
                     this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_IN_BUTTON_TEXT_FONT);
-                    this.SignButtons[platformIndex].Click += this.SignOutButton_Click;
-                    this.SignButtons[platformIndex].Click -= this.SignInButton_Click;
+                    this.SignButtons[platformIndex].Click += this.CloudSignOutButton_Click;
+                    this.SignButtons[platformIndex].Click -= this.CloudSignInButton_Click;
                     return;
                 }
             }
@@ -282,8 +288,8 @@ namespace PintheCloud.Pages
             this.SignButtonTextBlocks[platformIndex].Text = AppResources.SignIn;
             this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_NOT_IN_BUTTON_TEXT_COLOR));
             this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_NOT_IN_BUTTON_TEXT_FONT);
-            this.SignButtons[platformIndex].Click -= this.SignOutButton_Click;
-            this.SignButtons[platformIndex].Click += this.SignInButton_Click;
+            this.SignButtons[platformIndex].Click -= this.CloudSignOutButton_Click;
+            this.SignButtons[platformIndex].Click += this.CloudSignInButton_Click;
         }
 
 
@@ -540,6 +546,11 @@ namespace PintheCloud.Pages
         private void uiDeleteSpotButton_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
         {
             ((Image)((Button)sender).Content).Source = new BitmapImage(new Uri(MY_SPOT_DELETE_BUTTON_IMAGE_URI, UriKind.Relative));
+        }
+
+        private void uiSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // TODO Signout
         }
     }
 }

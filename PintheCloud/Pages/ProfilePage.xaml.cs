@@ -10,6 +10,8 @@ using Microsoft.Phone.Shell;
 using System.Text.RegularExpressions;
 using PintheCloud.Models;
 using PintheCloud.Managers;
+using System.Net.NetworkInformation;
+using PintheCloud.Resources;
 
 namespace PintheCloud.Pages
 {
@@ -30,62 +32,116 @@ namespace PintheCloud.Pages
 
         private async void ui_create_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-        	// TODO: Add event handler implementation here.
-            ui_email.Text = "mark8625@daum.net";
-
-            if (!_CheckValidation())
+            if (NetworkInterface.GetIsNetworkAvailable())
             {
-                ////////////////////////
-                // TODO : SEUNGMIN
-                // Show ERROR Message
-                ////////////////////////
-                return;
+                ui_name.Text = ui_name.Text.Trim();
+                ui_email.Text = ui_email.Text.Trim();
+                ui_password.Password = ui_password.Password.Trim();
+                ui_password_confirm.Password = ui_password_confirm.Password.Trim();
+
+                // Email Check
+                if (!Regex.IsMatch(ui_email.Text,
+                        @"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))"
+                        + @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9]{2,24}))$",
+                        RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250)))
+                {
+                    MessageBox.Show(AppResources.BadEmailAddressMessage, AppResources.BadEmailAddressCaption, MessageBoxButton.OK);
+                    return;
+                }
+
+                // Password confirm
+                if (!ui_password.Password.Equals(ui_password_confirm.Password))
+                {
+                    MessageBox.Show(AppResources.BadPasswordConfirmMessage, AppResources.BadPasswordConfirmCaption, MessageBoxButton.OK);
+                    return;
+                }
+
+
+                base.SetProgressIndicator(true, AppResources.CreateProfile);
+
+                ui_name.IsEnabled = false;
+                ui_email.IsEnabled = false;
+                ui_password.IsEnabled = false;
+                ui_password_confirm.IsEnabled = false;
+                ui_create_btn.IsEnabled = false;
+                ui_sign_in_btn.IsEnabled = false;
+
+                PtcAccount ptcAccount = new PtcAccount();
+                ptcAccount.Name = ui_name.Text;
+                ptcAccount.Email = ui_email.Text;
+                ptcAccount.ProfilePassword = ui_password.Password;
+
+                if (await App.AccountManager.CreateNewPtcAccountAsync(ptcAccount))
+                {
+                    NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
+                }
+                else // IF there is a duplicated Email address, it fails.
+                {
+                    ui_name.IsEnabled = true;
+                    ui_email.IsEnabled = true;
+                    ui_password.IsEnabled = true;
+                    ui_password_confirm.IsEnabled = true;
+                    ui_password.Password = String.Empty;
+                    ui_password_confirm.Password = String.Empty;
+                    ui_sign_in_btn.IsEnabled = true;
+                    MessageBox.Show(AppResources.DuplicateEmailAddressMessage, AppResources.DuplicateEmailAddressCaption, MessageBoxButton.OK);
+                }
+
+                base.SetProgressIndicator(false);
             }
-
-            PtcAccount ptcAccount = new PtcAccount();
-            ptcAccount.Name = ui_name.Text;
-            ptcAccount.Email = ui_email.Text;
-            ptcAccount.PhoneNumber = ui_phone_num.Text;
-            ptcAccount.ProfilePassword = ui_password.Text;
-
-            // Insert to Server
-            bool result = await App.AccountManager.CreateNewPtcAccountAsync(ptcAccount);
-
-            ////////////////////////
-            // TODO : SEUNGMIN
-            // Show Progress Status
-            ////////////////////////
-
-            if (result)
+            else
             {
-                NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
-            }
-            else // IF there is a duplicated Email address, it fails.
-            {
-                ////////////////////////
-                // TODO : SEUNGMIN
-                // Show ERROR message
-                ////////////////////////
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
             }
         }
 
-        private bool _CheckValidation()
-        {
-            if (string.Empty.Equals(ui_name.Text)) return false;
-            if (!Regex.IsMatch(ui_email.Text,
-                @"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))" +
-                @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9]{2,24}))$",
-                RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250)))
-                return false;
-            if (string.Empty.Equals(ui_phone_num.Text)) return false;
-            if (string.Empty.Equals(ui_password.Text)) return false;
-
-            return true;
-        }
 
         private void ui_sign_in_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             NavigationService.Navigate(new Uri(EventHelper.SIGNIN_PAGE, UriKind.Relative));
+        }
+
+
+        private void ui_name_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            ui_create_btn.IsEnabled = !IsTextBoxEmpty();
+        }
+
+
+        private void ui_email_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            ui_create_btn.IsEnabled = !IsTextBoxEmpty();
+        }
+
+
+        private void ui_password_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ui_create_btn.IsEnabled = !IsTextBoxEmpty();
+        }
+
+
+        private void ui_password_confirm_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ui_create_btn.IsEnabled = !IsTextBoxEmpty();
+        }
+
+        private bool IsTextBoxEmpty()
+        {
+            if (!ui_name.Text.Trim().Equals(String.Empty) && !ui_email.Text.Trim().Equals(String.Empty) &&
+                !ui_password.Password.Trim().Equals(String.Empty) && !ui_password_confirm.Password.Trim().Equals(String.Empty))
+                return false;
+            else
+                return true;
+        }
+
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+
+            MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
+            if (result != MessageBoxResult.OK)
+                e.Cancel = true;
         }
     }
 }

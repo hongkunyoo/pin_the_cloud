@@ -97,6 +97,24 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Wrong Email Address과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadEmailAddressCaption {
+            get {
+                return ResourceManager.GetString("BadEmailAddressCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Please confirm right email address.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadEmailAddressMessage {
+            get {
+                return ResourceManager.GetString("BadEmailAddressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Loading Spot met error. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string BadLoadingSpotMessage {
@@ -111,6 +129,24 @@ namespace PintheCloud.Resources {
         public static string BadLocationServiceMessage {
             get {
                 return ResourceManager.GetString("BadLocationServiceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Password Confirm과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadPasswordConfirmCaption {
+            get {
+                return ResourceManager.GetString("BadPasswordConfirmCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Password is not same with confirm box.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadPasswordConfirmMessage {
+            get {
+                return ResourceManager.GetString("BadPasswordConfirmMessage", resourceCulture);
             }
         }
         
@@ -165,6 +201,24 @@ namespace PintheCloud.Resources {
         public static string CloseAppMessage {
             get {
                 return ResourceManager.GetString("CloseAppMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Cloud과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Cloud {
+            get {
+                return ResourceManager.GetString("Cloud", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Creating Profile...과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string CreateProfile {
+            get {
+                return ResourceManager.GetString("CreateProfile", resourceCulture);
             }
         }
         
@@ -246,6 +300,24 @@ namespace PintheCloud.Resources {
         public static string Dropbox {
             get {
                 return ResourceManager.GetString("Dropbox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Duplicated Email Address과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DuplicateEmailAddressCaption {
+            get {
+                return ResourceManager.GetString("DuplicateEmailAddressCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   This email address already existed. Please use another email address.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string DuplicateEmailAddressMessage {
+            get {
+                return ResourceManager.GetString("DuplicateEmailAddressMessage", resourceCulture);
             }
         }
         
@@ -399,6 +471,24 @@ namespace PintheCloud.Resources {
         public static string NewSpot {
             get {
                 return ResourceManager.GetString("NewSpot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The email address doesn&apos;t exist in At Here. Please confirm your email.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoEmailAddressCaption {
+            get {
+                return ResourceManager.GetString("NoEmailAddressCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Email doesn&apos;t exist과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoEmailAddressMessage {
+            get {
+                return ResourceManager.GetString("NoEmailAddressMessage", resourceCulture);
             }
         }
         
@@ -687,6 +777,15 @@ namespace PintheCloud.Resources {
         public static string SignOutMessage {
             get {
                 return ResourceManager.GetString("SignOutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Skip과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Skip {
+            get {
+                return ResourceManager.GetString("Skip", resourceCulture);
             }
         }
         

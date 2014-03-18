@@ -12,7 +12,6 @@ namespace PintheCloud.Models
     {
         // Application Account Setting Key
         public enum StorageAccountType { ONE_DRIVE, DROPBOX, GOOGLE_DRIVE }
-        //public const string ACCOUNT_MAIN_PLATFORM_TYPE_KEY = "ACCOUNT_MAIN_PLATFORM_TYPE_KEY";
         public const string LOCATION_ACCESS_CONSENT_KEY = "LOCATION_ACCESS_CONSENT_KEY";
         public const string ACCOUNT_DEFAULT_SPOT_NAME_KEY = "ACCOUNT_DEFAULT_SPOT_NAME_KEY";
 

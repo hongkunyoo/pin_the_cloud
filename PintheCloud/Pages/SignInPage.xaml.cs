@@ -9,6 +9,8 @@ using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using PintheCloud.Models;
 using PintheCloud.Managers;
+using System.Net.NetworkInformation;
+using PintheCloud.Resources;
 
 namespace PintheCloud.Pages
 {
@@ -21,25 +23,66 @@ namespace PintheCloud.Pages
 
         private async void ui_signin_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-        	// TODO: Add event handler implementation here.
-            ui_signin_email.Text = "mark8625@daum.net";
-            ui_signin_password.Password = "Check Profile";
-
-
-            string id = ui_signin_email.Text;
-            string password = ui_signin_password.Password;
-            PtcAccount account = await App.AccountManager.GetPtcAccountAsync(id, password);
-
-            if (account != null)
+            if (NetworkInterface.GetIsNetworkAvailable())
             {
-                App.AccountManager.SavePtcId(account.Email, account.ProfilePassword);
-                NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
-            }
+                ui_signin_email.Text = ui_signin_email.Text.Trim();
+                ui_signin_password.Password = ui_signin_password.Password.Trim();
 
-            ////////////////////////
-            // TODO : SEUNGMIN
-            // Show ERROR message
-            ////////////////////////
+                base.SetProgressIndicator(true, AppResources.DoingSignIn);
+                try
+                {
+                    PtcAccount account = await App.AccountManager.GetPtcAccountAsync(ui_signin_email.Text, ui_signin_password.Password);
+                    if (account != null)
+                    {
+                        App.AccountManager.SavePtcId(account.Email, account.ProfilePassword);
+                        NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
+                    }
+                    else
+                    {
+                        MessageBox.Show(AppResources.NoEmailAddressMessage, AppResources.NoEmailAddressCaption, MessageBoxButton.OK);
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+                }
+                base.SetProgressIndicator(false);
+            }
+            else
+            {
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+            }
+        }
+
+
+        private void ui_signin_email_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            ui_signin_btn.IsEnabled = !IsTextBoxEmpty();
+        }
+
+
+        private void ui_signin_password_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
+        {
+            ui_signin_btn.IsEnabled = !IsTextBoxEmpty();
+        }
+
+
+        private bool IsTextBoxEmpty()
+        {
+            if (!ui_signin_email.Text.Trim().Equals(String.Empty) && !ui_signin_password.Password.Trim().Equals(String.Empty))
+                return false;
+            else
+                return true;
+        }
+
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+
+            MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
+            if (result != MessageBoxResult.OK)
+                e.Cancel = true;
         }
     }
 }

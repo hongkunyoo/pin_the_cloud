@@ -10,7 +10,10 @@ namespace PintheCloud.Models
     public class StorageAccountType
     {
         // Account Type
-        public const string NORMAL_ACCOUNT_TYPE = "Normal";
+        private const string NORMAL_ACCOUNT_TYPE = "Normal";
+        private const string NORMAL_ACCOUNT_TYPE_ID = "1";
+        private const double DEFAULT_MAX_SIZE = 3072.0;
+
 
         public string AccountTypeName { get; set; }
 
@@ -18,12 +21,14 @@ namespace PintheCloud.Models
 
         public string Id { get; set; }
 
+
         public StorageAccountType()
         {
             AccountTypeName = NORMAL_ACCOUNT_TYPE;
-            MaxSize = 3000;
-            Id = "1";
+            Id = NORMAL_ACCOUNT_TYPE_ID;
+            MaxSize = DEFAULT_MAX_SIZE;
         }
+
 
         public static MSAccountType ConvertToMSAccountType(StorageAccountType sat)
         {
@@ -34,6 +39,7 @@ namespace PintheCloud.Models
             return msat;
         }
 
+
         private static StorageAccountType ConvertToStorageAccountType(MSAccountType msat)
         {
             StorageAccountType sat = new StorageAccountType();
@@ -43,6 +49,8 @@ namespace PintheCloud.Models
             return sat;
         }
     }
+
+
     /// <summary>
     /// Mobile Service AccountType
     /// </summary>
@@ -57,7 +65,5 @@ namespace PintheCloud.Models
         public double account_type_max_size { get; set; }
         [JsonProperty(PropertyName = "account_type_id")]
         public string account_type_id { get; set; }
-
     }
-
 }
