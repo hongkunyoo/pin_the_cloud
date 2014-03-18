@@ -225,8 +225,15 @@
                         <phone:LongListSelector x:Name="uiMySpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpotList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" />
                     </Grid>
                 </phone:PivotItem>
-                <phone:PivotItem x:Name="uiMyFilePivot" Header="{Binding LocalizedResources.MyFile, Source={StaticResource LocalizedStrings}}" Margin="0">
-                	<Grid/>
+                <phone:PivotItem x:Name="uiMyPickPivot" Header="{Binding LocalizedResources.MyPick, Source={StaticResource LocalizedStrings}}" Margin="0">
+                	<Grid>
+                		<Grid.RowDefinitions>
+                			<RowDefinition/>
+                			<RowDefinition Height="72"/>
+                		</Grid.RowDefinitions>
+                		<TextBlock x:Name="uiMyPickMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="20,20,20,0" Visibility="Collapsed"/>
+                		<phone:LongListSelector x:Name="uiMyPicktList" ItemsSource="{Binding Items}" Visibility="Collapsed" Style="{StaticResource CustomLongListSelectorStyle}" />
+                	</Grid>
                 </phone:PivotItem>
                 <phone:PivotItem x:Name="uiAboutPivot" Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
                     <Grid>

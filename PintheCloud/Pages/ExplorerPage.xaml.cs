@@ -106,7 +106,6 @@ namespace PintheCloud.Pages
             await TaskHelper.WaitTask(STORAGE_EXPLORER_SYNC);
             this.SetPickPivot(AppResources.Loading);
             this.SetPinPivot(AppResources.Loading);
-            
         }
 
 
@@ -480,11 +479,6 @@ namespace PintheCloud.Pages
                 if (iStorageManager.IsPopup())
                     EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
             }
-            else if (this.SubmitSpotPasswordParentPopup.IsOpen)
-            {
-                e.Cancel = true;
-                this.SubmitSpotPasswordParentPopup.IsOpen = false;
-            }
             else
             {
                 // If some files in list, back tree.
@@ -494,13 +488,8 @@ namespace PintheCloud.Pages
                     {
                         e.Cancel = true;
                         this.TreeUp();
-                        return;
                     }
                 }
-
-                MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
-                if (result != MessageBoxResult.OK)
-                    e.Cancel = true;
             }
         }
 
@@ -591,7 +580,6 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 // Show Loading message and save is login true for pivot moving action while sign in.
-                base.SetProgressIndicator(true);
                 base.SetListUnableAndShowMessage(uiPinFileList, uiPinFileMessage, AppResources.DoingSignIn);
                 base.Dispatcher.BeginInvoke(() =>
                 {
@@ -607,6 +595,7 @@ namespace PintheCloud.Pages
 
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.
+                base.SetProgressIndicator(true);
                 if (result)
                 {
                     this.SetPinFileListAsync(iStorageManager, AppResources.Loading, null);

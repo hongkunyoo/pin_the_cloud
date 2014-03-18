@@ -87,7 +87,6 @@ namespace PintheCloud
             );
             MobileServiceUser mobileServiceUser = new MobileServiceUser(App.AZURE_MOBILE_SERVICE_ID);
             mobileServiceUser.MobileServiceAuthenticationToken = App.AZURE_MOBILE_SERVICE_TOKEN;
-            //MobileService.CurrentUser = mobileServiceUser;
             ApplicationSettings = IsolatedStorageSettings.ApplicationSettings;
 
             // Manager
@@ -99,7 +98,7 @@ namespace PintheCloud
             OneDriveManager = new OneDriveManager();
             DropBoxManager = new DropboxManager();
             GoogleDriveManger = new GoogleDriveManager();
-            //IStorageManagers = new IStorageManager[] { SkyDriveManager, DropBoxManager, GoogleDriveManger };
+
 
             /////////////////////////////////////////////////////
             // This order will be displayed at every App Pages
@@ -107,15 +106,9 @@ namespace PintheCloud
             StorageHelper.AddStorageManager(OneDriveManager.GetStorageName(), OneDriveManager);
             StorageHelper.AddStorageManager(DropBoxManager.GetStorageName(), DropBoxManager);
             StorageHelper.AddStorageManager(GoogleDriveManger.GetStorageName(), GoogleDriveManger);
-
             Switcher.SetStorageToMainPlatform();
-
-            //App.StorageManagerNames = new string[] {SkyDriveManager.GetStorageName(), DropBoxManager.GetStorageName(), GoogleDriveManger.GetStorageName()};
-
-            //IStorageManagers = new IStorageManager[] { OneDriveManager, DropBoxManager, GoogleDriveManger };
-            //TaskHelper = new TaskHelper();
-
             AccountManager = new AccountManager();
+
             // 디버깅하는 동안 그래픽 프로파일링 정보를 표시합니다.
             if (Debugger.IsAttached)
             {

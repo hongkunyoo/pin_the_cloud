@@ -136,7 +136,6 @@ namespace PintheCloud.Managers
                  lamda = (a => a.email == accountId || a.profile_password == password);
 
             MobileServiceCollection<MSPtcAccount, MSPtcAccount> list = null;
-            //List<MSPtcAccount> list = null;
             try
             {
                 list = await App.MobileService.GetTable<MSPtcAccount>()

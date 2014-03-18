@@ -58,14 +58,10 @@ namespace PintheCloud.Pages
                     using (var itr = StorageHelper.GetStorageEnumerator())
                     {
                         while (itr.MoveNext())
-                        {
                             if (itr.Current.IsSignIn())
-                            {
                                 TaskHelper.AddSignInTask(itr.Current.GetStorageName(), itr.Current.SignIn());
-                            }
-                        }
                     }
-                    TaskHelper.AddTask(STORAGE_EXPLORER_SYNC,StorageExplorer.Synchronize());
+                    TaskHelper.AddTask(STORAGE_EXPLORER_SYNC, StorageExplorer.Synchronize());
                 }
                     
                 NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));

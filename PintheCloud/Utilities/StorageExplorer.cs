@@ -52,9 +52,7 @@ namespace PintheCloud.Utilities
                                     stack.Push(rootFolder);
                                     DictionaryTree.Add(itr.Current.GetStorageName(),stack);
                                 }
-                                
                             }
-                            
                         }
                     }
 

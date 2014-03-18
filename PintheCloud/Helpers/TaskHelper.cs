@@ -17,23 +17,27 @@ namespace PintheCloud.Helpers
 
         public static void AddTask(string name, Task<bool> task)
         {
-            Task<bool> existedTask = null;
-            if (!Tasks.TryGetValue(name, out existedTask))
+            if (!Tasks.ContainsKey(name))
                 Tasks.Add(name, task);
         }
 
 
         public static async Task<bool> WaitTask(string name)
         {
-            Task<bool> task = null;
-            if (Tasks.TryGetValue(name, out task))
+            if (Tasks.ContainsKey(name))
             {
-                await task;
+                bool result = await Tasks[name];
                 Tasks.Remove(name);
-                return task.Result;
+                return result;
             }
-            throw new Exception();
+            else
+            {
+                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+                tcs.SetResult(true);
+                return tcs.Task.Result;
+            }
         }
+
 
         public static void AddSignInTask(string key, Task<bool> task)
         {
@@ -64,9 +68,7 @@ namespace PintheCloud.Helpers
             using (var itr = SignInTasks.GetEnumerator())
             {
                 while (itr.MoveNext())
-                {
                     result &= await itr.Current.Value;
-                }
             }
             return result;
         }

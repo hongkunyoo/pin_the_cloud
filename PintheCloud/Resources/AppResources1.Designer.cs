@@ -376,11 +376,11 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   My File과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   My Pick과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
-        public static string MyFile {
+        public static string MyPick {
             get {
-                return ResourceManager.GetString("MyFile", resourceCulture);
+                return ResourceManager.GetString("MyPick", resourceCulture);
             }
         }
         

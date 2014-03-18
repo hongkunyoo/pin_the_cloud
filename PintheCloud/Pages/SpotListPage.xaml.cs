@@ -16,11 +16,13 @@ using PintheCloud.Models;
 using PintheCloud.Managers;
 using PintheCloud.Popups;
 using System.Windows.Controls.Primitives;
+using PintheCloud.Helpers;
 
 namespace PintheCloud.Pages
 {
     public partial class SpotList : PtcPage
     {
+        private Popup SubmitSpotPasswordParentPopup = new Popup();
         public SpotViewModel NearSpotViewModel = new SpotViewModel();
 
 
@@ -63,13 +65,13 @@ namespace PintheCloud.Pages
             {
                 if (spotViewItem.IsPrivateImage.Equals(FileObjectViewModel.IS_PRIVATE_IMAGE_URI))
                 {
-                    Popup submitSpotPasswordParentPopup = new Popup();
+                    this.SubmitSpotPasswordParentPopup = new Popup();
                     SubmitSpotPasswordPopup submitSpotPasswordPopup =
-                        new SubmitSpotPasswordPopup(submitSpotPasswordParentPopup, spotViewItem.SpotId, spotViewItem.SpotPassword,
+                        new SubmitSpotPasswordPopup(this.SubmitSpotPasswordParentPopup, spotViewItem.SpotId, spotViewItem.SpotPassword,
                             uiContentPanel.ActualWidth, uiContentPanel.ActualHeight, uiPivotTitleGrid.ActualHeight);
-                    submitSpotPasswordParentPopup.Child = submitSpotPasswordPopup;
-                    submitSpotPasswordParentPopup.IsOpen = true;
-                    submitSpotPasswordParentPopup.Closed += (senderObject, args) =>
+                    this.SubmitSpotPasswordParentPopup.Child = submitSpotPasswordPopup;
+                    this.SubmitSpotPasswordParentPopup.IsOpen = true;
+                    this.SubmitSpotPasswordParentPopup.Closed += (senderObject, args) =>
                     {
                         if (((SubmitSpotPasswordPopup)((Popup)senderObject).Child).result)
                         {
@@ -164,6 +166,27 @@ namespace PintheCloud.Pages
 
             // Hide progress indicator
             base.SetProgressIndicator(false);
+        }
+
+
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
+        {
+            base.OnBackKeyPress(e);
+
+            // If it is signing, don't close app.
+            // Otherwise, show close app message.
+            IStorageManager iStorageManager = Switcher.GetCurrentStorage();
+            if (this.SubmitSpotPasswordParentPopup.IsOpen)
+            {
+                e.Cancel = true;
+                this.SubmitSpotPasswordParentPopup.IsOpen = false;
+            }
+            else
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
+                if (result != MessageBoxResult.OK)
+                    e.Cancel = true;
+            }
         }
 
 
