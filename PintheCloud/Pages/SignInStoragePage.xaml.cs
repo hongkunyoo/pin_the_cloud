@@ -40,6 +40,21 @@ namespace PintheCloud.Pages
         }
 
 
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+
+            for (int i = 0; i < NavigationService.BackStack.Count(); i++)
+                NavigationService.RemoveBackEntry();
+        }
+
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+        }
+
+
         private void ui_storage_list_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             if (NetworkInterface.GetIsNetworkAvailable())

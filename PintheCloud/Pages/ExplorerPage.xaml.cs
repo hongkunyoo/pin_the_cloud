@@ -92,6 +92,10 @@ namespace PintheCloud.Pages
             // Set Datacontext
             uiPickFileList.DataContext = this.PickFileObjectViewModel;
             uiPinFileList.DataContext = this.PinFileObjectViewModel;
+
+            // Set event by previous page
+            Context currentContextPage = EventHelper.GetContext(EventHelper.EXPLORER_PAGE);
+            currentContextPage.HandleEvent(EventHelper.NEW_SPOT_PAGE, this.Previous_NEW_SPOT_PAGE);
         }
 
 
@@ -114,6 +118,12 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
+        }
+
+
+        private void Previous_NEW_SPOT_PAGE()
+        {
+            NavigationService.RemoveBackEntry();
         }
 
 
@@ -274,16 +284,16 @@ namespace PintheCloud.Pages
                 fileObjects = StorageExplorer.GetFilesFromRootFolder();
             else
                 fileObjects = StorageExplorer.GetTreeForFolder(this.CurrentSpot.GetFileObject(folder.Id));
-
-
             if (fileObjects == null) System.Diagnostics.Debugger.Break();
+
+
             // If didn't change cloud mode while loading, set it to list.
             // Set file list visible and current path.
             base.Dispatcher.BeginInvoke(() =>
             {
                 this.PinFileObjectViewModel.IsDataLoaded = true;
                 uiPinFileList.Visibility = Visibility.Visible;
-                this.SetCurrentPath();
+                uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
                 this.PinFileObjectViewModel.SetItems(fileObjects, true);
             });
 
@@ -446,7 +456,7 @@ namespace PintheCloud.Pages
                 // If some files in list, back tree.
                 if (uiExplorerPivot.SelectedIndex == EventHelper.PIN_PIVOT)
                 {
-                    if (!StorageExplorer.GetCurrentPath().Equals("/"))
+                    if (StorageExplorer.GetCurrentTree() != null && StorageExplorer.GetCurrentTree().Count > 1)
                     {
                         e.Cancel = true;
                         this.TreeUp();
@@ -459,7 +469,7 @@ namespace PintheCloud.Pages
         private void uiPinFileListUpButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             IStorageManager iStorageManager = Switcher.GetCurrentStorage();
-            if (!StorageExplorer.GetCurrentPath().Equals("/"))
+            if (StorageExplorer.GetCurrentTree() != null)
                 this.TreeUp();
         }
 
@@ -477,12 +487,6 @@ namespace PintheCloud.Pages
 
             // Set previous files to list.
             this.PinFileObjectViewModel.SetItems(StorageExplorer.TreeUp(), true);
-            this.SetCurrentPath();
-        }
-
-
-        private void SetCurrentPath()
-        {
             uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
         }
 

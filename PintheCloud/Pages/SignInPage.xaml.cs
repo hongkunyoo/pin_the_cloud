@@ -21,6 +21,19 @@ namespace PintheCloud.Pages
             InitializeComponent();
         }
 
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+        }
+
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+        }
+
+
         private async void ui_signin_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             if (NetworkInterface.GetIsNetworkAvailable())

@@ -50,38 +50,33 @@ namespace PintheCloud.Managers
 
             // If it haven't registerd live client, register
             LiveConnectClient liveClient = await this.GetLiveConnectClientAsync();
-            if (liveClient != null)
+            if (liveClient == null) return false;
+            this.LiveClient = liveClient;
+            
+            // Get id and name.
+            LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
+            string accountId = (string)operationResult.Result["id"];
+            string accountUserName = (string)operationResult.Result["name"];
+
+            // Register account
+            if (!await TaskHelper.WaitTask(App.AccountManager.GetPtcId())) return false;
+            StorageAccount storageAccount = App.AccountManager.GetPtcAccount().GetStorageAccountById(accountId);
+            if (storageAccount == null)
             {
-                this.LiveClient = liveClient;
-
-                // Get id and name.
-                LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
-                string accountId = (string)operationResult.Result["id"];
-                string accountUserName = (string)operationResult.Result["name"];
-
-                // Register account
-                StorageAccount storageAccount = App.AccountManager.GetPtcAccount().GetStorageAccountById(accountId);
-                if (storageAccount == null)
-                {
-                    storageAccount = new StorageAccount();
-                    storageAccount.Id = accountId;
-                    storageAccount.StorageName = this.GetStorageName();
-                    storageAccount.UserName = accountUserName;
-                    storageAccount.UsedSize = 0.0;
-                    await App.AccountManager.GetPtcAccount().CreateStorageAccountAsync(storageAccount);
-                }
-
-                this.CurrentAccount = storageAccount;
-
-                // Save sign in setting.
-                App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
-                App.ApplicationSettings.Save();
-                tcs.SetResult(true);
+                storageAccount = new StorageAccount();
+                storageAccount.Id = accountId;
+                storageAccount.StorageName = this.GetStorageName();
+                storageAccount.UserName = accountUserName;
+                storageAccount.UsedSize = 0.0;
+                await App.AccountManager.GetPtcAccount().CreateStorageAccountAsync(storageAccount);
             }
-            else
-            {
-                tcs.SetResult(false);
-            }
+
+            this.CurrentAccount = storageAccount;
+
+            // Save sign in setting.
+            App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
+            App.ApplicationSettings.Save();
+            tcs.SetResult(true);
             return tcs.Task.Result;
         }
 

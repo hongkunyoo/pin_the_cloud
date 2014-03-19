@@ -74,14 +74,10 @@ namespace PintheCloud.Utilities
         }
 
 
-        public static FileObject GetRootFile()
-        {
-            return GetCurrentRoot();
-        }
         public static List<FileObject> GetFilesFromRootFolder()
         {
-            if (GetRootFile().FileList == null) System.Diagnostics.Debugger.Break();
-            return GetRootFile().FileList;
+            if (GetCurrentRoot().FileList == null) System.Diagnostics.Debugger.Break();
+            return GetCurrentRoot().FileList;
         }
 
 
@@ -105,19 +101,31 @@ namespace PintheCloud.Utilities
             return null;
         }
 
+
         public static string GetCurrentPath()
         {
-            return null;
+            FileObject[] array = GetCurrentTree().Reverse<FileObject>().ToArray<FileObject>();
+            string str = String.Empty;
+            foreach (FileObject f in array)
+                str = str + f.Name + "/";
+            return str;
         }
 
-        private static FileObject GetCurrentRoot()
+
+        public static FileObject GetCurrentRoot()
         {
-            return DictionaryRoot[Switcher.GetCurrentStorage().GetStorageName()];
+            if (DictionaryRoot.ContainsKey(Switcher.GetCurrentStorage().GetStorageName()))
+                return DictionaryRoot[Switcher.GetCurrentStorage().GetStorageName()];
+            else
+                return null;
         }
 
-        private static Stack<FileObject> GetCurrentTree()
+        public static Stack<FileObject> GetCurrentTree()
         {
-            return DictionaryTree[Switcher.GetCurrentStorage().GetStorageName()];
+            if (DictionaryTree.ContainsKey(Switcher.GetCurrentStorage().GetStorageName()))
+                return DictionaryTree[Switcher.GetCurrentStorage().GetStorageName()];
+            else
+                return null;
         }
     }
 }

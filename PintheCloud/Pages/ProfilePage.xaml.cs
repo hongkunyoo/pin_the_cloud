@@ -26,9 +26,16 @@ namespace PintheCloud.Pages
         {
             base.OnNavigatedTo(e);
 
-            if (NavigationService.BackStack.Count() == 1)
+            for (int i = 0; i < NavigationService.BackStack.Count(); i++)
                 NavigationService.RemoveBackEntry();
         }
+
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+        }
+
 
         private async void ui_create_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
