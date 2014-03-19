@@ -66,6 +66,8 @@ namespace PintheCloud.Pages
         public List<FileObjectViewItem> PickSelectedFileList = new List<FileObjectViewItem>();
         public List<FileObjectViewItem> PinSelectedFileList = new List<FileObjectViewItem>();
 
+        public List<FileObject> fileObjects = new List<FileObject>();
+
         private SpotObject CurrentSpot;
 
 
@@ -261,12 +263,12 @@ namespace PintheCloud.Pages
             });
 
             // Wait task
-            await TaskHelper.WaitTask(STORAGE_EXPLORER_SYNC);
+            //await TaskHelper.WaitTask(STORAGE_EXPLORER_SYNC);
             await TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
 
             // If it wasn't signed out, set list.
             // Othersie, show sign in grid.
-            if (iStorageManager.GetStorageAccount() == null)  // Wasn't signed out.
+            if (await iStorageManager.GetStorageAccountAsync() == null)  // Wasn't signed out.
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
@@ -279,11 +281,22 @@ namespace PintheCloud.Pages
             }
 
             // Get files and push to stack tree.
-            List<FileObject> fileObjects = null;
+            await TaskHelper.WaitTask(STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
+            //fileObjects = null;
             if(folder == null)
+            {
                 fileObjects = StorageExplorer.GetFilesFromRootFolder();
+            }
             else
-                fileObjects = StorageExplorer.GetTreeForFolder(this.CurrentSpot.GetFileObject(folder.Id));
+            {
+                if (folder == null) System.Diagnostics.Debugger.Break();
+                fileObjects = StorageExplorer.GetTreeForFolder(this.GetFileObjectById(folder.Id));
+            }
+                
+
+            //////////////////////////////////////////////////////////////////////////
+            // TODO : Check Logical Error
+            //////////////////////////////////////////////////////////////////////////
             if (fileObjects == null) System.Diagnostics.Debugger.Break();
 
 
@@ -486,7 +499,10 @@ namespace PintheCloud.Pages
             this.PinFileAppBarButton.IsEnabled = false;
 
             // Set previous files to list.
-            this.PinFileObjectViewModel.SetItems(StorageExplorer.TreeUp(), true);
+            List<FileObject> fileList = StorageExplorer.TreeUp();
+            if (fileList == null) return;
+            fileObjects = fileList;
+            this.PinFileObjectViewModel.SetItems(fileObjects, true);
             uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
         }
 
@@ -776,5 +792,17 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(false);
         }
 
+        private FileObject GetFileObjectById(string fileId)
+        {
+            if (fileId == null) System.Diagnostics.Debugger.Break();
+            for (var i = 0; i < fileObjects.Count; i++)
+            {
+                if (fileObjects[i] == null) System.Diagnostics.Debugger.Break();
+                if (fileObjects[i].Id == null) System.Diagnostics.Debugger.Break();
+                if (fileObjects[i].Id.Equals(fileId)) return fileObjects[i];
+            }
+            System.Diagnostics.Debugger.Break();
+            return null;
+        }
     }
 }

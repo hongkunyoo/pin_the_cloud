@@ -18,80 +18,80 @@ namespace PintheCloud.Models
         public string ProfilePassword { get; set; }
         public double UsedSize { get; set; }
         public StorageAccountType AccountType { get; set; }
-        public IDictionary<string, StorageAccount> StorageAccounts { get; set; }
+        //public IDictionary<string, StorageAccount> StorageAccounts { get; set; }
         public IDictionary<string,string> token { get; set; }
 
         public PtcAccount()
         {
-            StorageAccounts = new Dictionary<string, StorageAccount>();
+            //StorageAccounts = new Dictionary<string, StorageAccount>();
             token = new Dictionary<string, string>();
             AccountType = new StorageAccountType();
         }
 
-        public async Task<bool> CreateStorageAccountAsync(StorageAccount sa)
-        {
-            MSStorageAccount mssa = StorageAccount.ConvertToMSStorageAccount(sa);
-            mssa.ptc_account_id = this.Email;
-            try
-            {
-                await App.MobileService.GetTable<MSStorageAccount>().InsertAsync(mssa);
-                StorageAccounts.Add(sa.StorageName, sa);
-                return true;
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(ex.ToString());
-                return false;
-            }
-        }
-        private async Task<StorageAccount> GetStorageAccountAsync(string storageAccountId)
-        {
-            MobileServiceCollection<MSStorageAccount, MSStorageAccount> accounts = null;
-            try
-            {
-                accounts = await App.MobileService.GetTable<MSStorageAccount>()
-                    .Where(a => a.account_platform_id == storageAccountId)
-                    .ToCollectionAsync();
-            }
-            catch (MobileServiceInvalidOperationException ex)
-            {
-                Debug.WriteLine(ex.ToString());
-                throw new Exception("AccountManager.GetAccount() ERROR");
-            }
+        //public async Task<bool> CreateStorageAccountAsync(StorageAccount sa)
+        //{
+        //    MSStorageAccount mssa = StorageAccount.ConvertToMSStorageAccount(sa);
+        //    mssa.ptc_account_id = this.Email;
+        //    try
+        //    {
+        //        await App.MobileService.GetTable<MSStorageAccount>().InsertAsync(mssa);
+        //        StorageAccounts.Add(sa.StorageName, sa);
+        //        return true;
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        Debug.WriteLine(ex.ToString());
+        //        return false;
+        //    }
+        //}
+        //private async Task<StorageAccount> GetStorageAccountAsync(string storageAccountId)
+        //{
+        //    MobileServiceCollection<MSStorageAccount, MSStorageAccount> accounts = null;
+        //    try
+        //    {
+        //        accounts = await App.MobileService.GetTable<MSStorageAccount>()
+        //            .Where(a => a.account_platform_id == storageAccountId)
+        //            .ToCollectionAsync();
+        //    }
+        //    catch (MobileServiceInvalidOperationException ex)
+        //    {
+        //        Debug.WriteLine(ex.ToString());
+        //        throw new Exception("AccountManager.GetAccount() ERROR");
+        //    }
 
-            if (accounts.Count == 1)
-                return StorageAccount.ConvertToStorageAccount(accounts.First());
-            else if (accounts.Count > 1)
-                throw new Exception("AccountManager.GetAccount() ERROR");
-            else
-                return null;
-        }
+        //    if (accounts.Count == 1)
+        //        return StorageAccount.ConvertToStorageAccount(accounts.First());
+        //    else if (accounts.Count > 1)
+        //        throw new Exception("AccountManager.GetAccount() ERROR");
+        //    else
+        //        return null;
+        //}
 
-        public StorageAccount GetStorageAccountById(string storageAccountId)
-        {
-            if(storageAccountId == null || string.Empty.Equals(storageAccountId)) return null;
-            using (var itr = StorageAccounts.GetEnumerator())
-            {
-                while (itr.MoveNext())
-                {
-                    if (storageAccountId.Equals(itr.Current.Value.Id))
-                        return itr.Current.Value;
-                }
-            }
-            return null;
-        }
+        //public StorageAccount GetStorageAccountById(string storageAccountId)
+        //{
+        //    if(storageAccountId == null || string.Empty.Equals(storageAccountId)) return null;
+        //    using (var itr = StorageAccounts.GetEnumerator())
+        //    {
+        //        while (itr.MoveNext())
+        //        {
+        //            if (storageAccountId.Equals(itr.Current.Value.Id))
+        //                return itr.Current.Value;
+        //        }
+        //    }
+        //    return null;
+        //}
 
-        public StorageAccount GetStorageAccountByName(string storageName)
-        {
-            if (StorageAccounts.ContainsKey(storageName))
-                return StorageAccounts[storageName];
-            else
-                return null;
-        }
-        public IEnumerator<KeyValuePair<string, StorageAccount>> GetStorageAccountEnumerator()
-        {
-            return StorageAccounts.GetEnumerator();
-        }
+        //public StorageAccount GetStorageAccountByName(string storageName)
+        //{
+        //    if (StorageAccounts.ContainsKey(storageName))
+        //        return StorageAccounts[storageName];
+        //    else
+        //        return null;
+        //}
+        //public IEnumerator<KeyValuePair<string, StorageAccount>> GetStorageAccountEnumerator()
+        //{
+        //    return StorageAccounts.GetEnumerator();
+        //}
 
         public static MSPtcAccount ConvertToMSPtcAccount(PtcAccount pa)
         {

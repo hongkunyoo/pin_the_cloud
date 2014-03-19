@@ -14,10 +14,11 @@ namespace PintheCloud.Utilities
     {
         private static Dictionary<string,FileObject> DictionaryRoot = new Dictionary<string,FileObject>();
         private static Dictionary<string, Stack<FileObject>> DictionaryTree = new Dictionary<string, Stack<FileObject>>();
+        //private static Dictionary<string, string> DictionaryKey = new Dictionary<string, string>();
+        private static string SYNC_KEYS = "SYNC_KEYS";
 
-
-
-        public async static Task<bool> Synchronize()
+        /*
+        public async static bool SynchronizeAll()
         {
             if (App.ApplicationSettings.Contains("0"))
             {
@@ -30,7 +31,6 @@ namespace PintheCloud.Utilities
             {
                 try
                 {
-                    System.Diagnostics.Debug.WriteLine("Sychronizing!");
                     using (var itr = StorageHelper.GetStorageEnumerator())
                     {
                         while (itr.MoveNext())
@@ -65,17 +65,56 @@ namespace PintheCloud.Utilities
             }
             
         }
-
-
-        public async static Task Refresh()
+        */
+        public async static Task<bool> Synchronize(string key)
         {
-            //App.ApplicationSettings.Remove(SQL_DATABASE_SET);
-            await Synchronize();
+            System.Diagnostics.Debug.WriteLine("Synchronize key : "+App.ApplicationSettings.Contains(SYNC_KEYS + key));
+            if (false && App.ApplicationSettings.Contains(SYNC_KEYS+key))
+            {
+                // SQL Fetch
+                return false;
+            }
+            else
+            {
+                IStorageManager Storage = StorageHelper.GetStorageManager(key);
+                if (Storage.IsSignIn())
+                {
+                    if (await TaskHelper.WaitSignInTask(Storage.GetStorageName()))
+                    {
+                        FileObject rootFolder = await Storage.Synchronize();
+                        if (DictionaryRoot.ContainsKey(key))
+                        {
+                            DictionaryRoot.Remove(key);
+                        }
+                        DictionaryRoot.Add(key, rootFolder);
+
+                        Stack<FileObject> stack = new Stack<FileObject>();
+                        stack.Push(rootFolder);
+                        if (DictionaryTree.ContainsKey(key))
+                        {
+                            DictionaryTree.Remove(key);
+                        }
+                        DictionaryTree.Add(key, stack);
+
+                        //App.ApplicationSettings.Add(SYNC_KEYS + key, true);
+                        System.Diagnostics.Debug.WriteLine(key+" SYNC Ended!");
+                        return true;
+                    }
+                }
+                return false;
+            }
         }
 
+        public async static Task<bool> Refresh()
+        {
+            string key = Switcher.GetCurrentStorage().GetStorageName();
+            App.ApplicationSettings.Remove(SYNC_KEYS + key);
+            return await Synchronize(key);
+        }
 
         public static List<FileObject> GetFilesFromRootFolder()
         {
+            if (GetCurrentRoot() == null) System.Diagnostics.Debugger.Break();
             if (GetCurrentRoot().FileList == null) System.Diagnostics.Debugger.Break();
             return GetCurrentRoot().FileList;
         }
@@ -83,6 +122,7 @@ namespace PintheCloud.Utilities
 
         public static List<FileObject> GetTreeForFolder(FileObject folder)
         {
+            if (folder.FileList == null) System.Diagnostics.Debugger.Break();
             List<FileObject> list = folder.FileList;
             if (!GetCurrentTree().Contains(folder))
                 GetCurrentTree().Push(folder);

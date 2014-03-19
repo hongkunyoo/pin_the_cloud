@@ -53,6 +53,7 @@ namespace PintheCloud.Models
 
         public FileObject GetFileObject(string fileObjectId)
         {
+            if (fileObjectList == null) System.Diagnostics.Debugger.Break();
             using (var itr = fileObjectList.GetEnumerator())
             {
                 while (itr.MoveNext())

@@ -1,7 +1,9 @@
 ﻿using DropNet;
 using DropNet.Models;
 using PintheCloud.Converters;
+using PintheCloud.Helpers;
 using PintheCloud.Models;
+using PintheCloud.Pages;
 using PintheCloud.Resources;
 using PintheCloud.Utilities;
 using PintheCloud.ViewModels;
@@ -70,6 +72,7 @@ namespace PintheCloud.Managers
                 {
                     //tcs.SetResult(new Account(info.uid.ToString(), Account.StorageAccountType.DROPBOX, info.display_name, 0.0, AccountType.NORMAL_ACCOUNT_TYPE));
                     this.CurrentAccount = new StorageAccount(info.uid.ToString(), StorageAccount.StorageAccountType.DROPBOX, info.display_name, 0.0);
+                    TaskHelper.AddTask(PtcPage.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
                     tcs.SetResult(true);                
                 }, (fail) =>
                 {
@@ -96,15 +99,16 @@ namespace PintheCloud.Managers
 
                         // Save dropbox user got and sign in setting.
                         this.CurrentAccount = await this.GetMyAccountAsync();
-                        StorageAccount account = App.AccountManager.GetPtcAccount().GetStorageAccountById(this.CurrentAccount.Id);
+                        StorageAccount account = await App.AccountManager.GetStorageAccountAsync(this.CurrentAccount.Id);
                         if (account == null)
                         {
-                            await App.AccountManager.GetPtcAccount().CreateStorageAccountAsync(this.CurrentAccount);
+                            await App.AccountManager.CreateStorageAccountAsync(this.CurrentAccount);
                         }
 
                         App.ApplicationSettings[DROPBOX_SIGN_IN_KEY] = true;
                         App.ApplicationSettings[DROPBOX_USER_KEY] = user;
                         App.ApplicationSettings.Save();
+                        TaskHelper.AddTask(PtcPage.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
                         tcs.SetResult(true);
                     },
                     (error) =>
@@ -115,13 +119,13 @@ namespace PintheCloud.Managers
                 },
                (error) =>
                {
-                   var keys = error.Data.Keys;
-                   for (var i = 0; i < keys.Count; i++ )
-                   {
-                       Debug.WriteLine(error.Data[i]);
-                   }
-                   Debug.WriteLine(error.Message);
-                   Debug.WriteLine(error.StackTrace);
+                   //var keys = error.Data.Keys;
+                   //for (var i = 0; i < keys.Count; i++ )
+                   //{
+                   //    Debug.WriteLine(error.Data[i]);
+                   //}
+                   //Debug.WriteLine(error.Message);
+                   //Debug.WriteLine(error.StackTrace);
                    tcs.SetResult(false);
                });
             }
@@ -180,21 +184,27 @@ namespace PintheCloud.Managers
         }
 
 
-        public Stack<FileObjectViewItem> GetFolderRootTree()
+        //public Stack<FileObjectViewItem> GetFolderRootTree()
+        //{
+        //    return this.FolderRootTree;
+        //}
+
+
+        //public Stack<List<FileObject>> GetFoldersTree()
+        //{
+        //    return this.FoldersTree;
+        //}
+
+
+        public async Task<StorageAccount> GetStorageAccountAsync()
         {
-            return this.FolderRootTree;
-        }
-
-
-        public Stack<List<FileObject>> GetFoldersTree()
-        {
-            return this.FoldersTree;
-        }
-
-
-        public StorageAccount GetStorageAccount()
-        {
-            return this.CurrentAccount;
+            TaskCompletionSource<StorageAccount> tcs = new TaskCompletionSource<StorageAccount>();
+            if (this.CurrentAccount == null)
+            {
+                await TaskHelper.WaitSignInTask(this.GetStorageName());
+            }
+            tcs.SetResult(this.CurrentAccount);
+            return tcs.Task.Result;
         }
 
 

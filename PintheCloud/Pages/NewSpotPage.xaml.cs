@@ -172,7 +172,7 @@ namespace PintheCloud.Pages
                     base.SetProgressIndicator(true);
 
                     await TaskHelper.WaitTask(App.AccountManager.GetPtcId());
-                    PtcAccount account = App.AccountManager.GetPtcAccount();
+                    PtcAccount account = await App.AccountManager.GetPtcAccountAsync();
                     if (await this.PinSpotAsync(spotName, account.Email, account.Name, isPrivate, spotPassword))
                     {
                         string parameters = "?spotId=" + this.SpotId + "&spotName=" + spotName + "&accountId=" + account.Email + "&accountName=" + account.Name;

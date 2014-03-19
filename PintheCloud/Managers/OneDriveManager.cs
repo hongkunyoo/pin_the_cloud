@@ -35,8 +35,8 @@ namespace PintheCloud.Managers
         private const string ONE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_skydrive.png";
         private const string ONE_DRIVE_COLOR_HEX_STRING = "2458A7";
 
-        private Stack<List<FileObject>> FoldersTree = new Stack<List<FileObject>>();
-        private Stack<FileObjectViewItem> FolderRootTree = new Stack<FileObjectViewItem>();
+        //private Stack<List<FileObject>> FoldersTree = new Stack<List<FileObject>>();
+        //private Stack<FileObjectViewItem> FolderRootTree = new Stack<FileObjectViewItem>();
 
         private LiveConnectClient LiveClient = null;
         private StorageAccount CurrentAccount = null;
@@ -60,7 +60,7 @@ namespace PintheCloud.Managers
 
             // Register account
             if (!await TaskHelper.WaitTask(App.AccountManager.GetPtcId())) return false;
-            StorageAccount storageAccount = App.AccountManager.GetPtcAccount().GetStorageAccountById(accountId);
+            StorageAccount storageAccount = await App.AccountManager.GetStorageAccountAsync(accountId);
             if (storageAccount == null)
             {
                 storageAccount = new StorageAccount();
@@ -68,7 +68,7 @@ namespace PintheCloud.Managers
                 storageAccount.StorageName = this.GetStorageName();
                 storageAccount.UserName = accountUserName;
                 storageAccount.UsedSize = 0.0;
-                await App.AccountManager.GetPtcAccount().CreateStorageAccountAsync(storageAccount);
+                await App.AccountManager.CreateStorageAccountAsync(storageAccount);
             }
 
             this.CurrentAccount = storageAccount;
@@ -76,6 +76,7 @@ namespace PintheCloud.Managers
             // Save sign in setting.
             App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
             App.ApplicationSettings.Save();
+            TaskHelper.AddTask(PtcPage.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
             tcs.SetResult(true);
             return tcs.Task.Result;
         }
@@ -102,8 +103,8 @@ namespace PintheCloud.Managers
             LiveAuthClient liveAuthClient = new LiveAuthClient(LIVE_CLIENT_ID);
             liveAuthClient.Logout();
             App.ApplicationSettings.Remove(ONE_DRIVE_SIGN_IN_KEY);
-            this.FoldersTree.Clear();
-            this.FolderRootTree.Clear();
+            //this.FoldersTree.Clear();
+            //this.FolderRootTree.Clear();
             this.LiveClient = null;
             this.CurrentAccount = null;
         }
@@ -133,21 +134,27 @@ namespace PintheCloud.Managers
         }
 
 
-        public Stack<FileObjectViewItem> GetFolderRootTree()
+        //public Stack<FileObjectViewItem> GetFolderRootTree()
+        //{
+        //    return this.FolderRootTree;
+        //}
+
+
+        //public Stack<List<FileObject>> GetFoldersTree()
+        //{
+        //    return this.FoldersTree;
+        //}
+
+
+        public async Task<StorageAccount> GetStorageAccountAsync()
         {
-            return this.FolderRootTree;
-        }
-
-
-        public Stack<List<FileObject>> GetFoldersTree()
-        {
-            return this.FoldersTree;
-        }
-
-
-        public StorageAccount GetStorageAccount()
-        {
-            return this.CurrentAccount;
+            TaskCompletionSource<StorageAccount> tcs = new TaskCompletionSource<StorageAccount>();
+            if (this.CurrentAccount == null)
+            {
+                await TaskHelper.WaitSignInTask(this.GetStorageName());
+            }
+            tcs.SetResult(this.CurrentAccount);
+            return tcs.Task.Result;
         }
 
 

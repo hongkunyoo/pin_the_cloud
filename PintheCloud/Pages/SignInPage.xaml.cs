@@ -38,6 +38,7 @@ namespace PintheCloud.Pages
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
+                ui_signin_email.Text = "mark8625@daum.net";
                 ui_signin_email.Text = ui_signin_email.Text.Trim();
                 ui_signin_password.Password = ui_signin_password.Password.Trim();
 

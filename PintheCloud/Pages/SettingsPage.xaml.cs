@@ -275,7 +275,7 @@ namespace PintheCloud.Pages
             {
                 if (await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
                 {
-                    this.SignButtonTextBlocks[platformIndex].Text = iStorageManager.GetStorageAccount().UserName;
+                    this.SignButtonTextBlocks[platformIndex].Text = (await iStorageManager.GetStorageAccountAsync()).UserName;
                     this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_IN_BUTTON_TEXT_COLOR));
                     this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_IN_BUTTON_TEXT_FONT);
                     this.SignButtons[platformIndex].Click += this.CloudSignOutButton_Click;

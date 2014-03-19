@@ -120,13 +120,13 @@ namespace PintheCloud.Pages
         }
 
 
-        private void EXPLORER_PIN()
+        private async void EXPLORER_PIN()
         {
             // Remove New Spot Page from backstack
             NavigationService.RemoveBackEntry();
 
             // Get parameters
-            StorageAccount account = Switcher.GetCurrentStorage().GetStorageAccount();
+            StorageAccount account = await Switcher.GetCurrentStorage().GetStorageAccountAsync();
             this.SpotName = NavigationContext.QueryString["spotName"];
             this.AccountId = account.Id;
             this.AccountName = account.StorageName;

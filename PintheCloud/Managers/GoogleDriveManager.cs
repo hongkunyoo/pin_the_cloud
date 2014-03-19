@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using PintheCloud.Converters;
 using PintheCloud.Helpers;
 using PintheCloud.Models;
+using PintheCloud.Pages;
 using PintheCloud.Resources;
 using PintheCloud.Utilities;
 using PintheCloud.ViewModels;
@@ -111,17 +112,18 @@ namespace PintheCloud.Managers
                 string id = about.PermissionId;
 
                 // Register account
-                StorageAccount account = App.AccountManager.GetPtcAccount().GetStorageAccountById(id);
+                StorageAccount account = await App.AccountManager.GetStorageAccountAsync(id);
                 if (account == null)
                 {
                     account = new StorageAccount(id, StorageAccount.StorageAccountType.GOOGLE_DRIVE, name, 0.0);
-                    await App.AccountManager.GetPtcAccount().CreateStorageAccountAsync(account);
+                    await App.AccountManager.CreateStorageAccountAsync(account);
                 }
                 this.CurrentAccount = account;
 
                 // Save sign in setting.
                 App.ApplicationSettings[GOOGLE_DRIVE_SIGN_IN_KEY] = true;
                 App.ApplicationSettings.Save();
+                TaskHelper.AddTask(PtcPage.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
                 tcs.SetResult(true);
             }
             catch (Microsoft.Phone.Controls.WebBrowserNavigationException ex)
@@ -193,21 +195,27 @@ namespace PintheCloud.Managers
         }
 
 
-        public Stack<FileObjectViewItem> GetFolderRootTree()
+        //public Stack<FileObjectViewItem> GetFolderRootTree()
+        //{
+        //    return this.FolderRootTree;
+        //}
+
+
+        //public Stack<List<FileObject>> GetFoldersTree()
+        //{
+        //    return this.FoldersTree;
+        //}
+
+
+        public async Task<StorageAccount> GetStorageAccountAsync()
         {
-            return this.FolderRootTree;
-        }
-
-
-        public Stack<List<FileObject>> GetFoldersTree()
-        {
-            return this.FoldersTree;
-        }
-
-
-        public StorageAccount GetStorageAccount()
-        {
-            return this.CurrentAccount;
+            TaskCompletionSource<StorageAccount> tcs = new TaskCompletionSource<StorageAccount>();
+            if (this.CurrentAccount == null)
+            {
+                await TaskHelper.WaitSignInTask(this.GetStorageName());
+            }
+            tcs.SetResult(this.CurrentAccount);
+            return tcs.Task.Result;
         }
 
 

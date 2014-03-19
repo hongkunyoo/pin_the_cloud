@@ -153,8 +153,9 @@ namespace PintheCloud.Models
             Debug.WriteLine("DownloadUrl : " + file.DownloadUrl);
             Debug.WriteLine("MimeType : " + file.MimeType);
 
-            Debug.WriteLine("----child-----");
+            Debug.WriteLine("----child START-----");
             PrintFileList(file.FileList);
+            Debug.WriteLine("----child END-----");
         }
 
         public static void PrintFileList(List<FileObject> list)
