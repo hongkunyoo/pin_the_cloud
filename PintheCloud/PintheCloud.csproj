@@ -142,10 +142,10 @@
     <Compile Include="Pages\NewSpotPage.xaml.cs">
       <DependentUpon>NewSpotPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\ConvertTemplate.cs" />
     <Compile Include="Utilities\DropboxWebBrowserResult.cs" />
     <Compile Include="Utilities\DropboxWebBrowserTask.cs" />
     <Compile Include="Helpers\LockHelper.cs" />
+    <Compile Include="Utilities\FileObjectDataContext.cs" />
     <Compile Include="Utilities\ImageButton.xaml.cs">
       <DependentUpon>ImageButton.xaml</DependentUpon>
     </Compile>

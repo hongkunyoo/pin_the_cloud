@@ -9,10 +9,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using System.Data.Linq;
+using System.Data.Linq.Mapping;
+using System.Linq;
 
 namespace PintheCloud.Models
 {
@@ -68,9 +70,7 @@ namespace PintheCloud.Models
         /// The child list of the folder.
         /// </summary>
         public ProfileObject Owner { get; set; }
-
         public string SpotId { get; set; }
-
         public List<FileObject> FileList { get; set; }
         #endregion
 
@@ -167,6 +167,66 @@ namespace PintheCloud.Models
             }
         }
         #endregion
+
+
+        public static FileObjectSQL ConvertToFileObjectSQL(List<FileObjectSQL> list, FileObject fo, string parentId)
+        {
+            FileObjectSQL fos = new FileObjectSQL();
+            fos.Id = fo.Id;
+            fos.Name = fo.Name;
+            fos.Size = fo.Size;
+            fos.Type = fo.Type;
+            fos.Extension = fo.Extension;
+            fos.UpdateAt = fo.UpdateAt;
+            fos.Thumbnail = fo.Thumbnail;
+            fos.DownloadUrl = fo.DownloadUrl;
+            fos.MimeType = fo.MimeType;
+            fos.ParentId = parentId;
+            if (fo.Owner != null)
+            {
+                fos.ProfileId = fo.Owner.Id;
+                fos.ProfileEmail = fo.Owner.Email;
+                fos.ProfilePhoneNumber = fo.Owner.PhoneNumber;
+                fos.ProfileName = fo.Owner.Name;
+            }
+            fos.SpotId = fo.SpotId;
+            if (fo.FileList != null)
+            {
+                for (var i = 0; i < fo.FileList.Count; i++)
+                {
+                    list.Add(ConvertToFileObjectSQL(list, fo.FileList[i], fo.Id));
+                }
+            }
+            return fos;
+        }
+        public static FileObject ConvertToFileObject(FileObjectDataContext db, FileObjectSQL fos)
+        {
+            FileObject fo = new FileObject(fos.Id, fos.Name, fos.Size, fos.Type, fos.Extension, fos.UpdateAt, fos.Thumbnail, fos.DownloadUrl, fos.MimeType);
+            fo.SpotId = fos.SpotId;
+            if (fos.ProfileName != null && fos.ProfileId != null && fos.ProfileEmail != null && fos.ProfilePhoneNumber != null)
+            {
+                fo.Owner = new ProfileObject();
+                fo.Owner.Id = fos.ProfileId;
+                fo.Owner.Email = fos.ProfileEmail;
+                fo.Owner.Name = fos.ProfileName;
+                fo.Owner.PhoneNumber = fos.ProfilePhoneNumber;
+            }
+
+            fo.FileList = GetChildList(db, fos.ParentId);
+            return fo;
+        }
+        public static List<FileObject> GetChildList(FileObjectDataContext db, string ParentId)
+        {
+            var dbList = from FileObjectSQL fos in db.FileItems where fos.ParentId == ParentId select fos;
+            List<FileObjectSQL> sqlList = dbList.ToList<FileObjectSQL>();
+            List<FileObject> list = new List<FileObject>();
+            for (var i = 0; i < sqlList.Count; i++)
+            {
+                list.Add(ConvertToFileObject(db, sqlList[i]));
+            }
+            return list;
+        }
+
     }
 
     #region Mobile Service Object

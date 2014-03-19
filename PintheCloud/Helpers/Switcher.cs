@@ -30,7 +30,16 @@ namespace PintheCloud.Helpers
         }
         public static IStorageManager GetMainStorage()
         {
-            return StorageHelper.GetStorageManager(MAIN_PLATFORM_TYPE_KEY);
+            IStorageManager retStorage = StorageHelper.GetStorageManager(MAIN_PLATFORM_TYPE_KEY);
+            if (!retStorage.IsSignIn())
+            {
+                List<IStorageManager> list = StorageHelper.GetStorageList();
+                for (var i = 0; i < list.Count; i++)
+                {
+                    if (list[i].IsSignIn()) return list[i];
+                }
+            }
+            return null;
         }
 
         public static void SetStorageToMainPlatform()

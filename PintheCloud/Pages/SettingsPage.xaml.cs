@@ -22,6 +22,8 @@ using System.Diagnostics;
 using PintheCloud.Converters;
 using System.Windows.Media;
 using PintheCloud.Helpers;
+using Windows.Storage;
+using Windows.System;
 
 namespace PintheCloud.Pages
 {
@@ -58,7 +60,10 @@ namespace PintheCloud.Pages
         private TextBlock[] SignButtonTextBlocks = null;
         private bool DeleteSpotButton = false;
 
-
+        /////////////////////////////////////////////////////
+        /// TODO : SEUNGMIN need to change to view Item
+        ///////////////////////////////////////////////////// 
+        IReadOnlyList<StorageFile> localFileList;
         public SettingsPage()
         {
             InitializeComponent();
@@ -134,7 +139,7 @@ namespace PintheCloud.Pages
 
 
         // Construct pivot item by page index
-        private void uiSettingsPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private async void uiSettingsPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Set View model for dispaly,
             // One time loading.
@@ -150,6 +155,11 @@ namespace PintheCloud.Pages
                 case MY_PICK_PIVOT_INDEX:
                     // Set My Pick stuff enable and set list
                     ApplicationBar.IsVisible = true;
+
+                    /////////////////////////////////////////////////
+                    // This private Methods is to List Local Files
+                    /////////////////////////////////////////////////
+                    await SetMyPickPivotAsync();
                     break;
 
                 default:
@@ -158,6 +168,23 @@ namespace PintheCloud.Pages
                     ApplicationBar.IsVisible = false;
                     break;
             }
+        }
+
+        /////////////////////////////////////////////////////
+        /// TODO : SEUNGMIN need to change to view Item
+        ///////////////////////////////////////////////////// 
+        private async Task SetMyPickPivotAsync()
+        {
+            localFileList = await ApplicationData.Current.LocalFolder.GetFilesAsync();
+
+            ObservableCollection<string> strList = new ObservableCollection<string>();
+
+            for (var i = 0; i < localFileList.Count; i++)
+            {
+                strList.Add(localFileList[i].Name);
+                Debug.WriteLine(localFileList[i].Name);
+            }
+            uiMyPicktList.DataContext = strList;
         }
 
         private void SetMySpotPivot(string message)
@@ -551,6 +578,27 @@ namespace PintheCloud.Pages
         private void uiSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             // TODO Signout
+        }
+
+
+        /////////////////////////////////////////
+        /// Selected Local File Explorer
+        /////////////////////////////////////////
+        private async void uiMyPicktList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            string localFileName = (string)uiMyPicktList.SelectedItem;
+            StorageFile file = this.FindStorageFileByName(localFileName);
+            await Launcher.LaunchFileAsync(file);
+        }
+
+        private StorageFile FindStorageFileByName(string name)
+        {
+            for (var i = 0; i < localFileList.Count; i++)
+            {
+                if (localFileList[i].Name.Equals(name)) return localFileList[i];
+            }
+            System.Diagnostics.Debugger.Break();
+            return null;
         }
     }
 }

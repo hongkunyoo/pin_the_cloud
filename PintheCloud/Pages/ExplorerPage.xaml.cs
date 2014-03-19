@@ -281,8 +281,11 @@ namespace PintheCloud.Pages
             }
 
             // Get files and push to stack tree.
-            await TaskHelper.WaitTask(STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
+            Debug.WriteLine("waiting sync : "+STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
+            bool result = await TaskHelper.WaitTask(STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
+            Debug.WriteLine("finished sync : " + STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
             //fileObjects = null;
+            if (!result) return;
             if(folder == null)
             {
                 fileObjects = StorageExplorer.GetFilesFromRootFolder();
@@ -290,7 +293,7 @@ namespace PintheCloud.Pages
             else
             {
                 if (folder == null) System.Diagnostics.Debugger.Break();
-                fileObjects = StorageExplorer.GetTreeForFolder(this.GetFileObjectById(folder.Id));
+                fileObjects = StorageExplorer.GetTreeForFolder(this.GetCloudStorageFileObjectById(folder.Id));
             }
                 
 
@@ -414,26 +417,17 @@ namespace PintheCloud.Pages
             });
 
             // Upload
-            Stream stream = await Switcher.GetCurrentStorage().DownloadFileStreamAsync((fileObjectViewItem.DownloadUrl == null ? fileObjectViewItem.Id : fileObjectViewItem.DownloadUrl));
-            if (stream != null)
+            
+            //Stream stream = await Switcher.GetCurrentStorage().DownloadFileStreamAsync((fileObjectViewItem.DownloadUrl == null ? fileObjectViewItem.Id : fileObjectViewItem.DownloadUrl));
+            string blobId = await this.CurrentSpot.AddFileObjectAsync(this.GetCloudStorageFileObjectById(fileObjectViewItem.Id));
+            if (blobId != null)
             {
-                string blobId = await App.BlobStorageManager.UploadFileStreamAsync(this.AccountId, this.SpotId, fileObjectViewItem.Name, stream);
-                if (blobId != null)
+                base.Dispatcher.BeginInvoke(() =>
                 {
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        this.PickFileObjectViewModel.IsDataLoaded = false;
-                        fileObjectViewItem.Id = blobId;
-                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
-                    });
-                }
-                else
-                {
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
-                    });
-                }
+                    this.PickFileObjectViewModel.IsDataLoaded = false;
+                    fileObjectViewItem.Id = blobId;
+                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                });
             }
             else
             {
@@ -524,9 +518,6 @@ namespace PintheCloud.Pages
                 // Otherwise, add it to list.
                 if (fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER))
                 {
-                    ///////////////////////////////////////////////////////////////////////////
-                    // TODO : Need to be changed
-                    ///////////////////////////////////////////////////////////////////////////
                     this.SetPinFileListAsync(Switcher.GetCurrentStorage(), AppResources.Loading, fileObjectViewItem);
                 }
                 else  // Do selection if file
@@ -696,14 +687,15 @@ namespace PintheCloud.Pages
             });
 
             // Download file and Launch files to other reader app.
-            StorageFile downloadFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileObjectViewItem.Name, CreationCollisionOption.ReplaceExisting);
-            if (await App.BlobStorageManager.DownloadFileAsync(fileObjectViewItem.Id, downloadFile) != null)
+            //StorageFile downloadFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileObjectViewItem.Name, CreationCollisionOption.ReplaceExisting);
+            //if (await App.BlobStorageManager.DownloadFileAsync(fileObjectViewItem.Id, downloadFile) != null)
+            if (await this.CurrentSpot.PreviewFileObjectAsync(this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
                 });
-                await Launcher.LaunchFileAsync(downloadFile);
+                //await Launcher.LaunchFileAsync(downloadFile);
             }
             else
             {
@@ -755,13 +747,16 @@ namespace PintheCloud.Pages
             });
 
             // Download
-            Stream stream = await App.BlobStorageManager.DownloadFileStreamAsync(fileObjectViewItem.Id);
-            if (stream != null)
+            if (Switcher.GetCurrentStorage().IsSignIn())
             {
-                IStorageManager iStorageManager = Switcher.GetCurrentStorage();
-                FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
-                if (await iStorageManager.UploadFileStreamAsync(rootFolder.Id, fileObjectViewItem.Name, stream))
+                await TaskHelper.WaitSignInTask(Switcher.GetCurrentStorage().GetStorageName());
+                //Stream stream = await App.BlobStorageManager.DownloadFileStreamAsync(fileObjectViewItem.Id);
+                if (await this.CurrentSpot.DownloadFileObjectAsync(this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
                 {
+                    //IStorageManager iStorageManager = Switcher.GetCurrentStorage();
+                    //FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
+                    //if (await iStorageManager.UploadFileStreamAsync(rootFolder.Id, fileObjectViewItem.Name, stream))
+                    //{
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         this.PinFileObjectViewModel.IsDataLoaded = false;
@@ -780,19 +775,21 @@ namespace PintheCloud.Pages
                     });
                 }
             }
+            /// If Not Sign In
             else
             {
-                base.Dispatcher.BeginInvoke(() =>
-                {
-                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
-                });
+                ///////////////////////////////////////////////////////
+                // TODO : SEUNGMIN Needs to go to sign in Page
+                ///////////////////////////////////////////////////////
+                NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
             }
+            
 
             // Hide Progress Indicator
             base.SetProgressIndicator(false);
         }
 
-        private FileObject GetFileObjectById(string fileId)
+        private FileObject GetCloudStorageFileObjectById(string fileId)
         {
             if (fileId == null) System.Diagnostics.Debugger.Break();
             for (var i = 0; i < fileObjects.Count; i++)

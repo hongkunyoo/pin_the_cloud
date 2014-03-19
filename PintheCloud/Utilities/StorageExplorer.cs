@@ -96,6 +96,55 @@ namespace PintheCloud.Utilities
                         }
                         DictionaryTree.Add(key, stack);
 
+                        ////////////////////////////////////////////
+                        // Saving to SQL job
+                        ////////////////////////////////////////////
+                        //try
+                        //{
+                        //    using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db4.sdf"))
+                        //    {
+                        //        if (db.DatabaseExists())
+                        //        {
+                        //            db.DeleteDatabase();
+                        //        }
+                        //        db.CreateDatabase();
+
+
+                        //        List<FileObjectSQL> sqlList = new List<FileObjectSQL>();
+
+                        //        FileObject.ConvertToFileObjectSQL(sqlList, rootFolder, "ROOT_ID");
+
+                        //        for (var i = 0; i < sqlList.Count; i++)
+                        //        {
+                        //            db.FileItems.InsertOnSubmit(sqlList[i]);
+                        //        }
+
+                        //        db.SubmitChanges();
+
+                        //        string id = "ROOT_ID";
+
+                        //        //var rootDB = from FileObjectSQL fos in db.FileItems where fos.ParentId.Equals(id) select fos;
+                        //        var rootDB = from FileObjectSQL fos in db.FileItems select fos;
+
+                        //        List<FileObjectSQL> getsqlList = rootDB.ToList<FileObjectSQL>();
+
+                        //        if (getsqlList.Count != 1) System.Diagnostics.Debugger.Break();
+
+                        //        FileObjectSQL rootFos = getsqlList.First<FileObjectSQL>();
+
+                        //        FileObject MyrootFolder = FileObject.ConvertToFileObject(db, rootFos);
+
+                        //        FileObject.PrintFile(MyrootFolder);
+
+                        //    }
+                        //}
+                        //catch(Exception e)
+                        //{
+                        //    System.Diagnostics.Debug.WriteLine(e.ToString());
+                        //    System.Diagnostics.Debugger.Break();
+                        //}
+
+                        
                         //App.ApplicationSettings.Add(SYNC_KEYS + key, true);
                         System.Diagnostics.Debug.WriteLine(key+" SYNC Ended!");
                         return true;

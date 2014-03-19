@@ -144,7 +144,7 @@
                 			<RowDefinition Height="72"/>
                 		</Grid.RowDefinitions>
                 		<TextBlock x:Name="uiMyPickMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Margin="20,20,20,0" Visibility="Collapsed"/>
-                		<phone:LongListSelector x:Name="uiMyPicktList" ItemsSource="{Binding Items}" Visibility="Collapsed" Style="{StaticResource CustomLongListSelectorStyle}" />
+                		<phone:LongListSelector x:Name="uiMyPicktList" ItemsSource="{Binding}" Visibility="Collapsed" Style="{StaticResource CustomLongListSelectorStyle}" SelectionChanged="uiMyPicktList_SelectionChanged" />
                 	</Grid>
                 </phone:PivotItem>
                 <phone:PivotItem x:Name="uiAboutPivot" Header="{Binding LocalizedResources.About, Source={StaticResource LocalizedStrings}}">
