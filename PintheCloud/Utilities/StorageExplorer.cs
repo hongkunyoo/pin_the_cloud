@@ -186,10 +186,34 @@ namespace PintheCloud.Utilities
             return await Synchronize(key);
         }
 
+        public static void RemoveKey(string key)
+        {
+            if (App.ApplicationSettings.Contains(SYNC_KEYS + key))
+                App.ApplicationSettings.Remove(SYNC_KEYS + key);
+        }
+
+        public static void RemoveAllKeys()
+        {
+            using (var itr = StorageHelper.GetStorageEnumerator())
+            {
+                while (itr.MoveNext())
+                {
+                    string key = itr.Current.GetStorageName();
+                    if (App.ApplicationSettings.Contains(SYNC_KEYS + key))
+                        App.ApplicationSettings.Remove(SYNC_KEYS + key);
+                }
+            }
+            
+        }
+
         public static List<FileObject> GetFilesFromRootFolder()
         {
             if (GetCurrentRoot() == null) System.Diagnostics.Debugger.Break();
             if (GetCurrentRoot().FileList == null) System.Diagnostics.Debugger.Break();
+
+            GetCurrentTree().Clear();
+            Stack<FileObject> stack = new Stack<FileObject>();
+            GetCurrentTree().Push(GetCurrentRoot());
             return GetCurrentRoot().FileList;
         }
 
