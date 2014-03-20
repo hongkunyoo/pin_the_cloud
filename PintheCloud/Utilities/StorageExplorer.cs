@@ -69,9 +69,13 @@ namespace PintheCloud.Utilities
         */
         public async static Task<bool> Synchronize(string key)
         {
+            IStorageManager Storage = StorageHelper.GetStorageManager(key);
+            bool result = await TaskHelper.WaitSignInTask(Storage.GetStorageName());
+            if(result == false) return false;
             // Fetching from SQL
             if (App.ApplicationSettings.Contains(SYNC_KEYS+key))
             {
+                System.Diagnostics.Debug.WriteLine("Fetching From SQL");
                 try
                 {
                     using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
@@ -107,8 +111,9 @@ namespace PintheCloud.Utilities
                     }
                     return true;
                 }
-                catch
+                catch(Exception e)
                 {
+                    System.Diagnostics.Debug.WriteLine(e.ToString());
                     System.Diagnostics.Debugger.Break();
                     return false;
                 }
@@ -116,61 +121,59 @@ namespace PintheCloud.Utilities
             // Fetching from Server
             else
             {
-                IStorageManager Storage = StorageHelper.GetStorageManager(key);
+                System.Diagnostics.Debug.WriteLine("Fetching From Server");
                 if (Storage.IsSignIn())
                 {
-                    if (await TaskHelper.WaitSignInTask(Storage.GetStorageName()))
+                    FileObject rootFolder = await Storage.Synchronize();
+                    if (DictionaryRoot.ContainsKey(key))
                     {
-                        FileObject rootFolder = await Storage.Synchronize();
-                        if (DictionaryRoot.ContainsKey(key))
-                        {
-                            DictionaryRoot.Remove(key);
-                        }
-                        DictionaryRoot.Add(key, rootFolder);
-
-                        Stack<FileObject> stack = new Stack<FileObject>();
-                        stack.Push(rootFolder);
-                        if (DictionaryTree.ContainsKey(key))
-                        {
-                            DictionaryTree.Remove(key);
-                        }
-                        DictionaryTree.Add(key, stack);
-
-                        ////////////////////////////////////////////
-                        // Saving to SQL job
-                        ////////////////////////////////////////////
-                        try
-                        {
-                            using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
-                            {
-                                if (db.DatabaseExists())
-                                {
-                                    db.DeleteDatabase();
-                                }
-                                db.CreateDatabase();
-
-
-                                List<FileObjectSQL> sqlList = new List<FileObjectSQL>();
-
-                                FileObject.ConvertToFileObjectSQL(sqlList, rootFolder, ROOT_ID);
-
-                                for (var i = 0; i < sqlList.Count; i++)
-                                {
-                                    db.FileItems.InsertOnSubmit(sqlList[i]);
-                                }
-
-                                db.SubmitChanges();
-}
-                        }
-                        catch (Exception e)
-                        {
-                            System.Diagnostics.Debug.WriteLine(e.ToString());
-                            System.Diagnostics.Debugger.Break();
-                        }
-                        
-                        App.ApplicationSettings.Add(SYNC_KEYS + key, true);
-                        return true;
+                        DictionaryRoot.Remove(key);
                     }
+                    DictionaryRoot.Add(key, rootFolder);
+
+                    Stack<FileObject> stack = new Stack<FileObject>();
+                    stack.Push(rootFolder);
+                    if (DictionaryTree.ContainsKey(key))
+                    {
+                        DictionaryTree.Remove(key);
+                    }
+                    DictionaryTree.Add(key, stack);
+
+                    ////////////////////////////////////////////
+                    // Saving to SQL job
+                    ////////////////////////////////////////////
+                    try
+                    {
+                        using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
+                        {
+                            if (db.DatabaseExists())
+                            {
+                                db.DeleteDatabase();
+                            }
+                            db.CreateDatabase();
+
+
+                            List<FileObjectSQL> sqlList = new List<FileObjectSQL>();
+
+                            FileObject.ConvertToFileObjectSQL(sqlList, rootFolder, ROOT_ID);
+
+                            for (var i = 0; i < sqlList.Count; i++)
+                            {
+                                db.FileItems.InsertOnSubmit(sqlList[i]);
+                            }
+
+                            db.SubmitChanges();
+}
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Debug.WriteLine(e.ToString());
+                        System.Diagnostics.Debugger.Break();
+                    }
+
+                    App.ApplicationSettings.Add(SYNC_KEYS + key, true);
+                    App.ApplicationSettings.Save();
+                    return true;
                 }
                 return false;
             }
@@ -218,7 +221,11 @@ namespace PintheCloud.Utilities
             FileObject[] array = GetCurrentTree().Reverse<FileObject>().ToArray<FileObject>();
             string str = String.Empty;
             foreach (FileObject f in array)
+            {
                 str = str + f.Name + "/";
+                System.Diagnostics.Debug.WriteLine(f.Name);
+            }
+                
             return str;
         }
 

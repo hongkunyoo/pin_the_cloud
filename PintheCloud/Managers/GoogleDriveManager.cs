@@ -226,7 +226,7 @@ namespace PintheCloud.Managers
             About about = await aboutResource.Get().ExecuteAsync();
             rootFile.Id = about.RootFolderId;
             this.rootFodlerId = about.RootFolderId;
-            rootFile.Name = "/";
+            rootFile.Name = "";
             return rootFile;
         }
 

@@ -108,7 +108,7 @@ namespace PintheCloud.Models
                 string sourceId = fo.Id;
                 if (StorageManager.GetStorageName().Equals(AppResources.GoogleDrive))
                     sourceId = fo.DownloadUrl;
-                return await App.BlobStorageManager.UploadFileStreamAsync(this.PtcAccountId, this.Id, fo.Name, await StorageManager.DownloadFileStreamAsync(fo.Id));
+                return await App.BlobStorageManager.UploadFileStreamAsync(this.PtcAccountId, this.Id, fo.Name, await StorageManager.DownloadFileStreamAsync(sourceId));
             }
             catch
             {
@@ -142,11 +142,11 @@ namespace PintheCloud.Models
             /// /////////////////////////////////////////////////////////////////////////////////////////////
         }
 
-        public async Task<bool> DownloadFileObjectAsync(FileObject fo)
+        public async Task<bool> DownloadFileObjectAsync(IStorageManager StorageManager, FileObject fo)
         {
             try
             {
-                IStorageManager StorageManager = Switcher.GetMainStorage();
+                //IStorageManager StorageManager = Switcher.GetMainStorage();
                 Stream instream = await App.BlobStorageManager.DownloadFileStreamAsync(fo.Id);
                 FileObject root = await StorageManager.GetRootFolderAsync();
                 return await StorageManager.UploadFileStreamAsync(root.Id, fo.Name, instream);

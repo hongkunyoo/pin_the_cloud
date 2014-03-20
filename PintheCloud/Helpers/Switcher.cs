@@ -31,7 +31,7 @@ namespace PintheCloud.Helpers
         public static IStorageManager GetMainStorage()
         {
             IStorageManager retStorage = StorageHelper.GetStorageManager(MAIN_PLATFORM_TYPE_KEY);
-            if (retStorage == null || !retStorage.IsSignIn())
+            if (!retStorage.IsSignIn())
             {
                 List<IStorageManager> list = StorageHelper.GetStorageList();
                 for (var i = 0; i < list.Count; i++)

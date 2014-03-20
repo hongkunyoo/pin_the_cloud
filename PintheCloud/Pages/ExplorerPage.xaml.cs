@@ -380,7 +380,8 @@ namespace PintheCloud.Pages
             if (Switcher.GetCurrentStorage().GetStorageName().Equals(appBarMenuItem.Text)) return;
             if (Switcher.GetCurrentStorage().IsSigningIn()) return;
             Switcher.SetStorageTo(appBarMenuItem.Text);
-
+            
+            uiPinFileCurrentPath.Text = "";
             // If it is not in current cloud mode, change it.
             IStorageManager iStorageManager = Switcher.GetCurrentStorage();
             uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(iStorageManager.GetStorageColorHexString()));
@@ -746,12 +747,13 @@ namespace PintheCloud.Pages
                 fileObjectViewItem.SelectFileImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
             });
 
+            IStorageManager StorageManager = Switcher.GetMainStorage();
             // Download
-            if (Switcher.GetCurrentStorage().IsSignIn())
+            if (StorageManager != null && StorageManager.IsSignIn())
             {
-                await TaskHelper.WaitSignInTask(Switcher.GetCurrentStorage().GetStorageName());
+                await TaskHelper.WaitSignInTask(StorageManager.GetStorageName());
                 //Stream stream = await App.BlobStorageManager.DownloadFileStreamAsync(fileObjectViewItem.Id);
-                if (await this.CurrentSpot.DownloadFileObjectAsync(this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
+                if (await this.CurrentSpot.DownloadFileObjectAsync(StorageManager, this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
                 {
                     //IStorageManager iStorageManager = Switcher.GetCurrentStorage();
                     //FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
