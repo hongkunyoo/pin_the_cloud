@@ -31,6 +31,7 @@ namespace PintheCloud.Models
         private List<ProfileObject> profileObjectList;
         private List<NoteObject> noteObjectList;
 
+        public static string PREVIEW_FILE_LOCATION = "PREVIEW_FILE_LOCATION";
 
         public SpotObject()
         {
@@ -160,7 +161,8 @@ namespace PintheCloud.Models
         {
             try
             {
-                StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync(fo.Name, CreationCollisionOption.ReplaceExisting);
+                StorageFolder folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(SpotObject.PREVIEW_FILE_LOCATION, CreationCollisionOption.OpenIfExists);
+                StorageFile file = await folder.CreateFileAsync(fo.Name, CreationCollisionOption.ReplaceExisting);
                 file = await App.BlobStorageManager.DownloadFileAsync(fo.Id, file);
                 return await Launcher.LaunchFileAsync(file);
             }

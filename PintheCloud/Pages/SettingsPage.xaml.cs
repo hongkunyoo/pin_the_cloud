@@ -175,7 +175,9 @@ namespace PintheCloud.Pages
         ///////////////////////////////////////////////////// 
         private async Task SetMyPickPivotAsync()
         {
-            localFileList = await ApplicationData.Current.LocalFolder.GetFilesAsync();
+            StorageFolder folder = await ApplicationData.Current.LocalFolder.GetFolderAsync(SpotObject.PREVIEW_FILE_LOCATION);
+            if (folder == null) return;
+            localFileList = await folder.GetFilesAsync();
 
             ObservableCollection<string> strList = new ObservableCollection<string>();
 

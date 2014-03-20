@@ -16,6 +16,7 @@ namespace PintheCloud.Utilities
         private static Dictionary<string, Stack<FileObject>> DictionaryTree = new Dictionary<string, Stack<FileObject>>();
         //private static Dictionary<string, string> DictionaryKey = new Dictionary<string, string>();
         private static string SYNC_KEYS = "SYNC_KEYS";
+        private static string ROOT_ID = "ROOT_ID";
 
         /*
         public async static bool SynchronizeAll()
@@ -68,12 +69,51 @@ namespace PintheCloud.Utilities
         */
         public async static Task<bool> Synchronize(string key)
         {
-            System.Diagnostics.Debug.WriteLine("Synchronize key : "+App.ApplicationSettings.Contains(SYNC_KEYS + key));
-            if (false && App.ApplicationSettings.Contains(SYNC_KEYS+key))
+            // Fetching from SQL
+            if (App.ApplicationSettings.Contains(SYNC_KEYS+key))
             {
-                // SQL Fetch
-                return false;
+                try
+                {
+                    using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
+                    {
+                        if (!db.DatabaseExists())
+                        {
+                            App.ApplicationSettings.Remove(SYNC_KEYS + key);
+                            return await Synchronize(key);
+                        }
+                        var rootDB = from FileObjectSQL fos in db.FileItems where fos.ParentId.Equals(ROOT_ID) select fos;
+
+                        List<FileObjectSQL> getsqlList = rootDB.ToList<FileObjectSQL>();
+
+                        if (getsqlList.Count != 1) System.Diagnostics.Debugger.Break();
+
+                        FileObjectSQL rootFos = getsqlList.First<FileObjectSQL>();
+
+                        FileObject rootFolder = FileObject.ConvertToFileObject(db, rootFos);
+
+                        if (DictionaryRoot.ContainsKey(key))
+                        {
+                            DictionaryRoot.Remove(key);
+                        }
+                        DictionaryRoot.Add(key, rootFolder);
+
+                        Stack<FileObject> stack = new Stack<FileObject>();
+                        stack.Push(rootFolder);
+                        if (DictionaryTree.ContainsKey(key))
+                        {
+                            DictionaryTree.Remove(key);
+                        }
+                        DictionaryTree.Add(key, stack);
+                    }
+                    return true;
+                }
+                catch
+                {
+                    System.Diagnostics.Debugger.Break();
+                    return false;
+                }
             }
+            // Fetching from Server
             else
             {
                 IStorageManager Storage = StorageHelper.GetStorageManager(key);
@@ -99,54 +139,36 @@ namespace PintheCloud.Utilities
                         ////////////////////////////////////////////
                         // Saving to SQL job
                         ////////////////////////////////////////////
-                        //try
-                        //{
-                        //    using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db4.sdf"))
-                        //    {
-                        //        if (db.DatabaseExists())
-                        //        {
-                        //            db.DeleteDatabase();
-                        //        }
-                        //        db.CreateDatabase();
+                        try
+                        {
+                            using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
+                            {
+                                if (db.DatabaseExists())
+                                {
+                                    db.DeleteDatabase();
+                                }
+                                db.CreateDatabase();
 
 
-                        //        List<FileObjectSQL> sqlList = new List<FileObjectSQL>();
+                                List<FileObjectSQL> sqlList = new List<FileObjectSQL>();
 
-                        //        FileObject.ConvertToFileObjectSQL(sqlList, rootFolder, "ROOT_ID");
+                                FileObject.ConvertToFileObjectSQL(sqlList, rootFolder, ROOT_ID);
 
-                        //        for (var i = 0; i < sqlList.Count; i++)
-                        //        {
-                        //            db.FileItems.InsertOnSubmit(sqlList[i]);
-                        //        }
+                                for (var i = 0; i < sqlList.Count; i++)
+                                {
+                                    db.FileItems.InsertOnSubmit(sqlList[i]);
+                                }
 
-                        //        db.SubmitChanges();
-
-                        //        string id = "ROOT_ID";
-
-                        //        //var rootDB = from FileObjectSQL fos in db.FileItems where fos.ParentId.Equals(id) select fos;
-                        //        var rootDB = from FileObjectSQL fos in db.FileItems select fos;
-
-                        //        List<FileObjectSQL> getsqlList = rootDB.ToList<FileObjectSQL>();
-
-                        //        if (getsqlList.Count != 1) System.Diagnostics.Debugger.Break();
-
-                        //        FileObjectSQL rootFos = getsqlList.First<FileObjectSQL>();
-
-                        //        FileObject MyrootFolder = FileObject.ConvertToFileObject(db, rootFos);
-
-                        //        FileObject.PrintFile(MyrootFolder);
-
-                        //    }
-                        //}
-                        //catch(Exception e)
-                        //{
-                        //    System.Diagnostics.Debug.WriteLine(e.ToString());
-                        //    System.Diagnostics.Debugger.Break();
-                        //}
-
+                                db.SubmitChanges();
+}
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Debug.WriteLine(e.ToString());
+                            System.Diagnostics.Debugger.Break();
+                        }
                         
-                        //App.ApplicationSettings.Add(SYNC_KEYS + key, true);
-                        System.Diagnostics.Debug.WriteLine(key+" SYNC Ended!");
+                        App.ApplicationSettings.Add(SYNC_KEYS + key, true);
                         return true;
                     }
                 }
