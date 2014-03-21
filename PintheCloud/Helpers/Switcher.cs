@@ -57,5 +57,9 @@ namespace PintheCloud.Helpers
         {
             return StorageHelper.GetStorageList().IndexOf(CurrentManager);
         }
+        public static int GetStorageIndex(string key)
+        {
+            return StorageHelper.GetStorageList().IndexOf(StorageHelper.GetStorageManager(key));
+        }
     }
 }

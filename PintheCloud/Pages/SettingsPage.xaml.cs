@@ -24,6 +24,7 @@ using System.Windows.Media;
 using PintheCloud.Helpers;
 using Windows.Storage;
 using Windows.System;
+using System.Threading;
 
 namespace PintheCloud.Pages
 {
@@ -81,10 +82,7 @@ namespace PintheCloud.Pages
             this.SignButtonTextBlocks = new TextBlock[] { uiOneDriveSignButtonText, uiDropboxSignButtonText, uiGoogleDriveSignButtonText };
 
             // Set location access consent checkbox
-            if ((bool)App.ApplicationSettings[StorageAccount.LOCATION_ACCESS_CONSENT_KEY])
-                uiLocationAccessConsentToggleSwitchButton.IsChecked = true;
-            else
-                uiLocationAccessConsentToggleSwitchButton.IsChecked = false;
+            uiLocationAccessConsentToggleSwitchButton.IsChecked = (bool)App.ApplicationSettings[StorageAccount.LOCATION_ACCESS_CONSENT_KEY];
 
 
 
@@ -100,13 +98,15 @@ namespace PintheCloud.Pages
             base.OnNavigatedTo(e);
 
             // Set Sign buttons and Set Main buttons.
-            for (var i = 0; i < StorageHelper.GetStorageList().Count; i++ )
+            using (var itr = StorageHelper.GetStorageEnumerator())
             {
-                IStorageManager storage = StorageHelper.GetStorageList()[i];
-                this.SetSignButtons(i, storage.IsSignIn(), storage);
-                this.SetMainButtons(i, storage);
+                while (itr.MoveNext())
+                {
+                    IStorageManager storage = itr.Current;
+                    this.SetSignButtons(storage);
+                    this.SetMainButtons(storage);
+                }
             }
-                
             // Set My Spot pivot list.
             this.SetMySpotPivot(AppResources.Loading);
         }
@@ -219,10 +219,10 @@ namespace PintheCloud.Pages
 
                 // Get index
                 Button signButton = (Button)sender;
-                Switcher.SetStorageTo(signButton.Tag.ToString());
+                //Switcher.SetStorageTo(signButton.Tag.ToString());
 
                 // Sign in
-                IStorageManager iStorageManager = Switcher.GetCurrentStorage();
+                IStorageManager iStorageManager = StorageHelper.GetStorageManager(signButton.Tag.ToString());
                 if (!iStorageManager.IsSigningIn())
                     TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
 
@@ -232,7 +232,7 @@ namespace PintheCloud.Pages
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        this.SetSignButtons(Switcher.GetCurrentIndex(), true, Switcher.GetCurrentStorage());
+                        this.SetSignButtons(Switcher.GetCurrentStorage());
                         this.MySpotViewModel.IsDataLoaded = false;
                         this.SetMySpotPivot(AppResources.Loading);
                     });
@@ -271,22 +271,24 @@ namespace PintheCloud.Pages
                 uiCloudMessage.Text = AppResources.DoingSignOut;
 
                 Button signButton = (Button)sender;
-                Switcher.SetStorageTo(signButton.Tag.ToString());
+                //Switcher.SetStorageTo(signButton.Tag.ToString());
 
                 // Sign out
-                IStorageManager iStorageManager = Switcher.GetCurrentStorage();
+                IStorageManager iStorageManager = StorageHelper.GetStorageManager(signButton.Tag.ToString());
+                StorageExplorer.RemoveKey(iStorageManager.GetStorageName());
                 TaskHelper.AddSignOutTask(iStorageManager.GetStorageName(), this.SignOut(iStorageManager));
-                
 
                 // After sign out, set list.
                 this.MySpotViewModel.IsDataLoaded = false;
                 this.SetMySpotPivot(AppResources.Loading);
 
                 // Hide process indicator
-                ((FileObjectViewModel)PhoneApplicationService.Current.State[PIN_FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
+                if (PhoneApplicationService.Current.State.ContainsKey(PIN_FILE_OBJECT_VIEW_MODEL_KEY))
+                    ((FileObjectViewModel)PhoneApplicationService.Current.State[PIN_FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                 uiCloudPanel.Visibility = Visibility.Visible;
                 uiCloudMessageGrid.Visibility = Visibility.Collapsed;
-                this.SetSignButtons(Switcher.GetCurrentIndex(), false, Switcher.GetCurrentStorage());
+                this.SetSignButtons(iStorageManager);
+                SetMainButtons(Switcher.GetMainStorage());
             }
         }
 
@@ -298,8 +300,10 @@ namespace PintheCloud.Pages
         }
 
 
-        private async void SetSignButtons(int platformIndex, bool isSignIn, IStorageManager iStorageManager)
+        private async void SetSignButtons(IStorageManager iStorageManager)
         {
+            bool isSignIn = iStorageManager.IsSignIn();
+            int platformIndex = Switcher.GetStorageIndex(iStorageManager.GetStorageName());
             if (isSignIn)  // It is signed in
             {
                 if (await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
@@ -322,8 +326,9 @@ namespace PintheCloud.Pages
         }
 
 
-        private void SetMainButtons(int platformIndexindex, IStorageManager StorageManager)
+        private void SetMainButtons(IStorageManager StorageManager)
         {
+            int platformIndexindex = Switcher.GetStorageIndex(StorageManager.GetStorageName());
             // Set main button click event and image.
             Button mainButton = this.MainButtons[platformIndexindex];
             mainButton.Click += this.MainButton_Click;
@@ -349,6 +354,11 @@ namespace PintheCloud.Pages
         {
             // Set check image
             Button mainButton = (Button)sender;
+            System.Diagnostics.Debug.WriteLine(mainButton.Tag.ToString());
+
+            /////////////////////////////////////////////////////////////////////
+            // TODO : SEUNGMIN, This Code does not work. I don't know why.
+            /////////////////////////////////////////////////////////////////////
             ((Image)mainButton.Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI, UriKind.Relative));
             
             // Set Signbutton background
@@ -358,7 +368,7 @@ namespace PintheCloud.Pages
             signButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_PLATFORM_BUTTON_COLOR));
             signButtonGrid.Opacity = MAIN_PLATFORM_BUTTON_OPACITY;
 
-            // Set rest button image and backtround
+            // Set rest button image and background
             for (var i = 0; i < StorageHelper.GetStorageList().Count; i++ )
             {
                 if (!StorageHelper.GetStorageList()[i].GetStorageName().Equals(Switcher.GetMainStorage().GetStorageName()))

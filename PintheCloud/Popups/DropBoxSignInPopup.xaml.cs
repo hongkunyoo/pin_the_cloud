@@ -34,7 +34,7 @@ namespace PintheCloud.Popups
 
         private async void webBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            Debug.WriteLine(e.Uri.ToString());
+            //Debug.WriteLine(e.Uri.ToString());
             if (e.Uri.ToString().StartsWith("http://")
                 && e.Uri.ToString().Contains(DropboxManager.DROPBOX_AUTH_URI))
             {
