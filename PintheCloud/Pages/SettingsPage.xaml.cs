@@ -507,7 +507,6 @@ namespace PintheCloud.Pages
         private async void DeleteSpotAsync(SpotViewItem spotViewItem)
         {
             // Show Deleting message
-            bool deleteFileSuccess = true;
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
@@ -516,15 +515,18 @@ namespace PintheCloud.Pages
             });
 
             // Delete
-            List<FileObject> fileList = await App.BlobStorageManager.GetFilesFromSpotAsync(spotViewItem.AccountId, spotViewItem.SpotId);
-            if (fileList.Count > 0)
-            {
-                foreach (FileObject fileObject in fileList)
-                {
-                    if (!await App.BlobStorageManager.DeleteFileAsync(fileObject.Id))
-                        deleteFileSuccess = false;
-                }
-            }
+            SpotObject spot = App.SpotManager.GetSpotObject(spotViewItem.SpotId);
+            bool deleteFileSuccess = await spot.DeleteFileObjectsAsync();
+
+            //List<FileObject> fileList = await App.BlobStorageManager.GetFilesFromSpotAsync(spotViewItem.AccountId, spotViewItem.SpotId);
+            //if (fileList.Count > 0)
+            //{
+            //    foreach (FileObject fileObject in fileList)
+            //    {
+            //        if (!await App.BlobStorageManager.DeleteFileAsync(fileObject.Id))
+            //            deleteFileSuccess = false;
+            //    }
+            //}
 
             // If delete job success to all files, delete spot.
             // Otherwise, show delete fail image.
@@ -580,6 +582,22 @@ namespace PintheCloud.Pages
         private void uiSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             // TODO Signout
+            // Here is for PtcAccount Signout
+            MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel) return;
+            StorageExplorer.RemoveAllKeys();
+            using (var itr = StorageHelper.GetStorageEnumerator())
+            {
+                while (itr.MoveNext())
+                {
+                    if (itr.Current.IsSignIn())
+                    {
+                        itr.Current.SignOut();
+                    }
+                }
+            }
+            App.AccountManager.SignOut();
+            NavigationService.Navigate(new Uri(EventHelper.SPLASH_PAGE, UriKind.Relative));
         }
 
 

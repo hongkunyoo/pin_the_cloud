@@ -39,6 +39,12 @@ namespace PintheCloud.Managers
             return true;
         }
 
+        public void SignOut()
+        {
+            App.ApplicationSettings.Remove(PTCACCOUNT_ID);
+            App.ApplicationSettings.Save();
+        }
+
         public void SavePtcId(string email, string password)
         {
             App.ApplicationSettings[PTCACCOUNT_ID] = email;

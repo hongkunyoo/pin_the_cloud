@@ -132,6 +132,18 @@ namespace PintheCloud.Models
             /// /////////////////////////////////////////////////////////////////////////////////////////////
         }
 
+        public async Task<bool> DeleteFileObjectsAsync()
+        {
+            bool result = true;
+            if (fileObjectList == null)
+                fileObjectList = await ListFileObjectsAsync();
+            for (var i = 0; i < fileObjectList.Count; i++)
+            {
+                result &= await App.BlobStorageManager.DeleteFileAsync(fileObjectList[i].Id);
+            }
+            return result;
+        }
+
         public async Task<List<FileObject>> ListFileObjectsAsync()
         {
             fileObjectList = await App.BlobStorageManager.GetFilesFromSpotAsync(this.PtcAccountId, this.Id);
