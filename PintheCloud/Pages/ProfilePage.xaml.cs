@@ -44,7 +44,6 @@ namespace PintheCloud.Pages
                 ui_name.Text = ui_name.Text.Trim();
                 ui_email.Text = ui_email.Text.Trim();
                 ui_password.Password = ui_password.Password.Trim();
-                ui_password_confirm.Password = ui_password_confirm.Password.Trim();
 
                 // Email Check
                 if (!Regex.IsMatch(ui_email.Text,
@@ -56,20 +55,12 @@ namespace PintheCloud.Pages
                     return;
                 }
 
-                // Password confirm
-                if (!ui_password.Password.Equals(ui_password_confirm.Password))
-                {
-                    MessageBox.Show(AppResources.BadPasswordConfirmMessage, AppResources.BadPasswordConfirmCaption, MessageBoxButton.OK);
-                    return;
-                }
-
 
                 base.SetProgressIndicator(true, AppResources.CreateProfile);
 
                 ui_name.IsEnabled = false;
                 ui_email.IsEnabled = false;
                 ui_password.IsEnabled = false;
-                ui_password_confirm.IsEnabled = false;
                 ui_create_btn.IsEnabled = false;
                 ui_sign_in_btn.IsEnabled = false;
 
@@ -87,9 +78,7 @@ namespace PintheCloud.Pages
                     ui_name.IsEnabled = true;
                     ui_email.IsEnabled = true;
                     ui_password.IsEnabled = true;
-                    ui_password_confirm.IsEnabled = true;
                     ui_password.Password = String.Empty;
-                    ui_password_confirm.Password = String.Empty;
                     ui_sign_in_btn.IsEnabled = true;
                     MessageBox.Show(AppResources.DuplicateEmailAddressMessage, AppResources.DuplicateEmailAddressCaption, MessageBoxButton.OK);
                 }
@@ -127,15 +116,10 @@ namespace PintheCloud.Pages
         }
 
 
-        private void ui_password_confirm_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)
-        {
-            ui_create_btn.IsEnabled = !IsTextBoxEmpty();
-        }
-
         private bool IsTextBoxEmpty()
         {
             if (!ui_name.Text.Trim().Equals(String.Empty) && !ui_email.Text.Trim().Equals(String.Empty) &&
-                !ui_password.Password.Trim().Equals(String.Empty) && !ui_password_confirm.Password.Trim().Equals(String.Empty))
+                !ui_password.Password.Trim().Equals(String.Empty))
                 return false;
             else
                 return true;

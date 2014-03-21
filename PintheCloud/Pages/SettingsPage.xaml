@@ -189,7 +189,7 @@
                         </StackPanel>
                     </Grid>
                 </phone:PivotItem>
-                <phone:PivotItem Header="{Binding LocalizedResources.Cloud, Source={StaticResource LocalizedStrings}}" Margin="28,29,28,0">
+                <phone:PivotItem x:Name="uiCloudPivot" Header="{Binding LocalizedResources.Cloud, Source={StaticResource LocalizedStrings}}" Margin="28,29,28,0">
                 	<Grid>
                 		<StackPanel x:Name="uiCloudPanel">
                 			<Grid Margin="0,0,0,10">

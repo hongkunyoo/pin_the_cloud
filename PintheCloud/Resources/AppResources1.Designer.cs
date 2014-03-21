@@ -133,24 +133,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Password Confirm과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string BadPasswordConfirmCaption {
-            get {
-                return ResourceManager.GetString("BadPasswordConfirmCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Password is not same with confirm box.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string BadPasswordConfirmMessage {
-            get {
-                return ResourceManager.GetString("BadPasswordConfirmMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Pin spot process met error. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string BadPinSpotMessage {
@@ -322,6 +304,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Email과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Email {
+            get {
+                return ResourceManager.GetString("Email", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   File과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string File {
@@ -462,6 +453,15 @@ namespace PintheCloud.Resources {
         public static string MySpot {
             get {
                 return ResourceManager.GetString("MySpot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Name과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
             }
         }
         
@@ -795,6 +795,24 @@ namespace PintheCloud.Resources {
         public static string SpotName {
             get {
                 return ResourceManager.GetString("SpotName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   At Here과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string StartCaption {
+            get {
+                return ResourceManager.GetString("StartCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   You can set other clouds in settings. Enjoy At Here!과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string StartMessage {
+            get {
+                return ResourceManager.GetString("StartMessage", resourceCulture);
             }
         }
         
