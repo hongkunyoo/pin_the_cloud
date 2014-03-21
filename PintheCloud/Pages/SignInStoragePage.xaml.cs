@@ -14,29 +14,21 @@ using System.Diagnostics;
 using PintheCloud.ViewModels;
 using PintheCloud.Resources;
 using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 
 namespace PintheCloud.Pages
 {
     public partial class SignInStoragePage : PtcPage
     {
-        private CloudModeViewModel CloudModeViewModel = new CloudModeViewModel(); 
+        private CloudModeViewModel CloudModeViewModel = new CloudModeViewModel();
+        private Button[] SignButtons = null;
+
+
 
         public SignInStoragePage()
         {
             InitializeComponent();
-
-
-            ////////////////////////////////////////////////
-            // TODO : SEUNGMIN
-            // I don't know how to bind with Template Plz change this shit.
-            ////////////////////////////////////////////////
-            ObservableCollection<string> list = new ObservableCollection<string>();
-            using (var itr = StorageHelper.GetStorageEnumerator())
-            {
-                while (itr.MoveNext())
-                    list.Add(itr.Current.GetStorageName());
-            }
-            ui_storage_list.ItemsSource = list;
+            this.SignButtons = new Button[] { uiOneDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
         }
 
 
@@ -46,6 +38,74 @@ namespace PintheCloud.Pages
 
             for (int i = 0; i < NavigationService.BackStack.Count(); i++)
                 NavigationService.RemoveBackEntry();
+
+            // Set Sign buttons and Set Main buttons.
+            for (var i = 0; i < StorageHelper.GetStorageList().Count; i++)
+            {
+                IStorageManager storage = StorageHelper.GetStorageList()[i];
+                this.SetSignButtons(i, storage.IsSignIn(), storage);
+            }
+            
+        }
+
+
+        private async void CloudSignInButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                // Set process indicator
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    uiCloudPanel.Visibility = Visibility.Collapsed;
+                    uiCloudMessage.Visibility = Visibility.Visible;
+                });
+
+                // Get index
+                Button signButton = (Button)sender;
+                Switcher.SetStorageTo(signButton.Tag.ToString());
+
+                // Sign in
+                IStorageManager iStorageManager = Switcher.GetCurrentStorage();
+                if (!iStorageManager.IsSigningIn())
+                    TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
+
+                // If sign in success, set list.
+                // Otherwise, show bad sign in message box.
+                if (await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        Switcher.SetMainPlatform(signButton.Tag.ToString());
+                        MessageBoxResult result = MessageBox.Show(AppResources.StartMessage, AppResources.StartCaption, MessageBoxButton.OK);
+                        if (result == MessageBoxResult.OK)
+                            NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));
+                    });
+                }
+                else
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+                    });
+                }
+
+                // Hide process indicator
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    uiCloudPanel.Visibility = Visibility.Visible;
+                    uiCloudMessage.Visibility = Visibility.Collapsed;
+                });
+            }
+            else
+            {
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+            }
+        }
+
+
+        private void SetSignButtons(int platformIndex, bool isSignIn, IStorageManager iStorageManager)
+        {
+            this.SignButtons[platformIndex].Click += this.CloudSignInButton_Click;
         }
 
 
@@ -55,25 +115,11 @@ namespace PintheCloud.Pages
         }
 
 
-        private void ui_storage_list_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            if (NetworkInterface.GetIsNetworkAvailable())
-            {
-                string SelectedStorageName = ui_storage_list.SelectedItem as string;
-                IStorageManager Storage = StorageHelper.GetStorageManager(SelectedStorageName);
-                Switcher.SetMainPlatform(SelectedStorageName);
-                TaskHelper.AddSignInTask(Storage.GetStorageName(), Storage.SignIn());
-            }
-            else
-            {
-                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
-            }
-        }
-
-
         private void ui_skip_btn_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));
+            MessageBoxResult result = MessageBox.Show(AppResources.StartMessage, AppResources.StartCaption, MessageBoxButton.OK);
+            if (result == MessageBoxResult.OK)
+                NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));
         }
 
 

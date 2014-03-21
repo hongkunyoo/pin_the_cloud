@@ -88,15 +88,5 @@ namespace PintheCloud.Pages
             else
                 return true;
         }
-
-
-        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
-        {
-            base.OnBackKeyPress(e);
-
-            MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
-            if (result != MessageBoxResult.OK)
-                e.Cancel = true;
-        }
     }
 }

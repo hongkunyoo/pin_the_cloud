@@ -341,12 +341,6 @@
   <data name="BadEmailAddressMessage" xml:space="preserve">
     <value>Please confirm right email address.</value>
   </data>
-  <data name="BadPasswordConfirmCaption" xml:space="preserve">
-    <value>Password Confirm</value>
-  </data>
-  <data name="BadPasswordConfirmMessage" xml:space="preserve">
-    <value>Password is not same with confirm box.</value>
-  </data>
   <data name="Cloud" xml:space="preserve">
     <value>Cloud</value>
   </data>
@@ -367,5 +361,17 @@
   </data>
   <data name="Skip" xml:space="preserve">
     <value>Skip</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="StartCaption" xml:space="preserve">
+    <value>At Here</value>
+  </data>
+  <data name="StartMessage" xml:space="preserve">
+    <value>You can set other clouds in settings. Enjoy At Here!</value>
   </data>
 </root>
