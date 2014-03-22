@@ -307,6 +307,8 @@
     <Content Include="Assets\pajeon\at_here\130319_png\loading06.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\loading07.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\loading08.png" />
+    <Content Include="Assets\pajeon\at_here\130319_png\sign_out.png" />
+    <Content Include="Assets\pajeon\at_here\130319_png\sign_out_p.png" />
     <Content Include="Assets\pajeon\at_here\130319_screenshot\sign_in.png" />
     <Content Include="Assets\pajeon\at_here\130319_screenshot\sign_up.png" />
     <Content Include="Assets\pajeon\at_here\130319_screenshot\storage_select.png" />

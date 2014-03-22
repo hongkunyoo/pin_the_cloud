@@ -589,27 +589,6 @@ namespace PintheCloud.Pages
             ((Image)((Button)sender).Content).Source = new BitmapImage(new Uri(MY_SPOT_DELETE_BUTTON_IMAGE_URI, UriKind.Relative));
         }
 
-        private void uiSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            // TODO Signout
-            // Here is for PtcAccount Signout
-            MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel) return;
-            StorageExplorer.RemoveAllKeys();
-            using (var itr = StorageHelper.GetStorageEnumerator())
-            {
-                while (itr.MoveNext())
-                {
-                    if (itr.Current.IsSignIn())
-                    {
-                        itr.Current.SignOut();
-                    }
-                }
-            }
-            App.AccountManager.SignOut();
-            NavigationService.Navigate(new Uri(EventHelper.SPLASH_PAGE, UriKind.Relative));
-        }
-
 
         /////////////////////////////////////////
         /// Selected Local File Explorer
@@ -621,6 +600,7 @@ namespace PintheCloud.Pages
             await Launcher.LaunchFileAsync(file);
         }
 
+
         private StorageFile FindStorageFileByName(string name)
         {
             for (var i = 0; i < localFileList.Count; i++)
@@ -629,6 +609,25 @@ namespace PintheCloud.Pages
             }
             System.Diagnostics.Debugger.Break();
             return null;
+        }
+
+
+        // Here is for PtcAccount Signout
+        private void uiPtcAccountSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel) return;
+            StorageExplorer.RemoveAllKeys();
+            using (var itr = StorageHelper.GetStorageEnumerator())
+            {
+                while (itr.MoveNext())
+                {
+                    if (itr.Current.IsSignIn())
+                        itr.Current.SignOut();
+                }
+            }
+            App.AccountManager.SignOut();
+            NavigationService.Navigate(new Uri(EventHelper.SPLASH_PAGE, UriKind.Relative));
         }
     }
 }

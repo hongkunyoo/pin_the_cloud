@@ -28,6 +28,7 @@ namespace PintheCloud.Utilities
             InitializeComponent();
         }
 
+
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             //List<FileObject> list = (List<FileObject>)PhoneApplicationService.Current.State["SELECTED_FILE"];
@@ -37,10 +38,12 @@ namespace PintheCloud.Utilities
             await TestAccount();
         }
 
+
         public async Task TestAccount()
         {
             //List<Spot> list = await App.MobileService.GetTable<Spot>().ToListAsync();
         }
+
 
         private async Task<StorageFile> GetStreamGiveFile(Stream input, string fileName)
         {
@@ -57,11 +60,11 @@ namespace PintheCloud.Utilities
             return file;
         }
 
+
         protected  override void OnNavigatedFrom(NavigationEventArgs e)
         {
             
         }
-        
 
 
         public void Test()
