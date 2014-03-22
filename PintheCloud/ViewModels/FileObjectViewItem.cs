@@ -35,24 +35,6 @@ namespace PintheCloud.ViewModels
         }
 
 
-        public FileObjectViewItem()
-        { 
-        }
-
-
-        // Deep copy
-        public FileObjectViewItem(FileObjectViewItem fileObjectViewItem)
-        {
-            this.Id = fileObjectViewItem.Id;
-            this.Name = fileObjectViewItem.Name;
-            this.Size = fileObjectViewItem.Size;
-            this.SizeUnit = fileObjectViewItem.SizeUnit;
-            this.ThumnailType = fileObjectViewItem.ThumnailType;
-            this.SelectFileImage = fileObjectViewItem.SelectFileImage;
-            this.DownloadUrl = fileObjectViewItem.DownloadUrl;
-        }
-
-
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(String propertyName)
         {

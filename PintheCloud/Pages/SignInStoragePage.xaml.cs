@@ -29,6 +29,10 @@ namespace PintheCloud.Pages
         {
             InitializeComponent();
             this.SignButtons = new Button[] { uiOneDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
+
+            // Set event by previous page
+            Context con = EventHelper.GetContext(EventHelper.FILE_LIST_PAGE);
+            con.HandleEvent(EventHelper.PROFILE_PAGE, this.PreviousProfilePage);
         }
 
 
@@ -36,16 +40,24 @@ namespace PintheCloud.Pages
         {
             base.OnNavigatedTo(e);
 
-            for (int i = 0; i < NavigationService.BackStack.Count(); i++)
-                NavigationService.RemoveBackEntry();
-
             // Set Sign buttons and Set Main buttons.
             for (var i = 0; i < StorageHelper.GetStorageList().Count; i++)
             {
                 IStorageManager storage = StorageHelper.GetStorageList()[i];
                 this.SetSignButtons(i, storage.IsSignIn(), storage);
             }
-            
+        }
+
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+        }
+
+
+        private void PreviousProfilePage()
+        {
+            NavigationService.RemoveBackEntry();
         }
 
 
@@ -104,12 +116,6 @@ namespace PintheCloud.Pages
         private void SetSignButtons(int platformIndex, bool isSignIn, IStorageManager iStorageManager)
         {
             this.SignButtons[platformIndex].Click += this.CloudSignInButton_Click;
-        }
-
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            base.OnNavigatedFrom(e);
         }
 
 

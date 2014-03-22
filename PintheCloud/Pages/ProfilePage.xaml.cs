@@ -25,9 +25,7 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            for (int i = 0; i < NavigationService.BackStack.Count(); i++)
-                NavigationService.RemoveBackEntry();
+            NavigationService.RemoveBackEntry();
         }
 
 

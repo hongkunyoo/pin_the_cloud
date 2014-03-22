@@ -10,8 +10,8 @@
 	xmlns:toolkitPrimitives="clr-namespace:Microsoft.Phone.Controls.Primitives;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     mc:Ignorable="d" >
-    
-	<Style x:Key="CustomButtonStyle" TargetType="Button">
+
+    <Style x:Key="CustomButtonStyle" TargetType="Button">
 		<Setter Property="Background" Value="Transparent"/>
 		<Setter Property="BorderBrush" Value="{StaticResource PhoneForegroundBrush}"/>
 		<Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>

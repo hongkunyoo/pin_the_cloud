@@ -69,9 +69,7 @@
 										<TextBlock x:Name="uiSizeUnit" TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light"/>
 									</StackPanel>
 								</StackPanel>
-								<Button x:Name="uiSelectFileButton" Style="{StaticResource CustomButtonStyle}" Grid.Column="2" Margin="0" HorizontalAlignment="Right">
-									<Image x:Name="uiSelectFileButtonImage" Source="{Binding SelectFileImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" VerticalAlignment="Center" Stretch="None"/>
-								</Button>
+								<Image x:Name="uiSelectFileButtonImage" Source="{Binding SelectFileImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" Stretch="None" Grid.Column="2"/>
 							</Grid>
 						</Button>
 						<Grid Grid.Row="1" Background="#FFA6B5BE" Margin="20,0"/>

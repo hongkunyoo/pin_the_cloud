@@ -547,7 +547,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                spotViewItem.DeleteImage = FileObjectViewModel.DELETING_IMAGE_URI;
+                spotViewItem.DeleteImage = FileObjectViewModel.ING_IMAGE_URI;
                 spotViewItem.DeleteImagePress = false;
             });
 

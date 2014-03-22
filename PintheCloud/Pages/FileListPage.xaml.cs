@@ -162,8 +162,8 @@ namespace PintheCloud.Pages
                     fileList.Add(fileObjectViewItem);
 
                 // Upload each files in order.
-                foreach (FileObjectViewItem fileObjectViewItem in fileList)
-                    this.UploadFileAsync(new FileObjectViewItem(fileObjectViewItem));
+                //foreach (FileObjectViewItem fileObjectViewItem in fileList)
+                //    this.UploadFileAsync(new FileObjectViewItem(fileObjectViewItem));
             }
             else
             {
@@ -229,7 +229,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectFileImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
 
             // Download file and Launch files to other reader app.
@@ -287,7 +287,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectFileImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
 
             // Download
@@ -357,7 +357,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectFileImage = FileObjectViewModel.DELETING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
 
             // Delete
@@ -422,9 +422,9 @@ namespace PintheCloud.Pages
             bool result = await this.PinSpotAsync();
 
             // If Pin Spot successes, Upload each files in order.
-            if (result)
-                foreach (FileObjectViewItem fileObjectViewItem in fileList)
-                    this.UploadFileAsync(new FileObjectViewItem(fileObjectViewItem));    
+            //if (result)
+                //foreach (FileObjectViewItem fileObjectViewItem in fileList)
+                //    this.UploadFileAsync(new FileObjectViewItem(fileObjectViewItem));    
         }
 
         private async Task<bool> PinSpotAsync()
@@ -467,7 +467,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectFileImage = FileObjectViewModel.UPLOADING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
                 this.FileObjectViewModel.Items.Add(fileObjectViewItem);
             });
 

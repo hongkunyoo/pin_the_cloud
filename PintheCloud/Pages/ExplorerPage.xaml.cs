@@ -104,7 +104,8 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            
+
+            this.LaunchLock = false;
             this.SpotId = NavigationContext.QueryString["spotId"];
             this.SpotName = NavigationContext.QueryString["spotName"];
             this.AccountId = NavigationContext.QueryString["accountId"];
@@ -113,7 +114,7 @@ namespace PintheCloud.Pages
 
             this.CurrentSpot = App.SpotManager.GetSpotObject(this.SpotId);
             this.SetPickPivot(AppResources.Loading);
-            this.SetPinPivot(AppResources.Loading);
+            this.SetPinPivot(AppResources.Loading);  
         }
 
 
@@ -402,15 +403,9 @@ namespace PintheCloud.Pages
 
         private void PinFileAppBarButton_Click(object sender, EventArgs e)
         {
-            List<FileObjectViewItem> fileList = new List<FileObjectViewItem>();
-            foreach (FileObjectViewItem fileObjectViewItem in this.PinSelectedFileList)
-                fileList.Add(fileObjectViewItem);
-
-            this.PinSelectedFileList.Clear();
             this.PinFileAppBarButton.IsEnabled = false;
-
-            foreach (FileObjectViewItem fileObjectViewItem in fileList)
-                this.PinFileAsync(new FileObjectViewItem(fileObjectViewItem));
+            foreach (FileObjectViewItem fileObjectViewItem in this.PinSelectedFileList)
+                this.PinFileAsync(fileObjectViewItem);
         }
 
 
@@ -420,14 +415,13 @@ namespace PintheCloud.Pages
         {
             // Show Uploading message and file for good UX
             base.SetProgressIndicator(true);
+            this.PinSelectedFileList.Remove(fileObjectViewItem);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectFileImage = FileObjectViewModel.UPLOADING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
 
             // Upload
-            
-            //Stream stream = await Switcher.GetCurrentStorage().DownloadFileStreamAsync((fileObjectViewItem.DownloadUrl == null ? fileObjectViewItem.Id : fileObjectViewItem.DownloadUrl));
             string blobId = await this.CurrentSpot.AddFileObjectAsync(this.GetCloudStorageFileObjectById(fileObjectViewItem.Id));
             if (blobId != null)
             {
@@ -691,19 +685,16 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectFileImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
 
             // Download file and Launch files to other reader app.
-            //StorageFile downloadFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileObjectViewItem.Name, CreationCollisionOption.ReplaceExisting);
-            //if (await App.BlobStorageManager.DownloadFileAsync(fileObjectViewItem.Id, downloadFile) != null)
             if (await this.CurrentSpot.PreviewFileObjectAsync(this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
                 });
-                //await Launcher.LaunchFileAsync(downloadFile);
             }
             else
             {
@@ -727,10 +718,9 @@ namespace PintheCloud.Pages
                 IStorageManager iStr = Switcher.GetCurrentStorage();
                 if (iStr.IsSignIn())
                 {
+                    this.PickAppBarButton.IsEnabled = false;
                     foreach (FileObjectViewItem fileObjectViewItem in this.PickSelectedFileList)
                         this.PickFileAsync(fileObjectViewItem);
-                    this.PickSelectedFileList.Clear();
-                    this.PickAppBarButton.IsEnabled = false;
                 }
                 else
                 {
@@ -749,9 +739,10 @@ namespace PintheCloud.Pages
         {
             // Show Downloading message
             base.SetProgressIndicator(true);
+            this.PickSelectedFileList.Remove(fileObjectViewItem);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectFileImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
 
             // Download
