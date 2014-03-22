@@ -61,14 +61,14 @@ namespace PintheCloud.Pages
         private string AccountName = null;
         private bool LaunchLock = false;
 
-        public FileObjectViewModel PickFileObjectViewModel = new FileObjectViewModel();
-        public FileObjectViewModel PinFileObjectViewModel = new FileObjectViewModel();
-        public List<FileObjectViewItem> PickSelectedFileList = new List<FileObjectViewItem>();
-        public List<FileObjectViewItem> PinSelectedFileList = new List<FileObjectViewItem>();
+        private FileObjectViewModel PickFileObjectViewModel = new FileObjectViewModel();
+        private List<FileObjectViewItem> PickSelectedFileList = new List<FileObjectViewItem>();
 
-        public List<FileObject> fileObjects = new List<FileObject>();
+        private FileObjectViewModel PinFileObjectViewModel = new FileObjectViewModel();
+        private List<FileObjectViewItem> PinSelectedFileList = new List<FileObjectViewItem>();
 
-        private SpotObject CurrentSpot;
+        private List<FileObject> CurrentFileObjectList = new List<FileObject>();
+        private SpotObject CurrentSpot = null;
 
 
 
@@ -132,12 +132,18 @@ namespace PintheCloud.Pages
         // Construct pivot item by index
         private void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            
             // Set View model for dispaly. One time loading.
             PhoneApplicationService.Current.State[PIVOT_KEY] = uiExplorerPivot.SelectedIndex;
             switch (uiExplorerPivot.SelectedIndex)
             {
                 case EventHelper.PICK_PIVOT:
+                    // Change edit view mode
+                    string currentEditViewMode = uiPickFileListEditViewImageButton.ImageSource;
+                    if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit mode
+                        ApplicationBar.Buttons.Add(this.PickAppBarButton);
+                    else if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View mode
+                        ApplicationBar.Buttons.Remove(this.PickAppBarButton);
+
                     // Set Pick Pivot UI
                     ApplicationBar.Buttons.Remove(this.PinFileAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
@@ -154,6 +160,7 @@ namespace PintheCloud.Pages
                 case EventHelper.PIN_PIVOT:
                     // Set Pin Pivot UI
                     IStorageManager iStorageManager = Switcher.GetCurrentStorage();
+                    ApplicationBar.Buttons.Remove(this.PickAppBarButton);
                     ApplicationBar.Buttons.Add(this.PinFileAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
                         ApplicationBar.MenuItems.Add(this.AppBarMenuItems[i]);
@@ -191,12 +198,7 @@ namespace PintheCloud.Pages
             base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, message);
             base.SetProgressIndicator(true);
 
-
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // IMPORTANT CHANGE : Now Every Spot Operation between Server and Client will be communicated with SpotObject(CurrentSpot)
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             List<FileObject> fileList = await this.CurrentSpot.ListFileObjectsAsync();
-
             if (fileList.Count > 0)
             {
                 base.Dispatcher.BeginInvoke(() =>
@@ -205,6 +207,29 @@ namespace PintheCloud.Pages
                     uiPickFileList.Visibility = Visibility.Visible;
                     uiPickFileListMessage.Visibility = Visibility.Collapsed;
                     this.PickFileObjectViewModel.SetItems(fileList, false);
+
+                    // Change edit view mode
+                    string currentEditViewMode = uiPickFileListEditViewImageButton.ImageSource;
+                    if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // To View mode
+                    {
+                        // Change select check image of each file object view item.
+                        foreach (FileObjectViewItem fileObjectViewItem in this.PickFileObjectViewModel.Items)
+                        {
+                            if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI)
+                                || fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
+                                fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                        }
+                    }
+
+                    else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // To Edit mode
+                    {
+                        // Change select check image of each file object view item.
+                        foreach (FileObjectViewItem fileObjectViewItem in this.PickFileObjectViewModel.Items)
+                        {
+                            if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
+                                fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                        }
+                    }
                 });
             }
             else
@@ -274,9 +299,8 @@ namespace PintheCloud.Pages
                 {
                     uiPinFileListGrid.Visibility = Visibility.Collapsed;
                     uiPinFileSignInPanel.Visibility = Visibility.Visible;
+                    base.SetProgressIndicator(false);
                 });
-
-                base.SetProgressIndicator(false);
                 return;
             }
 
@@ -284,23 +308,24 @@ namespace PintheCloud.Pages
             Debug.WriteLine("waiting sync : "+STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
             bool result = await TaskHelper.WaitTask(STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
             Debug.WriteLine("finished sync : " + STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
-            //fileObjects = null;
+            
             if (!result) return;
+
             if(folder == null)
             {
-                fileObjects = StorageExplorer.GetFilesFromRootFolder();
+                this.CurrentFileObjectList = StorageExplorer.GetFilesFromRootFolder();
             }
             else
             {
                 if (folder == null) System.Diagnostics.Debugger.Break();
-                fileObjects = StorageExplorer.GetTreeForFolder(this.GetCloudStorageFileObjectById(folder.Id));
+                this.CurrentFileObjectList = StorageExplorer.GetTreeForFolder(this.GetCloudStorageFileObjectById(folder.Id));
             }
                 
 
             //////////////////////////////////////////////////////////////////////////
             // TODO : Check Logical Error
             //////////////////////////////////////////////////////////////////////////
-            if (fileObjects == null) System.Diagnostics.Debugger.Break();
+            if (this.CurrentFileObjectList == null) System.Diagnostics.Debugger.Break();
 
 
             // If didn't change cloud mode while loading, set it to list.
@@ -310,12 +335,12 @@ namespace PintheCloud.Pages
                 this.PinFileObjectViewModel.IsDataLoaded = true;
                 uiPinFileList.Visibility = Visibility.Visible;
                 uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
-                this.PinFileObjectViewModel.SetItems(fileObjects, true);
+                this.PinFileObjectViewModel.SetItems(this.CurrentFileObjectList, true);
             });
 
             // If there exists file, show it.
             // Otherwise, show no file message.
-            if (fileObjects.Count > 0)
+            if (this.CurrentFileObjectList.Count > 0)
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
@@ -354,23 +379,6 @@ namespace PintheCloud.Pages
             }
         }
 
-
-        // Move to Setting Page
-        private void uiAppBarSettingsButton_Click(object sender, System.EventArgs e)
-        {
-            PhoneApplicationService.Current.State[PICK_FILE_OBJECT_VIEW_MODEL_KEY] = this.PickFileObjectViewModel;
-            PhoneApplicationService.Current.State[PIN_FILE_OBJECT_VIEW_MODEL_KEY] = this.PinFileObjectViewModel;
-            EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
-            NavigationService.Navigate(new Uri(EventHelper.SETTINGS_PAGE, UriKind.Relative));
-        }
-
-
-
-        /*** Pick Pivot ***/
-
-
-
-        /*** Pin Pivot ***/
 
         private void AppBarMenuItem_Click(object sender, EventArgs e)
         {
@@ -496,8 +504,8 @@ namespace PintheCloud.Pages
             // Set previous files to list.
             List<FileObject> fileList = StorageExplorer.TreeUp();
             if (fileList == null) return;
-            fileObjects = fileList;
-            this.PinFileObjectViewModel.SetItems(fileObjects, true);
+            this.CurrentFileObjectList = fileList;
+            this.PinFileObjectViewModel.SetItems(this.CurrentFileObjectList, true);
             uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
         }
 
@@ -576,10 +584,9 @@ namespace PintheCloud.Pages
                         MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
                         uiPinFileListGrid.Visibility = Visibility.Collapsed;
                         uiPinFileSignInPanel.Visibility = Visibility.Visible;
+                        base.SetProgressIndicator(false);
                     });
                 }
-
-                base.SetProgressIndicator(false);
             }
             else
             {
@@ -787,11 +794,11 @@ namespace PintheCloud.Pages
         private FileObject GetCloudStorageFileObjectById(string fileId)
         {
             if (fileId == null) System.Diagnostics.Debugger.Break();
-            for (var i = 0; i < fileObjects.Count; i++)
+            for (var i = 0; i < this.CurrentFileObjectList.Count; i++)
             {
-                if (fileObjects[i] == null) System.Diagnostics.Debugger.Break();
-                if (fileObjects[i].Id == null) System.Diagnostics.Debugger.Break();
-                if (fileObjects[i].Id.Equals(fileId)) return fileObjects[i];
+                if (this.CurrentFileObjectList[i] == null) System.Diagnostics.Debugger.Break();
+                if (this.CurrentFileObjectList[i].Id == null) System.Diagnostics.Debugger.Break();
+                if (this.CurrentFileObjectList[i].Id.Equals(fileId)) return this.CurrentFileObjectList[i];
             }
             System.Diagnostics.Debugger.Break();
             return null;

@@ -54,16 +54,17 @@ namespace PintheCloud.Pages
 
         // Instances
         private SpotViewModel MySpotViewModel = new SpotViewModel();
+        private FileObjectViewModel MyPickFileObjectViewModel = new FileObjectViewModel();
+        private IReadOnlyList<StorageFile> LocalFileList;
         private Button[] SignButtons = null;
         private Button[] MainButtons = null;
         private Grid[] SignButtonGrids = null;
         private TextBlock[] SignButtonTextBlocks = null;
         private bool DeleteSpotButton = false;
+        private bool LaunchLock = false;
 
-        /////////////////////////////////////////////////////
-        /// TODO : SEUNGMIN need to change to view Item
-        ///////////////////////////////////////////////////// 
-        IReadOnlyList<StorageFile> localFileList;
+
+
         public SettingsPage()
         {
             InitializeComponent();
@@ -100,13 +101,16 @@ namespace PintheCloud.Pages
 
             // Set delete app bar button and datacontext
             uiMySpotList.DataContext = this.MySpotViewModel;
+            uiMyPicktList.DataContext = this.MyPickFileObjectViewModel;
         }
 
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+            this.LaunchLock = false;
             this.SetMySpotPivot(AppResources.Loading);
+            this.SetMyPickPivot(AppResources.Loading);
         }
 
 
@@ -137,7 +141,7 @@ namespace PintheCloud.Pages
 
 
         // Construct pivot item by page index
-        private async void uiSettingsPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void uiSettingsPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Set View model for dispaly,
             // One time loading.
@@ -153,11 +157,7 @@ namespace PintheCloud.Pages
                 case MY_PICK_PIVOT_INDEX:
                     // Set My Pick stuff enable and set list
                     ApplicationBar.IsVisible = true;
-
-                    /////////////////////////////////////////////////
-                    // This private Methods is to List Local Files
-                    /////////////////////////////////////////////////
-                    await SetMyPickPivotAsync();
+                    this.SetMyPickPivot(AppResources.Loading);
                     break;
 
                 default:
@@ -168,31 +168,60 @@ namespace PintheCloud.Pages
             }
         }
 
-        /////////////////////////////////////////////////////
-        /// TODO : SEUNGMIN need to change to view Item
-        ///////////////////////////////////////////////////// 
-        private async Task SetMyPickPivotAsync()
+
+        private void SetMyPickPivot(string message)
         {
-            StorageFolder folder = await ApplicationData.Current.LocalFolder.GetFolderAsync(SpotObject.PREVIEW_FILE_LOCATION);
-            if (folder == null) return;
-            localFileList = await folder.GetFilesAsync();
-
-            ObservableCollection<string> strList = new ObservableCollection<string>();
-
-            for (var i = 0; i < localFileList.Count; i++)
-            {
-                strList.Add(localFileList[i].Name);
-                Debug.WriteLine(localFileList[i].Name);
-            }
-            uiMyPicktList.DataContext = strList;
+            // If Internet available, Set spot list
+            if (!this.MyPickFileObjectViewModel.IsDataLoaded)  // Mutex check
+                this.SetMyPickListAsync(message);
         }
+
+
+        private async void SetMyPickListAsync(string message)
+        {
+            // Show progress indicator 
+            base.SetListUnableAndShowMessage(uiMyPicktList, uiMyPickMessage, message);
+            base.SetProgressIndicator(true);
+
+            StorageFolder folder = await ApplicationData.Current.LocalFolder.GetFolderAsync(SpotObject.PREVIEW_FILE_LOCATION);
+            if (folder != null)
+            {
+                this.LocalFileList = await folder.GetFilesAsync();
+                if (this.LocalFileList.Count > 0)
+                {
+                    base.Dispatcher.BeginInvoke(() => 
+                    {
+                        foreach (StorageFile storageFile in this.LocalFileList)
+                        {
+                            this.MyPickFileObjectViewModel.IsDataLoaded = true;
+                            uiMyPicktList.Visibility = Visibility.Visible;
+                            uiMyPickMessage.Visibility = Visibility.Collapsed;
+
+                            FileObjectViewItem fileObjectViewItem = new FileObjectViewItem();
+                            fileObjectViewItem.Name = storageFile.Name;
+                            fileObjectViewItem.ThumnailType = storageFile.Name.Split('.').Last();
+                            fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                            this.MyPickFileObjectViewModel.Items.Add(fileObjectViewItem);
+                        }
+                    });
+                }
+                else
+                {
+                    base.SetListUnableAndShowMessage(uiMyPicktList, uiMyPickMessage, AppResources.NoFileInFolderMessage);
+                }
+            }
+
+            // Hide progress indicator
+            base.SetProgressIndicator(false);
+        }
+
 
         private void SetMySpotPivot(string message)
         {
             // If Internet available, Set spot list
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                if (!MySpotViewModel.IsDataLoaded)  // Mutex check
+                if (!this.MySpotViewModel.IsDataLoaded)  // Mutex check
                     this.SetMySpotListAsync(message);
             }
             else
@@ -200,6 +229,8 @@ namespace PintheCloud.Pages
                 base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.InternetUnavailableMessage);
             }
         }
+
+
 
         /*** Application ***/
 
@@ -281,8 +312,6 @@ namespace PintheCloud.Pages
                 this.SetMySpotPivot(AppResources.Loading);
 
                 // Hide process indicator
-                if (PhoneApplicationService.Current.State.ContainsKey(PIN_FILE_OBJECT_VIEW_MODEL_KEY))
-                    ((FileObjectViewModel)PhoneApplicationService.Current.State[PIN_FILE_OBJECT_VIEW_MODEL_KEY]).IsDataLoaded = false;
                 uiCloudPanel.Visibility = Visibility.Visible;
                 uiCloudMessageGrid.Visibility = Visibility.Collapsed;
                 this.SetSignButtons(iStorageManager);
@@ -446,7 +475,7 @@ namespace PintheCloud.Pages
                     if (spotViewItem.DeleteImage.Equals(FileObjectViewModel.DELETE_IMAGE_URI))
                     {
                         string parameters = base.GetParameterStringFromSpotViewItem(spotViewItem);
-                        NavigationService.Navigate(new Uri(EventHelper.FILE_LIST_PAGE + parameters, UriKind.Relative));
+                        NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE + parameters, UriKind.Relative));
                     }
                 }
                 else
@@ -526,21 +555,10 @@ namespace PintheCloud.Pages
             SpotObject spot = App.SpotManager.GetSpotObject(spotViewItem.SpotId);
             bool deleteFileSuccess = await spot.DeleteFileObjectsAsync();
 
-            //List<FileObject> fileList = await App.BlobStorageManager.GetFilesFromSpotAsync(spotViewItem.AccountId, spotViewItem.SpotId);
-            //if (fileList.Count > 0)
-            //{
-            //    foreach (FileObject fileObject in fileList)
-            //    {
-            //        if (!await App.BlobStorageManager.DeleteFileAsync(fileObject.Id))
-            //            deleteFileSuccess = false;
-            //    }
-            //}
-
             // If delete job success to all files, delete spot.
             // Otherwise, show delete fail image.
             if (deleteFileSuccess)
             {
-                ;
                 if (await App.SpotManager.DeleteSpotAsync(spotViewItem.SpotId))
                 {
                     base.Dispatcher.BeginInvoke(() =>
@@ -599,9 +617,7 @@ namespace PintheCloud.Pages
                 while (itr.MoveNext())
                 {
                     if (itr.Current.IsSignIn())
-                    {
                         itr.Current.SignOut();
-                    }
                 }
             }
             App.AccountManager.SignOut();
@@ -614,17 +630,22 @@ namespace PintheCloud.Pages
         /////////////////////////////////////////
         private async void uiMyPicktList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            string localFileName = (string)uiMyPicktList.SelectedItem;
-            StorageFile file = this.FindStorageFileByName(localFileName);
-            await Launcher.LaunchFileAsync(file);
+            // Launch files to other reader app.
+            FileObjectViewItem fileObejctViewItem = uiMyPicktList.SelectedItem as FileObjectViewItem;
+            StorageFile file = this.FindStorageFileByName(fileObejctViewItem.Name);
+            if (!this.LaunchLock)
+            {
+                this.LaunchLock = true;
+                await Launcher.LaunchFileAsync(file);
+            }
         }
+
 
         private StorageFile FindStorageFileByName(string name)
         {
-            for (var i = 0; i < localFileList.Count; i++)
-            {
-                if (localFileList[i].Name.Equals(name)) return localFileList[i];
-            }
+            for (var i = 0; i < this.LocalFileList.Count; i++)
+                if (this.LocalFileList[i].Name.Equals(name)) 
+                    return this.LocalFileList[i];
             System.Diagnostics.Debugger.Break();
             return null;
         }

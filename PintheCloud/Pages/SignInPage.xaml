@@ -48,7 +48,7 @@
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_password.png" HorizontalAlignment="Left"/>
-				<PasswordBox x:Name="ui_signin_password" Style="{StaticResource CustomPasswordBoxStyle}" Foreground="White" PasswordChanged="ui_signin_password_PasswordChanged" Grid.Column="1">
+				<PasswordBox x:Name="ui_signin_password" Style="{StaticResource CustomPasswordBoxStyle}" Foreground="White" PasswordChanged="ui_signin_password_PasswordChanged" Grid.Column="1" MaxLength="20">
 					<PasswordBox.Background>
 						<ImageBrush ImageSource="/Assets/pajeon/at_here/130319_png/input.png" Stretch="None"/>
 					</PasswordBox.Background>

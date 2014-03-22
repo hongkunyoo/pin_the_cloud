@@ -30,7 +30,7 @@
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_name.png" Stretch="None" HorizontalAlignment="Left"/>
-				<toolkit:PhoneTextBox x:Name="ui_name" TextChanged="ui_name_TextChanged" Hint="{Binding LocalizedResources.Name, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Style="{StaticResource SignUpPhoneTextBoxStyle}" Grid.Column="1" BorderThickness="0" Padding="0" Foreground="White">
+				<toolkit:PhoneTextBox x:Name="ui_name" TextChanged="ui_name_TextChanged" Hint="{Binding LocalizedResources.Name, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Style="{StaticResource SignUpPhoneTextBoxStyle}" Grid.Column="1" BorderThickness="0" Padding="0" Foreground="White" MaxLength="10">
 					<toolkit:PhoneTextBox.Background>
 						<ImageBrush Stretch="None" ImageSource="/Assets/pajeon/at_here/130319_png/input.png"/>
 					</toolkit:PhoneTextBox.Background>
@@ -55,7 +55,7 @@
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_password.png" Stretch="None" HorizontalAlignment="Left"/>
-				<PasswordBox x:Name="ui_password" Grid.Column="1" Style="{StaticResource CustomPasswordBoxStyle}" Foreground="White" PasswordChanged="ui_password_PasswordChanged">
+				<PasswordBox x:Name="ui_password" Grid.Column="1" Style="{StaticResource CustomPasswordBoxStyle}" Foreground="White" PasswordChanged="ui_password_PasswordChanged" MaxLength="20">
 					<PasswordBox.Background>
 						<ImageBrush Stretch="None" ImageSource="/Assets/pajeon/at_here/130319_png/input.png"/>
 					</PasswordBox.Background>
