@@ -142,7 +142,7 @@ namespace PintheCloud.Pages
                     if (!password.Equals(NULL_PASSWORD))  // Password is not "null"
                         this.MakeNewSpot(spotName, true, password);
                     else  // Password is "null"
-                        MessageBox.Show(AppResources.PasswordNullMessage, AppResources.PasswordNullCaption, MessageBoxButton.OK);
+                        MessageBox.Show(AppResources.NullPasswordMessage, AppResources.NullPasswordCaption, MessageBoxButton.OK);
                 }
                 else  // Password is null
                 {

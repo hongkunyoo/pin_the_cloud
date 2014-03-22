@@ -79,7 +79,6 @@ namespace PintheCloud.Pages
                     ui_email.IsEnabled = true;
                     ui_password.IsEnabled = true;
                     ui_password.Password = String.Empty;
-                    ui_sign_in_btn.IsEnabled = true;
                     MessageBox.Show(AppResources.DuplicateEmailAddressMessage, AppResources.DuplicateEmailAddressCaption, MessageBoxButton.OK);
                 }
 

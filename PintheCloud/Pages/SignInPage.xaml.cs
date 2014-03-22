@@ -11,6 +11,7 @@ using PintheCloud.Models;
 using PintheCloud.Managers;
 using System.Net.NetworkInformation;
 using PintheCloud.Resources;
+using System.Text.RegularExpressions;
 
 namespace PintheCloud.Pages
 {
@@ -38,22 +39,39 @@ namespace PintheCloud.Pages
         {
             if (NetworkInterface.GetIsNetworkAvailable())
             {
-                ui_signin_email.Text = "mark8625@daum.net";
                 ui_signin_email.Text = ui_signin_email.Text.Trim();
                 ui_signin_password.Password = ui_signin_password.Password.Trim();
 
+                // Email Check
+                if (!Regex.IsMatch(ui_signin_email.Text,
+                        @"^(?("")(""[^""]+?""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))"
+                        + @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9]{2,24}))$",
+                        RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250)))
+                {
+                    MessageBox.Show(AppResources.BadEmailAddressMessage, AppResources.BadEmailAddressCaption, MessageBoxButton.OK);
+                    return;
+                }
+
                 base.SetProgressIndicator(true, AppResources.DoingSignIn);
+
+                ui_signin_email.IsEnabled = false;
+                ui_signin_password.IsEnabled = false;
+                ui_signin_btn.IsEnabled = false;
+
                 try
                 {
                     PtcAccount account = await App.AccountManager.GetPtcAccountAsync(ui_signin_email.Text, ui_signin_password.Password);
                     if (account != null)
                     {
                         App.AccountManager.SavePtcId(account.Email, account.ProfilePassword);
-                        NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
+                        NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));
                     }
                     else
                     {
-                        MessageBox.Show(AppResources.NoEmailAddressMessage, AppResources.NoEmailAddressCaption, MessageBoxButton.OK);
+                        ui_signin_email.IsEnabled = true;
+                        ui_signin_password.IsEnabled = true;
+                        ui_signin_password.Password = String.Empty;
+                        MessageBox.Show(AppResources.WrongEmailPasswordMessage, AppResources.WrongEmailPasswordCaption, MessageBoxButton.OK);
                     }
                 }
                 catch (Exception)

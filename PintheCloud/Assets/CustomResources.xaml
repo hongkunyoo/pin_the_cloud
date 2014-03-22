@@ -629,21 +629,12 @@
 								</VisualState>
 							</VisualStateGroup>
 							<VisualStateGroup x:Name="FocusStates">
-								<VisualState x:Name="Focused">
-									<Storyboard>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="EnabledBorder">
-											<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneTextBoxEditBackgroundBrush}"/>
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="EnabledBorder">
-											<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneTextBoxEditBorderBrush}"/>
-										</ObjectAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
+								<VisualState x:Name="Focused"/>
 								<VisualState x:Name="Unfocused"/>
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
 						<Border x:Name="EnabledBorder" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}">
-							<Border x:Name="ContentElement" BorderThickness="0" Margin="80,0,0,0" VerticalAlignment="Center"/>
+							<Border x:Name="ContentElement" BorderThickness="0" Margin="15,0,0,0" VerticalAlignment="Center"/>
 						</Border>
 						<Border x:Name="DisabledBorder" BorderBrush="{StaticResource PhoneDisabledBrush}" Background="Transparent" Visibility="Collapsed">
 							<PasswordBox x:Name="DisabledContent" Background="Transparent" Foreground="{StaticResource PhoneDisabledBrush}" Password="{TemplateBinding Password}" PasswordChar="{TemplateBinding PasswordChar}" Template="{StaticResource PhoneDisabledPasswordBoxTemplate}"/>
@@ -728,26 +719,6 @@
 								<VisualState x:Name="Normal"/>
 								<VisualState x:Name="Disabled">
 									<Storyboard>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="HintBorder">
-											<DiscreteObjectKeyFrame KeyTime="0">
-												<DiscreteObjectKeyFrame.Value>
-													<Visibility>Collapsed</Visibility>
-												</DiscreteObjectKeyFrame.Value>
-											</DiscreteObjectKeyFrame>
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility" Storyboard.TargetName="TextBorder">
-											<DiscreteObjectKeyFrame KeyTime="0">
-												<DiscreteObjectKeyFrame.Value>
-													<Visibility>Visible</Visibility>
-												</DiscreteObjectKeyFrame.Value>
-											</DiscreteObjectKeyFrame>
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="TextBorder">
-											<DiscreteObjectKeyFrame KeyTime="0" Value="Transparent"/>
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Margin" Storyboard.TargetName="TextBorder">
-											<DiscreteObjectKeyFrame KeyTime="0" Value="0"/>
-										</ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="HorizontalAlignment" Storyboard.TargetName="Text">
 											<DiscreteObjectKeyFrame KeyTime="0">
 												<DiscreteObjectKeyFrame.Value>
@@ -759,21 +730,7 @@
 								</VisualState>
 							</VisualStateGroup>
 							<VisualStateGroup x:Name="FocusStates">
-								<VisualState x:Name="Focused">
-									<Storyboard>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="HintBorder">
-											<DiscreteObjectKeyFrame KeyTime="0">
-												<DiscreteObjectKeyFrame.Value>
-													<SolidColorBrush Color="#FFE6E7E8"/>
-												</DiscreteObjectKeyFrame.Value>
-											</DiscreteObjectKeyFrame>
-										</ObjectAnimationUsingKeyFrames>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="HintBorder">
-											<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource PhoneTextBoxEditBorderBrush}"/>
-										</ObjectAnimationUsingKeyFrames>
-										<DoubleAnimation Duration="0" To="1" Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="HintBorder" d:IsOptimized="True"/>
-									</Storyboard>
-								</VisualState>
+								<VisualState x:Name="Focused"/>
 								<VisualState x:Name="Unfocused"/>
 							</VisualStateGroup>
 							<VisualStateGroup x:Name="LengthIndicatorStates">

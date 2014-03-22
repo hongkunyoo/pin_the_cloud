@@ -56,6 +56,7 @@ namespace PintheCloud.Pages
                 // Set process indicator
                 base.Dispatcher.BeginInvoke(() =>
                 {
+                    ui_skip_btn.IsEnabled = false;
                     uiCloudPanel.Visibility = Visibility.Collapsed;
                     uiCloudMessage.Visibility = Visibility.Visible;
                 });
@@ -83,18 +84,15 @@ namespace PintheCloud.Pages
                 }
                 else
                 {
+                    // Hide process indicator
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+                        ui_skip_btn.IsEnabled = true;
+                        uiCloudPanel.Visibility = Visibility.Visible;
+                        uiCloudMessage.Visibility = Visibility.Collapsed;
                     });
                 }
-
-                // Hide process indicator
-                base.Dispatcher.BeginInvoke(() =>
-                {
-                    uiCloudPanel.Visibility = Visibility.Visible;
-                    uiCloudMessage.Visibility = Visibility.Collapsed;
-                });
             }
             else
             {

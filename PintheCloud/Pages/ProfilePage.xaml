@@ -30,18 +30,37 @@
 					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_name.png" Stretch="None" HorizontalAlignment="Left"/>
-				<toolkit:PhoneTextBox x:Name="ui_name" Hint="{Binding LocalizedResources.Name, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Style="{StaticResource SignUpPhoneTextBoxStyle}" Grid.Column="1" Background="White" Opacity="0.4" BorderThickness="0" Padding="0" Foreground="White"/>
+				<toolkit:PhoneTextBox x:Name="ui_name" TextChanged="ui_name_TextChanged" Hint="{Binding LocalizedResources.Name, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Style="{StaticResource SignUpPhoneTextBoxStyle}" Grid.Column="1" BorderThickness="0" Padding="0" Foreground="White">
+					<toolkit:PhoneTextBox.Background>
+						<ImageBrush Stretch="None" ImageSource="/Assets/pajeon/at_here/130319_png/input.png"/>
+					</toolkit:PhoneTextBox.Background>
+
+				</toolkit:PhoneTextBox>
 			</Grid>
-			<StackPanel Orientation="Horizontal" Margin="50,0,50,10">
-				<Grid HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="100"/>
-				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_email.png" Stretch="None"/>
-				<toolkit:PhoneTextBox x:Name="ui_email" TextWrapping="Wrap" Text="PhoneTextBox" Style="{StaticResource CustomPhoneTextBoxStyle}"/>
-			</StackPanel>
-			<StackPanel Orientation="Horizontal" Margin="50,0,50,10">
-				<Grid HorizontalAlignment="Left" Height="60" VerticalAlignment="Top" Width="100"/>
-				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_password.png" Stretch="None"/>
-				<toolkit:PhoneTextBox x:Name="ui_password" TextWrapping="Wrap" Text="PhoneTextBox" Style="{StaticResource CustomPhoneTextBoxStyle}"/>
-			</StackPanel>
+			<Grid Margin="50,0,50,10">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="65"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_email.png" Stretch="None" HorizontalAlignment="Left"/>
+				<toolkit:PhoneTextBox x:Name="ui_email"  TextWrapping="Wrap" Hint="{Binding LocalizedResources.Email, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SignUpPhoneTextBoxStyle}" Grid.Column="1" BorderThickness="0" Padding="0" Foreground="White" TextChanged="ui_email_TextChanged">
+					<toolkit:PhoneTextBox.Background>
+						<ImageBrush Stretch="None" ImageSource="/Assets/pajeon/at_here/130319_png/input.png"/>
+					</toolkit:PhoneTextBox.Background>
+				</toolkit:PhoneTextBox>
+			</Grid>
+			<Grid Margin="50,0,50,10">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="65"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_password.png" Stretch="None" HorizontalAlignment="Left"/>
+				<PasswordBox x:Name="ui_password" Grid.Column="1" Style="{StaticResource CustomPasswordBoxStyle}" Foreground="White" PasswordChanged="ui_password_PasswordChanged">
+					<PasswordBox.Background>
+						<ImageBrush Stretch="None" ImageSource="/Assets/pajeon/at_here/130319_png/input.png"/>
+					</PasswordBox.Background>
+				</PasswordBox>
+			</Grid>
 			<Button x:Name="ui_create_btn" Click="ui_create_btn_Click" IsEnabled="False" Style="{StaticResource ImageButtonPressSmallDisableStyle}" HorizontalAlignment="Center" Margin="0,0,0,28">
 				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_submit.png" Stretch="None"/>
 			</Button>

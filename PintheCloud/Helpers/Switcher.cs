@@ -23,11 +23,14 @@ namespace PintheCloud.Helpers
             return CurrentManager;
         }
 
+
         public static void SetMainPlatform(string key)
         {
             App.ApplicationSettings[MAIN_PLATFORM_TYPE_KEY] = key;
             App.ApplicationSettings.Save();
         }
+
+
         public static IStorageManager GetMainStorage()
         {
             IStorageManager retStorage = StorageHelper.GetStorageManager(MAIN_PLATFORM_TYPE_KEY);
@@ -35,12 +38,11 @@ namespace PintheCloud.Helpers
             {
                 List<IStorageManager> list = StorageHelper.GetStorageList();
                 for (var i = 0; i < list.Count; i++)
-                {
                     if (list[i].IsSignIn()) return list[i];
-                }
             }
             return retStorage;
         }
+
 
         public static void SetStorageToMainPlatform()
         {

@@ -747,18 +747,13 @@ namespace PintheCloud.Pages
                 fileObjectViewItem.SelectFileImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
             });
 
-            IStorageManager StorageManager = Switcher.GetMainStorage();
             // Download
+            IStorageManager StorageManager = Switcher.GetMainStorage();
             if (StorageManager != null && StorageManager.IsSignIn())
             {
                 await TaskHelper.WaitSignInTask(StorageManager.GetStorageName());
-                //Stream stream = await App.BlobStorageManager.DownloadFileStreamAsync(fileObjectViewItem.Id);
                 if (await this.CurrentSpot.DownloadFileObjectAsync(StorageManager, this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
                 {
-                    //IStorageManager iStorageManager = Switcher.GetCurrentStorage();
-                    //FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
-                    //if (await iStorageManager.UploadFileStreamAsync(rootFolder.Id, fileObjectViewItem.Name, stream))
-                    //{
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         this.PinFileObjectViewModel.IsDataLoaded = false;
@@ -777,7 +772,6 @@ namespace PintheCloud.Pages
                     });
                 }
             }
-            /// If Not Sign In
             else
             {
                 ///////////////////////////////////////////////////////
@@ -786,7 +780,6 @@ namespace PintheCloud.Pages
                 NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
             }
             
-
             // Hide Progress Indicator
             base.SetProgressIndicator(false);
         }

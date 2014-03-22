@@ -29,8 +29,7 @@ using System.Threading;
 namespace PintheCloud.Pages
 {
     public partial class SettingsPage : PtcPage
-    {
-        // Const Instances
+    { // Const Instances
         private const int APPLICATION_PIVOT_INDEX = 0;
         private const int MY_SPOT_PIVOT_INDEX = 1;
         private const int MY_PICK_PIVOT_INDEX = 2;
@@ -81,6 +80,17 @@ namespace PintheCloud.Pages
             this.SignButtonGrids = new Grid[] { uiOneDriveSignButtonGrid, uiDropboxSignButtonGrid, uiGoogleDriveSignButtonGrid };
             this.SignButtonTextBlocks = new TextBlock[] { uiOneDriveSignButtonText, uiDropboxSignButtonText, uiGoogleDriveSignButtonText };
 
+            // Set Sign buttons and Set Main buttons.
+            using (var itr = StorageHelper.GetStorageEnumerator())
+            {
+                while (itr.MoveNext())
+                {
+                    IStorageManager storage = itr.Current;
+                    this.SetSignButtons(storage);
+                    this.SetMainButtons(storage);
+                }
+            }
+
             // Set location access consent checkbox
             uiLocationAccessConsentToggleSwitchButton.IsChecked = (bool)App.ApplicationSettings[StorageAccount.LOCATION_ACCESS_CONSENT_KEY];
 
@@ -96,18 +106,6 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            // Set Sign buttons and Set Main buttons.
-            using (var itr = StorageHelper.GetStorageEnumerator())
-            {
-                while (itr.MoveNext())
-                {
-                    IStorageManager storage = itr.Current;
-                    this.SetSignButtons(storage);
-                    this.SetMainButtons(storage);
-                }
-            }
-            // Set My Spot pivot list.
             this.SetMySpotPivot(AppResources.Loading);
         }
 
@@ -262,7 +260,7 @@ namespace PintheCloud.Pages
         private void CloudSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
             // Sign out
-            MessageBoxResult signOutResult = MessageBox.Show(AppResources.SignOutMessage, AppResources.SignOutCaption, MessageBoxButton.OKCancel);
+            MessageBoxResult signOutResult = MessageBox.Show(AppResources.CloudSignOutMessage, AppResources.CloudSignOutCaption, MessageBoxButton.OKCancel);
             if (signOutResult == MessageBoxResult.OK)
             {
                 // Set process indicator and get index
@@ -295,7 +293,7 @@ namespace PintheCloud.Pages
 
         private async Task SignOut(IStorageManager iStorageManager)
         {
-            if(await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
+            if (await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
                 iStorageManager.SignOut();
         }
 
@@ -360,7 +358,7 @@ namespace PintheCloud.Pages
             // TODO : SEUNGMIN, This Code does not work. I don't know why.
             /////////////////////////////////////////////////////////////////////
             ((Image)mainButton.Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI, UriKind.Relative));
-            
+
             // Set Signbutton background
             Switcher.SetMainPlatform(mainButton.Tag.ToString());
             Switcher.SetStorageTo(mainButton.Tag.ToString());
@@ -369,7 +367,7 @@ namespace PintheCloud.Pages
             signButtonGrid.Opacity = MAIN_PLATFORM_BUTTON_OPACITY;
 
             // Set rest button image and background
-            for (var i = 0; i < StorageHelper.GetStorageList().Count; i++ )
+            for (var i = 0; i < StorageHelper.GetStorageList().Count; i++)
             {
                 if (!StorageHelper.GetStorageList()[i].GetStorageName().Equals(Switcher.GetMainStorage().GetStorageName()))
                 {
@@ -589,6 +587,27 @@ namespace PintheCloud.Pages
             ((Image)((Button)sender).Content).Source = new BitmapImage(new Uri(MY_SPOT_DELETE_BUTTON_IMAGE_URI, UriKind.Relative));
         }
 
+        private void uiPtcAccountSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
+        {
+            // TODO Signout
+            // Here is for PtcAccount Signout
+            MessageBoxResult result = MessageBox.Show(AppResources.PtcSignOutMessage, AppResources.PtcSignOutCaption, MessageBoxButton.OKCancel);
+            if (result == MessageBoxResult.Cancel) return;
+            StorageExplorer.RemoveAllKeys();
+            using (var itr = StorageHelper.GetStorageEnumerator())
+            {
+                while (itr.MoveNext())
+                {
+                    if (itr.Current.IsSignIn())
+                    {
+                        itr.Current.SignOut();
+                    }
+                }
+            }
+            App.AccountManager.SignOut();
+            NavigationService.Navigate(new Uri(EventHelper.SPLASH_PAGE, UriKind.Relative));
+        }
+
 
         /////////////////////////////////////////
         /// Selected Local File Explorer
@@ -600,7 +619,6 @@ namespace PintheCloud.Pages
             await Launcher.LaunchFileAsync(file);
         }
 
-
         private StorageFile FindStorageFileByName(string name)
         {
             for (var i = 0; i < localFileList.Count; i++)
@@ -609,25 +627,6 @@ namespace PintheCloud.Pages
             }
             System.Diagnostics.Debugger.Break();
             return null;
-        }
-
-
-        // Here is for PtcAccount Signout
-        private void uiPtcAccountSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
-            if (result == MessageBoxResult.Cancel) return;
-            StorageExplorer.RemoveAllKeys();
-            using (var itr = StorageHelper.GetStorageEnumerator())
-            {
-                while (itr.MoveNext())
-                {
-                    if (itr.Current.IsSignIn())
-                        itr.Current.SignOut();
-                }
-            }
-            App.AccountManager.SignOut();
-            NavigationService.Navigate(new Uri(EventHelper.SPLASH_PAGE, UriKind.Relative));
         }
     }
 }

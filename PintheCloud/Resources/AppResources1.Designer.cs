@@ -196,6 +196,24 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Sign Out과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string CloudSignOutCaption {
+            get {
+                return ResourceManager.GetString("CloudSignOutCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want sign out this Cloud? Your setting in this cloud will be intialized.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string CloudSignOutMessage {
+            get {
+                return ResourceManager.GetString("CloudSignOutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Creating Profile...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string CreateProfile {
@@ -475,24 +493,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   The email address doesn&apos;t exist in At Here. Please confirm your email.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string NoEmailAddressCaption {
-            get {
-                return ResourceManager.GetString("NoEmailAddressCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Email doesn&apos;t exist과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string NoEmailAddressMessage {
-            get {
-                return ResourceManager.GetString("NoEmailAddressMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   There is no files in this folder.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoFileInFolderMessage {
@@ -601,6 +601,24 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Null Password과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NullPasswordCaption {
+            get {
+                return ResourceManager.GetString("NullPasswordCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Password can&apos;t be null. Please confirm password.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NullPasswordMessage {
+            get {
+                return ResourceManager.GetString("NullPasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   OneDrive과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string OneDrive {
@@ -615,42 +633,6 @@ namespace PintheCloud.Resources {
         public static string Password {
             get {
                 return ResourceManager.GetString("Password", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Password null.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string PasswordNullCaption {
-            get {
-                return ResourceManager.GetString("PasswordNullCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Password can&apos;t be null.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string PasswordNullMessage {
-            get {
-                return ResourceManager.GetString("PasswordNullMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Password Wrong과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string PasswordWrongCaption {
-            get {
-                return ResourceManager.GetString("PasswordWrongCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Password you submitted is wrong.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string PasswordWrongMessage {
-            get {
-                return ResourceManager.GetString("PasswordWrongMessage", resourceCulture);
             }
         }
         
@@ -709,6 +691,24 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Sign Out과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string PtcSignOutCaption {
+            get {
+                return ResourceManager.GetString("PtcSignOutCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Do you want sign out? Your setting will be intialized.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string PtcSignOutMessage {
+            get {
+                return ResourceManager.GetString("PtcSignOutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Refreshing...과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Refreshing {
@@ -763,24 +763,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Sign Out과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string SignOutCaption {
-            get {
-                return ResourceManager.GetString("SignOutCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Do you want sign out? Your setting in this cloud will be intialized.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string SignOutMessage {
-            get {
-                return ResourceManager.GetString("SignOutMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Skip과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string Skip {
@@ -822,6 +804,42 @@ namespace PintheCloud.Resources {
         public static string TermsOfService {
             get {
                 return ResourceManager.GetString("TermsOfService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Wrong Email or Password과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string WrongEmailPasswordCaption {
+            get {
+                return ResourceManager.GetString("WrongEmailPasswordCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The email address or password is wrong. Please confirm your email and password.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string WrongEmailPasswordMessage {
+            get {
+                return ResourceManager.GetString("WrongEmailPasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Wrong Password과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string WrongPasswordCaption {
+            get {
+                return ResourceManager.GetString("WrongPasswordCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Password is wrong. Please confirm password.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string WrongPasswordMessage {
+            get {
+                return ResourceManager.GetString("WrongPasswordMessage", resourceCulture);
             }
         }
     }

@@ -299,6 +299,7 @@
     <Content Include="Assets\pajeon\at_here\130319_png\3_storage_select_onedrive.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\3_storage_select_onedrive_p.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\3_storage_select_skip.png" />
+    <Content Include="Assets\pajeon\at_here\130319_png\input.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\loading01.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\loading02.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\loading03.png" />

@@ -30,16 +30,30 @@
 
 		<Image Source="/Assets/pajeon/at_here/130319_png/2_sign_in_label.png" Stretch="None" Margin="0,196,0,31"/>
 		<StackPanel Grid.Row="1">
-			<toolkit:PhoneTextBox  x:Name="ui_signin_email" TextWrapping="Wrap" Hint="{Binding LocalizedResources.Name, Source={StaticResource LocalizedStrings}}" Margin="50,0,50,10" Style="{StaticResource SignupPhoneTextBoxStyle}" BorderThickness="0" Padding="0" FontSize="24" FontFamily="Segoe WP Light" Height="50" Foreground="White" TextChanged="ui_signin_email_TextChanged">
-				<toolkit:PhoneTextBox.Background>
-					<ImageBrush Stretch="None" ImageSource="/Assets/pajeon/at_here/130319_png/1_sign_up_input_name.png"/>
-				</toolkit:PhoneTextBox.Background>
-			</toolkit:PhoneTextBox>
-			<PasswordBox x:Name="ui_signin_password" Style="{StaticResource CustomPasswordBoxStyle}" Foreground="White" Height="50" Margin="50,0,50,10" PasswordChanged="ui_signin_password_PasswordChanged">
-				<PasswordBox.Background>
-					<ImageBrush ImageSource="/Assets/pajeon/at_here/130319_png/1_sign_up_input_password.png" Stretch="None"/>
-				</PasswordBox.Background>
-			</PasswordBox>
+			<Grid Margin="50,0,50,10">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="65"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_email.png" HorizontalAlignment="Left" Stretch="None"/>
+				<toolkit:PhoneTextBox  x:Name="ui_signin_email" TextWrapping="Wrap" Hint="{Binding LocalizedResources.Email, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SignUpPhoneTextBoxStyle}" BorderThickness="0" Padding="0" FontSize="24" FontFamily="Segoe WP Light" Foreground="White" TextChanged="ui_signin_email_TextChanged" Grid.Column="1">
+					<toolkit:PhoneTextBox.Background>
+						<ImageBrush Stretch="None" ImageSource="/Assets/pajeon/at_here/130319_png/input.png"/>
+					</toolkit:PhoneTextBox.Background>
+				</toolkit:PhoneTextBox>
+			</Grid>
+			<Grid Margin="50,0,50,10">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="65"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_password.png" HorizontalAlignment="Left"/>
+				<PasswordBox x:Name="ui_signin_password" Style="{StaticResource CustomPasswordBoxStyle}" Foreground="White" PasswordChanged="ui_signin_password_PasswordChanged" Grid.Column="1">
+					<PasswordBox.Background>
+						<ImageBrush ImageSource="/Assets/pajeon/at_here/130319_png/input.png" Stretch="None"/>
+					</PasswordBox.Background>
+				</PasswordBox>
+			</Grid>
 			<Button x:Name="ui_signin_btn" Click="ui_signin_btn_Click" Style="{StaticResource ImageButtonPressSmallDisableStyle}" HorizontalAlignment="Center" Margin="50,0,50,28" IsEnabled="False">
 				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_submit.png" Stretch="None"/>
 			</Button>
