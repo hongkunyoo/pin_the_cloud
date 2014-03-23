@@ -49,6 +49,7 @@ namespace PintheCloud.Pages
                         RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250)))
                 {
                     MessageBox.Show(AppResources.BadEmailAddressMessage, AppResources.BadEmailAddressCaption, MessageBoxButton.OK);
+                    ui_signin_password.Password = String.Empty;
                     return;
                 }
 
