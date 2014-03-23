@@ -183,7 +183,7 @@ namespace PintheCloud.Pages
             base.SetListUnableAndShowMessage(uiMyPicktList, uiMyPickMessage, message);
             base.SetProgressIndicator(true);
 
-            StorageFolder folder = await ApplicationData.Current.LocalFolder.GetFolderAsync(SpotObject.PREVIEW_FILE_LOCATION);
+            StorageFolder folder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(SpotObject.PREVIEW_FILE_LOCATION,CreationCollisionOption.OpenIfExists);
             if (folder != null)
             {
                 this.LocalFileList = await folder.GetFilesAsync();
