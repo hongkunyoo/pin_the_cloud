@@ -96,7 +96,6 @@
     </Compile>
     <Compile Include="Converters\StringToSpotNameInitialUriConverter.cs" />
     <Compile Include="Helpers\AESHelper.cs" />
-    <Compile Include="Helpers\IStoragemanager.cs" />
     <Compile Include="Helpers\StorageHelper.cs" />
     <Compile Include="Helpers\Switcher.cs" />
     <Compile Include="LocalizedStrings.cs" />
@@ -116,7 +115,6 @@
     <Compile Include="Managers\SpotManager.cs" />
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\PtcAccount.cs" />
-    <Compile Include="Models\Spot.cs" />
     <Compile Include="Helpers\ConvertToFileObjectHelper.cs" />
     <Compile Include="Pages\LocalExplorer.xaml.cs">
       <DependentUpon>LocalExplorer.xaml</DependentUpon>

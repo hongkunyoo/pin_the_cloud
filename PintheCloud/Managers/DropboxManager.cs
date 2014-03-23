@@ -24,7 +24,7 @@ namespace PintheCloud.Managers
         #region Variables
         private const string DROPBOX_CLIENT_KEY = "gxjfureco8noyle";
         private const string DROPBOX_CLIENT_SECRET = "iskekcebjky6vbm";
-        public const string DROPBOX_AUTH_URI = "http://www.pinthecloud.com/index.html";
+        public const string DROPBOX_AUTH_URI = "http://www.pinthecloud.com";
 
         private const string DROPBOX_USER_KEY = "DROPBOX_USER_KEY";
         private const string DROPBOX_SIGN_IN_KEY = "DROPBOX_SIGN_IN_KEY";

@@ -12,7 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
-namespace PintheCloud.Converters
+namespace PintheCloud.Helpers
 {
     public class ConvertToFileObjectHelper
     {
