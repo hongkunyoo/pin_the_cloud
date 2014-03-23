@@ -276,7 +276,7 @@
     <value>Profile</value>
   </data>
   <data name="DeleteFileCaption" xml:space="preserve">
-    <value>Delete The Selected File</value>
+    <value>Delete</value>
   </data>
   <data name="NoFileInSpotMessage" xml:space="preserve">
     <value>There is no files in this spot.</value>

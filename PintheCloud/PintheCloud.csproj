@@ -116,7 +116,6 @@
     <Compile Include="Managers\SpotManager.cs" />
     <Compile Include="Models\FileObject.cs" />
     <Compile Include="Models\PtcAccount.cs" />
-    <Compile Include="Models\Spot.cs" />
     <Compile Include="Helpers\ConvertToFileObjectHelper.cs" />
     <Compile Include="Pages\ProfilePage.xaml.cs">
       <DependentUpon>ProfilePage.xaml</DependentUpon>

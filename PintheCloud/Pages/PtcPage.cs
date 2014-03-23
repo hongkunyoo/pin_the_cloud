@@ -32,8 +32,6 @@ namespace PintheCloud.Pages
         protected const string SPOT_VIEW_MODEL_KEY = "SPOT_VIEW_MODEL_KEY";
         protected const string SELECTED_FILE_KEY = "SELECTED_FILE_KEY";
 
-        public const string STORAGE_EXPLORER_SYNC = "STORAGE_EXPLORER_SYNC";
-
         protected const string NULL_PASSWORD = "null";
         public const double STATUS_BAR_HEIGHT = 32.0;
 

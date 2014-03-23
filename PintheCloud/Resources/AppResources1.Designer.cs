@@ -232,7 +232,7 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Delete The Selected File과(와) 유사한 지역화된 문자열을 찾습니다.
+        ///   Delete과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string DeleteFileCaption {
             get {

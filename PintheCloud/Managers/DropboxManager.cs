@@ -72,7 +72,7 @@ namespace PintheCloud.Managers
                 {
                     //tcs.SetResult(new Account(info.uid.ToString(), Account.StorageAccountType.DROPBOX, info.display_name, 0.0, AccountType.NORMAL_ACCOUNT_TYPE));
                     this.CurrentAccount = new StorageAccount(info.uid.ToString(), StorageAccount.StorageAccountType.DROPBOX, info.display_name, 0.0);
-                    TaskHelper.AddTask(PtcPage.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
+                    TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
                     tcs.SetResult(true);                
                 }, (fail) =>
                 {
@@ -108,7 +108,7 @@ namespace PintheCloud.Managers
                         App.ApplicationSettings[DROPBOX_SIGN_IN_KEY] = true;
                         App.ApplicationSettings[DROPBOX_USER_KEY] = user;
                         App.ApplicationSettings.Save();
-                        TaskHelper.AddTask(PtcPage.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
+                        TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
                         tcs.SetResult(true);
                     },
                     (error) =>
