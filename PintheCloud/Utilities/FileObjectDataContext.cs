@@ -11,8 +11,6 @@ namespace PintheCloud.Utilities
 {
     public class FileObjectDataContext : DataContext
     {
-        //public static string DBConnectionString = "Data Source=isostore:/ToDo.sdf";
-
         public FileObjectDataContext(string constr)
             : base(constr)
         {

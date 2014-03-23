@@ -14,6 +14,9 @@ namespace PintheCloud.Helpers
         private static Dictionary<string ,Task<bool>> SignInTasks = new Dictionary<string, Task<bool>>();
         private static Dictionary<string, Task> SignOutTasks = new Dictionary<string, Task>();
 
+        public const string STORAGE_EXPLORER_SYNC = "STORAGE_EXPLORER_SYNC";
+
+
 
         public static void AddTask(string name, Task<bool> task)
         {

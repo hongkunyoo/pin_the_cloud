@@ -64,7 +64,7 @@ namespace PintheCloud.Popups
                 }
                 else
                 {
-                    MessageBox.Show(AppResources.PasswordWrongMessage, AppResources.PasswordWrongCaption, MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.WrongPasswordMessage, AppResources.WrongPasswordCaption, MessageBoxButton.OK);
                 }
             }
         }

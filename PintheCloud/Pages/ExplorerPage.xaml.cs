@@ -37,6 +37,7 @@ namespace PintheCloud.Pages
         private const string PICK_PIVOT_TITLE_GRID_COLOR_HEX_STRING = "00A4BF";
         private const string PICK_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/at_here/png/general_bar_download.png";
         private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_upload.png";
+        private const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_delete.png";
 
         private const string EDIT_IMAGE_URI = "/Assets/pajeon/at_here/png/list_edit.png";
         private const string VIEW_IMAGE_URI = "/Assets/pajeon/at_here/png/list_view.png";
@@ -50,8 +51,9 @@ namespace PintheCloud.Pages
 
 
         // Instances
-        private ApplicationBarIconButton PinFileAppBarButton = new ApplicationBarIconButton();
+        private ApplicationBarIconButton PickDeleteAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarIconButton PickAppBarButton = new ApplicationBarIconButton();
+        private ApplicationBarIconButton PinFileAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarMenuItem[] AppBarMenuItems = null;
         private Popup SubmitSpotPasswordParentPopup = new Popup();
 
@@ -61,14 +63,14 @@ namespace PintheCloud.Pages
         private string AccountName = null;
         private bool LaunchLock = false;
 
-        public FileObjectViewModel PickFileObjectViewModel = new FileObjectViewModel();
-        public FileObjectViewModel PinFileObjectViewModel = new FileObjectViewModel();
-        public List<FileObjectViewItem> PickSelectedFileList = new List<FileObjectViewItem>();
-        public List<FileObjectViewItem> PinSelectedFileList = new List<FileObjectViewItem>();
+        private FileObjectViewModel PickFileObjectViewModel = new FileObjectViewModel();
+        private List<FileObjectViewItem> PickSelectedFileList = new List<FileObjectViewItem>();
 
-        public List<FileObject> fileObjects = new List<FileObject>();
+        private FileObjectViewModel PinFileObjectViewModel = new FileObjectViewModel();
+        private List<FileObjectViewItem> PinSelectedFileList = new List<FileObjectViewItem>();
 
-        private SpotObject CurrentSpot;
+        private List<FileObject> CurrentFileObjectList = new List<FileObject>();
+        private SpotObject CurrentSpot = null;
 
 
 
@@ -78,15 +80,20 @@ namespace PintheCloud.Pages
             InitializeComponent();
 
             // Set pin app bar button
-            this.PinFileAppBarButton.Text = AppResources.Pin;
-            this.PinFileAppBarButton.IconUri = new Uri(PIN_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
-            this.PinFileAppBarButton.IsEnabled = false;
-            this.PinFileAppBarButton.Click += PinFileAppBarButton_Click;
+            this.PickDeleteAppBarButton.Text = AppResources.Pick;
+            this.PickDeleteAppBarButton.IconUri = new Uri(DELETE_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
+            this.PickDeleteAppBarButton.IsEnabled = false;
+            this.PickDeleteAppBarButton.Click += PickDeleteAppBarButton_Click;
 
             this.PickAppBarButton.Text = AppResources.Pick;
             this.PickAppBarButton.IconUri = new Uri(PICK_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
             this.PickAppBarButton.IsEnabled = false;
             this.PickAppBarButton.Click += PickAppBarButton_Click;
+
+            this.PinFileAppBarButton.Text = AppResources.Pin;
+            this.PinFileAppBarButton.IconUri = new Uri(PIN_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
+            this.PinFileAppBarButton.IsEnabled = false;
+            this.PinFileAppBarButton.Click += PinFileAppBarButton_Click;
 
             // Set Cloud Setting selection.
             base.SetStorageBarMenuItem(out this.AppBarMenuItems, AppBarMenuItem_Click);
@@ -104,7 +111,8 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            
+
+            this.LaunchLock = false;
             this.SpotId = NavigationContext.QueryString["spotId"];
             this.SpotName = NavigationContext.QueryString["spotName"];
             this.AccountId = NavigationContext.QueryString["accountId"];
@@ -132,12 +140,26 @@ namespace PintheCloud.Pages
         // Construct pivot item by index
         private void uiExplorerPivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            
             // Set View model for dispaly. One time loading.
             PhoneApplicationService.Current.State[PIVOT_KEY] = uiExplorerPivot.SelectedIndex;
             switch (uiExplorerPivot.SelectedIndex)
             {
                 case EventHelper.PICK_PIVOT:
+                    // Change edit view mode
+                    string currentEditViewMode = uiPickFileListEditViewImageButton.ImageSource;
+                    if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit mode
+                    {
+                        ApplicationBar.Buttons.Add(this.PickAppBarButton);
+                        if (this.AccountId.Equals(App.AccountManager.GetPtcId()))
+                            ApplicationBar.Buttons.Add(this.PickDeleteAppBarButton);
+                    }
+                    else if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View mode
+                    {
+                        ApplicationBar.Buttons.Remove(this.PickAppBarButton);
+                        if (this.AccountId.Equals(App.AccountManager.GetPtcId()))
+                            ApplicationBar.Buttons.Remove(this.PickDeleteAppBarButton);
+                    }
+
                     // Set Pick Pivot UI
                     ApplicationBar.Buttons.Remove(this.PinFileAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
@@ -154,6 +176,9 @@ namespace PintheCloud.Pages
                 case EventHelper.PIN_PIVOT:
                     // Set Pin Pivot UI
                     IStorageManager iStorageManager = Switcher.GetCurrentStorage();
+                    ApplicationBar.Buttons.Remove(this.PickAppBarButton);
+                    if (this.AccountId.Equals(App.AccountManager.GetPtcId()))
+                        ApplicationBar.Buttons.Remove(this.PickDeleteAppBarButton);
                     ApplicationBar.Buttons.Add(this.PinFileAppBarButton);
                     for (int i = 0; i < AppBarMenuItems.Length; i++)
                         ApplicationBar.MenuItems.Add(this.AppBarMenuItems[i]);
@@ -191,12 +216,7 @@ namespace PintheCloud.Pages
             base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, message);
             base.SetProgressIndicator(true);
 
-
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            // IMPORTANT CHANGE : Now Every Spot Operation between Server and Client will be communicated with SpotObject(CurrentSpot)
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             List<FileObject> fileList = await this.CurrentSpot.ListFileObjectsAsync();
-
             if (fileList.Count > 0)
             {
                 base.Dispatcher.BeginInvoke(() =>
@@ -205,6 +225,29 @@ namespace PintheCloud.Pages
                     uiPickFileList.Visibility = Visibility.Visible;
                     uiPickFileListMessage.Visibility = Visibility.Collapsed;
                     this.PickFileObjectViewModel.SetItems(fileList, false);
+
+                    // Change edit view mode
+                    string currentEditViewMode = uiPickFileListEditViewImageButton.ImageSource;
+                    if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // To View mode
+                    {
+                        // Change select check image of each file object view item.
+                        foreach (FileObjectViewItem fileObjectViewItem in this.PickFileObjectViewModel.Items)
+                        {
+                            if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI)
+                                || fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
+                                fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                        }
+                    }
+
+                    else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // To Edit mode
+                    {
+                        // Change select check image of each file object view item.
+                        foreach (FileObjectViewItem fileObjectViewItem in this.PickFileObjectViewModel.Items)
+                        {
+                            if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
+                                fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                        }
+                    }
                 });
             }
             else
@@ -263,7 +306,6 @@ namespace PintheCloud.Pages
             });
 
             // Wait task
-            //await TaskHelper.WaitTask(STORAGE_EXPLORER_SYNC);
             await TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
 
             // If it wasn't signed out, set list.
@@ -274,34 +316,27 @@ namespace PintheCloud.Pages
                 {
                     uiPinFileListGrid.Visibility = Visibility.Collapsed;
                     uiPinFileSignInPanel.Visibility = Visibility.Visible;
+                    base.SetProgressIndicator(false);
                 });
-
-                base.SetProgressIndicator(false);
                 return;
             }
 
             // Get files and push to stack tree.
-            Debug.WriteLine("waiting sync : "+STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
-            bool result = await TaskHelper.WaitTask(STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
-            Debug.WriteLine("finished sync : " + STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
-            //fileObjects = null;
-            if (!result) return;
-            if(folder == null)
+            Debug.WriteLine("waiting sync : " + TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
+            if (!await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName())) return;
+            Debug.WriteLine("finished sync : " + TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
+
+            if (folder == null)
             {
-                fileObjects = StorageExplorer.GetFilesFromRootFolder();
+                this.CurrentFileObjectList = StorageExplorer.GetFilesFromRootFolder();
             }
             else
             {
                 if (folder == null) System.Diagnostics.Debugger.Break();
-                fileObjects = StorageExplorer.GetTreeForFolder(this.GetCloudStorageFileObjectById(folder.Id));
+                this.CurrentFileObjectList = StorageExplorer.GetTreeForFolder(this.GetCloudStorageFileObjectById(folder.Id));
             }
-                
 
-            //////////////////////////////////////////////////////////////////////////
-            // TODO : Check Logical Error
-            //////////////////////////////////////////////////////////////////////////
-            if (fileObjects == null) System.Diagnostics.Debugger.Break();
-
+            if (this.CurrentFileObjectList == null) System.Diagnostics.Debugger.Break();
 
             // If didn't change cloud mode while loading, set it to list.
             // Set file list visible and current path.
@@ -310,12 +345,12 @@ namespace PintheCloud.Pages
                 this.PinFileObjectViewModel.IsDataLoaded = true;
                 uiPinFileList.Visibility = Visibility.Visible;
                 uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
-                this.PinFileObjectViewModel.SetItems(fileObjects, true);
+                this.PinFileObjectViewModel.SetItems(this.CurrentFileObjectList, true);
             });
 
             // If there exists file, show it.
             // Otherwise, show no file message.
-            if (fileObjects.Count > 0)
+            if (this.CurrentFileObjectList.Count > 0)
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
@@ -329,14 +364,14 @@ namespace PintheCloud.Pages
                     uiPinFileMessage.Text = AppResources.NoFileInFolderMessage;
                 });
             }
-            
+
             // Set Mutex false and Hide Process Indicator
             base.SetProgressIndicator(false);
         }
 
 
         // Refresh spot list.
-        private async void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
+        private void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
         {
             switch (uiExplorerPivot.SelectedIndex)
             {
@@ -348,29 +383,12 @@ namespace PintheCloud.Pages
 
                 case EventHelper.PIN_PIVOT:
                     this.PinFileObjectViewModel.IsDataLoaded = false;
-                    await StorageExplorer.Refresh();
+                    TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName(), StorageExplorer.Refresh());
                     this.SetPinPivot(AppResources.Refreshing);
                     break;
             }
         }
 
-
-        // Move to Setting Page
-        private void uiAppBarSettingsButton_Click(object sender, System.EventArgs e)
-        {
-            PhoneApplicationService.Current.State[PICK_FILE_OBJECT_VIEW_MODEL_KEY] = this.PickFileObjectViewModel;
-            PhoneApplicationService.Current.State[PIN_FILE_OBJECT_VIEW_MODEL_KEY] = this.PinFileObjectViewModel;
-            EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
-            NavigationService.Navigate(new Uri(EventHelper.SETTINGS_PAGE, UriKind.Relative));
-        }
-
-
-
-        /*** Pick Pivot ***/
-
-
-
-        /*** Pin Pivot ***/
 
         private void AppBarMenuItem_Click(object sender, EventArgs e)
         {
@@ -380,7 +398,7 @@ namespace PintheCloud.Pages
             if (Switcher.GetCurrentStorage().GetStorageName().Equals(appBarMenuItem.Text)) return;
             if (Switcher.GetCurrentStorage().IsSigningIn()) return;
             Switcher.SetStorageTo(appBarMenuItem.Text);
-            
+
             uiPinFileCurrentPath.Text = "";
             // If it is not in current cloud mode, change it.
             IStorageManager iStorageManager = Switcher.GetCurrentStorage();
@@ -394,15 +412,9 @@ namespace PintheCloud.Pages
 
         private void PinFileAppBarButton_Click(object sender, EventArgs e)
         {
-            List<FileObjectViewItem> fileList = new List<FileObjectViewItem>();
-            foreach (FileObjectViewItem fileObjectViewItem in this.PinSelectedFileList)
-                fileList.Add(fileObjectViewItem);
-
-            this.PinSelectedFileList.Clear();
             this.PinFileAppBarButton.IsEnabled = false;
-
-            foreach (FileObjectViewItem fileObjectViewItem in fileList)
-                this.PinFileAsync(new FileObjectViewItem(fileObjectViewItem));
+            foreach (FileObjectViewItem fileObjectViewItem in this.PinSelectedFileList)
+                this.PinFileAsync(fileObjectViewItem);
         }
 
 
@@ -414,12 +426,10 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectFileImage = FileObjectViewModel.UPLOADING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
 
             // Upload
-            
-            //Stream stream = await Switcher.GetCurrentStorage().DownloadFileStreamAsync((fileObjectViewItem.DownloadUrl == null ? fileObjectViewItem.Id : fileObjectViewItem.DownloadUrl));
             string blobId = await this.CurrentSpot.AddFileObjectAsync(this.GetCloudStorageFileObjectById(fileObjectViewItem.Id));
             if (blobId != null)
             {
@@ -483,21 +493,24 @@ namespace PintheCloud.Pages
 
 
 
-        private void TreeUp()
+        private async void TreeUp()
         {
+            if (!await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName())) return;
+
             // If message is visible, set collapsed.
-            if (uiPinFileMessage.Visibility == Visibility.Visible)
+            if (uiPinFileMessage.Visibility == Visibility.Visible && !uiPinFileMessage.Text.Equals(AppResources.Refreshing))
                 uiPinFileMessage.Visibility = Visibility.Collapsed;
 
             // Clear trees.
-            this.PinSelectedFileList.Clear();
             this.PinFileAppBarButton.IsEnabled = false;
+            this.PinSelectedFileList.Clear();
 
             // Set previous files to list.
             List<FileObject> fileList = StorageExplorer.TreeUp();
             if (fileList == null) return;
-            fileObjects = fileList;
-            this.PinFileObjectViewModel.SetItems(fileObjects, true);
+
+            this.CurrentFileObjectList = fileList;
+            this.PinFileObjectViewModel.SetItems(this.CurrentFileObjectList, true);
             uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
         }
 
@@ -576,10 +589,9 @@ namespace PintheCloud.Pages
                         MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
                         uiPinFileListGrid.Visibility = Visibility.Collapsed;
                         uiPinFileSignInPanel.Visibility = Visibility.Visible;
+                        base.SetProgressIndicator(false);
                     });
                 }
-
-                base.SetProgressIndicator(false);
             }
             else
             {
@@ -599,8 +611,12 @@ namespace PintheCloud.Pages
                 {
                     this.PickSelectedFileList.Clear();
                     this.PickAppBarButton.IsEnabled = false;
+                    if (this.AccountId.Equals(App.AccountManager.GetPtcId()))
+                        this.PickDeleteAppBarButton.IsEnabled = false;
                 }
                 ApplicationBar.Buttons.Remove(this.PickAppBarButton);
+                if (this.AccountId.Equals(App.AccountManager.GetPtcId()))
+                    ApplicationBar.Buttons.Remove(this.PickDeleteAppBarButton);
                 uiPickFileListEditViewImageButton.ImageSource = EDIT_IMAGE_URI;
                 uiPickFileListEditViewImageButton.ImagePressedSource = EDIT_PRESS_IMAGE_URI;
 
@@ -617,6 +633,8 @@ namespace PintheCloud.Pages
             {
                 // Change mode image and remove app bar buttons.
                 ApplicationBar.Buttons.Add(this.PickAppBarButton);
+                if (this.AccountId.Equals(App.AccountManager.GetPtcId()))
+                    ApplicationBar.Buttons.Add(this.PickDeleteAppBarButton);
                 uiPickFileListEditViewImageButton.ImageSource = VIEW_IMAGE_URI;
                 uiPickFileListEditViewImageButton.ImagePressedSource = VIEW_PRESS_IMAGE_URI;
 
@@ -663,6 +681,8 @@ namespace PintheCloud.Pages
                         this.PickSelectedFileList.Add(fileObjectViewItem);
                         fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_IMAGE_URI;
                         this.PickAppBarButton.IsEnabled = true;
+                        if (this.AccountId.Equals(App.AccountManager.GetPtcId()))
+                            this.PickDeleteAppBarButton.IsEnabled = true;
                     }
 
                     else if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
@@ -670,7 +690,11 @@ namespace PintheCloud.Pages
                         this.PickSelectedFileList.Remove(fileObjectViewItem);
                         fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
                         if (this.PickSelectedFileList.Count < 1)
+                        {
                             this.PickAppBarButton.IsEnabled = false;
+                            if (this.AccountId.Equals(App.AccountManager.GetPtcId()))
+                                this.PickDeleteAppBarButton.IsEnabled = false;
+                        }
                     }
                 }
             }
@@ -684,19 +708,16 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectFileImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
 
             // Download file and Launch files to other reader app.
-            //StorageFile downloadFile = await ApplicationData.Current.LocalFolder.CreateFileAsync(fileObjectViewItem.Name, CreationCollisionOption.ReplaceExisting);
-            //if (await App.BlobStorageManager.DownloadFileAsync(fileObjectViewItem.Id, downloadFile) != null)
             if (await this.CurrentSpot.PreviewFileObjectAsync(this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
                 });
-                //await Launcher.LaunchFileAsync(downloadFile);
             }
             else
             {
@@ -720,10 +741,12 @@ namespace PintheCloud.Pages
                 IStorageManager iStr = Switcher.GetCurrentStorage();
                 if (iStr.IsSignIn())
                 {
+                    this.PickAppBarButton.IsEnabled = false;
+                    if (this.AccountId.Equals(App.AccountManager.GetPtcId()))
+                        this.PickDeleteAppBarButton.IsEnabled = false;
                     foreach (FileObjectViewItem fileObjectViewItem in this.PickSelectedFileList)
                         this.PickFileAsync(fileObjectViewItem);
                     this.PickSelectedFileList.Clear();
-                    this.PickAppBarButton.IsEnabled = false;
                 }
                 else
                 {
@@ -737,28 +760,22 @@ namespace PintheCloud.Pages
         }
 
 
-
         private async void PickFileAsync(FileObjectViewItem fileObjectViewItem)
         {
             // Show Downloading message
             base.SetProgressIndicator(true);
             base.Dispatcher.BeginInvoke(() =>
             {
-                fileObjectViewItem.SelectFileImage = FileObjectViewModel.DOWNLOADING_IMAGE_URI;
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
 
-            IStorageManager StorageManager = Switcher.GetMainStorage();
             // Download
+            IStorageManager StorageManager = Switcher.GetMainStorage();
             if (StorageManager != null && StorageManager.IsSignIn())
             {
                 await TaskHelper.WaitSignInTask(StorageManager.GetStorageName());
-                //Stream stream = await App.BlobStorageManager.DownloadFileStreamAsync(fileObjectViewItem.Id);
                 if (await this.CurrentSpot.DownloadFileObjectAsync(StorageManager, this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
                 {
-                    //IStorageManager iStorageManager = Switcher.GetCurrentStorage();
-                    //FileObject rootFolder = await iStorageManager.GetRootFolderAsync();
-                    //if (await iStorageManager.UploadFileStreamAsync(rootFolder.Id, fileObjectViewItem.Name, stream))
-                    //{
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         this.PinFileObjectViewModel.IsDataLoaded = false;
@@ -777,31 +794,82 @@ namespace PintheCloud.Pages
                     });
                 }
             }
-            /// If Not Sign In
             else
             {
-                ///////////////////////////////////////////////////////
-                // TODO : SEUNGMIN Needs to go to sign in Page
-                ///////////////////////////////////////////////////////
                 NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
             }
-            
 
             // Hide Progress Indicator
             base.SetProgressIndicator(false);
         }
 
+
         private FileObject GetCloudStorageFileObjectById(string fileId)
         {
             if (fileId == null) System.Diagnostics.Debugger.Break();
-            for (var i = 0; i < fileObjects.Count; i++)
+            for (var i = 0; i < this.CurrentFileObjectList.Count; i++)
             {
-                if (fileObjects[i] == null) System.Diagnostics.Debugger.Break();
-                if (fileObjects[i].Id == null) System.Diagnostics.Debugger.Break();
-                if (fileObjects[i].Id.Equals(fileId)) return fileObjects[i];
+                if (this.CurrentFileObjectList[i] == null) System.Diagnostics.Debugger.Break();
+                if (this.CurrentFileObjectList[i].Id == null) System.Diagnostics.Debugger.Break();
+                if (this.CurrentFileObjectList[i].Id.Equals(fileId)) return this.CurrentFileObjectList[i];
             }
             System.Diagnostics.Debugger.Break();
             return null;
+        }
+
+
+        // Delete files.
+        private void PickDeleteAppBarButton_Click(object sender, EventArgs e)
+        {
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                MessageBoxResult result = MessageBox.Show(AppResources.DeleteFileMessage, AppResources.DeleteFileCaption, MessageBoxButton.OKCancel);
+                if (result == MessageBoxResult.OK)
+                {
+                    this.PickAppBarButton.IsEnabled = false;
+                    if (this.AccountId.Equals(App.AccountManager.GetPtcId()))
+                        this.PickDeleteAppBarButton.IsEnabled = false;
+                    foreach (FileObjectViewItem fileObjectViewItem in this.PickSelectedFileList)
+                        this.DeleteFileAsync(fileObjectViewItem);
+                    this.PickSelectedFileList.Clear();
+                }
+            }
+            else
+            {
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+            }
+        }
+
+
+        private async void DeleteFileAsync(FileObjectViewItem fileObjectViewItem)
+        {
+            // Show Deleting message
+            base.SetProgressIndicator(true);
+            base.Dispatcher.BeginInvoke(() =>
+            {
+                fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
+            });
+
+            // Delete
+            if (await App.BlobStorageManager.DeleteFileAsync(fileObjectViewItem.Id))
+            {
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    this.PickFileObjectViewModel.Items.Remove(fileObjectViewItem);
+                    if (this.PickFileObjectViewModel.Items.Count < 1)
+                        base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, AppResources.NoFileInSpotMessage);
+                });
+            }
+            else
+            {
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
+                });
+            }
+
+            // Hide Progress Indicator
+            base.SetProgressIndicator(false);
         }
     }
 }

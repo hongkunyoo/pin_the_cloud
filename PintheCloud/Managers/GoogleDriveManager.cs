@@ -123,7 +123,7 @@ namespace PintheCloud.Managers
                 // Save sign in setting.
                 App.ApplicationSettings[GOOGLE_DRIVE_SIGN_IN_KEY] = true;
                 App.ApplicationSettings.Save();
-                TaskHelper.AddTask(PtcPage.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
+                TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
                 tcs.SetResult(true);
             }
             catch (Microsoft.Phone.Controls.WebBrowserNavigationException ex)

@@ -25,9 +25,7 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
-            for (int i = 0; i < NavigationService.BackStack.Count(); i++)
-                NavigationService.RemoveBackEntry();
+            NavigationService.RemoveBackEntry();
         }
 
 
@@ -79,7 +77,6 @@ namespace PintheCloud.Pages
                     ui_email.IsEnabled = true;
                     ui_password.IsEnabled = true;
                     ui_password.Password = String.Empty;
-                    ui_sign_in_btn.IsEnabled = true;
                     MessageBox.Show(AppResources.DuplicateEmailAddressMessage, AppResources.DuplicateEmailAddressCaption, MessageBoxButton.OK);
                 }
 

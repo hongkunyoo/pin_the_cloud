@@ -101,6 +101,7 @@ namespace PintheCloud.Models
             return await App.BlobStorageManager.DownloadFileAsync(this.Id, file);
         }
 
+
         public async Task<bool> DownloadToCloud(IStorageManager storageManager = null)
         {
             try
@@ -117,6 +118,7 @@ namespace PintheCloud.Models
             }
             return true;
         }
+
 
         public static FileObject ConvertToFileObject(MSFileObject msfo)
         {

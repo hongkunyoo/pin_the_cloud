@@ -21,7 +21,6 @@
 
     <local:PtcPage.ApplicationBar>
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
-            <shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/pajeon/pin_the_cloud/png/general_bar_setting.png" IsEnabled="True" Text="settings" Click="uiAppBarSettingsButton_Click"/>
             <shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/at_here/png/general_bar_refresh.png" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
@@ -36,7 +35,7 @@
         <!--피벗 컨트롤-->
         <!--피벗 컨트롤-->
         <Grid x:Name="uiPivotTitleGrid" Background="#FF00A4BF">
-        	<TextBlock x:Name="uiSpotNameText" HorizontalAlignment="Center" TextWrapping="Wrap" VerticalAlignment="Center" FontSize="30"/>
+        	<TextBlock x:Name="uiSpotNameText" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" TextTrimming="WordEllipsis"/>
         	<Image x:Name="uiCurrentCloudModeImage" HorizontalAlignment="Right" Stretch="None"/>
         </Grid>
         <Grid Grid.Row="1">
@@ -49,33 +48,33 @@
         </Grid>
         <Grid x:Name="ContentPanel" Grid.Row="2">
             <Grid.Resources>
-            	<DataTemplate x:Key="uiSpotListItemTemplate">
-            		<Grid x:Name="uiSpotListItem">
-            			<Grid.RowDefinitions>
-            				<RowDefinition/>
-            				<RowDefinition Height="1"/>
-            			</Grid.RowDefinitions>
-            			<Button x:Name="uiSpotButton" Margin="0" Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-            				<Grid Margin="20">
-            					<Grid.ColumnDefinitions>
-            						<ColumnDefinition Width="78"/>
-            						<ColumnDefinition/>
-            					</Grid.ColumnDefinitions>
-            					<Image x:Name="uiSpotNameInitialImage" Source="{Binding SpotNameInitialImage, Converter={StaticResource StringToSpotNameInitialUriConverter}}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            					<Image x:Name="uiSpotIsPrivateImage" Source="{Binding IsPrivateImage, Converter={StaticResource StringToUriConverter}}" Stretch="None" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            					<StackPanel Margin="0,-10,0,0" Grid.Column="1">
-            						<TextBlock x:Name="uiSpotName" TextWrapping="Wrap" Text="{Binding SpotName}" FontSize="32" LineHeight="42" Margin="0,0,0,5" Foreground="#FF404041" FontFamily="Segoe WP"/>
-            						<StackPanel Orientation="Horizontal">
-            							<TextBlock x:Name="uiSpotAccountName" TextWrapping="Wrap" Text="{Binding AccountName}" FontSize="22" Foreground="#FF919FA6" Margin="0,0,15,0" FontFamily="Segoe WP Light"/>
-            							<TextBlock x:Name="uiSpotDistance" TextWrapping="Wrap" Text="{Binding SpotDistance}" Foreground="#FF919FA6" FontSize="22" FontFamily="Segoe WP Light"/>
-            							<TextBlock x:Name="uiSpotDistanceUnit" TextWrapping="Wrap" Text="{Binding LocalizedResources.Meter, Source={StaticResource LocalizedStrings}}" Foreground="#FF919FA6" FontSize="22" FontFamily="Segoe WP Light"/>
-            						</StackPanel>
-            					</StackPanel>
-            				</Grid>
-            			</Button>
-            			<Grid Grid.Row="1" Background="#FFA6B5BE" Margin="20,0"/>
-            		</Grid>
-            	</DataTemplate>
+            	<DataTemplate x:Key="uiPickFileListItemTemplate">
+					<Grid x:Name="uiPickFileListItem">
+						<Grid.RowDefinitions>
+							<RowDefinition/>
+							<RowDefinition Height="1"/>
+						</Grid.RowDefinitions>
+						<Button Style="{StaticResource ListItemButtonStyle}" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+							<Grid Margin="15,0,44,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="105"/>
+									<ColumnDefinition/>
+									<ColumnDefinition Width="60"/>
+								</Grid.ColumnDefinitions>
+								<Image x:Name="uiThumnail" Source="{Binding ThumnailType, Converter={StaticResource StringToThumnailUriConverter}}" HorizontalAlignment="Left" Stretch="None"/>
+								<StackPanel Grid.Column="1" VerticalAlignment="Center">
+									<TextBlock x:Name="uiName" Text="{Binding Name}" Margin="0,0,0,5" FontSize="22" Foreground="#FF404041" FontFamily="Segoe WP" TextTrimming="WordEllipsis"/>
+									<StackPanel Orientation="Horizontal">
+										<TextBlock x:Name="uiSize" Text="{Binding Size}" TextWrapping="Wrap"  FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light" />
+										<TextBlock x:Name="uiSizeUnit" TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light"/>
+									</StackPanel>
+								</StackPanel>
+								<Image x:Name="uiSelectFileButtonImage" Source="{Binding SelectFileImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" Stretch="None" Grid.Column="2"/>
+							</Grid>
+						</Button>
+						<Grid Grid.Row="1" Background="#FFA6B5BE" Margin="20,0"/>
+					</Grid>
+				</DataTemplate>
             	<DataTemplate x:Key="uiPinFileListItemTemplate">
             		<Grid x:Name="uiPinFileListItem">
             			<Grid.RowDefinitions>
@@ -120,7 +119,7 @@
                         </Grid>
                         <Grid Grid.Row="1">
                         	<TextBlock x:Name="uiPickFileListMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Foreground="Black" Visibility="Collapsed" Margin="28,20,28,0" />
-                        	<phone:LongListSelector x:Name="uiPickFileList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" Style="{StaticResource CustomLongListSelectorStyle}" Padding="0" SelectionChanged="uiPickFileList_SelectionChanged" />
+                        	<phone:LongListSelector x:Name="uiPickFileList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiPickFileListItemTemplate}" Visibility="Collapsed" Style="{StaticResource CustomLongListSelectorStyle}" Padding="0" SelectionChanged="uiPickFileList_SelectionChanged" />
                         </Grid>
                     </Grid>
                 </phone:PivotItem>

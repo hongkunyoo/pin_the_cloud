@@ -24,21 +24,43 @@
 
 		<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_label.png" Stretch="None" Margin="0,91,0,22"/>
 		<StackPanel Grid.Row="1">
-			<toolkit:PhoneTextBox x:Name="ui_name" TextWrapping="Wrap" Hint="{Binding LocalizedResources.Name, Source={StaticResource LocalizedStrings}}" Margin="50,0,50,10" Style="{StaticResource SignupPhoneTextBoxStyle}" BorderThickness="0" Padding="0" FontSize="24" FontFamily="Segoe WP Light" TextChanged="ui_name_TextChanged" Height="50" Foreground="White">
-				<toolkit:PhoneTextBox.Background>
-					<ImageBrush Stretch="None" ImageSource="/Assets/pajeon/at_here/130319_png/1_sign_up_input_name.png"/>
-				</toolkit:PhoneTextBox.Background>
-			</toolkit:PhoneTextBox>
-			<toolkit:PhoneTextBox TextChanged="ui_email_TextChanged" x:Name="ui_email" TextWrapping="Wrap" Hint="{Binding LocalizedResources.Email, Source={StaticResource LocalizedStrings}}" Margin="50,0,50,10" Style="{StaticResource SignupPhoneTextBoxStyle}" BorderThickness="0" Padding="0" FontSize="24" FontFamily="Segoe WP Light" Height="50" Foreground="White">
-				<toolkit:PhoneTextBox.Background>
-					<ImageBrush Stretch="None" ImageSource="/Assets/pajeon/at_here/130319_png/1_sign_up_input_email.png"/>
-				</toolkit:PhoneTextBox.Background>
-			</toolkit:PhoneTextBox>
-			<PasswordBox x:Name="ui_password" Style="{StaticResource CustomPasswordBoxStyle}" Foreground="White" Height="50" Margin="50,0,50,10" PasswordChanged="ui_password_PasswordChanged">
-				<PasswordBox.Background>
-					<ImageBrush ImageSource="/Assets/pajeon/at_here/130319_png/1_sign_up_input_password.png" Stretch="None"/>
-				</PasswordBox.Background>
-			</PasswordBox>
+			<Grid Margin="50,0,50,10">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="65"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_name.png" Stretch="None" HorizontalAlignment="Left"/>
+				<toolkit:PhoneTextBox x:Name="ui_name" TextChanged="ui_name_TextChanged" Hint="{Binding LocalizedResources.Name, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Style="{StaticResource SignUpPhoneTextBoxStyle}" Grid.Column="1" BorderThickness="0" Padding="0" Foreground="White" MaxLength="10">
+					<toolkit:PhoneTextBox.Background>
+						<ImageBrush Stretch="None" ImageSource="/Assets/pajeon/at_here/130319_png/input.png"/>
+					</toolkit:PhoneTextBox.Background>
+
+				</toolkit:PhoneTextBox>
+			</Grid>
+			<Grid Margin="50,0,50,10">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="65"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_email.png" Stretch="None" HorizontalAlignment="Left"/>
+				<toolkit:PhoneTextBox x:Name="ui_email"  TextWrapping="Wrap" Hint="{Binding LocalizedResources.Email, Source={StaticResource LocalizedStrings}}" Style="{StaticResource SignUpPhoneTextBoxStyle}" Grid.Column="1" BorderThickness="0" Padding="0" Foreground="White" TextChanged="ui_email_TextChanged">
+					<toolkit:PhoneTextBox.Background>
+						<ImageBrush Stretch="None" ImageSource="/Assets/pajeon/at_here/130319_png/input.png"/>
+					</toolkit:PhoneTextBox.Background>
+				</toolkit:PhoneTextBox>
+			</Grid>
+			<Grid Margin="50,0,50,10">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="65"/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_input_password.png" Stretch="None" HorizontalAlignment="Left"/>
+				<PasswordBox x:Name="ui_password" Grid.Column="1" Style="{StaticResource CustomPasswordBoxStyle}" Foreground="White" PasswordChanged="ui_password_PasswordChanged" MaxLength="20">
+					<PasswordBox.Background>
+						<ImageBrush Stretch="None" ImageSource="/Assets/pajeon/at_here/130319_png/input.png"/>
+					</PasswordBox.Background>
+				</PasswordBox>
+			</Grid>
 			<Button x:Name="ui_create_btn" Click="ui_create_btn_Click" IsEnabled="False" Style="{StaticResource ImageButtonPressSmallDisableStyle}" HorizontalAlignment="Center" Margin="0,0,0,28">
 				<Image Source="/Assets/pajeon/at_here/130319_png/1_sign_up_submit.png" Stretch="None"/>
 			</Button>

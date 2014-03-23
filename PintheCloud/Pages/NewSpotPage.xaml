@@ -81,7 +81,7 @@
                     <toolkitPrimitives:ToggleSwitchButton x:Name="uiPrivateModeToggleSwitchButton" Style="{StaticResource CustomToggleSwitchButtonStyle}" Grid.Column="2" Height="38" Width="68" Checked="uiPrivateModeToggleSwitchButton_Checked" Unchecked="uiPrivateModeToggleSwitchButton_Unchecked" />
                 </Grid>
                 <Grid x:Name="uiPrivateModePasswordGrid" Height="54" Visibility="Collapsed">
-                    <TextBox x:Name="uiPrivateModePasswordTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="25" MaxLength="20" Background="#FFE6E7E8" Opacity="0.8" BorderThickness="0" Padding="0" FontFamily="Segoe WP Light" Foreground="#FF6F7A81" Style="{StaticResource CustomTextBoxStyle}" LostFocus="uiPrivateModePasswordTextBox_LostFocus" TextChanged="uiPrivateModePasswordTextBox_TextChanged" GotFocus="uiPrivateModePasswordTextBox_GotFocus" />
+                    <TextBox x:Name="uiPrivateModePasswordTextBox" TextWrapping="Wrap" BorderBrush="#BF000000" FontSize="25" MaxLength="10" Background="#FFE6E7E8" Opacity="0.8" BorderThickness="0" Padding="0" FontFamily="Segoe WP Light" Foreground="#FF6F7A81" Style="{StaticResource CustomTextBoxStyle}" LostFocus="uiPrivateModePasswordTextBox_LostFocus" TextChanged="uiPrivateModePasswordTextBox_TextChanged" GotFocus="uiPrivateModePasswordTextBox_GotFocus" />
                     <Utilities:ImageButton 
                     	ImageSource="/Assets/pajeon/at_here/png/input_set_button_activated.png"
                     	ImageDisabledSource="/Assets/pajeon/at_here/png/input_set_button_inactivated.png"

@@ -158,7 +158,6 @@ namespace PintheCloud.Models
         {
             try
             {
-                //IStorageManager StorageManager = Switcher.GetMainStorage();
                 Stream instream = await App.BlobStorageManager.DownloadFileStreamAsync(fo.Id);
                 FileObject root = await StorageManager.GetRootFolderAsync();
                 return await StorageManager.UploadFileStreamAsync(root.Id, fo.Name, instream);

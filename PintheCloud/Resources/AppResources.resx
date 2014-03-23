@@ -155,8 +155,8 @@
   <data name="LocationAccessMessage" xml:space="preserve">
     <value>At Here accesses your phone's location. Is that ok?</value>
   </data>
-  <data name="SignOutMessage" xml:space="preserve">
-    <value>Do you want sign out? Your setting in this cloud will be intialized.</value>
+  <data name="CloudSignOutMessage" xml:space="preserve">
+    <value>Do you want sign out this Cloud? Your setting in this cloud will be intialized.</value>
   </data>
   <data name="NoNearSpotMessage" xml:space="preserve">
     <value>There is no near spot. Make it yours.</value>
@@ -212,7 +212,7 @@
   <data name="NoFileInFolderMessage" xml:space="preserve">
     <value>There is no files in this folder.</value>
   </data>
-  <data name="SignOutCaption" xml:space="preserve">
+  <data name="CloudSignOutCaption" xml:space="preserve">
     <value>Sign Out</value>
   </data>
   <data name="AtHere" xml:space="preserve">
@@ -276,7 +276,7 @@
     <value>Profile</value>
   </data>
   <data name="DeleteFileCaption" xml:space="preserve">
-    <value>Delete The Selected File</value>
+    <value>Delete</value>
   </data>
   <data name="NoFileInSpotMessage" xml:space="preserve">
     <value>There is no files in this spot.</value>
@@ -308,20 +308,14 @@
   <data name="NoSelectedFileMessage" xml:space="preserve">
     <value>There is no selected file to pin. Please go back and select again.</value>
   </data>
-  <data name="PasswordNullCaption" xml:space="preserve">
-    <value>Password null.</value>
-  </data>
-  <data name="PasswordNullMessage" xml:space="preserve">
-    <value>Password can't be null.</value>
-  </data>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
   </data>
-  <data name="PasswordWrongCaption" xml:space="preserve">
-    <value>Password Wrong</value>
+  <data name="WrongPasswordCaption" xml:space="preserve">
+    <value>Wrong Password</value>
   </data>
-  <data name="PasswordWrongMessage" xml:space="preserve">
-    <value>Password you submitted is wrong.</value>
+  <data name="WrongPasswordMessage" xml:space="preserve">
+    <value>Password is wrong. Please confirm password.</value>
   </data>
   <data name="BadLoadingSpotMessage" xml:space="preserve">
     <value>Loading Spot met error. Please try it again.</value>
@@ -353,11 +347,11 @@
   <data name="DuplicateEmailAddressMessage" xml:space="preserve">
     <value>This email address already existed. Please use another email address.</value>
   </data>
-  <data name="NoEmailAddressCaption" xml:space="preserve">
-    <value>The email address doesn't exist in At Here. Please confirm your email.</value>
+  <data name="WrongEmailPasswordCaption" xml:space="preserve">
+    <value>Wrong Email or Password</value>
   </data>
-  <data name="NoEmailAddressMessage" xml:space="preserve">
-    <value>Email doesn't exist</value>
+  <data name="WrongEmailPasswordMessage" xml:space="preserve">
+    <value>The email address or password is wrong. Please confirm your email and password.</value>
   </data>
   <data name="Skip" xml:space="preserve">
     <value>Skip</value>
@@ -373,5 +367,17 @@
   </data>
   <data name="StartMessage" xml:space="preserve">
     <value>You can set other clouds in settings. Enjoy At Here!</value>
+  </data>
+  <data name="NullPasswordCaption" xml:space="preserve">
+    <value>Null Password</value>
+  </data>
+  <data name="NullPasswordMessage" xml:space="preserve">
+    <value>Password can't be null. Please confirm password.</value>
+  </data>
+  <data name="PtcSignOutCaption" xml:space="preserve">
+    <value>Sign Out</value>
+  </data>
+  <data name="PtcSignOutMessage" xml:space="preserve">
+    <value>Do you want sign out? Your setting will be intialized.</value>
   </data>
 </root>

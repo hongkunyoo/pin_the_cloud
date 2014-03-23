@@ -20,9 +20,7 @@ namespace PintheCloud.ViewModels
         public const string DELETE_IMAGE_URI = "/Assets/pajeon/at_here/png/upload_list_delete.png";
         public const string IS_PRIVATE_IMAGE_URI = "/Assets/pajeon/at_here/png/pin_label_lock.png";
 
-        public const string DELETING_IMAGE_URI = "DELETING_SPOT_IMAGE_URI";
-        public const string UPLOADING_IMAGE_URI = "UPLOADING_FILE_IMAGE_URI";
-        public const string DOWNLOADING_IMAGE_URI = "DOWNLOADING_FILE_IMAGE_URI";
+        public const string ING_IMAGE_URI = "/Assets/pajeon/at_here/130319_png/loading01.png";
         public const string FAIL_IMAGE_URI = "/Assets/pajeon/at_here/png/general_fail.png";
 
         public const string FOLDER = "FOLDER";

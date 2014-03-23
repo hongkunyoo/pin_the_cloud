@@ -35,9 +35,6 @@ namespace PintheCloud.Managers
         private const string ONE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_skydrive.png";
         private const string ONE_DRIVE_COLOR_HEX_STRING = "2458A7";
 
-        //private Stack<List<FileObject>> FoldersTree = new Stack<List<FileObject>>();
-        //private Stack<FileObjectViewItem> FolderRootTree = new Stack<FileObjectViewItem>();
-
         private LiveConnectClient LiveClient = null;
         private StorageAccount CurrentAccount = null;
         private TaskCompletionSource<bool> tcs = null;
@@ -76,7 +73,7 @@ namespace PintheCloud.Managers
             // Save sign in setting.
             App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
             App.ApplicationSettings.Save();
-            TaskHelper.AddTask(PtcPage.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
+            TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
             tcs.SetResult(true);
             return tcs.Task.Result;
         }

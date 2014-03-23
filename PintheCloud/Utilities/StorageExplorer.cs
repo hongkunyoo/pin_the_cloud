@@ -179,6 +179,7 @@ namespace PintheCloud.Utilities
             }
         }
 
+
         public async static Task<bool> Refresh()
         {
             string key = Switcher.GetCurrentStorage().GetStorageName();
@@ -186,11 +187,13 @@ namespace PintheCloud.Utilities
             return await Synchronize(key);
         }
 
+
         public static void RemoveKey(string key)
         {
             if (App.ApplicationSettings.Contains(SYNC_KEYS + key))
                 App.ApplicationSettings.Remove(SYNC_KEYS + key);
         }
+
 
         public static void RemoveAllKeys()
         {
@@ -206,13 +209,13 @@ namespace PintheCloud.Utilities
             
         }
 
+
         public static List<FileObject> GetFilesFromRootFolder()
         {
             if (GetCurrentRoot() == null) System.Diagnostics.Debugger.Break();
             if (GetCurrentRoot().FileList == null) System.Diagnostics.Debugger.Break();
 
             GetCurrentTree().Clear();
-            Stack<FileObject> stack = new Stack<FileObject>();
             GetCurrentTree().Push(GetCurrentRoot());
             return GetCurrentRoot().FileList;
         }

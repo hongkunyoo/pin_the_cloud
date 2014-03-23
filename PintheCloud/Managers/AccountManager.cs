@@ -149,18 +149,12 @@ namespace PintheCloud.Managers
             }
         }
 
-        /*
-        public PtcAccount GetPtcAccount()
-        {
-            return this.myAccount;
-        }
-        */
 
         public async Task<PtcAccount> GetPtcAccountAsync(string accountId, string password = null)
         {
             System.Linq.Expressions.Expression<Func<MSPtcAccount, bool>> lamda = (a => a.email == accountId);
             if(password != null)
-                 lamda = (a => a.email == accountId || a.profile_password == password);
+                 lamda = (a => a.email == accountId && a.profile_password == password);
 
             MobileServiceCollection<MSPtcAccount, MSPtcAccount> list = null;
             try
@@ -177,7 +171,6 @@ namespace PintheCloud.Managers
             if (list.Count == 1)
             {
                 PtcAccount account = PtcAccount.ConvertToPtcAccount(list.First());
-                //account.StorageAccounts = await this.GetStorageAccountsAsync(account.Email);
                 this.myAccount = account;
                 return account;
             }
