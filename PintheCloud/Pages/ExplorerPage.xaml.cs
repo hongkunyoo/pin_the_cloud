@@ -306,7 +306,6 @@ namespace PintheCloud.Pages
             });
 
             // Wait task
-            //await TaskHelper.WaitTask(STORAGE_EXPLORER_SYNC);
             await TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
 
             // If it wasn't signed out, set list.
@@ -324,10 +323,8 @@ namespace PintheCloud.Pages
 
             // Get files and push to stack tree.
             Debug.WriteLine("waiting sync : " + TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
-            bool result = await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
+            if (!await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName())) return;
             Debug.WriteLine("finished sync : " + TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
-
-            if (!result) return;
 
             if (folder == null)
             {
@@ -339,12 +336,7 @@ namespace PintheCloud.Pages
                 this.CurrentFileObjectList = StorageExplorer.GetTreeForFolder(this.GetCloudStorageFileObjectById(folder.Id));
             }
 
-
-            //////////////////////////////////////////////////////////////////////////
-            // TODO : Check Logical Error
-            //////////////////////////////////////////////////////////////////////////
             if (this.CurrentFileObjectList == null) System.Diagnostics.Debugger.Break();
-
 
             // If didn't change cloud mode while loading, set it to list.
             // Set file list visible and current path.
@@ -379,7 +371,7 @@ namespace PintheCloud.Pages
 
 
         // Refresh spot list.
-        private async void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
+        private void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
         {
             switch (uiExplorerPivot.SelectedIndex)
             {
@@ -391,7 +383,7 @@ namespace PintheCloud.Pages
 
                 case EventHelper.PIN_PIVOT:
                     this.PinFileObjectViewModel.IsDataLoaded = false;
-                    await StorageExplorer.Refresh();
+                    TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName(), StorageExplorer.Refresh());
                     this.SetPinPivot(AppResources.Refreshing);
                     break;
             }
@@ -501,19 +493,22 @@ namespace PintheCloud.Pages
 
 
 
-        private void TreeUp()
+        private async void TreeUp()
         {
+            if (!await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName())) return;
+
             // If message is visible, set collapsed.
-            if (uiPinFileMessage.Visibility == Visibility.Visible)
+            if (uiPinFileMessage.Visibility == Visibility.Visible && !uiPinFileMessage.Text.Equals(AppResources.Refreshing))
                 uiPinFileMessage.Visibility = Visibility.Collapsed;
 
             // Clear trees.
-            this.PinSelectedFileList.Clear();
             this.PinFileAppBarButton.IsEnabled = false;
+            this.PinSelectedFileList.Clear();
 
             // Set previous files to list.
             List<FileObject> fileList = StorageExplorer.TreeUp();
             if (fileList == null) return;
+
             this.CurrentFileObjectList = fileList;
             this.PinFileObjectViewModel.SetItems(this.CurrentFileObjectList, true);
             uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
