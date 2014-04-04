@@ -129,13 +129,11 @@ namespace PintheCloud.Pages
             IStorageManager iStorageManager = Switcher.GetCurrentStorage();
             if (iStorageManager.IsSigningIn())
             {
+                e.Cancel = true;
+
                 // If it is popup, close popup.
                 if (iStorageManager.IsPopup())
-                {
                     EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
-                    e.Cancel = true;
-                    return;
-                }
             }
         }
 
@@ -246,9 +244,9 @@ namespace PintheCloud.Pages
                     uiCloudMessage.Text = AppResources.DoingSignIn;
                 });
 
-                // Get index
+                // Set Current Storage
                 Button signButton = (Button)sender;
-                //Switcher.SetStorageTo(signButton.Tag.ToString());
+                Switcher.SetStorageTo(signButton.Tag.ToString());
 
                 // Sign in
                 IStorageManager iStorageManager = StorageHelper.GetStorageManager(signButton.Tag.ToString());
@@ -299,8 +297,9 @@ namespace PintheCloud.Pages
                 uiCloudMessageGrid.Visibility = Visibility.Visible;
                 uiCloudMessage.Text = AppResources.DoingSignOut;
 
+                // Set Current Storage
                 Button signButton = (Button)sender;
-                //Switcher.SetStorageTo(signButton.Tag.ToString());
+                Switcher.SetStorageTo(signButton.Tag.ToString());
 
                 // Sign out
                 IStorageManager iStorageManager = StorageHelper.GetStorageManager(signButton.Tag.ToString());
@@ -356,6 +355,7 @@ namespace PintheCloud.Pages
         private void SetMainButtons(IStorageManager StorageManager)
         {
             int platformIndexindex = Switcher.GetStorageIndex(StorageManager.GetStorageName());
+
             // Set main button click event and image.
             Button mainButton = this.MainButtons[platformIndexindex];
             mainButton.Click += this.MainButton_Click;

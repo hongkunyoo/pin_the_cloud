@@ -119,6 +119,7 @@ namespace PintheCloud.Pages
             this.AccountName = NavigationContext.QueryString["accountName"];
             uiSpotNameText.Text = this.SpotName;
 
+            Switcher.SetStorageTo(Switcher.GetMainStorage().GetStorageName());
             this.CurrentSpot = App.SpotManager.GetSpotObject(this.SpotId);
             this.SetPickPivot(AppResources.Loading);
             this.SetPinPivot(AppResources.Loading);
@@ -399,8 +400,8 @@ namespace PintheCloud.Pages
             if (Switcher.GetCurrentStorage().IsSigningIn()) return;
             Switcher.SetStorageTo(appBarMenuItem.Text);
 
-            uiPinFileCurrentPath.Text = "";
             // If it is not in current cloud mode, change it.
+            uiPinFileCurrentPath.Text = "";
             IStorageManager iStorageManager = Switcher.GetCurrentStorage();
             uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(iStorageManager.GetStorageColorHexString()));
             uiCurrentCloudModeImage.Source = new BitmapImage(new Uri(iStorageManager.GetStorageImageUri(), UriKind.Relative));
@@ -745,12 +746,14 @@ namespace PintheCloud.Pages
                     if (this.AccountId.Equals(App.AccountManager.GetPtcId()))
                         this.PickDeleteAppBarButton.IsEnabled = false;
                     foreach (FileObjectViewItem fileObjectViewItem in this.PickSelectedFileList)
-                        this.PickFileAsync(fileObjectViewItem);
+                        this.PickFileAsync(iStr, fileObjectViewItem);
                     this.PickSelectedFileList.Clear();
                 }
                 else
                 {
-                    MessageBox.Show(AppResources.NoSignedInMessage, iStr.GetStorageName(), MessageBoxButton.OK);
+                    MessageBoxResult result = MessageBox.Show(AppResources.NoMainCloudSignInMessage, iStr.GetStorageName(), MessageBoxButton.OKCancel);
+                    if (result == MessageBoxResult.OK)
+                        NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
                 }
             }
             else
@@ -760,7 +763,7 @@ namespace PintheCloud.Pages
         }
 
 
-        private async void PickFileAsync(FileObjectViewItem fileObjectViewItem)
+        private async void PickFileAsync(IStorageManager storageManager, FileObjectViewItem fileObjectViewItem)
         {
             // Show Downloading message
             base.SetProgressIndicator(true);
@@ -770,33 +773,25 @@ namespace PintheCloud.Pages
             });
 
             // Download
-            IStorageManager StorageManager = Switcher.GetMainStorage();
-            if (StorageManager != null && StorageManager.IsSignIn())
+            await TaskHelper.WaitSignInTask(storageManager.GetStorageName());
+            if (await this.CurrentSpot.DownloadFileObjectAsync(storageManager, this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
             {
-                await TaskHelper.WaitSignInTask(StorageManager.GetStorageName());
-                if (await this.CurrentSpot.DownloadFileObjectAsync(StorageManager, this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
+                base.Dispatcher.BeginInvoke(() =>
                 {
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        this.PinFileObjectViewModel.IsDataLoaded = false;
-                        string currentEditViewMode = uiPickFileListEditViewImageButton.ImageSource;
-                        if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
-                            fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
-                        else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit Mode
-                            fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
-                    });
-                }
-                else
-                {
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
-                    });
-                }
+                    this.PinFileObjectViewModel.IsDataLoaded = false;
+                    string currentEditViewMode = uiPickFileListEditViewImageButton.ImageSource;
+                    if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
+                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                    else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit Mode
+                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                });
             }
             else
             {
-                NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
+                });
             }
 
             // Hide Progress Indicator

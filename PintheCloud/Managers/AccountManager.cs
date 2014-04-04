@@ -128,30 +128,26 @@ namespace PintheCloud.Managers
                     {
                         PtcAccount account = await this.GetPtcAccountAsync((string)App.ApplicationSettings[PTCACCOUNT_ID]);
                         if (account == null)
-                        {
                             tcs.SetResult(null);
-                            return tcs.Task.Result;
-                        }
-                        tcs.SetResult(account);
-                        return tcs.Task.Result;
+                        else
+                            tcs.SetResult(account);
+
                     }
                     catch (MobileServiceInvalidOperationException)
                     {
                         tcs.SetResult(null);
-                        return tcs.Task.Result;
                     }
                 }
                 else
                 {
                     tcs.SetResult(null);
-                    return tcs.Task.Result;
                 }
             }
             else
             {
                 tcs.SetResult(this.myAccount);
-                return tcs.Task.Result;
             }
+            return tcs.Task.Result;
         }
 
 

@@ -254,7 +254,7 @@
   <data name="Deleting" xml:space="preserve">
     <value>Deleting...</value>
   </data>
-  <data name="NoSignedInMessage" xml:space="preserve">
+  <data name="NoMainCloudSignInMessage" xml:space="preserve">
     <value>Main cloud haven't been signed in. Please sign in.</value>
   </data>
   <data name="BadDeleteSpotMessage" xml:space="preserve">

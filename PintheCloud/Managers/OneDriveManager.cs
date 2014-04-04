@@ -49,43 +49,51 @@ namespace PintheCloud.Managers
 
             // If it haven't registerd live client, register
             LiveConnectClient liveClient = await this.GetLiveConnectClientAsync();
-            if (liveClient == null) 
-                return false;
-            this.LiveClient = liveClient;
-            
-            // Get id and name.
-            LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
-            string accountId = (string)operationResult.Result["id"];
-            string accountUserName = (string)operationResult.Result["name"];
-
-            // Register account
-            if (!await TaskHelper.WaitTask(App.AccountManager.GetPtcId()))
-                return false;
-
-            try 
+            if (liveClient != null)
             {
-                StorageAccount storageAccount = await App.AccountManager.GetStorageAccountAsync(accountId);
-                if (storageAccount == null)
+                // Get id and name.
+                this.LiveClient = liveClient;
+                LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
+                string accountId = (string)operationResult.Result["id"];
+                string accountUserName = (string)operationResult.Result["name"];
+
+                // Register account
+                if (await TaskHelper.WaitTask(App.AccountManager.GetPtcId()))
                 {
-                    storageAccount = new StorageAccount();
-                    storageAccount.Id = accountId;
-                    storageAccount.StorageName = this.GetStorageName();
-                    storageAccount.UserName = accountUserName;
-                    storageAccount.UsedSize = 0.0;
-                    await App.AccountManager.CreateStorageAccountAsync(storageAccount);
-                }
-                this.CurrentAccount = storageAccount;
-            }
-            catch (MobileServiceInvalidOperationException)
-            {
-                return false;
-            }
+                    try
+                    {
+                        StorageAccount storageAccount = await App.AccountManager.GetStorageAccountAsync(accountId);
+                        if (storageAccount == null)
+                        {
+                            storageAccount = new StorageAccount();
+                            storageAccount.Id = accountId;
+                            storageAccount.StorageName = this.GetStorageName();
+                            storageAccount.UserName = accountUserName;
+                            storageAccount.UsedSize = 0.0;
+                            await App.AccountManager.CreateStorageAccountAsync(storageAccount);
+                        }
+                        this.CurrentAccount = storageAccount;
 
-            // Save sign in setting.
-            App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
-            App.ApplicationSettings.Save();
-            TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
-            tcs.SetResult(true);
+                        // Save sign in setting.
+                        App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
+                        App.ApplicationSettings.Save();
+                        TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
+                        tcs.SetResult(true);
+                    }
+                    catch (MobileServiceInvalidOperationException)
+                    {
+                        tcs.SetResult(false);
+                    }
+                }
+                else
+                {
+                    tcs.SetResult(false);
+                }
+            }
+            else
+            {
+                tcs.SetResult(false);
+            }
             return tcs.Task.Result;
         }
 
