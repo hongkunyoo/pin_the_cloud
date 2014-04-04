@@ -88,6 +88,24 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Create Profile Error과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadCreateProfileCaption {
+            get {
+                return ResourceManager.GetString("BadCreateProfileCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Create profile process met error. Please try it again과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadCreateProfileMessage {
+            get {
+                return ResourceManager.GetString("BadCreateProfileMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Delete spot process met error. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string BadDeleteSpotMessage {

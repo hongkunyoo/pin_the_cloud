@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Utilities
+namespace PintheCloud.Exceptions
 {
     public class ShareException : Exception
     {

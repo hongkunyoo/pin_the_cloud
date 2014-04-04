@@ -12,6 +12,7 @@ using PintheCloud.Models;
 using PintheCloud.Managers;
 using System.Net.NetworkInformation;
 using PintheCloud.Resources;
+using Microsoft.WindowsAzure.MobileServices;
 
 namespace PintheCloud.Pages
 {
@@ -68,19 +69,29 @@ namespace PintheCloud.Pages
                 ptcAccount.Email = ui_email.Text;
                 ptcAccount.ProfilePassword = ui_password.Password;
 
-                if (await App.AccountManager.CreateNewPtcAccountAsync(ptcAccount))
+                try
                 {
-                    NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
+                    if (await App.AccountManager.CreateNewPtcAccountAsync(ptcAccount))
+                    {
+                        NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
+                    }
+                    else // IF there is a duplicated Email address, it fails.
+                    {
+                        ui_name.IsEnabled = true;
+                        ui_email.IsEnabled = true;
+                        ui_password.IsEnabled = true;
+                        ui_password.Password = String.Empty;
+                        MessageBox.Show(AppResources.DuplicateEmailAddressMessage, AppResources.DuplicateEmailAddressCaption, MessageBoxButton.OK);
+                    }
                 }
-                else // IF there is a duplicated Email address, it fails.
+                catch (MobileServiceInvalidOperationException)
                 {
                     ui_name.IsEnabled = true;
                     ui_email.IsEnabled = true;
                     ui_password.IsEnabled = true;
                     ui_password.Password = String.Empty;
-                    MessageBox.Show(AppResources.DuplicateEmailAddressMessage, AppResources.DuplicateEmailAddressCaption, MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.BadCreateProfileMessage, AppResources.BadCreateProfileCaption, MessageBoxButton.OK);
                 }
-
                 base.SetProgressIndicator(false);
             }
             else

@@ -380,4 +380,10 @@
   <data name="PtcSignOutMessage" xml:space="preserve">
     <value>Do you want sign out? Your setting will be intialized.</value>
   </data>
+  <data name="BadCreateProfileCaption" xml:space="preserve">
+    <value>Create Profile Error</value>
+  </data>
+  <data name="BadCreateProfileMessage" xml:space="preserve">
+    <value>Create profile process met error. Please try it again</value>
+  </data>
 </root>

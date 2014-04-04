@@ -5,6 +5,7 @@ using Google.Apis.Drive.v2;
 using Google.Apis.Drive.v2.Data;
 using Google.Apis.Services;
 using Google.Apis.Upload;
+using Microsoft.WindowsAzure.MobileServices;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PintheCloud.Converters;
@@ -102,7 +103,7 @@ namespace PintheCloud.Managers
                 this.service = new DriveService(new BaseClientService.Initializer()
                 {
                     HttpClientInitializer = credential,
-                    ApplicationName = "athere",
+                    ApplicationName = "At Here",
                 });
                 AboutResource aboutResource = service.About;
                 About about = await aboutResource.Get().ExecuteAsync();
@@ -137,6 +138,10 @@ namespace PintheCloud.Managers
                 tcs.SetResult(false);
             }
             catch (System.Threading.Tasks.TaskCanceledException)
+            {
+                tcs.SetResult(false);
+            }
+            catch (MobileServiceInvalidOperationException)
             {
                 tcs.SetResult(false);
             }

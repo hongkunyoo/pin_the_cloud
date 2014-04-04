@@ -99,10 +99,10 @@ namespace PintheCloud.Pages
                     // Hide process indicator
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
                         ui_skip_btn.IsEnabled = true;
                         uiCloudPanel.Visibility = Visibility.Visible;
                         uiCloudMessage.Visibility = Visibility.Collapsed;
+                        MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
                     });
                 }
             }

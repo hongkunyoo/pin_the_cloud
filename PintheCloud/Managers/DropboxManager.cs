@@ -1,6 +1,8 @@
 ﻿using DropNet;
 using DropNet.Models;
+using Microsoft.WindowsAzure.MobileServices;
 using PintheCloud.Converters;
+using PintheCloud.Exceptions;
 using PintheCloud.Helpers;
 using PintheCloud.Models;
 using PintheCloud.Pages;
@@ -47,7 +49,7 @@ namespace PintheCloud.Managers
             this._client.AccountInfoAsync((info) => {
                 tcs.SetResult(new StorageAccount(info.uid.ToString(), StorageAccount.StorageAccountType.DROPBOX, info.display_name, 0.0));
             }, (fail) => {
-                tcs.SetException(new Exception("Account Info Get Failed"));
+                tcs.SetException(new SignInException("Dropbox Account Info Get Failed"));
             });
             return tcs.Task;
         }
@@ -64,23 +66,21 @@ namespace PintheCloud.Managers
             UserLogin dropboxUser = null;
             if (App.ApplicationSettings.Contains(DROPBOX_USER_KEY))
                 dropboxUser = (UserLogin)App.ApplicationSettings[DROPBOX_USER_KEY];
+
+
             if (dropboxUser != null)
             {
                 this._client.UserLogin = dropboxUser;
-                //this.CurrentAccount = await this.GetMyAccountAsync();
                 this._client.AccountInfoAsync((info) =>
                 {
-                    //tcs.SetResult(new Account(info.uid.ToString(), Account.StorageAccountType.DROPBOX, info.display_name, 0.0, AccountType.NORMAL_ACCOUNT_TYPE));
                     this.CurrentAccount = new StorageAccount(info.uid.ToString(), StorageAccount.StorageAccountType.DROPBOX, info.display_name, 0.0);
                     TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
                     tcs.SetResult(true);                
                 }, (fail) =>
                 {
-                    //tcs.SetException(new Exception("Account Info Get Failed"));
                     this.CurrentAccount = null;
                     tcs.SetResult(false);
                 });
-                
             }
             else
             {
@@ -98,18 +98,28 @@ namespace PintheCloud.Managers
                         this._client.UserLogin = user;
 
                         // Save dropbox user got and sign in setting.
-                        this.CurrentAccount = await this.GetMyAccountAsync();
-                        StorageAccount account = await App.AccountManager.GetStorageAccountAsync(this.CurrentAccount.Id);
-                        if (account == null)
+                        try
                         {
-                            await App.AccountManager.CreateStorageAccountAsync(this.CurrentAccount);
-                        }
+                            this.CurrentAccount = await this.GetMyAccountAsync();
 
-                        App.ApplicationSettings[DROPBOX_SIGN_IN_KEY] = true;
-                        App.ApplicationSettings[DROPBOX_USER_KEY] = user;
-                        App.ApplicationSettings.Save();
-                        TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
-                        tcs.SetResult(true);
+                            StorageAccount account = await App.AccountManager.GetStorageAccountAsync(this.CurrentAccount.Id);
+                            if (account == null)
+                                await App.AccountManager.CreateStorageAccountAsync(this.CurrentAccount);
+
+                            App.ApplicationSettings[DROPBOX_SIGN_IN_KEY] = true;
+                            App.ApplicationSettings[DROPBOX_USER_KEY] = user;
+                            App.ApplicationSettings.Save();
+                            TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
+                            tcs.SetResult(true);
+                        }
+                        catch(SignInException)
+                        {
+                            tcs.SetResult(false);
+                        }
+                        catch (MobileServiceInvalidOperationException)
+                        {
+                            tcs.SetResult(false);
+                        }
                     },
                     (error) =>
                     {
@@ -119,13 +129,6 @@ namespace PintheCloud.Managers
                 },
                (error) =>
                {
-                   //var keys = error.Data.Keys;
-                   //for (var i = 0; i < keys.Count; i++ )
-                   //{
-                   //    Debug.WriteLine(error.Data[i]);
-                   //}
-                   //Debug.WriteLine(error.Message);
-                   //Debug.WriteLine(error.StackTrace);
                    tcs.SetResult(false);
                });
             }

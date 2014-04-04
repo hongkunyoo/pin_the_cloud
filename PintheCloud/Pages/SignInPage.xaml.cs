@@ -12,6 +12,7 @@ using PintheCloud.Managers;
 using System.Net.NetworkInformation;
 using PintheCloud.Resources;
 using System.Text.RegularExpressions;
+using Microsoft.WindowsAzure.MobileServices;
 
 namespace PintheCloud.Pages
 {
@@ -75,8 +76,11 @@ namespace PintheCloud.Pages
                         MessageBox.Show(AppResources.WrongEmailPasswordMessage, AppResources.WrongEmailPasswordCaption, MessageBoxButton.OK);
                     }
                 }
-                catch (Exception)
+                catch (MobileServiceInvalidOperationException)
                 {
+                    ui_signin_email.IsEnabled = true;
+                    ui_signin_password.IsEnabled = true;
+                    ui_signin_password.Password = String.Empty;
                     MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
                 }
                 base.SetProgressIndicator(false);
