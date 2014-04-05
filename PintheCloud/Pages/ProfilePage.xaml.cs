@@ -26,7 +26,10 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            NavigationService.RemoveBackEntry();
+
+            // Check if it is on the backstack from SplashPage and remove that.
+            for (int i = 0; i <= NavigationService.BackStack.Count(); i++)
+                NavigationService.RemoveBackEntry();
         }
 
 

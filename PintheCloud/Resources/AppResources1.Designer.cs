@@ -133,6 +133,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Loading files met error. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadLoadingFileMessage {
+            get {
+                return ResourceManager.GetString("BadLoadingFileMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Loading Spot met error. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string BadLoadingSpotMessage {

@@ -77,7 +77,7 @@ namespace PintheCloud.Pages
 
 
             // Set event by previous page
-            Context con = EventHelper.GetContext(EventHelper.FILE_LIST_PAGE);
+            Context con = EventHelper.GetContext(EventHelper.EXPLORER_PAGE);
             con.HandleEvent(EventHelper.EXPLORER_PAGE, EventHelper.PICK_PIVOT, this.SETTINGS_and_EXPLORE_PICK);
             con.HandleEvent(EventHelper.NEW_SPOT_PAGE, this.EXPLORER_PIN);
             con.HandleEvent(EventHelper.SETTINGS_PAGE, this.SETTINGS_and_EXPLORE_PICK);
@@ -271,7 +271,7 @@ namespace PintheCloud.Pages
                 }
                 else
                 {
-                    MessageBox.Show(AppResources.NoSignedInMessage, iStr.GetStorageName(), MessageBoxButton.OK);
+                    MessageBox.Show(AppResources.NoMainCloudSignInMessage, iStr.GetStorageName(), MessageBoxButton.OK);
                 }
             }
             else

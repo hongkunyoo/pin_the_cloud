@@ -114,7 +114,6 @@ namespace PintheCloud.Utilities
                 catch(Exception e)
                 {
                     System.Diagnostics.Debug.WriteLine(e.ToString());
-                    System.Diagnostics.Debugger.Break();
                     return false;
                 }
             }
@@ -138,6 +137,7 @@ namespace PintheCloud.Utilities
                         DictionaryTree.Remove(key);
                     }
                     DictionaryTree.Add(key, stack);
+
 
                     ////////////////////////////////////////////
                     // Saving to SQL job
@@ -168,7 +168,6 @@ namespace PintheCloud.Utilities
                     catch (Exception e)
                     {
                         System.Diagnostics.Debug.WriteLine(e.ToString());
-                        System.Diagnostics.Debugger.Break();
                     }
 
                     App.ApplicationSettings.Add(SYNC_KEYS + key, true);

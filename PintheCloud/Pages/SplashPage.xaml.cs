@@ -36,6 +36,10 @@ namespace PintheCloud.Pages
         {
             base.OnNavigatedTo(e);
 
+            // Check if it is on the backstack from SplashPage and remove that.
+            for (int i = 0; i <= NavigationService.BackStack.Count(); i++)
+                NavigationService.RemoveBackEntry();
+
             // Check nick name at frist login.
             if (!App.ApplicationSettings.Contains(StorageAccount.ACCOUNT_DEFAULT_SPOT_NAME_KEY))
             {
