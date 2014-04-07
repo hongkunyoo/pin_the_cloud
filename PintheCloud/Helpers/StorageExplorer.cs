@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Utilities
+namespace PintheCloud.Helpers
 {
     public static class StorageExplorer
     {
@@ -75,6 +75,7 @@ namespace PintheCloud.Utilities
             if (!await TaskHelper.WaitSignInTask(Storage.GetStorageName()))
                 return false;
 
+
             // Fetching from SQL
             if (App.ApplicationSettings.Contains(SYNC_KEYS + key))
             {
@@ -88,12 +89,11 @@ namespace PintheCloud.Utilities
                             App.ApplicationSettings.Remove(SYNC_KEYS + key);
                             return await Synchronize(key);
                         }
+
                         var rootDB = from FileObjectSQL fos in db.FileItems where fos.ParentId.Equals(ROOT_ID) select fos;
-
-                        List<FileObjectSQL> getsqlList = rootDB.ToList<FileObjectSQL>();
-
-                        if (getsqlList.Count != 1) System.Diagnostics.Debugger.Break();
-                        FileObjectSQL rootFos = getsqlList.First<FileObjectSQL>();
+                        List<FileObjectSQL> getSqlList = rootDB.ToList<FileObjectSQL>();
+                        if (getSqlList.Count != 1) return false;
+                        FileObjectSQL rootFos = getSqlList.First<FileObjectSQL>();
                         FileObject rootFolder = FileObject.ConvertToFileObject(db, rootFos);
 
                         if (DictionaryRoot.ContainsKey(key))
@@ -132,9 +132,7 @@ namespace PintheCloud.Utilities
                     DictionaryTree.Add(key, stack);
 
 
-                    ////////////////////////////////////////////
                     // Saving to SQL job
-                    ////////////////////////////////////////////
                     try
                     {
                         using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
@@ -149,7 +147,6 @@ namespace PintheCloud.Utilities
                                 db.FileItems.InsertOnSubmit(sqlList[i]);
                             db.SubmitChanges();
                         }
-
                         App.ApplicationSettings.Add(SYNC_KEYS + key, true);
                         App.ApplicationSettings.Save();
                     }
@@ -160,7 +157,6 @@ namespace PintheCloud.Utilities
                     }
                 }
             }
-
             return true;
         }
 

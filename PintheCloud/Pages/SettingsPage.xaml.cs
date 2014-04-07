@@ -265,12 +265,19 @@ namespace PintheCloud.Pages
             {
                 if (await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
                 {
-                    this.SignButtonTextBlocks[platformIndex].Text = (await iStorageManager.GetStorageAccountAsync()).UserName;
-                    this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_IN_BUTTON_TEXT_COLOR));
-                    this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_IN_BUTTON_TEXT_FONT);
-                    this.SignButtons[platformIndex].Click += this.CloudSignOutButton_Click;
-                    this.SignButtons[platformIndex].Click -= this.CloudSignInButton_Click;
-                    return;
+                    StorageAccount storageAccount = await iStorageManager.GetStorageAccountAsync();
+                    if (storageAccount != null)
+                    {
+                        base.Dispatcher.BeginInvoke(() =>
+                        {
+                            this.SignButtonTextBlocks[platformIndex].Text = storageAccount.UserName;
+                            this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_IN_BUTTON_TEXT_COLOR));
+                            this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_IN_BUTTON_TEXT_FONT);
+                            this.SignButtons[platformIndex].Click += this.CloudSignOutButton_Click;
+                            this.SignButtons[platformIndex].Click -= this.CloudSignInButton_Click;
+                        });
+                        return;
+                    }
                 }
             }
 
@@ -460,7 +467,6 @@ namespace PintheCloud.Pages
             // If there is my spots, Clear and Add spots to list
             // Otherwise, Show none message.
             List<SpotObject> spots = await App.SpotManager.GetMySpotList();
-
             if (spots != null)
             {
                 if (spots.Count > 0)  // There are my spots

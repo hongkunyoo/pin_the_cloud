@@ -37,7 +37,6 @@ namespace PintheCloud.Managers
         public async Task<bool> SignIn()
         {
             if (!this.IsSignIn()) return false;
-
             PtcAccount account = await this.GetPtcAccountAsync();
             if (account == null) return false;
             this.myAccount = account;
@@ -131,7 +130,6 @@ namespace PintheCloud.Managers
                             tcs.SetResult(null);
                         else
                             tcs.SetResult(account);
-
                     }
                     catch (MobileServiceInvalidOperationException)
                     {
