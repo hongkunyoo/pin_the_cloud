@@ -1,4 +1,5 @@
-﻿using PintheCloud.Models;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using PintheCloud.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,9 +54,9 @@ namespace PintheCloud.Helpers
         {
             if (SignInTasks.ContainsKey(key))
             {
-                bool resut = await SignInTasks[key];
+                bool result = await SignInTasks[key];
                 SignInTasks.Remove(key);
-                return resut;
+                return result;
             }
             else
             {
@@ -64,6 +65,7 @@ namespace PintheCloud.Helpers
                 return tcs.Task.Result;
             }
         }
+
 
         public static async Task<bool> WaitForAllSignIn()
         {

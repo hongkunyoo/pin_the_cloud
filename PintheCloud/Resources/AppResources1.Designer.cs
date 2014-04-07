@@ -88,6 +88,24 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Create Profile Error과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadCreateProfileCaption {
+            get {
+                return ResourceManager.GetString("BadCreateProfileCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Create profile process met error. Please try it again과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadCreateProfileMessage {
+            get {
+                return ResourceManager.GetString("BadCreateProfileMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Delete spot process met error. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string BadDeleteSpotMessage {
@@ -111,6 +129,15 @@ namespace PintheCloud.Resources {
         public static string BadEmailAddressMessage {
             get {
                 return ResourceManager.GetString("BadEmailAddressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Loading files met error. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadLoadingFileMessage {
+            get {
+                return ResourceManager.GetString("BadLoadingFileMessage", resourceCulture);
             }
         }
         
@@ -547,6 +574,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Main cloud haven&apos;t been signed in. Please sign in.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoMainCloudSignInMessage {
+            get {
+                return ResourceManager.GetString("NoMainCloudSignInMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   There is no your spot. Make it yours.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string NoMySpotMessage {
@@ -588,15 +624,6 @@ namespace PintheCloud.Resources {
         public static string NoSelectedFileMessage {
             get {
                 return ResourceManager.GetString("NoSelectedFileMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Main cloud haven&apos;t been signed in. Please sign in.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string NoSignedInMessage {
-            get {
-                return ResourceManager.GetString("NoSignedInMessage", resourceCulture);
             }
         }
         

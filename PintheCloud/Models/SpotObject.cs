@@ -27,9 +27,9 @@ namespace PintheCloud.Models
         public bool IsPrivate { get; set; }
         public string CreateAt { get; set; }
 
-        private List<FileObject> fileObjectList;
-        private List<ProfileObject> profileObjectList;
-        private List<NoteObject> noteObjectList;
+        private List<FileObject> FileObjectList;
+        private List<ProfileObject> ProfileObjectList;
+        private List<NoteObject> NoteObjectList;
 
         public static string PREVIEW_FILE_LOCATION = "PREVIEW_FILE_LOCATION";
 
@@ -55,8 +55,8 @@ namespace PintheCloud.Models
 
         public FileObject GetFileObject(string fileObjectId)
         {
-            if (fileObjectList == null) System.Diagnostics.Debugger.Break();
-            using (var itr = fileObjectList.GetEnumerator())
+            if (this.FileObjectList == null) System.Diagnostics.Debugger.Break();
+            using (var itr = this.FileObjectList.GetEnumerator())
             {
                 while (itr.MoveNext())
                 {
@@ -70,7 +70,7 @@ namespace PintheCloud.Models
 
         public ProfileObject GetProfileObject(string profileObjectId)
         {
-            using (var itr = profileObjectList.GetEnumerator())
+            using (var itr = this.ProfileObjectList.GetEnumerator())
             {
                 while (itr.MoveNext())
                 {
@@ -84,7 +84,7 @@ namespace PintheCloud.Models
 
         public NoteObject GetNoteObject(string noteObjectId)
         {
-            using (var itr = noteObjectList.GetEnumerator())
+            using (var itr = this.NoteObjectList.GetEnumerator())
             {
                 while (itr.MoveNext())
                 {
@@ -135,19 +135,19 @@ namespace PintheCloud.Models
         public async Task<bool> DeleteFileObjectsAsync()
         {
             bool result = true;
-            if (fileObjectList == null)
-                fileObjectList = await ListFileObjectsAsync();
-            for (var i = 0; i < fileObjectList.Count; i++)
+            if (this.FileObjectList == null)
+                this.FileObjectList = await ListFileObjectsAsync();
+            for (var i = 0; i < this.FileObjectList.Count; i++)
             {
-                result &= await App.BlobStorageManager.DeleteFileAsync(fileObjectList[i].Id);
+                result &= await App.BlobStorageManager.DeleteFileAsync(this.FileObjectList[i].Id);
             }
             return result;
         }
 
         public async Task<List<FileObject>> ListFileObjectsAsync()
         {
-            fileObjectList = await App.BlobStorageManager.GetFilesFromSpotAsync(this.PtcAccountId, this.Id);
-            return fileObjectList;
+            this.FileObjectList = await App.BlobStorageManager.GetFilesFromSpotAsync(this.PtcAccountId, this.Id);
+            return this.FileObjectList;
 
             /////////////////////////////////////////////////////////////////////////////////////////////////
             /// In the future, Maybe there will be codes for the mobile service table insertion. BUT Not NOW

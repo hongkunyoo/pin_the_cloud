@@ -22,7 +22,7 @@ namespace PintheCloud.Pages
     {
         private CloudModeViewModel CloudModeViewModel = new CloudModeViewModel();
         private Button[] SignButtons = null;
-
+        private string NextPageName = null;
 
 
         public SignInStoragePage()
@@ -31,8 +31,9 @@ namespace PintheCloud.Pages
             this.SignButtons = new Button[] { uiOneDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
 
             // Set event by previous page
-            Context con = EventHelper.GetContext(EventHelper.FILE_LIST_PAGE);
+            Context con = EventHelper.GetContext(EventHelper.SIGNIN_STORAGE_PAGE);
             con.HandleEvent(EventHelper.PROFILE_PAGE, this.PreviousProfilePage);
+            con.HandleEvent(EventHelper.EXPLORER_PAGE, this.PreviousExplorerPage);
         }
 
 
@@ -57,7 +58,21 @@ namespace PintheCloud.Pages
 
         private void PreviousProfilePage()
         {
-            NavigationService.RemoveBackEntry();
+            // Check if it is on the backstack from SplashPage and remove that.
+            for (int i = 0; i <= NavigationService.BackStack.Count(); i++)
+                NavigationService.RemoveBackEntry();
+            this.NextPageName = EventHelper.SPOT_LIST_PAGE;
+        }
+
+
+        private void PreviousExplorerPage()
+        {
+            string spotId = NavigationContext.QueryString["spotId"];
+            string spotName = NavigationContext.QueryString["spotName"];
+            string accountId = NavigationContext.QueryString["accountId"];
+            string accountName = NavigationContext.QueryString["accountName"];
+            string parameters = "?spotId=" + spotId + "&spotName=" + spotName + "&accountId=" + accountId + "&accountName=" + accountName;
+            this.NextPageName = EventHelper.EXPLORER_PAGE + parameters;
         }
 
 
@@ -91,7 +106,7 @@ namespace PintheCloud.Pages
                         Switcher.SetMainPlatform(signButton.Tag.ToString());
                         MessageBoxResult result = MessageBox.Show(AppResources.StartMessage, AppResources.StartCaption, MessageBoxButton.OK);
                         if (result == MessageBoxResult.OK)
-                            NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));
+                            NavigationService.Navigate(new Uri(this.NextPageName, UriKind.Relative));
                     });
                 }
                 else
@@ -99,10 +114,10 @@ namespace PintheCloud.Pages
                     // Hide process indicator
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
                         ui_skip_btn.IsEnabled = true;
                         uiCloudPanel.Visibility = Visibility.Visible;
                         uiCloudMessage.Visibility = Visibility.Collapsed;
+                        MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
                     });
                 }
             }
@@ -123,7 +138,7 @@ namespace PintheCloud.Pages
         {
             MessageBoxResult result = MessageBox.Show(AppResources.StartMessage, AppResources.StartCaption, MessageBoxButton.OK);
             if (result == MessageBoxResult.OK)
-                NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));
+                NavigationService.Navigate(new Uri(this.NextPageName, UriKind.Relative));
         }
 
 
@@ -143,7 +158,7 @@ namespace PintheCloud.Pages
                 if (iStorageManager.IsPopup())
                     EventHelper.TriggerEvent(EventHelper.POPUP_CLOSE);
             }
-            else
+            else if (NavigationService.BackStack.Count() < 1)
             {
                 MessageBoxResult result = MessageBox.Show(AppResources.CloseAppMessage, AppResources.CloseAppCaption, MessageBoxButton.OKCancel);
                 if (result != MessageBoxResult.OK)

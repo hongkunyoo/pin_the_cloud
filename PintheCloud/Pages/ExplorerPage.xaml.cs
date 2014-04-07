@@ -103,8 +103,9 @@ namespace PintheCloud.Pages
             uiPinFileList.DataContext = this.PinFileObjectViewModel;
 
             // Set event by previous page
-            Context currentContextPage = EventHelper.GetContext(EventHelper.EXPLORER_PAGE);
-            currentContextPage.HandleEvent(EventHelper.NEW_SPOT_PAGE, this.Previous_NEW_SPOT_PAGE);
+            Context context = EventHelper.GetContext(EventHelper.EXPLORER_PAGE);
+            context.HandleEvent(EventHelper.NEW_SPOT_PAGE, this.PreviousNewSpotPage);
+            context.HandleEvent(EventHelper.SIGNIN_STORAGE_PAGE, this.PreviousSignInStoragePage);
         }
 
 
@@ -119,6 +120,7 @@ namespace PintheCloud.Pages
             this.AccountName = NavigationContext.QueryString["accountName"];
             uiSpotNameText.Text = this.SpotName;
 
+            Switcher.SetStorageTo(Switcher.GetMainStorage().GetStorageName());
             this.CurrentSpot = App.SpotManager.GetSpotObject(this.SpotId);
             this.SetPickPivot(AppResources.Loading);
             this.SetPinPivot(AppResources.Loading);
@@ -131,9 +133,16 @@ namespace PintheCloud.Pages
         }
 
 
-        private void Previous_NEW_SPOT_PAGE()
+        private void PreviousNewSpotPage()
         {
             NavigationService.RemoveBackEntry();
+        }
+
+
+        private void PreviousSignInStoragePage()
+        {
+            for (int i = 0; !NavigationService.BackStack.First().Source.ToString().Contains(EventHelper.SPOT_LIST_PAGE); i++)
+                NavigationService.RemoveBackEntry();    
         }
 
 
@@ -216,7 +225,16 @@ namespace PintheCloud.Pages
             base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, message);
             base.SetProgressIndicator(true);
 
+            // Get files from the spot.
+            // If it is null, show message.
+            // Otherwise, set it to list.
             List<FileObject> fileList = await this.CurrentSpot.ListFileObjectsAsync();
+            if (fileList == null)
+            {
+                base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, AppResources.BadLoadingFileMessage);
+                base.SetProgressIndicator(false);
+                return;
+            }
             if (fileList.Count > 0)
             {
                 base.Dispatcher.BeginInvoke(() =>
@@ -294,22 +312,20 @@ namespace PintheCloud.Pages
 
         private async void SetPinFileListAsync(IStorageManager iStorageManager, string message, FileObjectViewItem folder)
         {
-            // Set Mutex true and Show Process Indicator            
+            // Set Mutex true and Show Process Indicator
+            // Clear selected file and set pin button false.
             base.SetListUnableAndShowMessage(uiPinFileList, uiPinFileMessage, message);
             base.SetProgressIndicator(true);
-
-            // Clear selected file and set pin button false.
             this.PinSelectedFileList.Clear();
             base.Dispatcher.BeginInvoke(() =>
             {
                 this.PinFileAppBarButton.IsEnabled = false;
             });
 
-            // Wait task
-            await TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
 
             // If it wasn't signed out, set list.
             // Othersie, show sign in grid.
+            await TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
             if (await iStorageManager.GetStorageAccountAsync() == null)  // Wasn't signed out.
             {
                 base.Dispatcher.BeginInvoke(() =>
@@ -321,48 +337,57 @@ namespace PintheCloud.Pages
                 return;
             }
 
-            // Get files and push to stack tree.
-            Debug.WriteLine("waiting sync : " + TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
-            if (!await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName())) return;
-            Debug.WriteLine("finished sync : " + TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
 
+            // Get files from cloud.
+            // If it fails, show message.
+            if (!await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName()))
+            {
+                base.SetListUnableAndShowMessage(uiPinFileList, uiPinFileMessage, AppResources.BadLoadingFileMessage);
+                base.SetProgressIndicator(false);
+                return;
+            }
+
+
+            // Get files from current folder in the cloud.
+            // If it is not null, set items.
+            // Otherwise, show message
             if (folder == null)
-            {
                 this.CurrentFileObjectList = StorageExplorer.GetFilesFromRootFolder();
-            }
             else
-            {
-                if (folder == null) System.Diagnostics.Debugger.Break();
                 this.CurrentFileObjectList = StorageExplorer.GetTreeForFolder(this.GetCloudStorageFileObjectById(folder.Id));
-            }
-
-            if (this.CurrentFileObjectList == null) System.Diagnostics.Debugger.Break();
-
-            // If didn't change cloud mode while loading, set it to list.
-            // Set file list visible and current path.
-            base.Dispatcher.BeginInvoke(() =>
+            if (this.CurrentFileObjectList != null)
             {
-                this.PinFileObjectViewModel.IsDataLoaded = true;
-                uiPinFileList.Visibility = Visibility.Visible;
-                uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
-                this.PinFileObjectViewModel.SetItems(this.CurrentFileObjectList, true);
-            });
-
-            // If there exists file, show it.
-            // Otherwise, show no file message.
-            if (this.CurrentFileObjectList.Count > 0)
-            {
+                // If didn't change cloud mode while loading, set it to list.
+                // Set file list visible and current path.
                 base.Dispatcher.BeginInvoke(() =>
                 {
-                    uiPinFileMessage.Visibility = Visibility.Collapsed;
+                    this.PinFileObjectViewModel.IsDataLoaded = true;
+                    uiPinFileList.Visibility = Visibility.Visible;
+                    uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
+                    this.PinFileObjectViewModel.SetItems(this.CurrentFileObjectList, true);
                 });
+
+
+                // If there exists file, show it.
+                // Otherwise, show no file message.
+                if (this.CurrentFileObjectList.Count > 0)
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        uiPinFileMessage.Visibility = Visibility.Collapsed;
+                    });
+                }
+                else
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        uiPinFileMessage.Text = AppResources.NoFileInFolderMessage;
+                    });
+                }
             }
             else
             {
-                base.Dispatcher.BeginInvoke(() =>
-                {
-                    uiPinFileMessage.Text = AppResources.NoFileInFolderMessage;
-                });
+                base.SetListUnableAndShowMessage(uiPinFileList, uiPinFileMessage, AppResources.BadLoadingFileMessage);
             }
 
             // Set Mutex false and Hide Process Indicator
@@ -399,8 +424,8 @@ namespace PintheCloud.Pages
             if (Switcher.GetCurrentStorage().IsSigningIn()) return;
             Switcher.SetStorageTo(appBarMenuItem.Text);
 
-            uiPinFileCurrentPath.Text = "";
             // If it is not in current cloud mode, change it.
+            uiPinFileCurrentPath.Text = "";
             IStorageManager iStorageManager = Switcher.GetCurrentStorage();
             uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(iStorageManager.GetStorageColorHexString()));
             uiCurrentCloudModeImage.Source = new BitmapImage(new Uri(iStorageManager.GetStorageImageUri(), UriKind.Relative));
@@ -745,12 +770,17 @@ namespace PintheCloud.Pages
                     if (this.AccountId.Equals(App.AccountManager.GetPtcId()))
                         this.PickDeleteAppBarButton.IsEnabled = false;
                     foreach (FileObjectViewItem fileObjectViewItem in this.PickSelectedFileList)
-                        this.PickFileAsync(fileObjectViewItem);
+                        this.PickFileAsync(iStr, fileObjectViewItem);
                     this.PickSelectedFileList.Clear();
                 }
                 else
                 {
-                    MessageBox.Show(AppResources.NoSignedInMessage, iStr.GetStorageName(), MessageBoxButton.OK);
+                    MessageBoxResult result = MessageBox.Show(AppResources.NoMainCloudSignInMessage, iStr.GetStorageName(), MessageBoxButton.OKCancel);
+                    if (result == MessageBoxResult.OK)
+                    {
+                        string parameters = "?spotId=" + this.SpotId + "&spotName=" + this.SpotName + "&accountId=" + this.AccountId + "&accountName=" + this.AccountName;
+                        NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE + parameters, UriKind.Relative));
+                    }
                 }
             }
             else
@@ -760,7 +790,7 @@ namespace PintheCloud.Pages
         }
 
 
-        private async void PickFileAsync(FileObjectViewItem fileObjectViewItem)
+        private async void PickFileAsync(IStorageManager storageManager, FileObjectViewItem fileObjectViewItem)
         {
             // Show Downloading message
             base.SetProgressIndicator(true);
@@ -770,33 +800,25 @@ namespace PintheCloud.Pages
             });
 
             // Download
-            IStorageManager StorageManager = Switcher.GetMainStorage();
-            if (StorageManager != null && StorageManager.IsSignIn())
+            await TaskHelper.WaitSignInTask(storageManager.GetStorageName());
+            if (await this.CurrentSpot.DownloadFileObjectAsync(storageManager, this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
             {
-                await TaskHelper.WaitSignInTask(StorageManager.GetStorageName());
-                if (await this.CurrentSpot.DownloadFileObjectAsync(StorageManager, this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
+                base.Dispatcher.BeginInvoke(() =>
                 {
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        this.PinFileObjectViewModel.IsDataLoaded = false;
-                        string currentEditViewMode = uiPickFileListEditViewImageButton.ImageSource;
-                        if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
-                            fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
-                        else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit Mode
-                            fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
-                    });
-                }
-                else
-                {
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
-                    });
-                }
+                    this.PinFileObjectViewModel.IsDataLoaded = false;
+                    string currentEditViewMode = uiPickFileListEditViewImageButton.ImageSource;
+                    if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // View Mode
+                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                    else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // Edit Mode
+                        fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                });
             }
             else
             {
-                NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
+                });
             }
 
             // Hide Progress Indicator

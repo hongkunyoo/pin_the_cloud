@@ -18,6 +18,8 @@ using System.Diagnostics;
 using PintheCloud.ViewModels;
 using PintheCloud.Helpers;
 using PintheCloud.Converters;
+using Microsoft.WindowsAzure.MobileServices;
+using PintheCloud.Exceptions;
 
 namespace PintheCloud.Managers
 {
@@ -47,34 +49,51 @@ namespace PintheCloud.Managers
 
             // If it haven't registerd live client, register
             LiveConnectClient liveClient = await this.GetLiveConnectClientAsync();
-            if (liveClient == null) return false;
-            this.LiveClient = liveClient;
-            
-            // Get id and name.
-            LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
-            string accountId = (string)operationResult.Result["id"];
-            string accountUserName = (string)operationResult.Result["name"];
-
-            // Register account
-            if (!await TaskHelper.WaitTask(App.AccountManager.GetPtcId())) return false;
-            StorageAccount storageAccount = await App.AccountManager.GetStorageAccountAsync(accountId);
-            if (storageAccount == null)
+            if (liveClient != null)
             {
-                storageAccount = new StorageAccount();
-                storageAccount.Id = accountId;
-                storageAccount.StorageName = this.GetStorageName();
-                storageAccount.UserName = accountUserName;
-                storageAccount.UsedSize = 0.0;
-                await App.AccountManager.CreateStorageAccountAsync(storageAccount);
+                // Get id and name.
+                this.LiveClient = liveClient;
+                LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
+                string accountId = (string)operationResult.Result["id"];
+                string accountUserName = (string)operationResult.Result["name"];
+
+                // Register account
+                if (await TaskHelper.WaitTask(App.AccountManager.GetPtcId()))
+                {
+                    try
+                    {
+                        StorageAccount storageAccount = await App.AccountManager.GetStorageAccountAsync(accountId);
+                        if (storageAccount == null)
+                        {
+                            storageAccount = new StorageAccount();
+                            storageAccount.Id = accountId;
+                            storageAccount.StorageName = this.GetStorageName();
+                            storageAccount.UserName = accountUserName;
+                            storageAccount.UsedSize = 0.0;
+                            await App.AccountManager.CreateStorageAccountAsync(storageAccount);
+                        }
+                        this.CurrentAccount = storageAccount;
+
+                        // Save sign in setting.
+                        App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
+                        App.ApplicationSettings.Save();
+                        TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
+                        tcs.SetResult(true);
+                    }
+                    catch (MobileServiceInvalidOperationException)
+                    {
+                        tcs.SetResult(false);
+                    }
+                }
+                else
+                {
+                    tcs.SetResult(false);
+                }
             }
-
-            this.CurrentAccount = storageAccount;
-
-            // Save sign in setting.
-            App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
-            App.ApplicationSettings.Save();
-            TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
-            tcs.SetResult(true);
+            else
+            {
+                tcs.SetResult(false);
+            }
             return tcs.Task.Result;
         }
 
@@ -100,8 +119,6 @@ namespace PintheCloud.Managers
             LiveAuthClient liveAuthClient = new LiveAuthClient(LIVE_CLIENT_ID);
             liveAuthClient.Logout();
             App.ApplicationSettings.Remove(ONE_DRIVE_SIGN_IN_KEY);
-            //this.FoldersTree.Clear();
-            //this.FolderRootTree.Clear();
             this.LiveClient = null;
             this.CurrentAccount = null;
         }
@@ -280,6 +297,8 @@ namespace PintheCloud.Managers
             fileObject.FileList = await _GetChildAsync(fileObject);
             return fileObject;
         }
+
+
 
         #region Private Methods
         ///////////////////
