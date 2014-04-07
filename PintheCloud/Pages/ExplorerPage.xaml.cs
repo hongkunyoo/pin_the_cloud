@@ -454,6 +454,7 @@ namespace PintheCloud.Pages
                 fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
 
+
             // Upload
             string blobId = await this.CurrentSpot.AddFileObjectAsync(this.GetCloudStorageFileObjectById(fileObjectViewItem.Id));
             if (blobId != null)
@@ -511,7 +512,6 @@ namespace PintheCloud.Pages
 
         private void uiPinFileListUpButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {
-            IStorageManager iStorageManager = Switcher.GetCurrentStorage();
             if (StorageExplorer.GetCurrentTree() != null)
                 this.TreeUp();
         }
@@ -520,23 +520,22 @@ namespace PintheCloud.Pages
 
         private async void TreeUp()
         {
+            // Wait Sync work
             if (!await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName())) return;
 
             // If message is visible, set collapsed.
             if (uiPinFileMessage.Visibility == Visibility.Visible && !uiPinFileMessage.Text.Equals(AppResources.Refreshing))
                 uiPinFileMessage.Visibility = Visibility.Collapsed;
 
-            // Clear trees.
-            this.PinFileAppBarButton.IsEnabled = false;
-            this.PinSelectedFileList.Clear();
-
-            // Set previous files to list.
+            // Do tree up work and set items to list
             List<FileObject> fileList = StorageExplorer.TreeUp();
-            if (fileList == null) return;
-
             this.CurrentFileObjectList = fileList;
             this.PinFileObjectViewModel.SetItems(this.CurrentFileObjectList, true);
             uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
+
+            // Clear trees.
+            this.PinFileAppBarButton.IsEnabled = false;
+            this.PinSelectedFileList.Clear();
         }
 
 
@@ -544,22 +543,19 @@ namespace PintheCloud.Pages
         private void uiPinFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected File Object
-            FileObjectViewItem fileObjectViewItem = uiPinFileList.SelectedItem as FileObjectViewItem;
-
             // Set selected item to null for next selection of list item. 
-            uiPinFileList.SelectedItem = null;
-
-
             // If selected item isn't null, Do something
+            FileObjectViewItem fileObjectViewItem = uiPinFileList.SelectedItem as FileObjectViewItem;
+            uiPinFileList.SelectedItem = null;
             if (fileObjectViewItem != null)
             {
                 // If user select folder, go in.
                 // Otherwise, add it to list.
-                if (fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER))
+                if (fileObjectViewItem.ThumnailType.Equals(FileObjectViewModel.FOLDER))  // If folder, get files it the folder
                 {
                     this.SetPinFileListAsync(Switcher.GetCurrentStorage(), AppResources.Loading, fileObjectViewItem);
                 }
-                else  // Do selection if file
+                else  // If file, Do selection
                 {
                     if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
                     {
@@ -567,7 +563,6 @@ namespace PintheCloud.Pages
                         fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_IMAGE_URI;
                         this.PinFileAppBarButton.IsEnabled = true;
                     }
-
                     else if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI))
                     {
                         this.PinSelectedFileList.Remove(fileObjectViewItem);
@@ -594,11 +589,13 @@ namespace PintheCloud.Pages
                     uiPinFileSignInPanel.Visibility = Visibility.Collapsed;
                 });
 
+
                 // Sign in and await that task.
                 IStorageManager iStorageManager = Switcher.GetCurrentStorage();
                 if (!iStorageManager.IsSigningIn())
                     TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
                 bool result = await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
+
 
                 // If sign in success, set list.
                 // Otherwise, show bad sign in message box.
@@ -775,7 +772,7 @@ namespace PintheCloud.Pages
                 }
                 else
                 {
-                    MessageBoxResult result = MessageBox.Show(AppResources.NoMainCloudSignInMessage, iStr.GetStorageName(), MessageBoxButton.OKCancel);
+                    MessageBoxResult result = MessageBox.Show(AppResources.NoMainCloudSignInMessage, AppResources.MainCloud, MessageBoxButton.OKCancel);
                     if (result == MessageBoxResult.OK)
                     {
                         string parameters = "?spotId=" + this.SpotId + "&spotName=" + this.SpotName + "&accountId=" + this.AccountId + "&accountName=" + this.AccountName;
@@ -828,14 +825,13 @@ namespace PintheCloud.Pages
 
         private FileObject GetCloudStorageFileObjectById(string fileId)
         {
-            if (fileId == null) System.Diagnostics.Debugger.Break();
-            for (var i = 0; i < this.CurrentFileObjectList.Count; i++)
+            if (fileId == null) return null;
+            for (int i = 0; i < this.CurrentFileObjectList.Count; i++)
             {
-                if (this.CurrentFileObjectList[i] == null) System.Diagnostics.Debugger.Break();
-                if (this.CurrentFileObjectList[i].Id == null) System.Diagnostics.Debugger.Break();
+                if (this.CurrentFileObjectList[i] == null) return null;
+                if (this.CurrentFileObjectList[i].Id == null) return null;
                 if (this.CurrentFileObjectList[i].Id.Equals(fileId)) return this.CurrentFileObjectList[i];
             }
-            System.Diagnostics.Debugger.Break();
             return null;
         }
 
@@ -871,6 +867,7 @@ namespace PintheCloud.Pages
             {
                 fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
+
 
             // Delete
             if (await App.BlobStorageManager.DeleteFileAsync(fileObjectViewItem.Id))

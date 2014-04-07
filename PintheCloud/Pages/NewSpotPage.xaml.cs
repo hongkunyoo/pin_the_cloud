@@ -131,6 +131,7 @@ namespace PintheCloud.Pages
             if (spotName.Equals(String.Empty))
                 spotName = uiSpotNameTextBox.Hint;
 
+
             // If Private is checked, get password and go to upload.
             // Otherwise, go upload.
             if (uiPrivateModePasswordGrid.Visibility == Visibility.Visible)
@@ -171,6 +172,8 @@ namespace PintheCloud.Pages
                     });
                     base.SetProgressIndicator(true);
 
+                    // Wait sign in tastk
+                    // Make a new spot.
                     await TaskHelper.WaitTask(App.AccountManager.GetPtcId());
                     PtcAccount account = await App.AccountManager.GetPtcAccountAsync();
                     if (await this.PinSpotAsync(spotName, account.Email, account.Name, isPrivate, spotPassword))
@@ -179,7 +182,7 @@ namespace PintheCloud.Pages
                         NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE + parameters, UriKind.Relative));
                     }
                 }
-                else
+                else  // GPS is not on
                 {
                     MessageBox.Show(AppResources.NoLocationServiceMessage, AppResources.NoLocationServiceCaption, MessageBoxButton.OK);
                 }

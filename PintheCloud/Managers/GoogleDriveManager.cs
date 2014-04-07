@@ -200,18 +200,6 @@ namespace PintheCloud.Managers
         }
 
 
-        //public Stack<FileObjectViewItem> GetFolderRootTree()
-        //{
-        //    return this.FolderRootTree;
-        //}
-
-
-        //public Stack<List<FileObject>> GetFoldersTree()
-        //{
-        //    return this.FoldersTree;
-        //}
-
-
         public async Task<StorageAccount> GetStorageAccountAsync()
         {
             TaskCompletionSource<StorageAccount> tcs = new TaskCompletionSource<StorageAccount>();

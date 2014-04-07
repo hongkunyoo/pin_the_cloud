@@ -96,28 +96,35 @@ namespace PintheCloud.Models
         }
 
 
+
         #region Managing Contents Async Methods
+
         public async Task<string> AddFileObjectAsync(FileObject fo)
         {
             /////////////////////////////////////////
             // TODO : Need to add Storage Capacity
             /////////////////////////////////////////
+
+            if (fo == null) return null;
+            IStorageManager StorageManager = Switcher.GetCurrentStorage();
+            string sourceId = fo.Id;
+            if (StorageManager.GetStorageName().Equals(AppResources.GoogleDrive)) sourceId = fo.DownloadUrl;
+            
             try
             {
-                IStorageManager StorageManager = Switcher.GetCurrentStorage();
-                string sourceId = fo.Id;
-                if (StorageManager.GetStorageName().Equals(AppResources.GoogleDrive))
-                    sourceId = fo.DownloadUrl;
-                return await App.BlobStorageManager.UploadFileStreamAsync(this.PtcAccountId, this.Id, fo.Name, await StorageManager.DownloadFileStreamAsync(sourceId));
+                return await App.BlobStorageManager.UploadFileStreamAsync
+                    (this.PtcAccountId, this.Id, fo.Name, await StorageManager.DownloadFileStreamAsync(sourceId));
             }
             catch
             {
                 return null;
             }
+
             /////////////////////////////////////////////////////////////////////////////////////////////////
             /// In the future, Maybe there will be codes for the mobile service table insertion. BUT Not NOW
             /// /////////////////////////////////////////////////////////////////////////////////////////////
         }
+
 
         public async Task<bool> DeleteFileObjectAsync(FileObject fo)
         {
