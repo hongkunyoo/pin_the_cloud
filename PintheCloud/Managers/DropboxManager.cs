@@ -49,7 +49,7 @@ namespace PintheCloud.Managers
             this._client.AccountInfoAsync((info) => {
                 tcs.SetResult(new StorageAccount(info.uid.ToString(), StorageAccount.StorageAccountType.DROPBOX, info.display_name, 0.0));
             }, (fail) => {
-                tcs.SetException(new SignInException("Dropbox Account Info Get Failed"));
+                tcs.SetException(new Exception("Dropbox Account Info Get Failed"));
             });
             return tcs.Task;
         }
@@ -112,11 +112,7 @@ namespace PintheCloud.Managers
                             TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
                             tcs.SetResult(true);
                         }
-                        catch(SignInException)
-                        {
-                            tcs.SetResult(false);
-                        }
-                        catch (MobileServiceInvalidOperationException)
+                        catch(Exception)
                         {
                             tcs.SetResult(false);
                         }
