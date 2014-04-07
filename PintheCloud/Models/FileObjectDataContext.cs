@@ -23,7 +23,7 @@ namespace PintheCloud.Models
     [Table(Name = "FileObjectSQLs")]
     public class FileObjectSQL
     {
-        [Column(IsPrimaryKey = true, IsDbGenerated = false, DbType = "NVarChar(127) NOT NULL", CanBeNull = false, AutoSync = AutoSync.Default)]
+        [Column(IsPrimaryKey = true, IsDbGenerated = false, DbType = "NVarChar(255) NOT NULL", CanBeNull = false, AutoSync = AutoSync.Default)]
         public string Id { get; set; }
         [Column]
         public string Name { get; set; }

@@ -80,7 +80,7 @@ namespace PintheCloud.Managers
                         TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
                         tcs.SetResult(true);
                     }
-                    catch (MobileServiceInvalidOperationException)
+                    catch
                     {
                         tcs.SetResult(false);
                     }

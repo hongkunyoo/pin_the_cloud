@@ -89,7 +89,7 @@ namespace PintheCloud.Pages
                         MessageBox.Show(AppResources.DuplicateEmailAddressMessage, AppResources.DuplicateEmailAddressCaption, MessageBoxButton.OK);
                     }
                 }
-                catch (MobileServiceInvalidOperationException)
+                catch
                 {
                     ui_name.IsEnabled = true;
                     ui_email.IsEnabled = true;

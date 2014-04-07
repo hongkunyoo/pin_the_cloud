@@ -437,14 +437,20 @@ namespace PintheCloud.Pages
 
         private void PinFileAppBarButton_Click(object sender, EventArgs e)
         {
-            this.PinFileAppBarButton.IsEnabled = false;
-            foreach (FileObjectViewItem fileObjectViewItem in this.PinSelectedFileList)
-                this.PinFileAsync(fileObjectViewItem);
+            if (NetworkInterface.GetIsNetworkAvailable())
+            {
+                this.PinFileAppBarButton.IsEnabled = false;
+                foreach (FileObjectViewItem fileObjectViewItem in this.PinSelectedFileList)
+                    this.PinFileAsync(fileObjectViewItem);
+                this.PinSelectedFileList.Clear();
+            }
+            else
+            {
+                MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
+            }
         }
 
 
-
-        // Upload. have to wait it.
         private async void PinFileAsync(FileObjectViewItem fileObjectViewItem)
         {
             // Show Uploading message and file for good UX
@@ -455,7 +461,7 @@ namespace PintheCloud.Pages
             });
 
 
-            // Upload
+            // Upload file from cloud to spot.
             string blobId = await this.CurrentSpot.AddFileObjectAsync(this.GetCloudStorageFileObjectById(fileObjectViewItem.Id));
             if (blobId != null)
             {
