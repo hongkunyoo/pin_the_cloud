@@ -204,9 +204,7 @@ namespace PintheCloud.Managers
         {
             TaskCompletionSource<StorageAccount> tcs = new TaskCompletionSource<StorageAccount>();
             if (this.CurrentAccount == null)
-            {
                 await TaskHelper.WaitSignInTask(this.GetStorageName());
-            }
             tcs.SetResult(this.CurrentAccount);
             return tcs.Task.Result;
         }

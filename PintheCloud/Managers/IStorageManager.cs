@@ -24,8 +24,6 @@ namespace PintheCloud.Managers
         string GetStorageName();
         string GetStorageImageUri();
         string GetStorageColorHexString();
-        //Stack<FileObjectViewItem> GetFolderRootTree();
-        //Stack<List<FileObject>> GetFoldersTree();
         Task<FileObject> GetRootFolderAsync();
         Task<List<FileObject>> GetRootFilesAsync();
         Task<FileObject> GetFileAsync(string fileId);
@@ -33,11 +31,5 @@ namespace PintheCloud.Managers
         Task<Stream> DownloadFileStreamAsync(string sourceFileId);
         Task<bool> UploadFileStreamAsync(string folderIdToStore, string fileName, Stream outstream);
         Task<FileObject> Synchronize();
-
-        # region Not Using Methos
-        //Task<StorageFile> DownloadFileAsync(string sourceFileId, Uri destinationUri);
-        //Task<StorageFolder> DownloadFolderAsync(string sourceFolderId, StorageFolder folder);
-        //Task<bool> UploadFileAsync(string folderIdToStore, StorageFile file);
-        # endregion
     }
 }

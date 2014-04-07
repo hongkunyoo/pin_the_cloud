@@ -89,12 +89,11 @@ namespace PintheCloud.Helpers
                             App.ApplicationSettings.Remove(SYNC_KEYS + key);
                             return await Synchronize(key);
                         }
+
                         var rootDB = from FileObjectSQL fos in db.FileItems where fos.ParentId.Equals(ROOT_ID) select fos;
-
-                        List<FileObjectSQL> getsqlList = rootDB.ToList<FileObjectSQL>();
-
-                        if (getsqlList.Count != 1) System.Diagnostics.Debugger.Break();
-                        FileObjectSQL rootFos = getsqlList.First<FileObjectSQL>();
+                        List<FileObjectSQL> getSqlList = rootDB.ToList<FileObjectSQL>();
+                        if (getSqlList.Count != 1) return false;
+                        FileObjectSQL rootFos = getSqlList.First<FileObjectSQL>();
                         FileObject rootFolder = FileObject.ConvertToFileObject(db, rootFos);
 
                         if (DictionaryRoot.ContainsKey(key))

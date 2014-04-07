@@ -78,7 +78,7 @@ namespace PintheCloud.Managers
             {
                 spots = (JArray)await App.MobileService.InvokeApiAsync("select_my_spots_async", jToken);
             }
-            catch (MobileServiceInvalidOperationException)
+            catch (Exception)
             {
                 return null;
             }
