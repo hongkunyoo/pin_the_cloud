@@ -162,7 +162,7 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 // Check whether GPS is on or not
-                if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
+                if (GeoHelper.GetLocationStatus() != PositionStatus.Disabled)  // GPS is on
                 {
                     // Show Pining message and Progress Indicator
                     base.Dispatcher.BeginInvoke(() =>
@@ -197,7 +197,7 @@ namespace PintheCloud.Pages
         private async Task<bool> PinSpotAsync(string spotName, string accountId, string accountName, bool isPrivate, string spotPassword)
         {
             // Pin spot
-            Geoposition geo = await App.Geolocator.GetGeopositionAsync();
+            Geoposition geo = await GeoHelper.GetGeopositionAsync();
             SpotObject spotObject = new SpotObject(spotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, accountId, accountName, 0, isPrivate, spotPassword, DateTime.Now.ToString());
             bool result = await App.SpotManager.CreateSpotAsync(spotObject);
             if (result)

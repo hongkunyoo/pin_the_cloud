@@ -434,7 +434,7 @@ namespace PintheCloud.Pages
             base.SetProgressIndicator(true);
 
             // Pin spot
-            Geoposition geo = await App.Geolocator.GetGeopositionAsync();
+            Geoposition geo = await GeoHelper.GetGeopositionAsync();
             SpotObject spot = new SpotObject(this.SpotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude,
                 this.AccountId, this.AccountName, 0, this.IsPrivate, this.SpotPassword, DateTime.Now.ToString());
 

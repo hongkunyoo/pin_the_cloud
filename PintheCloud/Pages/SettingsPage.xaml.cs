@@ -460,7 +460,6 @@ namespace PintheCloud.Pages
             // If there is my spots, Clear and Add spots to list
             // Otherwise, Show none message.
             List<SpotObject> spots = await App.SpotManager.GetMySpotList();
-
             if (spots != null)
             {
                 if (spots.Count > 0)  // There are my spots

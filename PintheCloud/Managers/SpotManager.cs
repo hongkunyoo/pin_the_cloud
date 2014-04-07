@@ -70,12 +70,12 @@ namespace PintheCloud.Managers
         // Get spots from DB
         private async Task<JArray> GetMySpotsAsync(string ptcAccountId)
         {
+            // Load current account's spots
             string json = @"{'ptcAccountId':'" + ptcAccountId + "'}";
             JToken jToken = JToken.Parse(json);
             JArray spots = new JArray();
             try
             {
-                // Load current account's spots
                 spots = (JArray)await App.MobileService.InvokeApiAsync("select_my_spots_async", jToken);
             }
             catch (MobileServiceInvalidOperationException)
@@ -164,13 +164,10 @@ namespace PintheCloud.Managers
 
         public async Task<List<SpotObject>> GetMySpotList()
         {
-            // If signed in id is over one number, get my spots.
-            // Othewise, return null
-            List<SpotObject> spots = new List<SpotObject>();
-            // Get spots formed JArray
-            JArray jSpots = await this.GetMySpotsAsync(App.AccountManager.GetPtcId());
-
+            // Get signed in my spots formed JArray
             // If loading spot doesn't occur error, Convert jarray spots to spot list
+            List<SpotObject> spots = new List<SpotObject>();
+            JArray jSpots = await this.GetMySpotsAsync(App.AccountManager.GetPtcId());
             if (jSpots != null)
             {
                 foreach (JObject jSpot in jSpots)
@@ -187,7 +184,8 @@ namespace PintheCloud.Managers
                     string spot_password = (string)jSpot["spot_password"];
                     string create_at = (string)jSpot["create_at"];
 
-                    SpotObject spot = new SpotObject(spotName,spotLatitude,spotLongtitude,accountId,accountName,spotDistance,isPrivate,spot_password,create_at);
+                    SpotObject spot = new SpotObject(spotName, spotLatitude, spotLongtitude, accountId, accountName, 
+                        spotDistance, isPrivate, spot_password, create_at);
                     spot.Id = spotId;
                     spots.Add(spot);
                 }

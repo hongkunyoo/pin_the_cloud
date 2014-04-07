@@ -7,20 +7,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Utilities
+namespace PintheCloud.Models
 {
     public class FileObjectDataContext : DataContext
     {
-        public FileObjectDataContext(string constr)
-            : base(constr)
-        {
-
-        }
-
         public Table<FileObjectSQL> FileItems;
+
+        public FileObjectDataContext(string constr) : base(constr)
+        {
+        }
     }
 
-    
 
 
     [Table(Name = "FileObjectSQLs")]

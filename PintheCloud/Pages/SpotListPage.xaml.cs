@@ -116,10 +116,10 @@ namespace PintheCloud.Pages
             if (base.GetLocationAccessConsent())  // Got consent of location access.
             {
                 // Check whether GPS is on or not
-                if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
+                if (GeoHelper.GetLocationStatus() != PositionStatus.Disabled)  // GPS is on
                 {
                     // Check whether GPS works well or not
-                    Geoposition currentGeoposition = await App.Geolocator.GetGeopositionAsync();
+                    Geoposition currentGeoposition = await GeoHelper.GetGeopositionAsync();
                     if (currentGeoposition != null)  // GPS works well
                     {
                         // If there is near spots, Clear and Add spots to list
