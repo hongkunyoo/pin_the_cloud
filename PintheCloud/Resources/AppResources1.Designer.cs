@@ -133,6 +133,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Loading File Error과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string BadLoadingFileCaption {
+            get {
+                return ResourceManager.GetString("BadLoadingFileCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Loading files met error. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string BadLoadingFileMessage {
@@ -462,6 +471,15 @@ namespace PintheCloud.Resources {
         public static string Main {
             get {
                 return ResourceManager.GetString("Main", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Main Cloud과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string MainCloud {
+            get {
+                return ResourceManager.GetString("MainCloud", resourceCulture);
             }
         }
         

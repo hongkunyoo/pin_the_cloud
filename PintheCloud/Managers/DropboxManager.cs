@@ -49,7 +49,7 @@ namespace PintheCloud.Managers
             this._client.AccountInfoAsync((info) => {
                 tcs.SetResult(new StorageAccount(info.uid.ToString(), StorageAccount.StorageAccountType.DROPBOX, info.display_name, 0.0));
             }, (fail) => {
-                tcs.SetException(new SignInException("Dropbox Account Info Get Failed"));
+                tcs.SetException(new Exception("Dropbox Account Info Get Failed"));
             });
             return tcs.Task;
         }
@@ -112,11 +112,7 @@ namespace PintheCloud.Managers
                             TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
                             tcs.SetResult(true);
                         }
-                        catch(SignInException)
-                        {
-                            tcs.SetResult(false);
-                        }
-                        catch (MobileServiceInvalidOperationException)
+                        catch(Exception)
                         {
                             tcs.SetResult(false);
                         }
@@ -187,25 +183,11 @@ namespace PintheCloud.Managers
         }
 
 
-        //public Stack<FileObjectViewItem> GetFolderRootTree()
-        //{
-        //    return this.FolderRootTree;
-        //}
-
-
-        //public Stack<List<FileObject>> GetFoldersTree()
-        //{
-        //    return this.FoldersTree;
-        //}
-
-
         public async Task<StorageAccount> GetStorageAccountAsync()
         {
             TaskCompletionSource<StorageAccount> tcs = new TaskCompletionSource<StorageAccount>();
             if (this.CurrentAccount == null)
-            {
                 await TaskHelper.WaitSignInTask(this.GetStorageName());
-            }
             tcs.SetResult(this.CurrentAccount);
             return tcs.Task.Result;
         }
@@ -312,61 +294,6 @@ namespace PintheCloud.Managers
                 throw new Exception("Create Streaming Failed");
             }
         }
-        #endregion
-
-        #region Not Using Methods
-        //public FileObject ConvertToFileObject(MetaData metaTask)
-        //{
-        //    FileObject file = new FileObject();
-
-        //    file.Name = metaTask.Name;
-        //    file.CreateAt = metaTask.ModifiedDate.ToString(); //14/02/2014 15:48:13
-        //    file.UpdateAt = metaTask.ModifiedDate.ToString(); //14/02/2014 15:48:13
-        //    file.Id = metaTask.Path; // Full path
-        //    file.ParentId = metaTask.Path;
-        //    //file.Size = Convert.ToInt32(metaTask.Size);
-        //    //file.Size = metaTask.bytes <- int
-        //    //file.Size = metaTask.Size <- string
-        //    file.SizeUnit = "GB";
-        //    file.ThumnailType = "";
-        //    file.Type = ""; // Is_Dir = true | false
-        //    file.TypeDetail = metaTask.Extension; // .png
-        //    file.UpdateAt = metaTask.ModifiedDate.ToString();
-
-        //    return file;
-        //}
-
-
-        //public async Task<StorageFile> DownloadFileAsync(string sourceFileId, StorageFile targetFile)
-        //{
-        //    TaskCompletionSource<StorageFile> tcs = new TaskCompletionSource<StorageFile>();
-        //    Stream output = await targetFile.OpenStreamForWriteAsync();
-
-        //    _client.GetFileAsync(sourceFileId, new Action<IRestResponse>((response) =>
-        //    {
-        //        MemoryStream input = new MemoryStream(response.RawBytes);
-        //        this._Streaming(input, output);
-        //        tcs.SetResult(targetFile);
-        //    }), new Action<DropNet.Exceptions.DropboxException>((ex) =>
-        //    {
-        //        tcs.SetException(new Exception("failed"));
-        //    }));
-
-        //    return await tcs.Task;
-        //}
-
-        //public async Task<bool> UploadFileAsync(string folderIdToStore, StorageFile file)
-        //{
-        //    try
-        //    {
-        //        MetaData d = await _client.UploadFileTask(folderIdToStore, file.Name, await file.OpenStreamForReadAsync());
-        //        return true;
-        //    }
-        //    catch
-        //    {
-        //        return false;
-        //    }
-        //}
         #endregion
     }
 }

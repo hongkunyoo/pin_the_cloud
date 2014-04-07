@@ -95,8 +95,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\StringToSpotNameInitialUriConverter.cs" />
-    <Compile Include="Exceptions\SignInException.cs" />
     <Compile Include="Helpers\AESHelper.cs" />
+    <Compile Include="Helpers\GeoHelper.cs" />
     <Compile Include="Helpers\StorageHelper.cs" />
     <Compile Include="Helpers\Switcher.cs" />
     <Compile Include="LocalizedStrings.cs" />
@@ -141,7 +141,7 @@
     <Compile Include="Utilities\DropboxWebBrowserResult.cs" />
     <Compile Include="Utilities\DropboxWebBrowserTask.cs" />
     <Compile Include="Helpers\LockHelper.cs" />
-    <Compile Include="Utilities\FileObjectDataContext.cs" />
+    <Compile Include="Models\FileObjectDataContext.cs" />
     <Compile Include="Utilities\ImageButton.xaml.cs">
       <DependentUpon>ImageButton.xaml</DependentUpon>
     </Compile>
@@ -155,7 +155,7 @@
     <Compile Include="Converters\StringToFontWeightConverter.cs" />
     <Compile Include="Converters\StringToUriConverter.cs" />
     <Compile Include="Helpers\TaskHelper.cs" />
-    <Compile Include="Utilities\StorageExplorer.cs" />
+    <Compile Include="Helpers\StorageExplorer.cs" />
     <Compile Include="Utilities\TestDrive.xaml.cs">
       <DependentUpon>TestDrive.xaml</DependentUpon>
     </Compile>

@@ -7,26 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PintheCloud.Utilities
+namespace PintheCloud.Models
 {
     public class FileObjectDataContext : DataContext
     {
-        public FileObjectDataContext(string constr)
-            : base(constr)
-        {
-
-        }
-
         public Table<FileObjectSQL> FileItems;
+
+        public FileObjectDataContext(string constr) : base(constr)
+        {
+        }
     }
 
-    
 
 
     [Table(Name = "FileObjectSQLs")]
     public class FileObjectSQL
     {
-        [Column(IsPrimaryKey = true, IsDbGenerated = false, DbType = "NVarChar(50) NOT NULL", CanBeNull = false, AutoSync = AutoSync.Default)]
+        [Column(IsPrimaryKey = true, IsDbGenerated = false, DbType = "NVarChar(127) NOT NULL", CanBeNull = false, AutoSync = AutoSync.Default)]
         public string Id { get; set; }
         [Column]
         public string Name { get; set; }

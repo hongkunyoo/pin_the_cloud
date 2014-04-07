@@ -59,26 +59,28 @@ namespace PintheCloud.Pages
                 }
 
 
+                // Show progress indicator
+                // While loading, unable UI instance
+                // Set PtcAccount
                 base.SetProgressIndicator(true, AppResources.CreateProfile);
-
                 ui_name.IsEnabled = false;
                 ui_email.IsEnabled = false;
                 ui_password.IsEnabled = false;
                 ui_create_btn.IsEnabled = false;
                 ui_sign_in_btn.IsEnabled = false;
-
                 PtcAccount ptcAccount = new PtcAccount();
                 ptcAccount.Name = ui_name.Text;
                 ptcAccount.Email = ui_email.Text;
                 ptcAccount.ProfilePassword = ui_password.Password;
 
+                // Make a new account and move to sign in storage page.
                 try
                 {
                     if (await App.AccountManager.CreateNewPtcAccountAsync(ptcAccount))
                     {
                         NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE, UriKind.Relative));
                     }
-                    else // IF there is a duplicated Email address, it fails.
+                    else  // If there is a duplicated Email address, it fails.
                     {
                         ui_name.IsEnabled = true;
                         ui_email.IsEnabled = true;

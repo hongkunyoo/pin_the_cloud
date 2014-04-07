@@ -54,12 +54,14 @@ namespace PintheCloud.Pages
                     return;
                 }
 
+                // Show progress indicator
+                // While loading, unable UI instance
                 base.SetProgressIndicator(true, AppResources.DoingSignIn);
-
                 ui_signin_email.IsEnabled = false;
                 ui_signin_password.IsEnabled = false;
                 ui_signin_btn.IsEnabled = false;
 
+                // Check an account and move to spot list page.
                 try
                 {
                     PtcAccount account = await App.AccountManager.GetPtcAccountAsync(ui_signin_email.Text, ui_signin_password.Password);
@@ -68,7 +70,7 @@ namespace PintheCloud.Pages
                         App.AccountManager.SavePtcId(account.Email, account.ProfilePassword);
                         NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));
                     }
-                    else
+                    else  // If it is worng emil address or password match, it fails.
                     {
                         ui_signin_email.IsEnabled = true;
                         ui_signin_password.IsEnabled = true;

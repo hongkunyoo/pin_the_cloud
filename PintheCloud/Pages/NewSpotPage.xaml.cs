@@ -131,6 +131,7 @@ namespace PintheCloud.Pages
             if (spotName.Equals(String.Empty))
                 spotName = uiSpotNameTextBox.Hint;
 
+
             // If Private is checked, get password and go to upload.
             // Otherwise, go upload.
             if (uiPrivateModePasswordGrid.Visibility == Visibility.Visible)
@@ -161,7 +162,7 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 // Check whether GPS is on or not
-                if (App.Geolocator.LocationStatus != PositionStatus.Disabled)  // GPS is on
+                if (GeoHelper.GetLocationStatus() != PositionStatus.Disabled)  // GPS is on
                 {
                     // Show Pining message and Progress Indicator
                     base.Dispatcher.BeginInvoke(() =>
@@ -171,6 +172,8 @@ namespace PintheCloud.Pages
                     });
                     base.SetProgressIndicator(true);
 
+                    // Wait sign in tastk
+                    // Make a new spot.
                     await TaskHelper.WaitTask(App.AccountManager.GetPtcId());
                     PtcAccount account = await App.AccountManager.GetPtcAccountAsync();
                     if (await this.PinSpotAsync(spotName, account.Email, account.Name, isPrivate, spotPassword))
@@ -179,7 +182,7 @@ namespace PintheCloud.Pages
                         NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE + parameters, UriKind.Relative));
                     }
                 }
-                else
+                else  // GPS is not on
                 {
                     MessageBox.Show(AppResources.NoLocationServiceMessage, AppResources.NoLocationServiceCaption, MessageBoxButton.OK);
                 }
@@ -194,7 +197,7 @@ namespace PintheCloud.Pages
         private async Task<bool> PinSpotAsync(string spotName, string accountId, string accountName, bool isPrivate, string spotPassword)
         {
             // Pin spot
-            Geoposition geo = await App.Geolocator.GetGeopositionAsync();
+            Geoposition geo = await GeoHelper.GetGeopositionAsync();
             SpotObject spotObject = new SpotObject(spotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, accountId, accountName, 0, isPrivate, spotPassword, DateTime.Now.ToString());
             bool result = await App.SpotManager.CreateSpotAsync(spotObject);
             if (result)

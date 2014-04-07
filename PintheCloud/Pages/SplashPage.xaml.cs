@@ -55,6 +55,7 @@ namespace PintheCloud.Pages
             }
 
 
+            // Do Signin work of each cloud storage.
             if (App.AccountManager.IsSignIn())
             {
                 if (NetworkInterface.GetIsNetworkAvailable())

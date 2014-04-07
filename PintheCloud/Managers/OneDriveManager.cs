@@ -148,25 +148,11 @@ namespace PintheCloud.Managers
         }
 
 
-        //public Stack<FileObjectViewItem> GetFolderRootTree()
-        //{
-        //    return this.FolderRootTree;
-        //}
-
-
-        //public Stack<List<FileObject>> GetFoldersTree()
-        //{
-        //    return this.FoldersTree;
-        //}
-
-
         public async Task<StorageAccount> GetStorageAccountAsync()
         {
             TaskCompletionSource<StorageAccount> tcs = new TaskCompletionSource<StorageAccount>();
             if (this.CurrentAccount == null)
-            {
                 await TaskHelper.WaitSignInTask(this.GetStorageName());
-            }
             tcs.SetResult(this.CurrentAccount);
             return tcs.Task.Result;
         }

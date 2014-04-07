@@ -389,4 +389,10 @@
   <data name="BadLoadingFileMessage" xml:space="preserve">
     <value>Loading files met error. Please try it again.</value>
   </data>
+  <data name="BadLoadingFileCaption" xml:space="preserve">
+    <value>Loading File Error</value>
+  </data>
+  <data name="MainCloud" xml:space="preserve">
+    <value>Main Cloud</value>
+  </data>
 </root>
