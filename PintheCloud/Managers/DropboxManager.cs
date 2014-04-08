@@ -67,7 +67,6 @@ namespace PintheCloud.Managers
             if (App.ApplicationSettings.Contains(DROPBOX_USER_KEY))
                 dropboxUser = (UserLogin)App.ApplicationSettings[DROPBOX_USER_KEY];
 
-
             if (dropboxUser != null)
             {
                 this._client.UserLogin = dropboxUser;
@@ -232,7 +231,6 @@ namespace PintheCloud.Managers
                 tcs.SetException(new Exception("failed"));
                 throw new ShareException(sourceFileId, ShareException.ShareType.DOWNLOAD);
             }));
-
             return tcs.Task;
         }
         public async Task<bool> UploadFileStreamAsync(string folderIdToStore, string fileName, Stream outstream)
