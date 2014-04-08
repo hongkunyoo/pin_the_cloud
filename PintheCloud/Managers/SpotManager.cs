@@ -35,7 +35,7 @@ namespace PintheCloud.Managers
                 // Load current account's spots
                 await App.MobileService.InvokeApiAsync("check_spot_password_async", jToken);
             }
-            catch (MobileServiceInvalidOperationException)
+            catch
             {
                 return false;
             }
@@ -49,6 +49,7 @@ namespace PintheCloud.Managers
         // Get spots 300m away from here
         private async Task<JArray> GetNearSpotsAsync(double currentLatitude, double currentLongtitude)
         {
+            // Load near spots use custom api in server script
             string currentLatitudeString = currentLatitude.ToString().Replace(',', '.');
             string currentLongtitudeString = currentLongtitude.ToString().Replace(',', '.');
             string json = @"{'currentLatitude':" + currentLatitudeString + ",'currentLongtitude':" + currentLongtitudeString + "}";
@@ -56,10 +57,9 @@ namespace PintheCloud.Managers
             JArray spots = null;
             try
             {
-                // Load near spots use custom api in server script
                 spots = (JArray)await App.MobileService.InvokeApiAsync("select_near_spots_async", jToken);
             }
-            catch (MobileServiceInvalidOperationException)
+            catch
             {
                 return null;
             }
@@ -78,7 +78,7 @@ namespace PintheCloud.Managers
             {
                 spots = (JArray)await App.MobileService.InvokeApiAsync("select_my_spots_async", jToken);
             }
-            catch (Exception)
+            catch
             {
                 return null;
             }
@@ -93,9 +93,8 @@ namespace PintheCloud.Managers
             {
                 await App.MobileService.GetTable<MSSpotObject>().InsertAsync(spot);
             }
-            catch (MobileServiceInvalidOperationException ex)
+            catch
             {
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
                 return false;
             }
             so.Id = spot.id;
@@ -112,7 +111,7 @@ namespace PintheCloud.Managers
             {
                 await App.MobileService.GetTable<MSSpotObject>().DeleteAsync(msso);
             }
-            catch (MobileServiceInvalidOperationException)
+            catch
             {
                 return false;
             }

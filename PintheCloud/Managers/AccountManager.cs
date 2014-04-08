@@ -27,9 +27,6 @@ namespace PintheCloud.Managers
 
         public string GetPtcId()
         {
-            if (!App.ApplicationSettings.Contains(PTCACCOUNT_ID))
-                System.Diagnostics.Debugger.Break();
-
             return (string)App.ApplicationSettings[PTCACCOUNT_ID];
         }
 
@@ -66,11 +63,10 @@ namespace PintheCloud.Managers
             try
             {
                 PtcAccount p = await this.GetPtcAccountAsync(account.Email);
-                if (p != null) 
-                    return false;
+                if (p != null) return false;
                 await App.MobileService.GetTable<MSPtcAccount>().InsertAsync(mspa);
             }
-            catch (MobileServiceInvalidOperationException ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -88,10 +84,11 @@ namespace PintheCloud.Managers
             {
                 await App.MobileService.GetTable<MSPtcAccount>().DeleteAsync(mspa);
             }
-            catch (MobileServiceInvalidOperationException ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
+
             App.ApplicationSettings.Remove(PTCACCOUNT_ID);
             App.ApplicationSettings.Save();
             this.myAccount = null;
@@ -107,10 +104,11 @@ namespace PintheCloud.Managers
             {
                 await App.MobileService.GetTable<MSPtcAccount>().UpdateAsync(mspa);
             }
-            catch (MobileServiceInvalidOperationException ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
+
             this.myAccount = account;
             return true;
         }
@@ -126,12 +124,10 @@ namespace PintheCloud.Managers
                     try
                     {
                         PtcAccount account = await this.GetPtcAccountAsync((string)App.ApplicationSettings[PTCACCOUNT_ID]);
-                        if (account == null)
-                            tcs.SetResult(null);
-                        else
-                            tcs.SetResult(account);
+                        if (account == null) tcs.SetResult(null);
+                        else tcs.SetResult(account);
                     }
-                    catch (MobileServiceInvalidOperationException)
+                    catch
                     {
                         tcs.SetResult(null);
                     }
@@ -162,7 +158,7 @@ namespace PintheCloud.Managers
                     .Where(lamda)
                     .ToCollectionAsync();
             }
-            catch (MobileServiceInvalidOperationException ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -181,17 +177,15 @@ namespace PintheCloud.Managers
         public async Task<bool> CreateStorageAccountAsync(StorageAccount sa)
         {
             MSStorageAccount mssa = StorageAccount.ConvertToMSStorageAccount(sa);
-            mssa.ptc_account_id = GetPtcId();
-
+            mssa.ptc_account_id = this.GetPtcId();
             try
             {
                 await App.MobileService.GetTable<MSStorageAccount>().InsertAsync(mssa);
             }
-            catch (MobileServiceInvalidOperationException ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
-
             return true;
         }
 
@@ -205,7 +199,7 @@ namespace PintheCloud.Managers
                     .Where(a => a.account_platform_id == storageAccountId)
                     .ToCollectionAsync();
             }
-            catch (MobileServiceInvalidOperationException ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

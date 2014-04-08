@@ -94,7 +94,10 @@ namespace PintheCloud.Helpers
                         List<FileObjectSQL> getSqlList = rootDB.ToList<FileObjectSQL>();
                         if (getSqlList.Count != 1) return false;
                         FileObjectSQL rootFos = getSqlList.First<FileObjectSQL>();
+
+                        //////////////// This line makes slow ////////////////
                         FileObject rootFolder = FileObject.ConvertToFileObject(db, rootFos);
+                        //////////////////////////////////////////////////////
 
                         if (DictionaryRoot.ContainsKey(key))
                             DictionaryRoot.Remove(key);

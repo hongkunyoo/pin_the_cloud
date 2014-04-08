@@ -202,12 +202,10 @@ namespace PintheCloud.Models
                 }
             }
         }
-        //public static int count = 0;
+        
+
         public static FileObject ConvertToFileObject(FileObjectDataContext db, FileObjectSQL fos)
         {
-            //count++;
-            //if (count == 100) System.Diagnostics.Debugger.Break();
-
             FileObject fo = new FileObject(fos.Id, fos.Name, fos.Size, fos.Type, fos.Extension, fos.UpdateAt, fos.Thumbnail, fos.DownloadUrl, fos.MimeType);
             fo.SpotId = fos.SpotId;
             if (fos.ProfileName != null && fos.ProfileId != null && fos.ProfileEmail != null && fos.ProfilePhoneNumber != null)
@@ -222,18 +220,17 @@ namespace PintheCloud.Models
             fo.FileList = GetChildList(db, fos.Id);
             return fo;
         }
+
+
         public static List<FileObject> GetChildList(FileObjectDataContext db, string ParentId)
         {
             var dbList = from FileObjectSQL fos in db.FileItems where fos.ParentId == ParentId select fos;
             List<FileObjectSQL> sqlList = dbList.ToList<FileObjectSQL>();
             List<FileObject> list = new List<FileObject>();
             for (var i = 0; i < sqlList.Count; i++)
-            {
                 list.Add(ConvertToFileObject(db, sqlList[i]));
-            }
             return list;
         }
-
     }
 
     #region Mobile Service Object

@@ -78,7 +78,7 @@ namespace PintheCloud.Pages
                         MessageBox.Show(AppResources.WrongEmailPasswordMessage, AppResources.WrongEmailPasswordCaption, MessageBoxButton.OK);
                     }
                 }
-                catch (MobileServiceInvalidOperationException)
+                catch
                 {
                     ui_signin_email.IsEnabled = true;
                     ui_signin_password.IsEnabled = true;

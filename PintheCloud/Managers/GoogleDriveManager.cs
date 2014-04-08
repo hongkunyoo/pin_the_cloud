@@ -129,20 +129,19 @@ namespace PintheCloud.Managers
             }
             catch (Microsoft.Phone.Controls.WebBrowserNavigationException ex)
             {
-                Debug.WriteLine(ex.ToString());
                 tcs.SetResult(false);
             }
             catch (Google.GoogleApiException e)
             {
-                Debug.WriteLine(e.ToString());
                 tcs.SetResult(false);
             }
             catch (System.Threading.Tasks.TaskCanceledException)
             {
                 tcs.SetResult(false);
             }
-            catch (MobileServiceInvalidOperationException)
+            catch (Exception e)
             {
+                Debug.WriteLine(e.ToString());
                 tcs.SetResult(false);
             }
             return tcs.Task.Result;
