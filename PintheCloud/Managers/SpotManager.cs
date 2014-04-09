@@ -67,10 +67,9 @@ namespace PintheCloud.Managers
         }
 
 
-        // Get spots from DB
+        // Get current account's spots from DB
         private async Task<JArray> GetMySpotsAsync(string ptcAccountId)
         {
-            // Load current account's spots
             string json = @"{'ptcAccountId':'" + ptcAccountId + "'}";
             JToken jToken = JToken.Parse(json);
             JArray spots = new JArray();
