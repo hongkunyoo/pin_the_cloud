@@ -64,7 +64,7 @@ namespace PintheCloud.Managers
             // Document file
             // SpreadSheet file
             // Image file
-            // Presentation file
+            // Presentation file 
             GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.document", "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
             GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.spreadsheet", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             GoogleDriveManager.GoogleDocMapper.Add("application/vnd.google-apps.drawing", "image/png");
