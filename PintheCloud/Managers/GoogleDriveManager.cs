@@ -31,6 +31,7 @@ namespace PintheCloud.Managers
     public class GoogleDriveManager : IStorageManager
     {
         #region Variables
+
         private const string GOOGLE_DRIVE_CLIENT_ID = "109786198225-m8fihmv82b2fmf5k4d69u9039ebn68fn.apps.googleusercontent.com";
         private const string GOOGLE_DRIVE_CLIENT_SECRET = "Tk8M01zlkBRlIsv-1fa9BKiS";
         
@@ -53,7 +54,10 @@ namespace PintheCloud.Managers
         private User User;
         private string RootFodlerId = String.Empty;
         private TaskCompletionSource<bool> tcs = null;
+
         #endregion
+
+
 
         public GoogleDriveManager()
         {
@@ -199,12 +203,6 @@ namespace PintheCloud.Managers
 
         public async Task<StorageAccount> GetStorageAccountAsync()
         {
-            //TaskCompletionSource<StorageAccount> tcs = new TaskCompletionSource<StorageAccount>();
-            //if (this.CurrentAccount == null)
-            //    await TaskHelper.WaitSignInTask(this.GetStorageName());
-            //tcs.SetResult(this.CurrentAccount);
-            //return tcs.Task.Result;
-
             if (this.CurrentAccount == null)
                 await TaskHelper.WaitSignInTask(this.GetStorageName());
             return this.CurrentAccount;
@@ -231,9 +229,7 @@ namespace PintheCloud.Managers
             {
                 Debug.WriteLine(file.Title);
                 if (this._IsRoot(file) && this._IsValidFile(file))
-                {
                     childList.Add(ConvertToFileObjectHelper.ConvertToFileObject(file));
-                }
             }
             return childList;
         }
@@ -243,24 +239,17 @@ namespace PintheCloud.Managers
         {
             Google.Apis.Drive.v2.Data.File file = await this.Service.Files.Get(fileId).ExecuteAsync();
             if (this._IsValidFile(file))
-            {
                 return ConvertToFileObjectHelper.ConvertToFileObject(file);
-            }
             return null;
         }
 
 
         public async Task<List<FileObject>> GetFilesFromFolderAsync(string folderId)
         {
-            //if (this.rootFodlerId.Equals(folderId))
-            //{
-            //    return await GetRootFilesAsync();
-            //}
             List<FileObject> list = new List<FileObject>();
             ChildList childList = await this.Service.Children.List(folderId).ExecuteAsync();
-            foreach(ChildReference child in childList.Items){
+            foreach(ChildReference child in childList.Items)
                 list.Add(await this.GetFileAsync(child.Id));
-            }
             list.RemoveAll(item => item == null);
             return list;
         }
@@ -303,16 +292,17 @@ namespace PintheCloud.Managers
             return fileObject;
         }
 
+
+
         #region Private Methods
+
         private async Task<List<FileObject>> _GetChildAsync(FileObject fileObject)
         {
             if (FileObjectViewModel.FOLDER.Equals(fileObject.Type.ToString()))
             {
                 List<FileObject> list = await this.GetFilesFromFolderAsync(fileObject.Id);
                 foreach (FileObject file in list)
-                {
                     file.FileList = await _GetChildAsync(file);
-                }
                 return list;
             }
             else
@@ -365,9 +355,7 @@ namespace PintheCloud.Managers
             IList<ParentReference> parents = file.Parents;
             if (parents == null) return false;
             foreach (ParentReference parent in parents)
-            {
                 result &= parent.IsRoot.Value;
-            }
             return result;
         }
 
@@ -405,6 +393,8 @@ namespace PintheCloud.Managers
             return !string.Empty.Equals(file.DownloadUrl);
         }
         #endregion
+
+
 
         #region Test Methods
         private void PrintFile(Google.Apis.Drive.v2.Data.File file)
@@ -463,6 +453,8 @@ namespace PintheCloud.Managers
             Debug.WriteLine("=====================================================");
         }
         #endregion
+
+
 
         #region Not Using Methods
         //private async Task DeleteFile(string fileId)
