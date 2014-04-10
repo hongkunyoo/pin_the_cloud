@@ -262,13 +262,19 @@ namespace PintheCloud.Managers
         {
             List<FileObject> list = new List<FileObject>();
             BlobContinuationToken token = null;
-
-            do
+            try
             {
-                BlobResultSegment blobListSegment = await this.BlobClient.ListBlobsSegmentedAsync(prefix, token);
-                list.AddRange(this._GetDataList(blobListSegment.Results));
-                token = blobListSegment.ContinuationToken;
-            } while (token != null);
+                do
+                {
+                    BlobResultSegment blobListSegment = await this.BlobClient.ListBlobsSegmentedAsync(prefix, token);
+                    list.AddRange(this._GetDataList(blobListSegment.Results));
+                    token = blobListSegment.ContinuationToken;
+                } while (token != null);
+            }
+            catch
+            {
+                return null;  
+            }
             return list;
         }
 

@@ -51,17 +51,18 @@ namespace PintheCloud.Managers
             LiveConnectClient liveClient = await this.GetLiveConnectClientAsync();
             if (liveClient != null)
             {
-                // Get id and name.
-                this.LiveClient = liveClient;
-                LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
-                string accountId = (string)operationResult.Result["id"];
-                string accountUserName = (string)operationResult.Result["name"];
-
-                // Register account
-                if (await TaskHelper.WaitTask(App.AccountManager.GetPtcId()))
+                try
                 {
-                    try
+                    // Get id and name.
+                    this.LiveClient = liveClient;
+                    LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
+                    string accountId = (string)operationResult.Result["id"];
+                    string accountUserName = (string)operationResult.Result["name"];
+
+                    // Register account
+                    if (await TaskHelper.WaitTask(App.AccountManager.GetPtcId()))
                     {
+
                         StorageAccount storageAccount = await App.AccountManager.GetStorageAccountAsync(accountId);
                         if (storageAccount == null)
                         {
@@ -80,12 +81,12 @@ namespace PintheCloud.Managers
                         TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
                         tcs.SetResult(true);
                     }
-                    catch
+                    else
                     {
                         tcs.SetResult(false);
                     }
                 }
-                else
+                catch
                 {
                     tcs.SetResult(false);
                 }
@@ -302,7 +303,7 @@ namespace PintheCloud.Managers
             {
                 liveLoginResult = await liveAuthClient.InitializeAsync(scopes);
             }
-            catch (LiveAuthException)
+            catch
             {
                 return null;
             }
@@ -315,7 +316,7 @@ namespace PintheCloud.Managers
                 {
                     liveLoginResult = await liveAuthClient.LoginAsync(scopes);
                 }
-                catch (LiveAuthException)
+                catch
                 {
                     return null;
                 }
@@ -371,7 +372,7 @@ namespace PintheCloud.Managers
         }
 
 
-        
+
         #endregion
 
         #region Not Using Methods
@@ -415,7 +416,7 @@ namespace PintheCloud.Managers
         //
         // Returns:
         //      FileObject from a dictionary.
-        
+
         //private FileObject _GetData(IDictionary<string, object> dic)
         //{
         //    string id = (string)(dic["id"] ?? "");
