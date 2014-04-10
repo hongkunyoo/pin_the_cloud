@@ -150,12 +150,6 @@ namespace PintheCloud
         // 이 코드는 응용 프로그램이 비활성화될 때는 실행되지 않습니다.
         private async void Application_Closing(object sender, ClosingEventArgs e)
         {
-            // Wait sign in task.
-            using (var itr = StorageHelper.GetStorageEnumerator())
-            {
-                while (itr.MoveNext())
-                    await TaskHelper.WaitSignInTask(itr.Current.GetStorageName());
-            }
         }
 
         // 탐색이 실패할 때 실행할 코드입니다.

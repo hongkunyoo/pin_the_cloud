@@ -164,16 +164,16 @@ namespace PintheCloud.Pages
                 // Check whether GPS is on or not
                 if (GeoHelper.GetLocationStatus() != PositionStatus.Disabled)  // GPS is on
                 {
+                    // Show Pining message and Progress Indicator
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        uiNewSpotMessage.Text = AppResources.PiningSpot;
+                        uiNewSpotMessage.Visibility = Visibility.Visible;
+                    });
+                    base.SetProgressIndicator(true);
+
                     try
                     {
-                        // Show Pining message and Progress Indicator
-                        base.Dispatcher.BeginInvoke(() =>
-                        {
-                            uiNewSpotMessage.Text = AppResources.PiningSpot;
-                            uiNewSpotMessage.Visibility = Visibility.Visible;
-                        });
-                        base.SetProgressIndicator(true);
-
                         // Wait sign in tastk
                         // Make a new spot.
                         await TaskHelper.WaitTask(App.AccountManager.GetPtcId());

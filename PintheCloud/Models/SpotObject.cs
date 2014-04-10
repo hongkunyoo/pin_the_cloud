@@ -146,6 +146,7 @@ namespace PintheCloud.Models
             /// /////////////////////////////////////////////////////////////////////////////////////////////
         }
 
+
         public async Task<bool> DeleteFileObjectsAsync()
         {
             try
@@ -189,9 +190,9 @@ namespace PintheCloud.Models
                 FileObject root = await StorageManager.GetRootFolderAsync();
                 return await StorageManager.UploadFileStreamAsync(root.Id, fo.Name, instream);
             }
-            catch
+            catch(Exception ex)
             {
-                return false;
+                throw ex;
             }
         }
 

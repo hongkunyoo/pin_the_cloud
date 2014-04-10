@@ -92,15 +92,17 @@ namespace PintheCloud.Pages
                 Button signButton = (Button)sender;
                 Switcher.SetStorageTo(signButton.Tag.ToString());
 
-                // Sign in
-                IStorageManager iStorageManager = Switcher.GetCurrentStorage();
-                if (!iStorageManager.IsSigningIn())
-                    TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
 
-                // If sign in success, set list.
-                // Otherwise, show bad sign in message box.
-                if (await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
+                try
                 {
+                    // Sign in
+                    IStorageManager iStorageManager = Switcher.GetCurrentStorage();
+                    if (!iStorageManager.IsSigningIn())
+                        TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
+
+                    // If sign in success, set list.
+                    // Otherwise, show bad sign in message box.
+                    await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         Switcher.SetMainPlatform(signButton.Tag.ToString());
@@ -109,7 +111,7 @@ namespace PintheCloud.Pages
                             NavigationService.Navigate(new Uri(this.NextPageName, UriKind.Relative));
                     });
                 }
-                else
+                catch
                 {
                     // Hide process indicator
                     base.Dispatcher.BeginInvoke(() =>

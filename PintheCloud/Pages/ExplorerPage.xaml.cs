@@ -226,57 +226,57 @@ namespace PintheCloud.Pages
             base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, message);
             base.SetProgressIndicator(true);
 
-            // Get files from the spot.
-            // If it is null, show message.
-            // Otherwise, set it to list.
-            List<FileObject> fileList = await this.CurrentSpot.ListFileObjectsAsync();
-            if (fileList == null)
+            try
             {
-                base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, AppResources.BadLoadingFileMessage);
-                base.SetProgressIndicator(false);
-                return;
-            }
-            if (fileList.Count > 0)
-            {
-                base.Dispatcher.BeginInvoke(() =>
+                // Get files from the spot and set it to list.
+                List<FileObject> fileList = await this.CurrentSpot.ListFileObjectsAsync();
+                if (fileList.Count > 0)
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        this.PickFileObjectViewModel.IsDataLoaded = true;
+                        uiPickFileList.Visibility = Visibility.Visible;
+                        uiPickFileListMessage.Visibility = Visibility.Collapsed;
+                        this.PickFileObjectViewModel.SetItems(fileList, false);
+
+                        // Change edit view mode
+                        string currentEditViewMode = uiPickFileListEditViewImageButton.ImageSource;
+                        if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // To View mode
+                        {
+                            // Change select check image of each file object view item.
+                            foreach (FileObjectViewItem fileObjectViewItem in this.PickFileObjectViewModel.Items)
+                            {
+                                if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI)
+                                    || fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
+                                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
+                            }
+                        }
+
+                        else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // To Edit mode
+                        {
+                            // Change select check image of each file object view item.
+                            foreach (FileObjectViewItem fileObjectViewItem in this.PickFileObjectViewModel.Items)
+                            {
+                                if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
+                                    fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
+                            }
+                        }
+                    });
+                }
+                else
                 {
                     this.PickFileObjectViewModel.IsDataLoaded = true;
-                    uiPickFileList.Visibility = Visibility.Visible;
-                    uiPickFileListMessage.Visibility = Visibility.Collapsed;
-                    this.PickFileObjectViewModel.SetItems(fileList, false);
-
-                    // Change edit view mode
-                    string currentEditViewMode = uiPickFileListEditViewImageButton.ImageSource;
-                    if (currentEditViewMode.Equals(EDIT_IMAGE_URI))  // To View mode
-                    {
-                        // Change select check image of each file object view item.
-                        foreach (FileObjectViewItem fileObjectViewItem in this.PickFileObjectViewModel.Items)
-                        {
-                            if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_IMAGE_URI)
-                                || fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.CHECK_NOT_IMAGE_URI))
-                                fileObjectViewItem.SelectFileImage = FileObjectViewModel.TRANSPARENT_IMAGE_URI;
-                        }
-                    }
-
-                    else if (currentEditViewMode.Equals(VIEW_IMAGE_URI))  // To Edit mode
-                    {
-                        // Change select check image of each file object view item.
-                        foreach (FileObjectViewItem fileObjectViewItem in this.PickFileObjectViewModel.Items)
-                        {
-                            if (fileObjectViewItem.SelectFileImage.Equals(FileObjectViewModel.TRANSPARENT_IMAGE_URI))
-                                fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
-                        }
-                    }
-                });
+                    base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, AppResources.NoFileInSpotMessage);
+                }
             }
-            else
+            catch
             {
-                this.PickFileObjectViewModel.IsDataLoaded = true;
-                base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, AppResources.NoFileInSpotMessage);
+                base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, AppResources.BadLoadingFileMessage);
             }
-
-            // Hide Progress Indicator
-            base.SetProgressIndicator(false);
+            finally
+            {
+                base.SetProgressIndicator(false);
+            }
         }
 
 
@@ -323,6 +323,7 @@ namespace PintheCloud.Pages
             {
                 this.PinFileAppBarButton.IsEnabled = false;
             });
+
 
             try
             {
@@ -371,11 +372,9 @@ namespace PintheCloud.Pages
                     base.SetListUnableAndShowMessage(uiPinFileList, uiPinFileMessage, AppResources.BadLoadingFileMessage);
                 }
             }
-            catch (WaitTaskException)
+            catch
             {
                 base.SetListUnableAndShowMessage(uiPinFileList, uiPinFileMessage, AppResources.BadLoadingFileMessage);
-                base.SetProgressIndicator(false);
-                return;
             }
             finally
             {
@@ -592,21 +591,19 @@ namespace PintheCloud.Pages
                 });
 
 
-                // Sign in and await that task.
-                IStorageManager iStorageManager = Switcher.GetCurrentStorage();
-                if (!iStorageManager.IsSigningIn())
-                    TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
-                bool result = await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
-
-
-                // If sign in success, set list.
-                // Otherwise, show bad sign in message box.
-                base.SetProgressIndicator(true);
-                if (result)
+                try
                 {
+                    // Sign in and await that task.
+                    IStorageManager iStorageManager = Switcher.GetCurrentStorage();
+                    if (!iStorageManager.IsSigningIn())
+                        TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
+                    await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
+
+                    // If sign in success, set list.
+                    base.SetProgressIndicator(true);
                     this.SetPinFileListAsync(iStorageManager, AppResources.Loading, null);
                 }
-                else
+                catch
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
@@ -798,10 +795,11 @@ namespace PintheCloud.Pages
                 fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
 
-            // Download
-            await TaskHelper.WaitSignInTask(storageManager.GetStorageName());
-            if (await this.CurrentSpot.DownloadFileObjectAsync(storageManager, this.CurrentSpot.GetFileObject(fileObjectViewItem.Id)))
+            try
             {
+                // Download
+                await TaskHelper.WaitSignInTask(storageManager.GetStorageName());
+                await this.CurrentSpot.DownloadFileObjectAsync(storageManager, this.CurrentSpot.GetFileObject(fileObjectViewItem.Id));
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     this.PinFileObjectViewModel.IsDataLoaded = false;
@@ -812,16 +810,17 @@ namespace PintheCloud.Pages
                         fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
                 });
             }
-            else
+            catch
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });
             }
-
-            // Hide Progress Indicator
-            base.SetProgressIndicator(false);
+            finally
+            {
+                base.SetProgressIndicator(false); 
+            }
         }
 
 

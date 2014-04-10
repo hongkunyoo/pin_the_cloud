@@ -95,7 +95,6 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\StringToSpotNameInitialUriConverter.cs" />
-    <Compile Include="Exceptions\WaitTaskException.cs" />
     <Compile Include="Helpers\AESHelper.cs" />
     <Compile Include="Helpers\GeoHelper.cs" />
     <Compile Include="Helpers\StorageHelper.cs" />

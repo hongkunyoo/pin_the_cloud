@@ -29,10 +29,10 @@ using System.Threading;
 namespace PintheCloud.Pages
 {
     public partial class SettingsPage : PtcPage
-    { // Const Instances
-        private const int APPLICATION_PIVOT_INDEX = 0;
-        private const int MY_SPOT_PIVOT_INDEX = 1;
-        private const int MY_PICK_PIVOT_INDEX = 2;
+    { 
+        // Const Instances
+        private const int MY_SPOT_PIVOT_INDEX = 2;
+        private const int MY_PICK_PIVOT_INDEX = 3;
 
         private const string SIGN_IN_BUTTON_TEXT_FONT = "Segoe WP";
         private const string SIGN_NOT_IN_BUTTON_TEXT_FONT = "Segoe WP Light";
@@ -179,15 +179,17 @@ namespace PintheCloud.Pages
                 Button signButton = (Button)sender;
                 Switcher.SetStorageTo(signButton.Tag.ToString());
 
-                // Sign in
-                IStorageManager iStorageManager = StorageHelper.GetStorageManager(signButton.Tag.ToString());
-                if (!iStorageManager.IsSigningIn())
-                    TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
 
-                // If sign in success, set list.
-                // Otherwise, show bad sign in message box.
-                if (await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
+                try
                 {
+                    // Sign in
+                    IStorageManager iStorageManager = StorageHelper.GetStorageManager(signButton.Tag.ToString());
+                    if (!iStorageManager.IsSigningIn())
+                        TaskHelper.AddSignInTask(iStorageManager.GetStorageName(), iStorageManager.SignIn());
+
+                    // If sign in success, set list.
+                    // Otherwise, show bad sign in message box.
+                    await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         this.SetSignButtons(Switcher.GetCurrentStorage());
@@ -195,20 +197,21 @@ namespace PintheCloud.Pages
                         this.SetMySpotPivot(AppResources.Loading);
                     });
                 }
-                else
+                catch
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
                         MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
                     });
                 }
-
-                // Hide process indicator
-                base.Dispatcher.BeginInvoke(() =>
+                finally
                 {
-                    uiCloudPanel.Visibility = Visibility.Visible;
-                    uiCloudMessageGrid.Visibility = Visibility.Collapsed;
-                });
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        uiCloudPanel.Visibility = Visibility.Visible;
+                        uiCloudMessageGrid.Visibility = Visibility.Collapsed;
+                    });
+                }
             }
             else
             {
@@ -252,34 +255,33 @@ namespace PintheCloud.Pages
 
         private async void SetSignButtons(IStorageManager iStorageManager)
         {
-            bool isSignIn = iStorageManager.IsSignIn();
             int platformIndex = Switcher.GetStorageIndex(iStorageManager.GetStorageName());
-            if (isSignIn)  // It is signed in
+            try
             {
-                if (await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
+                if (!iStorageManager.IsSignIn()) throw new Exception();
+                await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
+                StorageAccount storageAccount = await iStorageManager.GetStorageAccountAsync();
+                base.Dispatcher.BeginInvoke(() =>
                 {
-                    StorageAccount storageAccount = await iStorageManager.GetStorageAccountAsync();
-                    if (storageAccount != null)
-                    {
-                        base.Dispatcher.BeginInvoke(() =>
-                        {
-                            this.SignButtonTextBlocks[platformIndex].Text = storageAccount.UserName;
-                            this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_IN_BUTTON_TEXT_COLOR));
-                            this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_IN_BUTTON_TEXT_FONT);
-                            this.SignButtons[platformIndex].Click += this.CloudSignOutButton_Click;
-                            this.SignButtons[platformIndex].Click -= this.CloudSignInButton_Click;
-                        });
-                        return;
-                    }
-                }
+                    this.SignButtonTextBlocks[platformIndex].Text = storageAccount.UserName;
+                    this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_IN_BUTTON_TEXT_COLOR));
+                    this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_IN_BUTTON_TEXT_FONT);
+                    this.SignButtons[platformIndex].Click += this.CloudSignOutButton_Click;
+                    this.SignButtons[platformIndex].Click -= this.CloudSignInButton_Click;
+                });
             }
-
-            // It haven't signed in
-            this.SignButtonTextBlocks[platformIndex].Text = AppResources.SignIn;
-            this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_NOT_IN_BUTTON_TEXT_COLOR));
-            this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_NOT_IN_BUTTON_TEXT_FONT);
-            this.SignButtons[platformIndex].Click -= this.CloudSignOutButton_Click;
-            this.SignButtons[platformIndex].Click += this.CloudSignInButton_Click;
+            catch
+            {
+                // It haven't signed in
+                base.Dispatcher.BeginInvoke(() =>
+                {
+                    this.SignButtonTextBlocks[platformIndex].Text = AppResources.SignIn;
+                    this.SignButtonTextBlocks[platformIndex].Foreground = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(SIGN_NOT_IN_BUTTON_TEXT_COLOR));
+                    this.SignButtonTextBlocks[platformIndex].FontFamily = new FontFamily(SIGN_NOT_IN_BUTTON_TEXT_FONT);
+                    this.SignButtons[platformIndex].Click -= this.CloudSignOutButton_Click;
+                    this.SignButtons[platformIndex].Click += this.CloudSignInButton_Click;
+                });
+            }
         }
 
 

@@ -203,8 +203,15 @@ namespace PintheCloud.Managers
 
         public async Task<StorageAccount> GetStorageAccountAsync()
         {
-            if (this.CurrentAccount == null)
-                await TaskHelper.WaitSignInTask(this.GetStorageName());
+            try
+            {
+                if (this.CurrentAccount == null)
+                    await TaskHelper.WaitSignInTask(this.GetStorageName());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             return this.CurrentAccount;
         }
 

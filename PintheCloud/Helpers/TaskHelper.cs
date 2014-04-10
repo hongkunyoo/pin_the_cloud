@@ -35,7 +35,7 @@ namespace PintheCloud.Helpers
                 if (result)
                     return result;
                 else
-                    throw new WaitTaskException();
+                    throw new Exception();
             }
             else
             {
@@ -57,13 +57,14 @@ namespace PintheCloud.Helpers
             {
                 bool result = await SignInTasks[key];
                 SignInTasks.Remove(key);
-                return result;
+                if (result)
+                    return result;
+                else
+                    throw new Exception();
             }
             else
             {
-                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-                tcs.SetResult(true);
-                return tcs.Task.Result;
+                return true;
             }
         }
 

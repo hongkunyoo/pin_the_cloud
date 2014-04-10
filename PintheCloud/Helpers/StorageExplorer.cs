@@ -71,17 +71,16 @@ namespace PintheCloud.Helpers
 
         public async static Task<bool> Synchronize(string key)
         {
-            IStorageManager Storage = StorageHelper.GetStorageManager(key);
-            if (!await TaskHelper.WaitSignInTask(Storage.GetStorageName()))
-                return false;
-
-
-            // Fetching from SQL
-            if (App.ApplicationSettings.Contains(SYNC_KEYS + key))
+            try
             {
-                System.Diagnostics.Debug.WriteLine("Fetching From SQL");
-                try
+                // Wait sign in before sync
+                IStorageManager Storage = StorageHelper.GetStorageManager(key);
+                await TaskHelper.WaitSignInTask(Storage.GetStorageName());
+
+                // Fetching from SQL
+                if (App.ApplicationSettings.Contains(SYNC_KEYS + key))
                 {
+                    System.Diagnostics.Debug.WriteLine("Fetching From SQL");
                     using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
                     {
                         if (!db.DatabaseExists())
@@ -110,34 +109,25 @@ namespace PintheCloud.Helpers
                         DictionaryTree.Add(key, stack);
                     }
                 }
-                catch (Exception e)
+
+                // Fetching from Server
+                else
                 {
-                    System.Diagnostics.Debug.WriteLine(e.ToString());
-                    return false;
-                }
-            }
-
-            // Fetching from Server
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("Fetching From Server");
-                if (Storage.IsSignIn())
-                {
-                    FileObject rootFolder = await Storage.Synchronize();
-                    if (DictionaryRoot.ContainsKey(key))
-                        DictionaryRoot.Remove(key);
-                    DictionaryRoot.Add(key, rootFolder);
-
-                    Stack<FileObject> stack = new Stack<FileObject>();
-                    stack.Push(rootFolder);
-                    if (DictionaryTree.ContainsKey(key))
-                        DictionaryTree.Remove(key);
-                    DictionaryTree.Add(key, stack);
-
-
-                    // Saving to SQL job
-                    try
+                    System.Diagnostics.Debug.WriteLine("Fetching From Server");
+                    if (Storage.IsSignIn())
                     {
+                        FileObject rootFolder = await Storage.Synchronize();
+                        if (DictionaryRoot.ContainsKey(key))
+                            DictionaryRoot.Remove(key);
+                        DictionaryRoot.Add(key, rootFolder);
+
+                        Stack<FileObject> stack = new Stack<FileObject>();
+                        stack.Push(rootFolder);
+                        if (DictionaryTree.ContainsKey(key))
+                            DictionaryTree.Remove(key);
+                        DictionaryTree.Add(key, stack);
+
+                        // Saving to SQL job
                         using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
                         {
                             if (db.DatabaseExists())
@@ -150,18 +140,20 @@ namespace PintheCloud.Helpers
                                 db.FileItems.InsertOnSubmit(sqlList[i]);
                             db.SubmitChanges();
                         }
+
+                        // Saving completed sync true to application settings
                         App.ApplicationSettings.Add(SYNC_KEYS + key, true);
                         App.ApplicationSettings.Save();
                     }
-                    catch (Exception e)
-                    {
-                        System.Diagnostics.Debug.WriteLine(e.ToString());
-                        return false;
-                    }
                 }
+            }
+            catch
+            {
+                return false;
             }
             return true;
         }
+
 
 
         public async static Task<bool> Refresh()
