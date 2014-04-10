@@ -1,4 +1,5 @@
 ﻿using Microsoft.WindowsAzure.MobileServices;
+using PintheCloud.Exceptions;
 using PintheCloud.Models;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,6 @@ namespace PintheCloud.Helpers
         // Tasks
         private static IDictionary<string, Task<bool>> Tasks = new Dictionary<string, Task<bool>>();
         private static Dictionary<string ,Task<bool>> SignInTasks = new Dictionary<string, Task<bool>>();
-        private static Dictionary<string, Task> SignOutTasks = new Dictionary<string, Task>();
 
         public const string STORAGE_EXPLORER_SYNC = "STORAGE_EXPLORER_SYNC";
 
@@ -32,13 +32,14 @@ namespace PintheCloud.Helpers
             {
                 bool result = await Tasks[name];
                 Tasks.Remove(name);
-                return result;
+                if (result)
+                    return result;
+                else
+                    throw new WaitTaskException();
             }
             else
             {
-                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-                tcs.SetResult(true);
-                return tcs.Task.Result;
+                return true;
             }
         }
 
@@ -76,29 +77,6 @@ namespace PintheCloud.Helpers
                     result &= await itr.Current.Value;
             }
             return result;
-        }
-
-        public static void AddSignOutTask(string key, Task task)
-        {
-            if (!SignOutTasks.ContainsKey(key))
-                SignOutTasks.Add(key, task);
-        }
-
-
-        public static Task WaitSignOutTask(string key)
-        {
-            if (SignOutTasks.ContainsKey(key))
-            {
-                Task task = SignOutTasks[key];
-                SignOutTasks.Remove(key);
-                return task;
-            }
-            else
-            {
-                TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-                tcs.SetResult(true);
-                return tcs.Task;
-            }
         }
     }
 }

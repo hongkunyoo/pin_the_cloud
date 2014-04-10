@@ -28,6 +28,7 @@ using PintheCloud.Popups;
 using System.IO;
 using Windows.Storage;
 using Windows.System;
+using PintheCloud.Exceptions;
 
 namespace PintheCloud.Pages
 {
@@ -312,6 +313,7 @@ namespace PintheCloud.Pages
 
         private async void SetPinFileListAsync(IStorageManager iStorageManager, string message, FileObjectViewItem folder)
         {
+
             // Set Mutex true and Show Process Indicator
             // Clear selected file and set pin button false.
             base.SetListUnableAndShowMessage(uiPinFileList, uiPinFileMessage, message);
@@ -322,76 +324,63 @@ namespace PintheCloud.Pages
                 this.PinFileAppBarButton.IsEnabled = false;
             });
 
-
-            // If it wasn't signed out, set list.
-            // Othersie, show sign in grid.
-            await TaskHelper.WaitSignOutTask(iStorageManager.GetStorageName());
-            if (await iStorageManager.GetStorageAccountAsync() == null)  // Wasn't signed out.
+            try
             {
-                base.Dispatcher.BeginInvoke(() =>
+                // Wait Sync task
+                await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
+
+                // Get files from current folder in the cloud.
+                // If it is not null, set items.
+                // Otherwise, show message
+                if (folder == null)
+                    this.CurrentFileObjectList = StorageExplorer.GetFilesFromRootFolder();
+                else
+                    this.CurrentFileObjectList = StorageExplorer.GetTreeForFolder(this.GetCloudStorageFileObjectById(folder.Id));
+                if (this.CurrentFileObjectList != null)
                 {
-                    uiPinFileListGrid.Visibility = Visibility.Collapsed;
-                    uiPinFileSignInPanel.Visibility = Visibility.Visible;
-                    base.SetProgressIndicator(false);
-                });
-                return;
+                    // If didn't change cloud mode while loading, set it to list.
+                    // Set file list visible and current path.
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        this.PinFileObjectViewModel.IsDataLoaded = true;
+                        uiPinFileList.Visibility = Visibility.Visible;
+                        uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
+                        this.PinFileObjectViewModel.SetItems(this.CurrentFileObjectList, true);
+                    });
+
+
+                    // If there exists file, show it.
+                    // Otherwise, show no file message.
+                    if (this.CurrentFileObjectList.Count > 0)
+                    {
+                        base.Dispatcher.BeginInvoke(() =>
+                        {
+                            uiPinFileMessage.Visibility = Visibility.Collapsed;
+                        });
+                    }
+                    else
+                    {
+                        base.Dispatcher.BeginInvoke(() =>
+                        {
+                            uiPinFileMessage.Text = AppResources.NoFileInFolderMessage;
+                        });
+                    }
+                }
+                else
+                {
+                    base.SetListUnableAndShowMessage(uiPinFileList, uiPinFileMessage, AppResources.BadLoadingFileMessage);
+                }
             }
-
-
-            // Get files from cloud.
-            // If it fails, show message.
-            if (!await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName()))
+            catch (WaitTaskException)
             {
                 base.SetListUnableAndShowMessage(uiPinFileList, uiPinFileMessage, AppResources.BadLoadingFileMessage);
                 base.SetProgressIndicator(false);
                 return;
             }
-
-
-            // Get files from current folder in the cloud.
-            // If it is not null, set items.
-            // Otherwise, show message
-            if (folder == null)
-                this.CurrentFileObjectList = StorageExplorer.GetFilesFromRootFolder();
-            else
-                this.CurrentFileObjectList = StorageExplorer.GetTreeForFolder(this.GetCloudStorageFileObjectById(folder.Id));
-            if (this.CurrentFileObjectList != null)
+            finally
             {
-                // If didn't change cloud mode while loading, set it to list.
-                // Set file list visible and current path.
-                base.Dispatcher.BeginInvoke(() =>
-                {
-                    this.PinFileObjectViewModel.IsDataLoaded = true;
-                    uiPinFileList.Visibility = Visibility.Visible;
-                    uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
-                    this.PinFileObjectViewModel.SetItems(this.CurrentFileObjectList, true);
-                });
-
-
-                // If there exists file, show it.
-                // Otherwise, show no file message.
-                if (this.CurrentFileObjectList.Count > 0)
-                {
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        uiPinFileMessage.Visibility = Visibility.Collapsed;
-                    });
-                }
-                else
-                {
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        uiPinFileMessage.Text = AppResources.NoFileInFolderMessage;
-                    });
-                }
+                base.SetProgressIndicator(false);
             }
-            else
-            {
-                base.SetListUnableAndShowMessage(uiPinFileList, uiPinFileMessage, AppResources.BadLoadingFileMessage);
-            }
-
-            // Set Mutex false and Hide Process Indicator
-            base.SetProgressIndicator(false);
         }
 
 
@@ -526,22 +515,29 @@ namespace PintheCloud.Pages
 
         private async void TreeUp()
         {
-            // Wait Sync work
-            if (!await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName())) return;
+            try
+            {
+                // Wait Sync work
+                await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
 
-            // If message is visible, set collapsed.
-            if (uiPinFileMessage.Visibility == Visibility.Visible && !uiPinFileMessage.Text.Equals(AppResources.Refreshing))
-                uiPinFileMessage.Visibility = Visibility.Collapsed;
+                // If message is visible, set collapsed.
+                if (uiPinFileMessage.Visibility == Visibility.Visible && !uiPinFileMessage.Text.Equals(AppResources.Refreshing))
+                    uiPinFileMessage.Visibility = Visibility.Collapsed;
 
-            // Do tree up work and set items to list
-            List<FileObject> fileList = StorageExplorer.TreeUp();
-            this.CurrentFileObjectList = fileList;
-            this.PinFileObjectViewModel.SetItems(this.CurrentFileObjectList, true);
-            uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
+                // Do tree up work and set items to list
+                List<FileObject> fileList = StorageExplorer.TreeUp();
+                this.CurrentFileObjectList = fileList;
+                this.PinFileObjectViewModel.SetItems(this.CurrentFileObjectList, true);
+                uiPinFileCurrentPath.Text = StorageExplorer.GetCurrentPath();
 
-            // Clear trees.
-            this.PinFileAppBarButton.IsEnabled = false;
-            this.PinSelectedFileList.Clear();
+                // Clear trees.
+                this.PinFileAppBarButton.IsEnabled = false;
+                this.PinSelectedFileList.Clear();
+            }
+            catch
+            {
+                return;
+            }
         }
 
 
@@ -876,8 +872,9 @@ namespace PintheCloud.Pages
 
 
             // Delete
-            if (await App.BlobStorageManager.DeleteFileAsync(fileObjectViewItem.Id))
+            try
             {
+                await App.BlobStorageManager.DeleteFileAsync(fileObjectViewItem.Id);
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     this.PickFileObjectViewModel.Items.Remove(fileObjectViewItem);
@@ -885,7 +882,7 @@ namespace PintheCloud.Pages
                         base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, AppResources.NoFileInSpotMessage);
                 });
             }
-            else
+            catch
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {

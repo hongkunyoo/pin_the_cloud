@@ -395,4 +395,10 @@
   <data name="MainCloud" xml:space="preserve">
     <value>Main Cloud</value>
   </data>
+  <data name="BadCreateSpotCaption" xml:space="preserve">
+    <value>Create Spot Error</value>
+  </data>
+  <data name="BadCreateSpotMessage" xml:space="preserve">
+    <value>Create spot process met error. Please try it again</value>
+  </data>
 </root>

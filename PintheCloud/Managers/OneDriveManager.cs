@@ -60,31 +60,24 @@ namespace PintheCloud.Managers
                     string accountUserName = (string)operationResult.Result["name"];
 
                     // Register account
-                    if (await TaskHelper.WaitTask(App.AccountManager.GetPtcId()))
+                    await TaskHelper.WaitTask(App.AccountManager.GetPtcId());
+                    StorageAccount storageAccount = await App.AccountManager.GetStorageAccountAsync(accountId);
+                    if (storageAccount == null)
                     {
-
-                        StorageAccount storageAccount = await App.AccountManager.GetStorageAccountAsync(accountId);
-                        if (storageAccount == null)
-                        {
-                            storageAccount = new StorageAccount();
-                            storageAccount.Id = accountId;
-                            storageAccount.StorageName = this.GetStorageName();
-                            storageAccount.UserName = accountUserName;
-                            storageAccount.UsedSize = 0.0;
-                            await App.AccountManager.CreateStorageAccountAsync(storageAccount);
-                        }
-                        this.CurrentAccount = storageAccount;
-
-                        // Save sign in setting.
-                        App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
-                        App.ApplicationSettings.Save();
-                        TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
-                        tcs.SetResult(true);
+                        storageAccount = new StorageAccount();
+                        storageAccount.Id = accountId;
+                        storageAccount.StorageName = this.GetStorageName();
+                        storageAccount.UserName = accountUserName;
+                        storageAccount.UsedSize = 0.0;
+                        await App.AccountManager.CreateStorageAccountAsync(storageAccount);
                     }
-                    else
-                    {
-                        tcs.SetResult(false);
-                    }
+                    this.CurrentAccount = storageAccount;
+
+                    // Save sign in setting.
+                    App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
+                    App.ApplicationSettings.Save();
+                    TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
+                    tcs.SetResult(true);
                 }
                 catch
                 {

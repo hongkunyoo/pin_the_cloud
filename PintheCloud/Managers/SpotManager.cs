@@ -104,15 +104,15 @@ namespace PintheCloud.Managers
 
         public async Task<bool> DeleteSpotAsync(string spotId)
         {
-            MSSpotObject msso = new MSSpotObject("", 0, 0, "", "", 0, false, "");
-            msso.id = spotId;
             try
             {
+                MSSpotObject msso = new MSSpotObject("", 0, 0, "", "", 0, false, "");
+                msso.id = spotId;
                 await App.MobileService.GetTable<MSSpotObject>().DeleteAsync(msso);
             }
-            catch
+            catch(Exception ex)
             {
-                return false;
+                throw ex;
             }
             return true;
         }

@@ -132,7 +132,14 @@ namespace PintheCloud.Models
             // TODO : Need to substract Storage Capacity
             //////////////////////////////////////////////
 
-            return await App.BlobStorageManager.DeleteFileAsync(fo.Id);
+            try
+            {
+                return await App.BlobStorageManager.DeleteFileAsync(fo.Id);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
 
             /////////////////////////////////////////////////////////////////////////////////////////////////
             /// In the future, Maybe there will be codes for the mobile service table insertion. BUT Not NOW
@@ -141,25 +148,38 @@ namespace PintheCloud.Models
 
         public async Task<bool> DeleteFileObjectsAsync()
         {
-            bool result = true;
-            if (this.FileObjectList == null)
-                this.FileObjectList = await ListFileObjectsAsync();
-            for (var i = 0; i < this.FileObjectList.Count; i++)
+            try
             {
-                result &= await App.BlobStorageManager.DeleteFileAsync(this.FileObjectList[i].Id);
+                if (this.FileObjectList == null) 
+                    this.FileObjectList = await ListFileObjectsAsync();
+                for (var i = 0; i < this.FileObjectList.Count; i++)
+                    await App.BlobStorageManager.DeleteFileAsync(this.FileObjectList[i].Id);
             }
-            return result;
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return true;
         }
+
 
         public async Task<List<FileObject>> ListFileObjectsAsync()
         {
-            this.FileObjectList = await App.BlobStorageManager.GetFilesFromSpotAsync(this.PtcAccountId, this.Id);
+            try
+            {
+                this.FileObjectList = await App.BlobStorageManager.GetFilesFromSpotAsync(this.PtcAccountId, this.Id);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             return this.FileObjectList;
 
             /////////////////////////////////////////////////////////////////////////////////////////////////
             /// In the future, Maybe there will be codes for the mobile service table insertion. BUT Not NOW
             /// /////////////////////////////////////////////////////////////////////////////////////////////
         }
+
 
         public async Task<bool> DownloadFileObjectAsync(IStorageManager StorageManager, FileObject fo)
         {

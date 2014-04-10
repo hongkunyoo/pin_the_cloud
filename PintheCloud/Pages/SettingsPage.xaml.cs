@@ -235,7 +235,7 @@ namespace PintheCloud.Pages
                 // Sign out
                 IStorageManager iStorageManager = StorageHelper.GetStorageManager(signButton.Tag.ToString());
                 StorageExplorer.RemoveKey(iStorageManager.GetStorageName());
-                TaskHelper.AddSignOutTask(iStorageManager.GetStorageName(), this.SignOut(iStorageManager));
+                iStorageManager.SignOut();
 
                 // After sign out, set list.
                 this.MySpotViewModel.IsDataLoaded = false;
@@ -247,13 +247,6 @@ namespace PintheCloud.Pages
                 this.SetSignButtons(iStorageManager);
                 SetMainButtons(Switcher.GetMainStorage());
             }
-        }
-
-
-        private async Task SignOut(IStorageManager iStorageManager)
-        {
-            if (await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName()))
-                iStorageManager.SignOut();
         }
 
 
@@ -504,38 +497,28 @@ namespace PintheCloud.Pages
                 spotViewItem.DeleteImagePress = false;
             });
 
-
             // If delete job success to all files, delete spot.
             // Otherwise, show delete fail image.
             SpotObject spot = App.SpotManager.GetSpotObject(spotViewItem.SpotId);
-            if (await spot.DeleteFileObjectsAsync())
+            try
             {
-                if (await App.SpotManager.DeleteSpotAsync(spotViewItem.SpotId))
+                await spot.DeleteFileObjectsAsync();
+                await App.SpotManager.DeleteSpotAsync(spotViewItem.SpotId);
+                base.Dispatcher.BeginInvoke(() =>
                 {
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        this.MySpotViewModel.Items.Remove(spotViewItem);
-                        ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
-                        if (this.MySpotViewModel.Items.Count < 1)
-                            base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.NoMySpotMessage);
-                    });
-                }
-                else
-                {
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        spotViewItem.DeleteImage = FileObjectViewModel.FAIL_IMAGE_URI;
-                    });
-                }
+                    this.MySpotViewModel.Items.Remove(spotViewItem);
+                    ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
+                    if (this.MySpotViewModel.Items.Count < 1)
+                        base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.NoMySpotMessage);
+                });
             }
-            else
+            catch
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     spotViewItem.DeleteImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });
             }
-
 
             // Hide Progress Indicator
             base.SetProgressIndicator(false);

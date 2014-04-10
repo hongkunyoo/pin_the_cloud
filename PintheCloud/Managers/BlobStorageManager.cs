@@ -84,7 +84,14 @@ namespace PintheCloud.Managers
         /// <returns>List of the FileObject containing file meta information</returns>
         public Task<List<FileObject>> GetFilesFromSpotAsync(string account, string spotId)
         {
-            return this._GetFilesFromFolderByIdAsync(account + "/" + spotId);
+            try
+            {
+                return this._GetFilesFromFolderByIdAsync(account + "/" + spotId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 
@@ -105,9 +112,8 @@ namespace PintheCloud.Managers
                 }
                 return downloadFile;
             }
-            catch(Exception ex)
+            catch
             {
-                Debug.WriteLine(ex.ToString());
                 throw new ShareException(id, ShareException.ShareType.DOWNLOAD);
             }
         }
@@ -184,9 +190,9 @@ namespace PintheCloud.Managers
                 CloudBlockBlob blockBlob = this.Container.GetBlockBlobReference(id);
                 await blockBlob.DeleteAsync();
             }
-            catch
+            catch(Exception ex)
             {
-                return false;
+                throw ex;
             }
             return true;
         }
@@ -236,7 +242,14 @@ namespace PintheCloud.Managers
         # region Private Methods
         private async Task<List<FileObject>> _GetFilesFromFolderByIdAsync(string id)
         {
-            return await this._GetFileObjectListFromBlobClient(this.CONTAINER_NAME + "/" + id + "/");
+            try
+            {
+                return await this._GetFileObjectListFromBlobClient(this.CONTAINER_NAME + "/" + id + "/");
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
 
@@ -271,9 +284,9 @@ namespace PintheCloud.Managers
                     token = blobListSegment.ContinuationToken;
                 } while (token != null);
             }
-            catch
+            catch(Exception ex)
             {
-                return null;  
+                throw ex;
             }
             return list;
         }

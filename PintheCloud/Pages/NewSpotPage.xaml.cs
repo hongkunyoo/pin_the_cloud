@@ -164,22 +164,33 @@ namespace PintheCloud.Pages
                 // Check whether GPS is on or not
                 if (GeoHelper.GetLocationStatus() != PositionStatus.Disabled)  // GPS is on
                 {
-                    // Show Pining message and Progress Indicator
-                    base.Dispatcher.BeginInvoke(() =>
+                    try
                     {
-                        uiNewSpotMessage.Text = AppResources.PiningSpot;
-                        uiNewSpotMessage.Visibility = Visibility.Visible;
-                    });
-                    base.SetProgressIndicator(true);
+                        // Show Pining message and Progress Indicator
+                        base.Dispatcher.BeginInvoke(() =>
+                        {
+                            uiNewSpotMessage.Text = AppResources.PiningSpot;
+                            uiNewSpotMessage.Visibility = Visibility.Visible;
+                        });
+                        base.SetProgressIndicator(true);
 
-                    // Wait sign in tastk
-                    // Make a new spot.
-                    await TaskHelper.WaitTask(App.AccountManager.GetPtcId());
-                    PtcAccount account = await App.AccountManager.GetPtcAccountAsync();
-                    if (await this.PinSpotAsync(spotName, account.Email, account.Name, isPrivate, spotPassword))
+                        // Wait sign in tastk
+                        // Make a new spot.
+                        await TaskHelper.WaitTask(App.AccountManager.GetPtcId());
+                        PtcAccount account = await App.AccountManager.GetPtcAccountAsync();
+                        if (await this.PinSpotAsync(spotName, account.Email, account.Name, isPrivate, spotPassword))
+                        {
+                            string parameters = "?spotId=" + this.SpotId + "&spotName=" + spotName + "&accountId=" + account.Email + "&accountName=" + account.Name;
+                            NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE + parameters, UriKind.Relative));
+                        }
+                    }
+                    catch
                     {
-                        string parameters = "?spotId=" + this.SpotId + "&spotName=" + spotName + "&accountId=" + account.Email + "&accountName=" + account.Name;
-                        NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE + parameters, UriKind.Relative));
+                        MessageBox.Show(AppResources.BadCreateSpotMessage, AppResources.BadCreateSpotCaption, MessageBoxButton.OK);
+                    }
+                    finally
+                    {
+                        base.SetProgressIndicator(false);
                     }
                 }
                 else  // GPS is not on
