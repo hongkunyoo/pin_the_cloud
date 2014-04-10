@@ -122,12 +122,11 @@ namespace PintheCloud.Pages
                     Geoposition currentGeoposition = await GeoHelper.GetGeopositionAsync();
                     if (currentGeoposition != null)  // GPS works well
                     {
-                        // If there is near spots, Clear and Add spots to list
-                        // Otherwise, Show none message.
-                        List<SpotObject> spots = await App.SpotManager.GetNearSpotListAsync(currentGeoposition);
-
-                        if (spots != null)
+                        try
                         {
+                            // If there is near spots, Clear and Add spots to list
+                            // Otherwise, Show none message.
+                            List<SpotObject> spots = await App.SpotManager.GetNearSpotListAsync(currentGeoposition);
                             if (spots.Count > 0)  // There are near spots
                             {
                                 base.Dispatcher.BeginInvoke(() =>
@@ -144,7 +143,7 @@ namespace PintheCloud.Pages
                                 base.SetListUnableAndShowMessage(uiNearSpotList, uiNearSpotMessage, AppResources.NoNearSpotMessage);
                             }
                         }
-                        else
+                        catch
                         {
                             base.SetListUnableAndShowMessage(uiNearSpotList, uiNearSpotMessage, AppResources.BadLoadingSpotMessage);
                         }

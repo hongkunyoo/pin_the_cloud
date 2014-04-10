@@ -34,9 +34,6 @@ namespace PintheCloud.Managers
         private const string DROPBOX_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_dropbox.png";
         private const string DROPBOX_COLOR_HEX_STRING = "26A4DD";
 
-        private Stack<List<FileObject>> FoldersTree = new Stack<List<FileObject>>();
-        private Stack<FileObjectViewItem> FolderRootTree = new Stack<FileObjectViewItem>();
-
         private DropNetClient _client = null;
         private StorageAccount CurrentAccount = null;
         private TaskCompletionSource<bool> tcs = null;
@@ -151,8 +148,6 @@ namespace PintheCloud.Managers
         {
             App.ApplicationSettings.Remove(DROPBOX_USER_KEY);
             App.ApplicationSettings.Remove(DROPBOX_SIGN_IN_KEY);
-            this.FoldersTree.Clear();
-            this.FolderRootTree.Clear();
             this._client = null;
             this.CurrentAccount = null;
         }
@@ -201,15 +196,21 @@ namespace PintheCloud.Managers
         {
             return this.GetFileAsync("/");
         }
+
+
         public Task<List<FileObject>> GetRootFilesAsync()
         {
             return this.GetFilesFromFolderAsync("/");
         }
+
+
         public async Task<FileObject> GetFileAsync(string fileId)
         {
             MetaData metaTask = await this._client.GetMetaDataTask(fileId);
             return ConvertToFileObjectHelper.ConvertToFileObject(metaTask);
         }
+
+
         public async Task<List<FileObject>> GetFilesFromFolderAsync(string folderId)
         {
             MetaData metaTask = await this._client.GetMetaDataTask(folderId);
@@ -224,6 +225,8 @@ namespace PintheCloud.Managers
 
             return list;
         }
+
+
         public Task<Stream> DownloadFileStreamAsync(string sourceFileId)
         {
             TaskCompletionSource<Stream> tcs = new TaskCompletionSource<Stream>();
@@ -238,6 +241,8 @@ namespace PintheCloud.Managers
             }));
             return tcs.Task;
         }
+
+
         public async Task<bool> UploadFileStreamAsync(string folderIdToStore, string fileName, Stream outstream)
         {
             try
@@ -251,6 +256,7 @@ namespace PintheCloud.Managers
                 throw new ShareException(fileName, ShareException.ShareType.UPLOAD);
             }
         }
+
 
         public async Task<FileObject> Synchronize()
         {

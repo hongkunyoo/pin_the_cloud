@@ -239,9 +239,6 @@
   <data name="DoingSignOut" xml:space="preserve">
     <value>Doing Sign Out...</value>
   </data>
-  <data name="BadPinSpotMessage" xml:space="preserve">
-    <value>Pin spot process met error. Please try it again.</value>
-  </data>
   <data name="Dropbox" xml:space="preserve">
     <value>Dropbox</value>
   </data>
@@ -326,8 +323,8 @@
   <data name="NoPasswordMessage" xml:space="preserve">
     <value>Password is blank. Please enter it.</value>
   </data>
-  <data name="MyPick" xml:space="preserve">
-    <value>My Pick</value>
+  <data name="Local" xml:space="preserve">
+    <value>Local</value>
   </data>
   <data name="BadEmailAddressCaption" xml:space="preserve">
     <value>Wrong Email Address</value>
@@ -394,9 +391,6 @@
   </data>
   <data name="MainCloud" xml:space="preserve">
     <value>Main Cloud</value>
-  </data>
-  <data name="BadCreateSpotCaption" xml:space="preserve">
-    <value>Create Spot Error</value>
   </data>
   <data name="BadCreateSpotMessage" xml:space="preserve">
     <value>Create spot process met error. Please try it again</value>

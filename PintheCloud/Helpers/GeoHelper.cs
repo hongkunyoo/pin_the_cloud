@@ -13,7 +13,7 @@ namespace PintheCloud.Helpers
         {
             try
             {
-                return await App.Geolocator.GetGeopositionAsync(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(20));    
+                return await App.Geolocator.GetGeopositionAsync(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(10));    
             }
             catch
             {

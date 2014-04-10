@@ -59,9 +59,9 @@ namespace PintheCloud.Managers
             {
                 spots = (JArray)await App.MobileService.InvokeApiAsync("select_near_spots_async", jToken);
             }
-            catch
+            catch(Exception ex)
             {
-                return null;
+                throw ex;
             }
             return spots;
         }
@@ -77,9 +77,9 @@ namespace PintheCloud.Managers
             {
                 spots = (JArray)await App.MobileService.InvokeApiAsync("select_my_spots_async", jToken);
             }
-            catch
+            catch(Exception ex)
             {
-                return null;
+                throw ex;
             }
             return spots;
         }
@@ -92,9 +92,9 @@ namespace PintheCloud.Managers
             {
                 await App.MobileService.GetTable<MSSpotObject>().InsertAsync(spot);
             }
-            catch
+            catch(Exception ex)
             {
-                return false;
+                throw ex;
             }
             so.Id = spot.id;
             this.newSpot = so;
@@ -120,18 +120,16 @@ namespace PintheCloud.Managers
 
         public async Task<List<SpotObject>> GetNearSpotListAsync(Geoposition currentGeoposition)
         {
-            List<SpotObject> list = new List<SpotObject>();
-
             // Get current coordinate
             double currentLatitude = currentGeoposition.Coordinate.Latitude;
             double currentLongtitude = currentGeoposition.Coordinate.Longitude;
 
-            // Get spots formed JArray
-            JArray jSpots = await this.GetNearSpotsAsync(currentLatitude, currentLongtitude);
-
-            // If loading spot doesn't occur error, Convert jarray spots to spot list
-            if (jSpots != null)
+            try
             {
+                // Get spots formed JArray
+                // If loading spot doesn't occur error, Convert jarray spots to spot list
+                List<SpotObject> list = new List<SpotObject>();
+                JArray jSpots = await this.GetNearSpotsAsync(currentLatitude, currentLongtitude);
                 foreach (JObject jSpot in jSpots)
                 {
                     // Set new spot view item
@@ -150,24 +148,24 @@ namespace PintheCloud.Managers
                     spot.Id = spotId;
                     list.Add(spot);
                 }
+                this.spotList = list;
+                return list;
             }
-            else
+            catch(Exception ex)
             {
-                return null;
+                throw ex;
             }
-            this.spotList = list;
-            return list;
         }
 
 
         public async Task<List<SpotObject>> GetMySpotList()
         {
-            // Get signed in my spots formed JArray
-            // If loading spot doesn't occur error, Convert jarray spots to spot list
-            List<SpotObject> spots = new List<SpotObject>();
-            JArray jSpots = await this.GetMySpotsAsync(App.AccountManager.GetPtcId());
-            if (jSpots != null)
+            try
             {
+                // Get signed in my spots formed JArray
+                // If loading spot doesn't occur error, Convert jarray spots to spot list
+                List<SpotObject> spots = new List<SpotObject>();
+                JArray jSpots = await this.GetMySpotsAsync(App.AccountManager.GetPtcId());
                 foreach (JObject jSpot in jSpots)
                 {
                     // Set new spot view item
@@ -182,18 +180,18 @@ namespace PintheCloud.Managers
                     string spot_password = (string)jSpot["spot_password"];
                     string create_at = (string)jSpot["create_at"];
 
-                    SpotObject spot = new SpotObject(spotName, spotLatitude, spotLongtitude, accountId, accountName, 
+                    SpotObject spot = new SpotObject(spotName, spotLatitude, spotLongtitude, accountId, accountName,
                         spotDistance, isPrivate, spot_password, create_at);
                     spot.Id = spotId;
                     spots.Add(spot);
                 }
+                this.mySpotList = spots;
+                return spots;
             }
-            else
+            catch(Exception ex)
             {
-                return null;
+                throw ex;
             }
-            this.mySpotList = spots;
-            return spots;
         }
 
 

@@ -31,7 +31,6 @@ namespace PintheCloud.Managers
     public class GoogleDriveManager : IStorageManager
     {
         #region Variables
-
         private const string GOOGLE_DRIVE_CLIENT_ID = "109786198225-m8fihmv82b2fmf5k4d69u9039ebn68fn.apps.googleusercontent.com";
         private const string GOOGLE_DRIVE_CLIENT_SECRET = "Tk8M01zlkBRlIsv-1fa9BKiS";
         
@@ -40,9 +39,6 @@ namespace PintheCloud.Managers
 
         private const string GOOGLE_DRIVE_IMAGE_URI = "/Assets/pajeon/at_here/png/navi_ico_googledrive.png";
         private const string GOOGLE_DRIVE_COLOR_HEX_STRING = "F1AE1D";
-
-        private Stack<List<FileObject>> FoldersTree = new Stack<List<FileObject>>();
-        private Stack<FileObjectViewItem> FolderRootTree = new Stack<FileObjectViewItem>();
 
         public static Dictionary<string, string> GoogleDocMapper;
         public static Dictionary<string, string> MimeTypeMapper;
@@ -54,7 +50,6 @@ namespace PintheCloud.Managers
         private User User;
         private string RootFodlerId = String.Empty;
         private TaskCompletionSource<bool> tcs = null;
-
         #endregion
 
 
@@ -165,8 +160,6 @@ namespace PintheCloud.Managers
         {
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_USER_KEY);
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_SIGN_IN_KEY);
-            this.FoldersTree.Clear();
-            this.FolderRootTree.Clear();
             this.CurrentAccount = null;
         }
 

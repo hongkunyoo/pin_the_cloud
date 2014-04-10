@@ -209,7 +209,7 @@
                         <phone:LongListSelector x:Name="uiMySpotList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiSpotListItemTemplate}" Visibility="Collapsed" SelectionChanged="uiMySpotList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" />
                     </Grid>
                 </phone:PivotItem>
-                <phone:PivotItem x:Name="uiMyPickPivot" Header="{Binding LocalizedResources.MyPick, Source={StaticResource LocalizedStrings}}" Margin="0">
+                <phone:PivotItem x:Name="uiMyPickPivot" Header="{Binding LocalizedResources.Local, Source={StaticResource LocalizedStrings}}" Margin="0">
                     <Grid>
                         <Grid.Resources>
                             <DataTemplate x:Key="uiFileListItemTemplate">

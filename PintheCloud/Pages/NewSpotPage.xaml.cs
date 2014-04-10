@@ -175,18 +175,28 @@ namespace PintheCloud.Pages
                     try
                     {
                         // Wait sign in tastk
-                        // Make a new spot.
+                        // Get this Ptc account to make a new spot
                         await TaskHelper.WaitTask(App.AccountManager.GetPtcId());
                         PtcAccount account = await App.AccountManager.GetPtcAccountAsync();
-                        if (await this.PinSpotAsync(spotName, account.Email, account.Name, isPrivate, spotPassword))
-                        {
-                            string parameters = "?spotId=" + this.SpotId + "&spotName=" + spotName + "&accountId=" + account.Email + "&accountName=" + account.Name;
-                            NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE + parameters, UriKind.Relative));
-                        }
+
+                        // Make a new spot around position where the user is.
+                        Geoposition geo = await GeoHelper.GetGeopositionAsync();
+                        SpotObject spotObject = new SpotObject(spotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, account.Email, account.Name, 0, isPrivate, spotPassword, DateTime.Now.ToString());
+                        await App.SpotManager.CreateSpotAsync(spotObject);
+                        ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
+                        this.SpotId = spotObject.Id;
+
+                        // Move to Explorer page which is in the spot.
+                        string parameters = "?spotId=" + this.SpotId + "&spotName=" + spotName + "&accountId=" + account.Email + "&accountName=" + account.Name;
+                        NavigationService.Navigate(new Uri(EventHelper.EXPLORER_PAGE + parameters, UriKind.Relative));
                     }
                     catch
                     {
-                        MessageBox.Show(AppResources.BadCreateSpotMessage, AppResources.BadCreateSpotCaption, MessageBoxButton.OK);
+                        // Show Pining message and Progress Indicator
+                        base.Dispatcher.BeginInvoke(() =>
+                        {
+                            uiNewSpotMessage.Text = AppResources.BadCreateSpotMessage;
+                        });
                     }
                     finally
                     {
@@ -202,31 +212,6 @@ namespace PintheCloud.Pages
             {
                 MessageBox.Show(AppResources.InternetUnavailableMessage, AppResources.InternetUnavailableCaption, MessageBoxButton.OK);
             }
-        }
-
-
-        private async Task<bool> PinSpotAsync(string spotName, string accountId, string accountName, bool isPrivate, string spotPassword)
-        {
-            // Pin spot
-            Geoposition geo = await GeoHelper.GetGeopositionAsync();
-            SpotObject spotObject = new SpotObject(spotName, geo.Coordinate.Latitude, geo.Coordinate.Longitude, accountId, accountName, 0, isPrivate, spotPassword, DateTime.Now.ToString());
-            bool result = await App.SpotManager.CreateSpotAsync(spotObject);
-            if (result)
-            {
-                ((SpotViewModel)PhoneApplicationService.Current.State[SPOT_VIEW_MODEL_KEY]).IsDataLoaded = false;
-                this.SpotId = spotObject.Id;
-            }
-            else
-            {
-                base.Dispatcher.BeginInvoke(() =>
-                {
-                    uiNewSpotMessage.Text = AppResources.BadPinSpotMessage;
-                });
-            }
-
-            // Hide progress message
-            base.SetProgressIndicator(false);
-            return result;
         }
     }
 }

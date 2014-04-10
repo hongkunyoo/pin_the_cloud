@@ -46,45 +46,38 @@ namespace PintheCloud.Managers
         public async Task<bool> SignIn()
         {
             this.tcs = new TaskCompletionSource<bool>();
-
-            // If it haven't registerd live client, register
-            LiveConnectClient liveClient = await this.GetLiveConnectClientAsync();
-            if (liveClient != null)
+            try
             {
-                try
-                {
-                    // Get id and name.
-                    this.LiveClient = liveClient;
-                    LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
-                    string accountId = (string)operationResult.Result["id"];
-                    string accountUserName = (string)operationResult.Result["name"];
+                // If it haven't registerd live client, register
+                LiveConnectClient liveClient = await this.GetLiveConnectClientAsync();
+                this.LiveClient = liveClient;
 
-                    // Register account
-                    await TaskHelper.WaitTask(App.AccountManager.GetPtcId());
-                    StorageAccount storageAccount = await App.AccountManager.GetStorageAccountAsync(accountId);
-                    if (storageAccount == null)
-                    {
-                        storageAccount = new StorageAccount();
-                        storageAccount.Id = accountId;
-                        storageAccount.StorageName = this.GetStorageName();
-                        storageAccount.UserName = accountUserName;
-                        storageAccount.UsedSize = 0.0;
-                        await App.AccountManager.CreateStorageAccountAsync(storageAccount);
-                    }
-                    this.CurrentAccount = storageAccount;
+                // Get id and name.
+                LiveOperationResult operationResult = await this.LiveClient.GetAsync("me");
+                string accountId = (string)operationResult.Result["id"];
+                string accountUserName = (string)operationResult.Result["name"];
 
-                    // Save sign in setting.
-                    App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
-                    App.ApplicationSettings.Save();
-                    TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
-                    tcs.SetResult(true);
-                }
-                catch
+                // Register account
+                await TaskHelper.WaitTask(App.AccountManager.GetPtcId());
+                StorageAccount storageAccount = await App.AccountManager.GetStorageAccountAsync(accountId);
+                if (storageAccount == null)
                 {
-                    tcs.SetResult(false);
+                    storageAccount = new StorageAccount();
+                    storageAccount.Id = accountId;
+                    storageAccount.StorageName = this.GetStorageName();
+                    storageAccount.UserName = accountUserName;
+                    storageAccount.UsedSize = 0.0;
+                    await App.AccountManager.CreateStorageAccountAsync(storageAccount);
                 }
+                this.CurrentAccount = storageAccount;
+
+                // Save sign in setting.
+                App.ApplicationSettings[ONE_DRIVE_SIGN_IN_KEY] = true;
+                App.ApplicationSettings.Save();
+                TaskHelper.AddTask(TaskHelper.STORAGE_EXPLORER_SYNC + this.GetStorageName(), StorageExplorer.Synchronize(this.GetStorageName()));
+                tcs.SetResult(true);
             }
-            else
+            catch
             {
                 tcs.SetResult(false);
             }
@@ -296,35 +289,19 @@ namespace PintheCloud.Managers
             string[] scopes = new[] { "wl.basic", "wl.signin", "wl.offline_access", "wl.skydrive", "wl.skydrive_update", "wl.contacts_skydrive" };
             LiveLoginResult liveLoginResult = null;
 
-            // Get Current live connection session
             try
             {
+                // Get Current live connection session
+                // If session doesn't exist, get new one.
                 liveLoginResult = await liveAuthClient.InitializeAsync(scopes);
-            }
-            catch
-            {
-                return null;
-            }
-
-            // If session doesn't exist, get new one.
-            // Otherwise, get the session.
-            if (liveLoginResult.Status != LiveConnectSessionStatus.Connected)
-            {
-                try
-                {
+                if (liveLoginResult.Status != LiveConnectSessionStatus.Connected)
                     liveLoginResult = await liveAuthClient.LoginAsync(scopes);
-                }
-                catch
-                {
-                    return null;
-                }
             }
-
-            // Get Client using session which we get above
-            if (liveLoginResult.Session == null)
-                return null;
-            else
-                return new LiveConnectClient(liveLoginResult.Session);
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+            return new LiveConnectClient(liveLoginResult.Session);
         }
 
 

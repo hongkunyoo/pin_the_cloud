@@ -71,11 +71,11 @@ namespace PintheCloud.Helpers
 
         public async static Task<bool> Synchronize(string key)
         {
+            IStorageManager storageManager = StorageHelper.GetStorageManager(key);
             try
             {
                 // Wait sign in before sync
-                IStorageManager Storage = StorageHelper.GetStorageManager(key);
-                await TaskHelper.WaitSignInTask(Storage.GetStorageName());
+                await TaskHelper.WaitSignInTask(storageManager.GetStorageName());
 
                 // Fetching from SQL
                 if (App.ApplicationSettings.Contains(SYNC_KEYS + key))
@@ -114,9 +114,9 @@ namespace PintheCloud.Helpers
                 else
                 {
                     System.Diagnostics.Debug.WriteLine("Fetching From Server");
-                    if (Storage.IsSignIn())
+                    if (storageManager.IsSignIn())
                     {
-                        FileObject rootFolder = await Storage.Synchronize();
+                        FileObject rootFolder = await storageManager.Synchronize();
                         if (DictionaryRoot.ContainsKey(key))
                             DictionaryRoot.Remove(key);
                         DictionaryRoot.Add(key, rootFolder);
@@ -149,6 +149,7 @@ namespace PintheCloud.Helpers
             }
             catch
             {
+                storageManager.SignOut();
                 return false;
             }
             return true;

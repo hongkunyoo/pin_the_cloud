@@ -106,15 +106,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Create Spot Error과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string BadCreateSpotCaption {
-            get {
-                return ResourceManager.GetString("BadCreateSpotCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Create spot process met error. Please try it again과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string BadCreateSpotMessage {
@@ -183,15 +174,6 @@ namespace PintheCloud.Resources {
         public static string BadLocationServiceMessage {
             get {
                 return ResourceManager.GetString("BadLocationServiceMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Pin spot process met error. Please try it again.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string BadPinSpotMessage {
-            get {
-                return ResourceManager.GetString("BadPinSpotMessage", resourceCulture);
             }
         }
         
@@ -457,6 +439,15 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
+        ///   Local과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string Local {
+            get {
+                return ResourceManager.GetString("Local", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Location Access과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string LocationAccessCaption {
@@ -516,15 +507,6 @@ namespace PintheCloud.Resources {
         public static string Meter {
             get {
                 return ResourceManager.GetString("Meter", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   My Pick과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string MyPick {
-            get {
-                return ResourceManager.GetString("MyPick", resourceCulture);
             }
         }
         

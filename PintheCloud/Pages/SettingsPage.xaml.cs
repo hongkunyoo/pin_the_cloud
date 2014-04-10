@@ -459,11 +459,11 @@ namespace PintheCloud.Pages
             base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, message);
             base.SetProgressIndicator(true);
 
-            // If there is my spots, Clear and Add spots to list
-            // Otherwise, Show none message.
-            List<SpotObject> spots = await App.SpotManager.GetMySpotList();
-            if (spots != null)
+            try
             {
+                // If there is my spots, Clear and Add spots to list
+                // Otherwise, Show none message.
+                List<SpotObject> spots = await App.SpotManager.GetMySpotList();
                 if (spots.Count > 0)  // There are my spots
                 {
                     base.Dispatcher.BeginInvoke(() =>
@@ -479,7 +479,7 @@ namespace PintheCloud.Pages
                     base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.NoMySpotMessage);
                 }
             }
-            else
+            catch
             {
                 base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.BadLoadingSpotMessage);
             }
