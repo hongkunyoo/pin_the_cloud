@@ -18,57 +18,6 @@ namespace PintheCloud.Helpers
         private static string SYNC_KEYS = "SYNC_KEYS";
         private static string ROOT_ID = "ROOT_ID";
 
-        /*
-        public async static bool SynchronizeAll()
-        {
-            if (App.ApplicationSettings.Contains("0"))
-            {
-                ////////////////////////////////////////////
-                // TODO : Retrieve Data from DATABASE;
-                ////////////////////////////////////////////
-                return true;
-            }
-            else
-            {
-                try
-                {
-                    using (var itr = StorageHelper.GetStorageEnumerator())
-                    {
-                        while (itr.MoveNext())
-                        {
-                            if (itr.Current.IsSignIn())
-                            {
-                                if (await TaskHelper.WaitSignInTask(itr.Current.GetStorageName()))
-                                {
-                                    FileObject rootFolder = await itr.Current.Synchronize();
-                                    DictionaryRoot.Add(itr.Current.GetStorageName(), rootFolder);
-
-                                    Stack<FileObject> stack = new Stack<FileObject>();
-                                    stack.Push(rootFolder);
-                                    DictionaryTree.Add(itr.Current.GetStorageName(),stack);
-                                }
-                            }
-                        }
-                    }
-
-                    ////////////////////////////////////////////
-                    // TODO : SAVE Data to DATABASE;
-                    ////////////////////////////////////////////
-
-                    //App.ApplicationSettings[SQL_DATABASE_SET] = true;
-                    System.Diagnostics.Debug.WriteLine("Sychronizing Finished!!");
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-            
-        }
-        */
-
-
         public async static Task<bool> Synchronize(string key)
         {
             IStorageManager storageManager = StorageHelper.GetStorageManager(key);
@@ -95,6 +44,7 @@ namespace PintheCloud.Helpers
                         FileObjectSQL rootFos = getSqlList.First<FileObjectSQL>();
 
                         //////////////// This line makes slow ////////////////
+                        FileObject.Test(db, ROOT_ID);
                         FileObject rootFolder = FileObject.ConvertToFileObject(db, rootFos);
                         //////////////////////////////////////////////////////
 
@@ -109,13 +59,9 @@ namespace PintheCloud.Helpers
                         DictionaryTree.Add(key, stack);
                     }
                 }
-
                 // Fetching from Server
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("Fetching From Server");
-                    if (storageManager.IsSignIn())
-                    {
                         FileObject rootFolder = await storageManager.Synchronize();
                         if (DictionaryRoot.ContainsKey(key))
                             DictionaryRoot.Remove(key);
@@ -127,6 +73,9 @@ namespace PintheCloud.Helpers
                             DictionaryTree.Remove(key);
                         DictionaryTree.Add(key, stack);
 
+                    System.Diagnostics.Debug.WriteLine("Fetching From Server");
+                    if (storageManager.IsSignIn())
+                    {
                         // Saving to SQL job
                         using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
                         {
@@ -135,7 +84,7 @@ namespace PintheCloud.Helpers
                             db.CreateDatabase();
 
                             List<FileObjectSQL> sqlList = new List<FileObjectSQL>();
-                            FileObject.ConvertToFileObjectSQL(sqlList, rootFolder, ROOT_ID);
+                            FileObject.ConvertToFileObjectSQL(sqlList, rootFolder, ROOT_ID, 0);
                             for (var i = 0; i < sqlList.Count; i++)
                                 db.FileItems.InsertOnSubmit(sqlList[i]);
                             db.SubmitChanges();
@@ -145,6 +94,7 @@ namespace PintheCloud.Helpers
                         App.ApplicationSettings.Add(SYNC_KEYS + key, true);
                         App.ApplicationSettings.Save();
                     }
+                    System.Diagnostics.Debug.WriteLine("Ended Fetching From Server");
                 }
             }
             catch

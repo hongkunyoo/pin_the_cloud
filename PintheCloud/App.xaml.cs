@@ -82,6 +82,7 @@ namespace PintheCloud
             // Manager
             SpotManager = new SpotManager();
             Geolocator = new Geolocator();
+            //Geolocator.DesiredAccuracy = PositionAccuracy.High;
             BlobStorageManager = new BlobStorageManager();
             LocalStorageManager = new LocalStorageManager();
 

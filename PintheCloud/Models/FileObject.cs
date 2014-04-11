@@ -171,7 +171,7 @@ namespace PintheCloud.Models
         #endregion
 
 
-        public static void ConvertToFileObjectSQL(List<FileObjectSQL> list, FileObject fo, string parentId)
+        public static void ConvertToFileObjectSQL(List<FileObjectSQL> list, FileObject fo, string parentId, int level)
         {
             if (list == null) System.Diagnostics.Debugger.Break();
             FileObjectSQL fos = new FileObjectSQL();
@@ -185,6 +185,7 @@ namespace PintheCloud.Models
             fos.DownloadUrl = fo.DownloadUrl;
             fos.MimeType = fo.MimeType;
             fos.ParentId = parentId;
+            fos.Level = level;
             if (fo.Owner != null)
             {
                 fos.ProfileId = fo.Owner.Id;
@@ -196,9 +197,10 @@ namespace PintheCloud.Models
             list.Add(fos);
             if (fo.FileList != null)
             {
+                level++;
                 for (var i = 0; i < fo.FileList.Count; i++)
                 {
-                    ConvertToFileObjectSQL(list, fo.FileList[i], fo.Id);
+                    ConvertToFileObjectSQL(list, fo.FileList[i], fo.Id, level);
                 }
             }
         }
@@ -225,11 +227,59 @@ namespace PintheCloud.Models
         public static List<FileObject> GetChildList(FileObjectDataContext db, string ParentId)
         {
             var dbList = from FileObjectSQL fos in db.FileItems where fos.ParentId == ParentId select fos;
+            //var vv = dbList.GroupBy<FileObjectSQL,string>(x=> x.Level);
             List<FileObjectSQL> sqlList = dbList.ToList<FileObjectSQL>();
             List<FileObject> list = new List<FileObject>();
             for (var i = 0; i < sqlList.Count; i++)
                 list.Add(ConvertToFileObject(db, sqlList[i]));
             return list;
+        }
+
+        public static void Test(FileObjectDataContext db, string ParentId)
+        {
+            FileObject temp = null;
+            List<FileObjectSQL> removeList = new List<FileObjectSQL>();
+            var dbList = from FileObjectSQL fos in db.FileItems select fos;
+            //var orderedList = dbList.OrderBy<FileObjectSQL, int>(x => x.Level);
+            var levelGroupedList = dbList.GroupBy<FileObjectSQL, int>(x => x.Level).ToList();
+            var ttt = levelGroupedList[0].ToList<FileObjectSQL>();
+
+
+            
+            
+            //List<FileObjectSQL> list = orderedGroupedList.ToList<FileObjectSQL>();
+            //for (var i = 0; i < list.Count; i++)
+            //{
+            //    temp = ConvertToFileObject(list[i]);
+            //    temp.FileList = new List<FileObject>();
+            //    for (var j = i + 1; j < list.Count; j++)
+            //    {
+            //        if (ParentId.Equals(list[j].ParentId))
+            //        {
+            //            temp.FileList.Add(ConvertToFileObject(list[j]));
+            //            removeList.Add(list[j]);
+            //        }
+            //        else
+            //        {
+                        
+            //            break;
+            //        }
+            //    }
+            //}
+        }
+        public static FileObject ConvertToFileObject(FileObjectSQL fos)
+        {
+            FileObject fo = new FileObject(fos.Id, fos.Name, fos.Size, fos.Type, fos.Extension, fos.UpdateAt, fos.Thumbnail, fos.DownloadUrl, fos.MimeType);
+            fo.SpotId = fos.SpotId;
+            if (fos.ProfileName != null && fos.ProfileId != null && fos.ProfileEmail != null && fos.ProfilePhoneNumber != null)
+            {
+                fo.Owner = new ProfileObject();
+                fo.Owner.Id = fos.ProfileId;
+                fo.Owner.Email = fos.ProfileEmail;
+                fo.Owner.Name = fos.ProfileName;
+                fo.Owner.PhoneNumber = fos.ProfilePhoneNumber;
+            }
+            return fo;
         }
     }
 
