@@ -445,50 +445,6 @@ namespace PintheCloud.Pages
         }
 
 
-        // Refresh spot list.
-        private void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
-        {
-            this.MySpotViewModel.IsDataLoaded = false;
-            this.SetMySpotPivot(AppResources.Refreshing);
-        }
-
-
-        private async void SetMySpotListAsync(string message)
-        {
-            // Show progress indicator 
-            base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, message);
-            base.SetProgressIndicator(true);
-
-            try
-            {
-                // If there is my spots, Clear and Add spots to list
-                // Otherwise, Show none message.
-                List<SpotObject> spots = await App.SpotManager.GetMySpotList();
-                if (spots.Count > 0)  // There are my spots
-                {
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        this.MySpotViewModel.IsDataLoaded = true;
-                        uiMySpotList.Visibility = Visibility.Visible;
-                        uiMySpotMessage.Visibility = Visibility.Collapsed;
-                        this.MySpotViewModel.SetItems(spots);
-                    });
-                }
-                else  // There are not my spots
-                {
-                    base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.NoMySpotMessage);
-                }
-            }
-            catch
-            {
-                base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.BadLoadingSpotMessage);
-            }
-
-            // Hide progress indicator
-            base.SetProgressIndicator(false);
-        }
-
-
         private async void DeleteSpotAsync(SpotViewItem spotViewItem)
         {
             // Show Deleting message
@@ -544,6 +500,50 @@ namespace PintheCloud.Pages
             ((Image)((Button)sender).Content).Source = new BitmapImage(new Uri(MY_SPOT_DELETE_BUTTON_IMAGE_URI, UriKind.Relative));
         }
 
+
+        // Refresh spot list.
+        private void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
+        {
+            this.MySpotViewModel.IsDataLoaded = false;
+            this.SetMySpotPivot(AppResources.Refreshing);
+        }
+
+
+        private async void SetMySpotListAsync(string message)
+        {
+            // Show progress indicator 
+            base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, message);
+            base.SetProgressIndicator(true);
+
+            try
+            {
+                // If there is my spots, Clear and Add spots to list
+                // Otherwise, Show none message.
+                List<SpotObject> spots = await App.SpotManager.GetMySpotList();
+                if (spots.Count > 0)  // There are my spots
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        this.MySpotViewModel.IsDataLoaded = true;
+                        uiMySpotList.Visibility = Visibility.Visible;
+                        uiMySpotMessage.Visibility = Visibility.Collapsed;
+                        this.MySpotViewModel.SetItems(spots);
+                    });
+                }
+                else  // There are not my spots
+                {
+                    base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.NoMySpotMessage);
+                }
+            }
+            catch
+            {
+                base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.BadLoadingSpotMessage);
+            }
+
+            // Hide progress indicator
+            base.SetProgressIndicator(false);
+        }
+  
 
         private void uiPtcAccountSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {

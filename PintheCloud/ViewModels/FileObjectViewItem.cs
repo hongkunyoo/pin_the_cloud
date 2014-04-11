@@ -34,6 +34,23 @@ namespace PintheCloud.ViewModels
             }
         }
 
+        private bool selectFileImagePress;
+        public bool SelectFileImagePress
+        {
+            get
+            {
+                return selectFileImagePress;
+            }
+            set
+            {
+                if (selectFileImagePress != value)
+                {
+                    selectFileImagePress = value;
+                    NotifyPropertyChanged("SelectFileImagePress");
+                }
+            }
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged(String propertyName)
