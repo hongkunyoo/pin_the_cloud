@@ -18,6 +18,8 @@ namespace PintheCloud.Helpers
         {
             CurrentManager = StorageHelper.GetStorageManager(key);
         }
+
+
         public static IStorageManager GetCurrentStorage()
         {
             return CurrentManager;
@@ -33,13 +35,14 @@ namespace PintheCloud.Helpers
 
         public static IStorageManager GetMainStorage()
         {
-            IStorageManager retStorage = StorageHelper.GetStorageManager(MAIN_PLATFORM_TYPE_KEY);
-            if (!retStorage.IsSignIn())
-            {
-                List<IStorageManager> list = StorageHelper.GetStorageList();
-                for (var i = 0; i < list.Count; i++)
-                    if (list[i].IsSignIn()) return list[i];
-            }
+            //IStorageManager retStorage = StorageHelper.GetStorageManager(MAIN_PLATFORM_TYPE_KEY);
+            IStorageManager retStorage = StorageHelper.GetStorageManager((string)App.ApplicationSettings[MAIN_PLATFORM_TYPE_KEY]);
+            //if (!retStorage.IsSignIn())
+            //{
+            //    List<IStorageManager> list = StorageHelper.GetStorageList();
+            //    for (var i = 0; i < list.Count; i++)
+            //        if (list[i].IsSignIn()) return list[i];
+            //}
             return retStorage;
         }
 
@@ -47,18 +50,18 @@ namespace PintheCloud.Helpers
         public static void SetStorageToMainPlatform()
         {
             if (App.ApplicationSettings.Contains(MAIN_PLATFORM_TYPE_KEY))
-            {
                 SetStorageTo((string)App.ApplicationSettings[MAIN_PLATFORM_TYPE_KEY]);
-            }
             else
-            {
                 SetStorageTo("DEFAULT");
-            }
         }
+
+
         public static int GetCurrentIndex()
         {
             return StorageHelper.GetStorageList().IndexOf(CurrentManager);
         }
+
+
         public static int GetStorageIndex(string key)
         {
             return StorageHelper.GetStorageList().IndexOf(StorageHelper.GetStorageManager(key));

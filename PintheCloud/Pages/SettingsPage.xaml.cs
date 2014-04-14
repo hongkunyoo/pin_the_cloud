@@ -314,16 +314,13 @@ namespace PintheCloud.Pages
         {
             // Set check image
             Button mainButton = (Button)sender;
-            System.Diagnostics.Debug.WriteLine(mainButton.Tag.ToString());
-
-            /////////////////////////////////////////////////////////////////////
-            // TODO : SEUNGMIN, This Code does not work. I don't know why.
-            /////////////////////////////////////////////////////////////////////
             ((Image)mainButton.Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI, UriKind.Relative));
 
-            // Set Signbutton background
+            // Set Main and Current Platform
             Switcher.SetMainPlatform(mainButton.Tag.ToString());
             Switcher.SetStorageTo(mainButton.Tag.ToString());
+
+            // Set Signbutton background
             Grid signButtonGrid = this.SignButtonGrids[Switcher.GetCurrentIndex()];
             signButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_PLATFORM_BUTTON_COLOR));
             signButtonGrid.Opacity = MAIN_PLATFORM_BUTTON_OPACITY;
@@ -334,7 +331,6 @@ namespace PintheCloud.Pages
                 if (!StorageHelper.GetStorageList()[i].GetStorageName().Equals(Switcher.GetMainStorage().GetStorageName()))
                 {
                     ((Image)this.MainButtons[i].Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_NOT_IMAGE_URI, UriKind.Relative));
-
                     Grid restSignButtonGrid = (Grid)this.SignButtonGrids[i];
                     restSignButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_NOT_PLATFORM_BUTTON_COLOR));
                     restSignButtonGrid.Opacity = MAIN_NOT_PLATFORM_BUTTON_OPACITY;

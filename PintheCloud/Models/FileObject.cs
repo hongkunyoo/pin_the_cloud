@@ -95,9 +95,7 @@ namespace PintheCloud.Models
         public async Task<StorageFile> DownloadToLocal(StorageFile file = null)
         {
             if (file == null)
-            {
                 file = await ApplicationData.Current.LocalFolder.CreateFileAsync(this.Name, CreationCollisionOption.ReplaceExisting);
-            }
             return await App.BlobStorageManager.DownloadFileAsync(this.Id, file);
         }
 

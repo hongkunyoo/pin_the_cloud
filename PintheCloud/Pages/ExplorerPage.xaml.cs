@@ -101,7 +101,6 @@ namespace PintheCloud.Pages
             // Set event by previous page
             Context context = EventHelper.GetContext(EventHelper.EXPLORER_PAGE);
             context.HandleEvent(EventHelper.NEW_SPOT_PAGE, this.PreviousNewSpotPage);
-            context.HandleEvent(EventHelper.SIGNIN_STORAGE_PAGE, this.PreviousSignInStoragePage);
         }
 
 
@@ -134,13 +133,6 @@ namespace PintheCloud.Pages
         private void PreviousNewSpotPage()
         {
             NavigationService.RemoveBackEntry();
-        }
-
-
-        private void PreviousSignInStoragePage()
-        {
-            for (int i = 0; !NavigationService.BackStack.First().Source.ToString().Contains(EventHelper.SPOT_LIST_PAGE); i++)
-                NavigationService.RemoveBackEntry();    
         }
 
 
@@ -680,7 +672,7 @@ namespace PintheCloud.Pages
         }
 
 
-        private void uiPickFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private async void uiPickFileList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             // Get Selected File Obejct
             // Set selected item to null for next selection of list item. 
@@ -722,11 +714,27 @@ namespace PintheCloud.Pages
                                 }
                                 else
                                 {
-                                    MessageBoxResult result = MessageBox.Show(AppResources.NoMainCloudSignInMessage, AppResources.MainCloud, MessageBoxButton.OKCancel);
+                                    MessageBoxResult result = MessageBox.Show(AppResources.NoCurrentCloudSignInMessage, storageManager.GetStorageName(), MessageBoxButton.OKCancel);
                                     if (result == MessageBoxResult.OK)
                                     {
-                                        string parameters = "?spotId=" + this.SpotId + "&spotName=" + this.SpotName + "&accountId=" + this.AccountId + "&accountName=" + this.AccountName;
-                                        NavigationService.Navigate(new Uri(EventHelper.SIGNIN_STORAGE_PAGE + parameters, UriKind.Relative));
+                                        // Show Loading message and save is login true for pivot moving action while sign in.
+                                        base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, AppResources.DoingSignIn);
+
+                                        try
+                                        {
+                                            if (!storageManager.IsSigningIn())
+                                                TaskHelper.AddSignInTask(storageManager.GetStorageName(), storageManager.SignIn());
+                                            await TaskHelper.WaitSignInTask(storageManager.GetStorageName());
+                                        }
+                                        catch
+                                        {
+                                            base.Dispatcher.BeginInvoke(() =>
+                                            {
+                                                uiPickFileList.Visibility = Visibility.Visible;
+                                                uiPickFileListMessage.Visibility = Visibility.Collapsed;
+                                                MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
+                                            });
+                                        }
                                     }
                                 }
                             }
