@@ -11,7 +11,7 @@ namespace PintheCloud.Helpers
     public static class Switcher
     {
         private static IStorageManager CurrentManager = null;
-        private static string MAIN_PLATFORM_TYPE_KEY = "MAIN_PLATFORM_TYPE_KEY";
+        public static string MAIN_PLATFORM_TYPE_KEY = "MAIN_PLATFORM_TYPE_KEY";
         
 
         public static void SetStorageTo(string key)
@@ -35,14 +35,7 @@ namespace PintheCloud.Helpers
 
         public static IStorageManager GetMainStorage()
         {
-            //IStorageManager retStorage = StorageHelper.GetStorageManager(MAIN_PLATFORM_TYPE_KEY);
             IStorageManager retStorage = StorageHelper.GetStorageManager((string)App.ApplicationSettings[MAIN_PLATFORM_TYPE_KEY]);
-            //if (!retStorage.IsSignIn())
-            //{
-            //    List<IStorageManager> list = StorageHelper.GetStorageList();
-            //    for (var i = 0; i < list.Count; i++)
-            //        if (list[i].IsSignIn()) return list[i];
-            //}
             return retStorage;
         }
 

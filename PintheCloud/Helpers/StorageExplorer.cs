@@ -149,7 +149,6 @@ namespace PintheCloud.Helpers
             }
             catch
             {
-                storageManager.SignOut();
                 return false;
             }
             return true;

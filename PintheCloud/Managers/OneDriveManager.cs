@@ -335,9 +335,7 @@ namespace PintheCloud.Managers
             {
                 List<FileObject> list = await this.GetFilesFromFolderAsync(fileObject.Id);
                 foreach (FileObject file in list)
-                {
                     file.FileList = await _GetChildAsync(file);
-                }
                 return list;
             }
             else
