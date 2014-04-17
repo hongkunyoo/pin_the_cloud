@@ -248,13 +248,15 @@ namespace PintheCloud.Managers
         public async Task<List<FileObject>> GetFilesFromFolderAsync(string folderId)
         {
             List<FileObject> list = new List<FileObject>();
+            
+            //ChildList childList = await this.Service.Children.List(folderId).ExecuteAsync();
 
             // Get childern by q
             ChildrenResource.ListRequest request = this.Service.Children.List(folderId);
             request.Q = "'root' in parents and trashed=false";
             ChildList childList = await request.ExecuteAsync();
 
-            foreach(ChildReference child in childList.Items)
+            foreach (ChildReference child in childList.Items)
                 list.Add(await this.GetFileAsync(child.Id));
             list.RemoveAll(item => item == null);
             return list;
@@ -290,6 +292,7 @@ namespace PintheCloud.Managers
             }
             return true;
         }
+
 
         public async Task<FileObject> Synchronize()
         {

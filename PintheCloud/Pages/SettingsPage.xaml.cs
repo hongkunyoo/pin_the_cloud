@@ -261,6 +261,7 @@ namespace PintheCloud.Pages
                 if (!iStorageManager.IsSignIn()) throw new Exception();
                 await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
                 StorageAccount storageAccount = await iStorageManager.GetStorageAccountAsync();
+                if (storageAccount == null) throw new Exception();
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     this.SignButtonTextBlocks[platformIndex].Text = storageAccount.UserName;
