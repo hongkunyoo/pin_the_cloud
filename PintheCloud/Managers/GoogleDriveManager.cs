@@ -160,6 +160,7 @@ namespace PintheCloud.Managers
         {
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_USER_KEY);
             App.ApplicationSettings.Remove(GOOGLE_DRIVE_SIGN_IN_KEY);
+            StorageExplorer.RemoveKey(this.GetStorageName());
             this.CurrentAccount = null;
         }
 

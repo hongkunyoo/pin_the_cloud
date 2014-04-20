@@ -235,37 +235,119 @@ namespace PintheCloud.Models
             return list;
         }
 
-        public static void Test(FileObjectDataContext db, string ParentId)
+        public static FileObject Test(FileObjectDataContext db, string ParentId)
         {
-            FileObject temp = null;
-            List<FileObjectSQL> removeList = new List<FileObjectSQL>();
+            Stack<FileObject> stack = new Stack<FileObject>();
+            FileObject root = null;
             var dbList = from FileObjectSQL fos in db.FileItems select fos;
-            //var orderedList = dbList.OrderBy<FileObjectSQL, int>(x => x.Level);
-            var levelGroupedList = dbList.GroupBy<FileObjectSQL, int>(x => x.Level).ToList();
-            var ttt = levelGroupedList[0].ToList<FileObjectSQL>();
+            //var dbList2 = from FileObjectSQL fos in db.FileItems group fos by fos.ParentId into fos select fos;
+            //List<FileObjectSQL> FindChildList = dbList.ToList<FileObjectSQL>();
+            //var levelGroupedList = dbList.GroupBy<FileObjectSQL, int>(x => x.Level).ToList();
 
+            //var test = dbList.GroupBy<FileObjectSQL, int>(x => x.Level);
+            var list = dbList.ToList();
+            root = ConvertToFileObject(list[0]);
 
-            
-            
-            //List<FileObjectSQL> list = orderedGroupedList.ToList<FileObjectSQL>();
-            //for (var i = 0; i < list.Count; i++)
-            //{
-            //    temp = ConvertToFileObject(list[i]);
-            //    temp.FileList = new List<FileObject>();
-            //    for (var j = i + 1; j < list.Count; j++)
-            //    {
-            //        if (ParentId.Equals(list[j].ParentId))
-            //        {
-            //            temp.FileList.Add(ConvertToFileObject(list[j]));
-            //            removeList.Add(list[j]);
-            //        }
-            //        else
-            //        {
-                        
-            //            break;
-            //        }
-            //    }
-            //}
+            stack.Push(root);
+            for (var i = 1; i < list.Count; i++)
+            {
+                var item = list[i];
+                
+                //System.Diagnostics.Debug.WriteLine("["+i+"] "+item.Id);
+                FileObject ff = ConvertToFileObject(item);
+
+                if (item.Type.Equals(PintheCloud.Models.FileObject.FileObjectType.FOLDER))
+                {
+                    try
+                    {
+                        if (item.ParentId.Equals(stack.Peek().Id))
+                        {
+                            //System.Diagnostics.Debug.WriteLine("add " + ff.Id + " to Parent " + stack.Peek().Id);
+                            stack.Peek().FileList.Add(ff);
+                            stack.Push(ff);
+                        }
+                        else
+                        {
+                            stack.Pop();
+                            if (item.ParentId.Equals(stack.Peek().Id))
+                            {
+                                //System.Diagnostics.Debug.WriteLine("add " + ff.Id + "to Parent " + stack.Peek().Id);
+                                stack.Peek().FileList.Add(ff);
+                                stack.Push(ff);
+                            }
+                            else
+                            {
+                                //System.Diagnostics.Debug.WriteLine("i-- from folder");
+                                i--;
+                            }
+
+                        }
+                    }
+                    catch
+                    {
+                        System.Diagnostics.Debug.WriteLine("in folder Error");
+                        System.Diagnostics.Debugger.Break();
+                    }
+                    
+                }
+                else
+                {
+                    try
+                    {
+                        if (item.ParentId.Equals(stack.Peek().Id))
+                        {
+                            try
+                            {
+                                //System.Diagnostics.Debug.WriteLine("add " + ff.Id + "to Parent " + stack.Peek().Id);
+                                stack.Peek().FileList.Add(ff);
+                            }
+                            catch
+                            {
+                                System.Diagnostics.Debugger.Break();
+                            }
+
+                        }
+                        else
+                        {
+                            try
+                            {
+                                stack.Pop();
+                            }
+                            catch
+                            {
+                                System.Diagnostics.Debugger.Break();
+                            }
+
+                            if (item.ParentId.Equals(stack.Peek().Id))
+                            {
+                                try
+                                {
+                                    //System.Diagnostics.Debug.WriteLine("add " + ff.Id + "to Parent " + stack.Peek().Id);
+                                    stack.Peek().FileList.Add(ff);
+                                }
+                                catch
+                                {
+                                    System.Diagnostics.Debugger.Break();
+                                }
+
+                            }
+                            else
+                            {
+                                //System.Diagnostics.Debug.WriteLine("i-- from file");
+                                i--;
+                            }
+
+                        }
+                    }
+                    catch
+                    {
+                        System.Diagnostics.Debugger.Break();
+                    }
+                }
+
+            }
+
+            return root;
         }
         public static FileObject ConvertToFileObject(FileObjectSQL fos)
         {
@@ -279,6 +361,8 @@ namespace PintheCloud.Models
                 fo.Owner.Name = fos.ProfileName;
                 fo.Owner.PhoneNumber = fos.ProfilePhoneNumber;
             }
+            if(fo.Type.Equals(FileObject.FileObjectType.FOLDER))
+                fo.FileList = new List<FileObject>();
             return fo;
         }
     }

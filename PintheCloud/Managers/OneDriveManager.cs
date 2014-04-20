@@ -106,6 +106,7 @@ namespace PintheCloud.Managers
             LiveAuthClient liveAuthClient = new LiveAuthClient(LIVE_CLIENT_ID);
             liveAuthClient.Logout();
             App.ApplicationSettings.Remove(ONE_DRIVE_SIGN_IN_KEY);
+            StorageExplorer.RemoveKey(this.GetStorageName());
             this.LiveClient = null;
             this.CurrentAccount = null;
         }

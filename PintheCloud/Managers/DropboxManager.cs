@@ -148,6 +148,7 @@ namespace PintheCloud.Managers
         {
             App.ApplicationSettings.Remove(DROPBOX_USER_KEY);
             App.ApplicationSettings.Remove(DROPBOX_SIGN_IN_KEY);
+            StorageExplorer.RemoveKey(this.GetStorageName());
             this._client = null;
             this.CurrentAccount = null;
         }
