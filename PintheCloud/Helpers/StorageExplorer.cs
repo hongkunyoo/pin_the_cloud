@@ -21,8 +21,8 @@ namespace PintheCloud.Helpers
         public async static Task<bool> Synchronize(string key)
         {
             IStorageManager storageManager = StorageHelper.GetStorageManager(key);
-            //try
-            //{
+            try
+            {
                 // Wait sign in before sync
                 await TaskHelper.WaitSignInTask(storageManager.GetStorageName());
 
@@ -123,13 +123,11 @@ namespace PintheCloud.Helpers
                     }
                     System.Diagnostics.Debug.WriteLine("Ended Fetching From Server");
                 }
-            //}
-            //catch
-            //{
-                //System.Diagnostics.Debugger.Break();
-                //storageManager.SignOut();
-                //return false;
-            //}
+            }
+            catch
+            {
+                return false;
+            }
             return true;
         }
 

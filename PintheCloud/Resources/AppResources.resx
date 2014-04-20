@@ -251,8 +251,8 @@
   <data name="Deleting" xml:space="preserve">
     <value>Deleting...</value>
   </data>
-  <data name="NoMainCloudSignInMessage" xml:space="preserve">
-    <value>Main cloud haven't been signed in. Please sign in.</value>
+  <data name="NoCurrentCloudSignInMessage" xml:space="preserve">
+    <value>Current cloud haven't been signed in. Please sign in.</value>
   </data>
   <data name="BadDeleteSpotMessage" xml:space="preserve">
     <value>Delete spot process met error. Please try it again.</value>
@@ -388,9 +388,6 @@
   </data>
   <data name="BadLoadingFileCaption" xml:space="preserve">
     <value>Loading File Error</value>
-  </data>
-  <data name="MainCloud" xml:space="preserve">
-    <value>Main Cloud</value>
   </data>
   <data name="BadCreateSpotMessage" xml:space="preserve">
     <value>Create spot process met error. Please try it again</value>

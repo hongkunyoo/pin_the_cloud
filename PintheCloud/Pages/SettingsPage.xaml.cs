@@ -261,6 +261,7 @@ namespace PintheCloud.Pages
                 if (!iStorageManager.IsSignIn()) throw new Exception();
                 await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
                 StorageAccount storageAccount = await iStorageManager.GetStorageAccountAsync();
+                if (storageAccount == null) throw new Exception();
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     this.SignButtonTextBlocks[platformIndex].Text = storageAccount.UserName;
@@ -314,16 +315,13 @@ namespace PintheCloud.Pages
         {
             // Set check image
             Button mainButton = (Button)sender;
-            System.Diagnostics.Debug.WriteLine(mainButton.Tag.ToString());
-
-            /////////////////////////////////////////////////////////////////////
-            // TODO : SEUNGMIN, This Code does not work. I don't know why.
-            /////////////////////////////////////////////////////////////////////
             ((Image)mainButton.Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_IMAGE_URI, UriKind.Relative));
 
-            // Set Signbutton background
+            // Set Main and Current Platform
             Switcher.SetMainPlatform(mainButton.Tag.ToString());
             Switcher.SetStorageTo(mainButton.Tag.ToString());
+
+            // Set Signbutton background
             Grid signButtonGrid = this.SignButtonGrids[Switcher.GetCurrentIndex()];
             signButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_PLATFORM_BUTTON_COLOR));
             signButtonGrid.Opacity = MAIN_PLATFORM_BUTTON_OPACITY;
@@ -334,7 +332,6 @@ namespace PintheCloud.Pages
                 if (!StorageHelper.GetStorageList()[i].GetStorageName().Equals(Switcher.GetMainStorage().GetStorageName()))
                 {
                     ((Image)this.MainButtons[i].Content).Source = new BitmapImage(new Uri(SETTING_ACCOUNT_MAIN_CHECK_NOT_IMAGE_URI, UriKind.Relative));
-
                     Grid restSignButtonGrid = (Grid)this.SignButtonGrids[i];
                     restSignButtonGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(MAIN_NOT_PLATFORM_BUTTON_COLOR));
                     restSignButtonGrid.Opacity = MAIN_NOT_PLATFORM_BUTTON_OPACITY;
@@ -445,50 +442,6 @@ namespace PintheCloud.Pages
         }
 
 
-        // Refresh spot list.
-        private void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
-        {
-            this.MySpotViewModel.IsDataLoaded = false;
-            this.SetMySpotPivot(AppResources.Refreshing);
-        }
-
-
-        private async void SetMySpotListAsync(string message)
-        {
-            // Show progress indicator 
-            base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, message);
-            base.SetProgressIndicator(true);
-
-            try
-            {
-                // If there is my spots, Clear and Add spots to list
-                // Otherwise, Show none message.
-                List<SpotObject> spots = await App.SpotManager.GetMySpotList();
-                if (spots.Count > 0)  // There are my spots
-                {
-                    base.Dispatcher.BeginInvoke(() =>
-                    {
-                        this.MySpotViewModel.IsDataLoaded = true;
-                        uiMySpotList.Visibility = Visibility.Visible;
-                        uiMySpotMessage.Visibility = Visibility.Collapsed;
-                        this.MySpotViewModel.SetItems(spots);
-                    });
-                }
-                else  // There are not my spots
-                {
-                    base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.NoMySpotMessage);
-                }
-            }
-            catch
-            {
-                base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.BadLoadingSpotMessage);
-            }
-
-            // Hide progress indicator
-            base.SetProgressIndicator(false);
-        }
-
-
         private async void DeleteSpotAsync(SpotViewItem spotViewItem)
         {
             // Show Deleting message
@@ -544,6 +497,50 @@ namespace PintheCloud.Pages
             ((Image)((Button)sender).Content).Source = new BitmapImage(new Uri(MY_SPOT_DELETE_BUTTON_IMAGE_URI, UriKind.Relative));
         }
 
+
+        // Refresh spot list.
+        private void uiAppBarRefreshButton_Click(object sender, System.EventArgs e)
+        {
+            this.MySpotViewModel.IsDataLoaded = false;
+            this.SetMySpotPivot(AppResources.Refreshing);
+        }
+
+
+        private async void SetMySpotListAsync(string message)
+        {
+            // Show progress indicator 
+            base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, message);
+            base.SetProgressIndicator(true);
+
+            try
+            {
+                // If there is my spots, Clear and Add spots to list
+                // Otherwise, Show none message.
+                List<SpotObject> spots = await App.SpotManager.GetMySpotList();
+                if (spots.Count > 0)  // There are my spots
+                {
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        this.MySpotViewModel.IsDataLoaded = true;
+                        uiMySpotList.Visibility = Visibility.Visible;
+                        uiMySpotMessage.Visibility = Visibility.Collapsed;
+                        this.MySpotViewModel.SetItems(spots);
+                    });
+                }
+                else  // There are not my spots
+                {
+                    base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.NoMySpotMessage);
+                }
+            }
+            catch
+            {
+                base.SetListUnableAndShowMessage(uiMySpotList, uiMySpotMessage, AppResources.BadLoadingSpotMessage);
+            }
+
+            // Hide progress indicator
+            base.SetProgressIndicator(false);
+        }
+  
 
         private void uiPtcAccountSignOutButton_Click(object sender, System.Windows.RoutedEventArgs e)
         {

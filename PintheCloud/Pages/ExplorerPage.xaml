@@ -43,8 +43,12 @@
         		<ColumnDefinition/>
         		<ColumnDefinition/>
         	</Grid.ColumnDefinitions>
-        	<Image x:Name="uiPickPivotImage" Source="/Assets/pajeon/at_here/130315_png/tab_pick_highlight.png" Stretch="UniformToFill"/>
-        	<Image x:Name="uiPinPivotImage" Source="/Assets/pajeon/at_here/130315_png/tab_pin.png" Grid.Column="1" Stretch="UniformToFill"/>
+        	<Button x:Name="uiPickPivotButton" Style="{StaticResource CustomButtonStyle}" Click="uiPickPivotButton_Click">
+        		<Image x:Name="uiPickPivotImage" Source="/Assets/pajeon/at_here/130315_png/tab_pick_highlight.png" Stretch="None"/>
+        	</Button>
+        	<Button x:Name="uiPinPivotButton" Grid.Column="1" Style="{StaticResource CustomButtonStyle}" Click="uiPinPivotButton_Click">
+        		<Image x:Name="uiPinPivotImage" Source="/Assets/pajeon/at_here/130315_png/tab_pin.png" Stretch="None"/>
+        	</Button>
         </Grid>
         <Grid x:Name="ContentPanel" Grid.Row="2">
             <Grid.Resources>
@@ -69,7 +73,9 @@
 										<TextBlock x:Name="uiSizeUnit" TextWrapping="Wrap" Text="{Binding SizeUnit}" FontSize="22" Foreground="#FF919FA6" FontFamily="Segoe WP Light"/>
 									</StackPanel>
 								</StackPanel>
-								<Image x:Name="uiSelectFileButtonImage" Source="{Binding SelectFileImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" Stretch="None" Grid.Column="2"/>
+								<Button x:Name="uiSelectFileButton" IsEnabled="{Binding SelectFileImagePress}" Style="{StaticResource ImageButtonPressSmallStyle}" Grid.Column="2" HorizontalAlignment="Right" Click="uiSelectFileButton_Click">
+									<Image x:Name="uiSelectFileButtonImage" Source="{Binding SelectFileImage, Converter={StaticResource StringToUriConverter}}" HorizontalAlignment="Right" Stretch="None" Grid.Column="2"/>
+								</Button>							
 							</Grid>
 						</Button>
 						<Grid Grid.Row="1" Background="#FFA6B5BE" Margin="20,0"/>
@@ -115,7 +121,7 @@
                         	<Utilities:ImageButton x:Name="uiPickFileListEditViewImageButton" 
                         		ImageSource="/Assets/pajeon/at_here/png/list_edit.png"
                         		ImagePressedSource="/Assets/pajeon/at_here/png/list_edit_p.png"
-                        		HorizontalAlignment="Right" IsEnabled="True" Style="{StaticResource ImageButtonStyle}" Margin="0,23,36,0" VerticalAlignment="Top" Click="uiPickFileListEditViewImageButton_Click"/>
+                        		HorizontalAlignment="Right" IsEnabled="True" Style="{StaticResource ImageButtonStyle}" Margin="0,23,36,0" VerticalAlignment="Top" Click="uiPickFileListEditViewImageButton_Click" Visibility="Collapsed"/>
                         </Grid>
                         <Grid Grid.Row="1">
                         	<TextBlock x:Name="uiPickFileListMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" FontSize="22" Foreground="Black" Visibility="Collapsed" Margin="28,20,28,0" />

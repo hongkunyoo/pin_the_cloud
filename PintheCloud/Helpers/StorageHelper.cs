@@ -10,32 +10,39 @@ namespace PintheCloud.Helpers
 {
     public static class StorageHelper
     {
-        private static List<IStorageManager> list = new List<IStorageManager>();
-        private static Dictionary<string, IStorageManager> map = new Dictionary<string, IStorageManager>();
+        private static List<IStorageManager> List = new List<IStorageManager>();
+        private static Dictionary<string, IStorageManager> Map = new Dictionary<string, IStorageManager>();
         private static string DEFAULT_STORAGE = AppResources.OneDrive;
+
 
         public static void AddStorageManager(string key, IStorageManager value)
         {
-            if (!map.ContainsKey(key))
+            if (!Map.ContainsKey(key))
             {
-                map.Add(key, value);
-                list.Add(value);
+                Map.Add(key, value);
+                List.Add(value);
             }
         }
+
+
         public static IStorageManager GetStorageManager(string key)
         {
-            if (map.ContainsKey(key))
-                return map[key];
+            if (Map.ContainsKey(key))
+                return Map[key];
             else
-                return map[DEFAULT_STORAGE];
+                return Map[DEFAULT_STORAGE];
         }
+
+
         public static List<IStorageManager> GetStorageList()
         {
-            return list;
+            return List;
         }
+
+
         public static IEnumerator<IStorageManager> GetStorageEnumerator()
         {
-            return list.GetEnumerator();
+            return List.GetEnumerator();
         }
     }
 }

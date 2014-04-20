@@ -41,6 +41,13 @@ namespace PintheCloud.Pages
                 NavigationService.RemoveBackEntry();
 
             // Check nick name at frist login.
+            if (!App.ApplicationSettings.Contains(Switcher.MAIN_PLATFORM_TYPE_KEY))
+            {
+                App.ApplicationSettings[Switcher.MAIN_PLATFORM_TYPE_KEY] = AppResources.OneDrive;
+                App.ApplicationSettings.Save();
+            }
+
+            // Check nick name at frist login.
             if (!App.ApplicationSettings.Contains(StorageAccount.ACCOUNT_DEFAULT_SPOT_NAME_KEY))
             {
                 App.ApplicationSettings[StorageAccount.ACCOUNT_DEFAULT_SPOT_NAME_KEY] = AppResources.AtHere;

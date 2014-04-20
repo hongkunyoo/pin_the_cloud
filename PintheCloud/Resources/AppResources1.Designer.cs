@@ -484,15 +484,6 @@ namespace PintheCloud.Resources {
         }
         
         /// <summary>
-        ///   Main Cloud과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string MainCloud {
-            get {
-                return ResourceManager.GetString("MainCloud", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   MB과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
         public static string MB {
@@ -534,6 +525,15 @@ namespace PintheCloud.Resources {
         public static string NewSpot {
             get {
                 return ResourceManager.GetString("NewSpot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Current cloud haven&apos;t been signed in. Please sign in.과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        public static string NoCurrentCloudSignInMessage {
+            get {
+                return ResourceManager.GetString("NoCurrentCloudSignInMessage", resourceCulture);
             }
         }
         
@@ -588,15 +588,6 @@ namespace PintheCloud.Resources {
         public static string NoLocationServiceMessage {
             get {
                 return ResourceManager.GetString("NoLocationServiceMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Main cloud haven&apos;t been signed in. Please sign in.과(와) 유사한 지역화된 문자열을 찾습니다.
-        /// </summary>
-        public static string NoMainCloudSignInMessage {
-            get {
-                return ResourceManager.GetString("NoMainCloudSignInMessage", resourceCulture);
             }
         }
         

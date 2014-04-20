@@ -22,24 +22,22 @@ namespace PintheCloud.Pages
     {
         private CloudModeViewModel CloudModeViewModel = new CloudModeViewModel();
         private Button[] SignButtons = null;
-        private string NextPageName = null;
 
 
         public SignInStoragePage()
         {
             InitializeComponent();
             this.SignButtons = new Button[] { uiOneDriveSignButton, uiDropboxSignButton, uiGoogleDriveSignButton };
-
-            // Set event by previous page
-            Context con = EventHelper.GetContext(EventHelper.SIGNIN_STORAGE_PAGE);
-            con.HandleEvent(EventHelper.PROFILE_PAGE, this.PreviousProfilePage);
-            con.HandleEvent(EventHelper.EXPLORER_PAGE, this.PreviousExplorerPage);
         }
 
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
+
+            // Check if it is on the backstack from SplashPage and remove that.
+            for (int i = 0; i <= NavigationService.BackStack.Count(); i++)
+                NavigationService.RemoveBackEntry();
 
             // Set Sign buttons and Set Main buttons.
             for (var i = 0; i < StorageHelper.GetStorageList().Count; i++)
@@ -53,26 +51,6 @@ namespace PintheCloud.Pages
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             base.OnNavigatedFrom(e);
-        }
-
-
-        private void PreviousProfilePage()
-        {
-            // Check if it is on the backstack from SplashPage and remove that.
-            for (int i = 0; i <= NavigationService.BackStack.Count(); i++)
-                NavigationService.RemoveBackEntry();
-            this.NextPageName = EventHelper.SPOT_LIST_PAGE;
-        }
-
-
-        private void PreviousExplorerPage()
-        {
-            string spotId = NavigationContext.QueryString["spotId"];
-            string spotName = NavigationContext.QueryString["spotName"];
-            string accountId = NavigationContext.QueryString["accountId"];
-            string accountName = NavigationContext.QueryString["accountName"];
-            string parameters = "?spotId=" + spotId + "&spotName=" + spotName + "&accountId=" + accountId + "&accountName=" + accountName;
-            this.NextPageName = EventHelper.EXPLORER_PAGE + parameters;
         }
 
 
@@ -108,7 +86,7 @@ namespace PintheCloud.Pages
                         Switcher.SetMainPlatform(signButton.Tag.ToString());
                         MessageBoxResult result = MessageBox.Show(AppResources.StartMessage, AppResources.StartCaption, MessageBoxButton.OK);
                         if (result == MessageBoxResult.OK)
-                            NavigationService.Navigate(new Uri(this.NextPageName, UriKind.Relative));
+                            NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));
                     });
                 }
                 catch
@@ -140,7 +118,7 @@ namespace PintheCloud.Pages
         {
             MessageBoxResult result = MessageBox.Show(AppResources.StartMessage, AppResources.StartCaption, MessageBoxButton.OK);
             if (result == MessageBoxResult.OK)
-                NavigationService.Navigate(new Uri(this.NextPageName, UriKind.Relative));
+                NavigationService.Navigate(new Uri(EventHelper.SPOT_LIST_PAGE, UriKind.Relative));
         }
 
 

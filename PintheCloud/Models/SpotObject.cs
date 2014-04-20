@@ -205,9 +205,9 @@ namespace PintheCloud.Models
                 file = await App.BlobStorageManager.DownloadFileAsync(fo.Id, file);
                 return await Launcher.LaunchFileAsync(file);
             }
-            catch
+            catch(Exception ex)
             {
-                return false;
+                throw ex;
             }
         }
 

@@ -15,6 +15,9 @@ namespace PintheCloud.ViewModels
         // Instances
         public const string CHECK_NOT_IMAGE_URI = "/Assets/pajeon/at_here/png/general_checkbox.png";
         public const string CHECK_IMAGE_URI = "/Assets/pajeon/at_here/png/general_checkbox_p.png";
+
+        public const string DOWNLOAD_IMAGE_URI = "/Assets/pajeon/at_here/png/list_download.png";
+
         public const string TRANSPARENT_IMAGE_URI = "/Assets/pajeon/at_here/png/general_transparent.png";
 
         public const string DELETE_IMAGE_URI = "/Assets/pajeon/at_here/png/upload_list_delete.png";
@@ -112,10 +115,12 @@ namespace PintheCloud.ViewModels
                         fileObjectViewItem.SelectFileImage = TRANSPARENT_IMAGE_URI;
                     else
                         fileObjectViewItem.SelectFileImage = CHECK_NOT_IMAGE_URI;
+                    fileObjectViewItem.SelectFileImagePress = false;
                 }
                 else
                 {
-                    fileObjectViewItem.SelectFileImage = TRANSPARENT_IMAGE_URI;
+                    fileObjectViewItem.SelectFileImage = DOWNLOAD_IMAGE_URI;
+                    fileObjectViewItem.SelectFileImagePress = true;
                 }
 
                 this.Items.Add(fileObjectViewItem);
