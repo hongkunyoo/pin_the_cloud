@@ -60,16 +60,9 @@ namespace PintheCloud.Managers
         public async Task<bool> CreateNewPtcAccountAsync(PtcAccount account)
         {
             MSPtcAccount mspa = PtcAccount.ConvertToMSPtcAccount(account);
-            try
-            {
-                PtcAccount p = await this.GetPtcAccountAsync(account.Email);
-                if (p != null) return false;
-                await App.MobileService.GetTable<MSPtcAccount>().InsertAsync(mspa);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            PtcAccount p = await this.GetPtcAccountAsync(account.Email);
+            if (p != null) return false;
+            await App.MobileService.GetTable<MSPtcAccount>().InsertAsync(mspa);
 
             this.SavePtcId(account.Email, account.ProfilePassword);
             this.myAccount = account;
@@ -80,14 +73,7 @@ namespace PintheCloud.Managers
         public async Task<bool> DeletePtcAccount(PtcAccount account)
         {
             MSPtcAccount mspa = PtcAccount.ConvertToMSPtcAccount(account);
-            try
-            {
-                await App.MobileService.GetTable<MSPtcAccount>().DeleteAsync(mspa);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            await App.MobileService.GetTable<MSPtcAccount>().DeleteAsync(mspa);
 
             App.ApplicationSettings.Remove(PTCACCOUNT_ID);
             App.ApplicationSettings.Save();
@@ -100,14 +86,7 @@ namespace PintheCloud.Managers
         {
             MSPtcAccount mspa = PtcAccount.ConvertToMSPtcAccount(account);
             List<MSStorageAccount> saList = new List<MSStorageAccount>();
-            try
-            {
-                await App.MobileService.GetTable<MSPtcAccount>().UpdateAsync(mspa);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            await App.MobileService.GetTable<MSPtcAccount>().UpdateAsync(mspa);
 
             this.myAccount = account;
             return true;
@@ -148,20 +127,11 @@ namespace PintheCloud.Managers
         public async Task<PtcAccount> GetPtcAccountAsync(string accountId, string password = null)
         {
             Expression<Func<MSPtcAccount, bool>> lamda = (a => a.email == accountId);
-            if(password != null)
-                 lamda = (a => a.email == accountId && a.profile_password == password);
+            if (password != null)
+                lamda = (a => a.email == accountId && a.profile_password == password);
 
-            MobileServiceCollection<MSPtcAccount, MSPtcAccount> list = null;
-            try
-            {
-                list = await App.MobileService.GetTable<MSPtcAccount>()
-                    .Where(lamda)
-                    .ToCollectionAsync();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            MobileServiceCollection<MSPtcAccount, MSPtcAccount> list =
+                await App.MobileService.GetTable<MSPtcAccount>().Where(lamda).ToCollectionAsync();
 
             if (list.Count >= 1)
             {
@@ -178,31 +148,16 @@ namespace PintheCloud.Managers
         {
             MSStorageAccount mssa = StorageAccount.ConvertToMSStorageAccount(sa);
             mssa.ptc_account_id = this.GetPtcId();
-            try
-            {
-                await App.MobileService.GetTable<MSStorageAccount>().InsertAsync(mssa);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            await App.MobileService.GetTable<MSStorageAccount>().InsertAsync(mssa);
             return true;
         }
 
 
         public async Task<StorageAccount> GetStorageAccountAsync(string storageAccountId)
         {
-            MobileServiceCollection<MSStorageAccount, MSStorageAccount> accounts = null;
-            try
-            {
-                accounts = await App.MobileService.GetTable<MSStorageAccount>()
-                    .Where(a => a.account_platform_id == storageAccountId)
-                    .ToCollectionAsync();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            MobileServiceCollection<MSStorageAccount, MSStorageAccount> accounts =
+                await App.MobileService.GetTable<MSStorageAccount>()
+                .Where(a => a.account_platform_id == storageAccountId).ToCollectionAsync();
 
             if (accounts.Count >= 1)
                 return StorageAccount.ConvertToStorageAccount(accounts.First());

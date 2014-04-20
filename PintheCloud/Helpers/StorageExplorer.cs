@@ -26,8 +26,8 @@ namespace PintheCloud.Helpers
                 // Wait sign in before sync
                 await TaskHelper.WaitSignInTask(storageManager.GetStorageName());
 
-                // Fetching from SQL
-                if (App.ApplicationSettings.Contains(SYNC_KEYS + key))
+                // Fetching data
+                if (App.ApplicationSettings.Contains(SYNC_KEYS + key))  // Fetching from SQL
                 {
                     System.Diagnostics.Debug.WriteLine("Fetching From SQL");
                     using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
@@ -42,15 +42,7 @@ namespace PintheCloud.Helpers
                         List<FileObjectSQL> getSqlList = rootDB.ToList<FileObjectSQL>();
                         if (getSqlList.Count != 1) return false;
                         FileObjectSQL rootFos = getSqlList.First<FileObjectSQL>();
-
-                        //////////////// This line makes slow ////////////////
-                        FileObject rootFolder = FileObject.Test(db, ROOT_ID);
-                        //FileObject rootFolder = FileObject.ConvertToFileObject(db, rootFos);
-                        //FileObject rootFolder = null;
-
-                        //FileObject.PrintFile(root);
-                        //System.Diagnostics.Debugger.Break();
-                        //////////////////////////////////////////////////////
+                        FileObject rootFolder = FileObject.ConvertToFileObject(db, ROOT_ID);
 
                         if (DictionaryRoot.ContainsKey(key))
                             DictionaryRoot.Remove(key);
@@ -64,8 +56,8 @@ namespace PintheCloud.Helpers
                     }
                     System.Diagnostics.Debug.WriteLine("Ended Fetching From SQL");
                 }
-                // Fetching from Server
-                else
+
+                else  // Fetching from Server
                 {
                         FileObject rootFolder = await storageManager.Synchronize();
                         if (DictionaryRoot.ContainsKey(key))
@@ -89,32 +81,11 @@ namespace PintheCloud.Helpers
                             db.CreateDatabase();
 
                             List<FileObjectSQL> sqlList = new List<FileObjectSQL>();
-                            try
-                            {
-                                FileObject.ConvertToFileObjectSQL(sqlList, rootFolder, ROOT_ID, 0);
-                            }
-                            catch
-                            {
-                                System.Diagnostics.Debugger.Break();
-                            }
-                            
-                            var i = 0;
-                            try
-                            {
-                                for (i = 0; i < sqlList.Count; i++)
-                                {
-                                    db.FileItems.InsertOnSubmit(sqlList[i]);
-                                    //System.Diagnostics.Debug.WriteLine(sqlList[i].Id);
-                                }
-                                    
-                                db.SubmitChanges();
-                            }
-                            catch
-                            {
-                                System.Diagnostics.Debug.WriteLine(i);
-                                System.Diagnostics.Debugger.Break();
-                            }
-                            
+                            FileObject.ConvertToFileObjectSQL(sqlList, rootFolder, ROOT_ID, 0);
+
+                            for (int i = 0; i < sqlList.Count; i++)
+                                db.FileItems.InsertOnSubmit(sqlList[i]);
+                            db.SubmitChanges();
                         }
 
                         // Saving completed sync true to application settings
