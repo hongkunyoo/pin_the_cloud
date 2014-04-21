@@ -130,20 +130,20 @@ namespace PintheCloud.Models
             fo.DownloadUrl = msfo.download_url;
             fo.MimeType = msfo.mime_type;
             fo.SpotId = msfo.spot_id;
-            fo.Owner = new ProfileObject(msfo.owner_account_id,msfo.owner_account_name);
+            fo.Owner = new ProfileObject(msfo.owner_account_id, msfo.owner_account_name);
             return fo;
         }
 
         public static MSFileObject ConvertToMSFileObject(FileObject fo)
         {
-            return new MSFileObject(fo.Name,fo.Type.ToString(),fo.Size,fo.Extension,fo.UpdateAt,fo.DownloadUrl,fo.MimeType,fo.Owner.Id,fo.Owner.Name,fo.SpotId);
+            return new MSFileObject(fo.Name, fo.Type.ToString(), fo.Size, fo.Extension, fo.UpdateAt, fo.DownloadUrl, fo.MimeType, fo.Owner.Id, fo.Owner.Name, fo.SpotId);
         }
 
 
         #region Test Methods
         public static void PrintFile(FileObject file)
         {
-            Debug.WriteLine("id : "+file.Id);
+            Debug.WriteLine("id : " + file.Id);
             Debug.WriteLine("Name : " + file.Name);
             Debug.WriteLine("Size : " + file.Size);
             Debug.WriteLine("Type : " + file.Type);
@@ -202,7 +202,7 @@ namespace PintheCloud.Models
                 }
             }
         }
-        
+
 
         public static FileObject ConvertToFileObject(FileObjectDataContext db, FileObjectSQL fos)
         {
@@ -225,7 +225,6 @@ namespace PintheCloud.Models
         public static List<FileObject> GetChildList(FileObjectDataContext db, string ParentId)
         {
             var dbList = from FileObjectSQL fos in db.FileItems where fos.ParentId == ParentId select fos;
-            //var vv = dbList.GroupBy<FileObjectSQL,string>(x=> x.Level);
             List<FileObjectSQL> sqlList = dbList.ToList<FileObjectSQL>();
             List<FileObject> list = new List<FileObject>();
             for (var i = 0; i < sqlList.Count; i++)
@@ -233,7 +232,8 @@ namespace PintheCloud.Models
             return list;
         }
 
-        public static FileObject Test(FileObjectDataContext db, string ParentId)
+
+        public static FileObject ConvertToFileObject(FileObjectDataContext db, string ParentId)
         {
             Stack<FileObject> stack = new Stack<FileObject>();
             FileObject root = null;
@@ -241,112 +241,68 @@ namespace PintheCloud.Models
             //var dbList2 = from FileObjectSQL fos in db.FileItems group fos by fos.ParentId into fos select fos;
             //List<FileObjectSQL> FindChildList = dbList.ToList<FileObjectSQL>();
             //var levelGroupedList = dbList.GroupBy<FileObjectSQL, int>(x => x.Level).ToList();
-
             //var test = dbList.GroupBy<FileObjectSQL, int>(x => x.Level);
             var list = dbList.ToList();
             root = ConvertToFileObject(list[0]);
-
             stack.Push(root);
-            for (var i = 1; i < list.Count; i++)
+
+            for (int i = 1; i < list.Count; i++)
             {
                 var item = list[i];
-                
                 //System.Diagnostics.Debug.WriteLine("["+i+"] "+item.Id);
                 FileObject ff = ConvertToFileObject(item);
-
                 if (item.Type.Equals(PintheCloud.Models.FileObject.FileObjectType.FOLDER))
                 {
-                    try
+                    if (item.ParentId.Equals(stack.Peek().Id))
                     {
+                        //System.Diagnostics.Debug.WriteLine("add " + ff.Id + " to Parent " + stack.Peek().Id);
+                        stack.Peek().FileList.Add(ff);
+                        stack.Push(ff);
+                    }
+                    else
+                    {
+                        stack.Pop();
                         if (item.ParentId.Equals(stack.Peek().Id))
                         {
-                            //System.Diagnostics.Debug.WriteLine("add " + ff.Id + " to Parent " + stack.Peek().Id);
+                            //System.Diagnostics.Debug.WriteLine("add " + ff.Id + "to Parent " + stack.Peek().Id);
                             stack.Peek().FileList.Add(ff);
                             stack.Push(ff);
                         }
                         else
                         {
-                            stack.Pop();
-                            if (item.ParentId.Equals(stack.Peek().Id))
-                            {
-                                //System.Diagnostics.Debug.WriteLine("add " + ff.Id + "to Parent " + stack.Peek().Id);
-                                stack.Peek().FileList.Add(ff);
-                                stack.Push(ff);
-                            }
-                            else
-                            {
-                                //System.Diagnostics.Debug.WriteLine("i-- from folder");
-                                i--;
-                            }
-
+                            //System.Diagnostics.Debug.WriteLine("i-- from folder");
+                            i--;
                         }
                     }
-                    catch
-                    {
-                        System.Diagnostics.Debug.WriteLine("in folder Error");
-                        System.Diagnostics.Debugger.Break();
-                    }
-                    
                 }
                 else
                 {
-                    try
+                    if (item.ParentId.Equals(stack.Peek().Id))
                     {
+                        //System.Diagnostics.Debug.WriteLine("add " + ff.Id + "to Parent " + stack.Peek().Id);
+                        stack.Peek().FileList.Add(ff);
+                    }
+                    else
+                    {
+                        stack.Pop();
                         if (item.ParentId.Equals(stack.Peek().Id))
                         {
-                            try
-                            {
-                                //System.Diagnostics.Debug.WriteLine("add " + ff.Id + "to Parent " + stack.Peek().Id);
-                                stack.Peek().FileList.Add(ff);
-                            }
-                            catch
-                            {
-                                System.Diagnostics.Debugger.Break();
-                            }
-
+                            //System.Diagnostics.Debug.WriteLine("add " + ff.Id + "to Parent " + stack.Peek().Id);
+                            stack.Peek().FileList.Add(ff);
                         }
                         else
                         {
-                            try
-                            {
-                                stack.Pop();
-                            }
-                            catch
-                            {
-                                System.Diagnostics.Debugger.Break();
-                            }
-
-                            if (item.ParentId.Equals(stack.Peek().Id))
-                            {
-                                try
-                                {
-                                    //System.Diagnostics.Debug.WriteLine("add " + ff.Id + "to Parent " + stack.Peek().Id);
-                                    stack.Peek().FileList.Add(ff);
-                                }
-                                catch
-                                {
-                                    System.Diagnostics.Debugger.Break();
-                                }
-
-                            }
-                            else
-                            {
-                                //System.Diagnostics.Debug.WriteLine("i-- from file");
-                                i--;
-                            }
-
+                            //System.Diagnostics.Debug.WriteLine("i-- from file");
+                            i--;
                         }
-                    }
-                    catch
-                    {
-                        System.Diagnostics.Debugger.Break();
                     }
                 }
 
             }
-
             return root;
         }
+
+
         public static FileObject ConvertToFileObject(FileObjectSQL fos)
         {
             FileObject fo = new FileObject(fos.Id, fos.Name, fos.Size, fos.Type, fos.Extension, fos.UpdateAt, fos.Thumbnail, fos.DownloadUrl, fos.MimeType);
@@ -359,7 +315,7 @@ namespace PintheCloud.Models
                 fo.Owner.Name = fos.ProfileName;
                 fo.Owner.PhoneNumber = fos.ProfilePhoneNumber;
             }
-            if(fo.Type.Equals(FileObject.FileObjectType.FOLDER))
+            if (fo.Type.Equals(FileObject.FileObjectType.FOLDER))
                 fo.FileList = new List<FileObject>();
             return fo;
         }
