@@ -331,7 +331,8 @@ namespace PintheCloud.Pages
 
             try
             {
-                // Wait Sync task
+                // Wait Signin and Sync task
+                await TaskHelper.WaitSignInTask(iStorageManager.GetStorageName());
                 await TaskHelper.WaitTask(TaskHelper.STORAGE_EXPLORER_SYNC + Switcher.GetCurrentStorage().GetStorageName());
 
                 // Get files from current folder in the cloud.
