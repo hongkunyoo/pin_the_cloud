@@ -27,7 +27,7 @@ namespace PintheCloud.Helpers
                 await TaskHelper.WaitSignInTask(storageManager.GetStorageName());
 
                 // Fetching from SQL
-                if (App.ApplicationSettings.Contains(SYNC_KEYS + key))
+                if (false && App.ApplicationSettings.Contains(SYNC_KEYS + key))
                 {
                     System.Diagnostics.Debug.WriteLine("Fetching From SQL");
                     using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
@@ -67,20 +67,21 @@ namespace PintheCloud.Helpers
                 // Fetching from Server
                 else
                 {
-                        FileObject rootFolder = await storageManager.Synchronize();
-                        if (DictionaryRoot.ContainsKey(key))
-                            DictionaryRoot.Remove(key);
-                        DictionaryRoot.Add(key, rootFolder);
-
-                        Stack<FileObject> stack = new Stack<FileObject>();
-                        stack.Push(rootFolder);
-                        if (DictionaryTree.ContainsKey(key))
-                            DictionaryTree.Remove(key);
-                        DictionaryTree.Add(key, stack);
-
                     System.Diagnostics.Debug.WriteLine("Fetching From Server");
-                    if (storageManager.IsSignIn())
-                    {
+                    FileObject rootFolder = await storageManager.Synchronize();
+                    if (DictionaryRoot.ContainsKey(key))
+                        DictionaryRoot.Remove(key);
+                    DictionaryRoot.Add(key, rootFolder);
+
+                    Stack<FileObject> stack = new Stack<FileObject>();
+                    stack.Push(rootFolder);
+                    if (DictionaryTree.ContainsKey(key))
+                        DictionaryTree.Remove(key);
+                    DictionaryTree.Add(key, stack);
+
+                    System.Diagnostics.Debug.WriteLine("Ended Fetching From Server");
+                    //if (storageManager.IsSignIn())
+                    //{
                         // Saving to SQL job
                         using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
                         {
@@ -115,13 +116,13 @@ namespace PintheCloud.Helpers
                                 System.Diagnostics.Debugger.Break();
                             }
                             
-                        }
+                        //}
 
                         // Saving completed sync true to application settings
                         App.ApplicationSettings.Add(SYNC_KEYS + key, true);
                         App.ApplicationSettings.Save();
                     }
-                    System.Diagnostics.Debug.WriteLine("Ended Fetching From Server");
+                    
                 }
             }
             catch

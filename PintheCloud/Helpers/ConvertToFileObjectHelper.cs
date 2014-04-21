@@ -146,7 +146,10 @@ namespace PintheCloud.Helpers
                 System.Diagnostics.Debug.WriteLine("ExtensionMapper Error");
                 System.Diagnostics.Debugger.Break();
             }
-            return new FileObject(Id,Name,Size,Type, Extension,UpdateAt,Thumbnail,DownloadUrl,MimeType);
+            FileObject ret = new FileObject(Id, Name, Size, Type, Extension, UpdateAt, Thumbnail, DownloadUrl, MimeType);
+            if (Type.Equals(FileObject.FileObjectType.FOLDER))
+                ret.FileList = new List<FileObject>();
+            return ret;
         }
     }
 }

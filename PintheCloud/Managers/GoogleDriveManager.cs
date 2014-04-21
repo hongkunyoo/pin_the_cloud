@@ -250,15 +250,14 @@ namespace PintheCloud.Managers
         {
             List<FileObject> list = new List<FileObject>();
             
-            //ChildList childList = await this.Service.Children.List(folderId).ExecuteAsync();
-
             // Get childern by q
-            ChildrenResource.ListRequest request = this.Service.Children.List(folderId);
-            request.Q = "'root' in parents and trashed=false";
-            ChildList childList = await request.ExecuteAsync();
-
-            foreach (ChildReference child in childList.Items)
-                list.Add(await this.GetFileAsync(child.Id));
+            FilesResource.ListRequest rr =  this.Service.Files.List();
+            rr.Q = "'" + folderId + "' in parents and trashed=false and mimeType != 'application/vnd.google-apps.form' and 'me' in owners";
+            FileList fileList = await rr.ExecuteAsync();
+            foreach (Google.Apis.Drive.v2.Data.File file in fileList.Items)
+            {
+                list.Add(ConvertToFileObjectHelper.ConvertToFileObject(file));
+            }
             list.RemoveAll(item => item == null);
             return list;
         }
@@ -299,7 +298,70 @@ namespace PintheCloud.Managers
         {
             FileObject fileObject = await GetRootFolderAsync();
             fileObject.FileList = await _GetChildAsync(fileObject);
+
+            //await Test(fileObject);
             return fileObject;
+        }
+
+        public async Task<FileObject> Test(FileObject root)
+        {
+            List<FileObject> list = new List<FileObject>();
+            Dictionary<string, FileObject> folderMap = new Dictionary<string, FileObject>();
+            List<Google.Apis.Drive.v2.Data.File> unhandled = new List<Google.Apis.Drive.v2.Data.File>();
+            // Get childern by q
+            FilesResource.ListRequest rr = this.Service.Files.List();
+            //rr.Q = "'" + folderId + "' in parents and trashed=false and mimeType != 'application/vnd.google-apps.form' and 'me' in owners";
+            rr.Q = "'root' in parents and trashed=false and mimeType != 'application/vnd.google-apps.form' and 'me' in owners";
+            FileList fileList = await rr.ExecuteAsync();
+            root.FileList = new List<FileObject>();
+            folderMap.Add(root.Id, root);
+            foreach (Google.Apis.Drive.v2.Data.File file in fileList.Items)
+            {
+                System.Diagnostics.Debug.WriteLine(file.Title);
+                if (file.Title.Equals("Taylor")) System.Diagnostics.Debugger.Break();
+                if (file.MimeType.Contains("application/vnd.google-apps.folder"))
+                {
+                    folderMap.Add(file.Id, ConvertToFileObjectHelper.ConvertToFileObject(file));
+                }
+
+                if (file.Parents != null && file.Parents.Count == 1)
+                {
+                    
+                    if (folderMap.ContainsKey(file.Parents[0].Id))
+                    {
+                        folderMap[file.Parents[0].Id].FileList.Add(ConvertToFileObjectHelper.ConvertToFileObject(file));
+                        if ((file.Parents[0].IsRoot.Value)) System.Diagnostics.Debug.WriteLine("Root Parent!");
+                    }
+                    else
+                    {
+                        // for later work.
+                        unhandled.Add(file);
+                    }
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("no parent : "+file.Title);
+                    //System.Diagnostics.Debugger.Break();
+                }
+            }
+
+
+            // TODO : Handle Unhandled files
+
+            foreach(var file in unhandled)
+            {
+                if (folderMap.ContainsKey(file.Parents[0].Id))
+                {
+                    folderMap[file.Parents[0].Id].FileList.Add(ConvertToFileObjectHelper.ConvertToFileObject(file));
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("unhandled : "+file.Title);
+                    //System.Diagnostics.Debugger.Break();
+                }
+            }
+
+            return root;
         }
 
 
