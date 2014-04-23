@@ -38,12 +38,14 @@ namespace PintheCloud.Utilities
         }
 
 
-        public override void Show()
+        public async override void Show()
         {
             base.Show();
 
             Popup popup = new Popup();
-            popup.Child = new DropBoxSignInPopup(popup, this.Uri);
+            DropBoxSignInPopup childPop = new DropBoxSignInPopup(popup, this.Uri);
+            await childPop.ClearCache();
+            popup.Child = childPop;
             popup.Visibility = Visibility.Visible;
             popup.IsOpen = true;
             popup.Closed += (sender, args) =>

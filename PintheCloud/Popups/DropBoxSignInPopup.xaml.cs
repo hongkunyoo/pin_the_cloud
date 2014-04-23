@@ -12,18 +12,20 @@ using System.Diagnostics;
 using DropNet.Models;
 using PintheCloud.Managers;
 using PintheCloud.Pages;
+using System.Threading.Tasks;
 
 namespace PintheCloud.Popups
 {
     public partial class DropBoxSignInPopup : UserControl
     {
         private Popup Popup = null;
-
+        private int count = 0;
 
         public DropBoxSignInPopup(Popup popup, string uri)
         {
             InitializeComponent();
             this.Popup = popup;
+            this.count = 0;
             uiWebBrowser.Width = Application.Current.Host.Content.ActualWidth;
             uiWebBrowser.Height = Application.Current.Host.Content.ActualHeight;
             uiWebBrowser.Margin = new Thickness(0, PtcPage.STATUS_BAR_HEIGHT, 0, 0);
@@ -31,12 +33,20 @@ namespace PintheCloud.Popups
             uiWebBrowser.Navigate(new Uri(uri, UriKind.RelativeOrAbsolute));
         }
 
+        public async Task ClearCache()
+        {
+            await uiWebBrowser.ClearInternetCacheAsync();
+            await uiWebBrowser.ClearCookiesAsync();
+        }
+
 
         private async void webBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
             //Debug.WriteLine(e.Uri.ToString());
-            if (e.Uri.ToString().StartsWith("http://")
-                && e.Uri.ToString().Contains(DropboxManager.DROPBOX_AUTH_URI))
+            count++;
+            if(count == 3)
+            //if (e.Uri.ToString().StartsWith("http://")
+            //    && e.Uri.ToString().Contains(DropboxManager.DROPBOX_AUTH_URI))
             {
                 this.Popup.IsOpen = false;
                 await uiWebBrowser.ClearCookiesAsync();
