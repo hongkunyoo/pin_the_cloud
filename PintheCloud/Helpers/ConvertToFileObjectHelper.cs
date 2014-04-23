@@ -107,45 +107,26 @@ namespace PintheCloud.Helpers
             string Extension = file.FileExtension ?? "No Extension";
             string UpdateAt = file.ModifiedDate.ToString();
             string Thumbnail = file.ThumbnailLink ?? "No Thumbnail";
-            string DownloadUrl = "";
-            try
-            {
-                if (file.ExportLinks != null && file.MimeType != null && file.MimeType.Contains("application/vnd.google-apps"))
-                {
-                    DownloadUrl = file.ExportLinks[GoogleDriveManager.GoogleDocMapper[file.MimeType]];
-                }
-                else
-                {
-                    DownloadUrl = file.DownloadUrl;
-                }
-            }
-            catch
-            {
-                System.Diagnostics.Debug.WriteLine("GoogleDocMapper Error");
-                System.Diagnostics.Debugger.Break();
-            }
-            
-            
+            string DownloadUrl = String.Empty;
+
+            if (file.ExportLinks != null && file.MimeType != null && file.MimeType.Contains("application/vnd.google-apps"))
+                DownloadUrl = file.ExportLinks[GoogleDriveManager.GoogleDocMapper[file.MimeType]];
+            else
+                DownloadUrl = file.DownloadUrl;
+
             string MimeType = file.MimeType ?? "No MimeType";
             string Name = "";
-            try
+
+            if (!"application/vnd.google-apps.folder".Equals(file.MimeType) && file.MimeType.Contains("application/vnd.google-apps"))
             {
-                if (!"application/vnd.google-apps.folder".Equals(file.MimeType) && file.MimeType.Contains("application/vnd.google-apps"))
-                {
-                    Name = file.Title + "." + GoogleDriveManager.ExtensionMapper[file.MimeType];
-                    Extension = GoogleDriveManager.ExtensionMapper[file.MimeType];
-                }
-                else
-                {
-                    Name = file.Title;
-                }
+                Name = file.Title + "." + GoogleDriveManager.ExtensionMapper[file.MimeType];
+                Extension = GoogleDriveManager.ExtensionMapper[file.MimeType];
             }
-            catch
+            else
             {
-                System.Diagnostics.Debug.WriteLine(file.MimeType);
-                System.Diagnostics.Debug.WriteLine("ExtensionMapper Error");
-                System.Diagnostics.Debugger.Break();
+                Name = file.Title;
             }
+
             FileObject ret = new FileObject(Id, Name, Size, Type, Extension, UpdateAt, Thumbnail, DownloadUrl, MimeType);
             if (Type.Equals(FileObject.FileObjectType.FOLDER))
                 ret.FileList = new List<FileObject>();

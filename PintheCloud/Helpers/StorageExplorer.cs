@@ -71,28 +71,25 @@ namespace PintheCloud.Helpers
                     DictionaryTree.Add(key, stack);
 
                     System.Diagnostics.Debug.WriteLine("Ended Fetching From Server");
-                    //if (storageManager.IsSignIn())
-                    //{
-                        // Saving to SQL job
-                        using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
-                        {
-                            if (db.DatabaseExists())
-                                db.DeleteDatabase();
-                            db.CreateDatabase();
+                    // Saving to SQL job
+                    using (FileObjectDataContext db = new FileObjectDataContext("isostore:/" + key + "_db.sdf"))
+                    {
+                        if (db.DatabaseExists())
+                            db.DeleteDatabase();
+                        db.CreateDatabase();
 
-                            List<FileObjectSQL> sqlList = new List<FileObjectSQL>();
+                        List<FileObjectSQL> sqlList = new List<FileObjectSQL>();
 
-                            FileObject.ConvertToFileObjectSQL(sqlList, rootFolder, ROOT_ID, 0);
+                        FileObject.ConvertToFileObjectSQL(sqlList, rootFolder, ROOT_ID, 0);
 
-                            for (int i = 0; i < sqlList.Count; i++)
-                                db.FileItems.InsertOnSubmit(sqlList[i]);
-                            db.SubmitChanges();
-                        }
+                        for (int i = 0; i < sqlList.Count; i++)
+                            db.FileItems.InsertOnSubmit(sqlList[i]);
+                        db.SubmitChanges();
+                    }
 
-                        // Saving completed sync true to application settings
-                        App.ApplicationSettings.Add(SYNC_KEYS + key, true);
-                        App.ApplicationSettings.Save();
-                    //}
+                    // Saving completed sync true to application settings
+                    App.ApplicationSettings.Add(SYNC_KEYS + key, true);
+                    App.ApplicationSettings.Save();
                 }
             }
             catch
