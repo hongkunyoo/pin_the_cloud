@@ -127,11 +127,11 @@ namespace PintheCloud.Pages
                             // If there is near spots, Clear and Add spots to list
                             // Otherwise, Show none message.
                             List<SpotObject> spots = await App.SpotManager.GetNearSpotListAsync(currentGeoposition);
+                            this.NearSpotViewModel.IsDataLoaded = true;
                             if (spots.Count > 0)  // There are near spots
                             {
                                 base.Dispatcher.BeginInvoke(() =>
                                 {
-                                    this.NearSpotViewModel.IsDataLoaded = true;
                                     uiNearSpotList.Visibility = Visibility.Visible;
                                     uiNearSpotMessage.Visibility = Visibility.Collapsed;
                                     this.NearSpotViewModel.SetItems(spots);
@@ -139,7 +139,6 @@ namespace PintheCloud.Pages
                             }
                             else  // No near spots
                             {
-                                this.NearSpotViewModel.IsDataLoaded = true;
                                 base.SetListUnableAndShowMessage(uiNearSpotList, uiNearSpotMessage, AppResources.NoNearSpotMessage);
                             }
                         }

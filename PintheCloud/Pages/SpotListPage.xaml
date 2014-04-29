@@ -27,7 +27,7 @@
         <shell:ApplicationBar x:Name="uiAppBar" BackgroundColor="#FFEFF2F6" Opacity="0.9" IsMenuEnabled="True" ForegroundColor="#FF878E8E">
         	<shell:ApplicationBarIconButton x:Name="uiAppBarSettingsButton" IconUri="/Assets/pajeon/pin_the_cloud/png/general_bar_setting.png" IsEnabled="True" Text="settings" Click="uiAppBarSettingsButton_Click"/>
         	<shell:ApplicationBarIconButton x:Name="uiAppBarRefreshButton" IconUri="/Assets/pajeon/at_here/png/general_bar_refresh.png" IsEnabled="True" Text="refresh" Click="uiAppBarRefreshButton_Click"/>
-        	<shell:ApplicationBarIconButton x:Name="uiAppBarNewSpotButton" IconUri="/Assets/Toolkit.Content/ApplicationBar.Add.png" IsEnabled="True" Text="new" Click="uiAppBarNewSpotButton_Click"/>
+            <shell:ApplicationBarIconButton x:Name="uiAppBarNewSpotButton" IconUri="/Assets/pajeon/pin_the_cloud/png/general_bar_new.png" IsEnabled="True" Text="new" Click="uiAppBarNewSpotButton_Click"/>
         </shell:ApplicationBar>
     </local:PtcPage.ApplicationBar>
     

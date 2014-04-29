@@ -41,7 +41,6 @@ namespace PintheCloud.Utilities
         public async override void Show()
         {
             base.Show();
-
             Popup popup = new Popup();
             DropBoxSignInPopup childPop = new DropBoxSignInPopup(popup, this.Uri);
             await childPop.ClearCache();
@@ -52,7 +51,6 @@ namespace PintheCloud.Utilities
             {
                 this.FireCompleted(this, new DropboxWebBrowserResult(), null);
             };
-
             EventHelper.AddEventHandler(EventHelper.POPUP_CLOSE, () => {
                 popup.IsOpen = false;
             });

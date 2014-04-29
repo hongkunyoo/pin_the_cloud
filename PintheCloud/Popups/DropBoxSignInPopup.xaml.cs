@@ -18,8 +18,9 @@ namespace PintheCloud.Popups
 {
     public partial class DropBoxSignInPopup : UserControl
     {
-        private Popup Popup = null;
-        private int count = 0;
+        private Popup Popup;
+        private int count;
+
 
         public DropBoxSignInPopup(Popup popup, string uri)
         {
@@ -42,11 +43,10 @@ namespace PintheCloud.Popups
 
         private async void webBrowser_Navigated(object sender, System.Windows.Navigation.NavigationEventArgs e)
         {
-            //Debug.WriteLine(e.Uri.ToString());
             count++;
-            if(count == 3)
             //if (e.Uri.ToString().StartsWith("http://")
             //    && e.Uri.ToString().Contains(DropboxManager.DROPBOX_AUTH_URI))
+            if(count == 3)
             {
                 this.Popup.IsOpen = false;
                 await uiWebBrowser.ClearCookiesAsync();

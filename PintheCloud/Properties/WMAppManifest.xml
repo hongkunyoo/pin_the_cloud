@@ -4,7 +4,7 @@
   <Languages xmlns="">
     <Language code="en-US" />
   </Languages>
-  <App xmlns="" ProductID="{76c7756f-1a04-4893-9b4f-378be731ebdf}" Title="At Here" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Pin the Cloud" Description="At Here helps you direct share information with people around you." Publisher="Pin the Cloud" PublisherID="{31aa57a5-2fdd-42c4-94a4-237e72675918}">
+  <App xmlns="" ProductID="{76c7756f-1a04-4893-9b4f-378be731ebdf}" Title="At Here" RuntimeType="Silverlight" Version="1.0.0.0" Genre="apps.normal" Author="Pin the Cloud" Description="At Here helps sharing information with people around you in instant meetings." Publisher="Pin the Cloud" PublisherID="{31aa57a5-2fdd-42c4-94a4-237e72675918}">
     <IconPath IsRelative="true" IsResource="false">Assets\pajeon\at_here\png\app_ApplicationIcon.png</IconPath>
     <Capabilities>
       <Capability Name="ID_CAP_NETWORKING" />

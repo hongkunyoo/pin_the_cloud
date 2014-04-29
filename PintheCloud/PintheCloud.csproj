@@ -241,16 +241,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Assets\pajeon\at_here\130315_guide\1_pick_guide.pdf" />
-    <None Include="Assets\pajeon\at_here\130315_guide\1_pick_navi_guide.pdf" />
-    <None Include="Assets\pajeon\at_here\130315_guide\1_pick_title_guide.pdf" />
-    <None Include="Assets\pajeon\at_here\130315_guide\2_pin_guide.pdf" />
-    <None Include="Assets\pajeon\at_here\130315_guide\2_pin_path_guide.pdf" />
-    <None Include="Assets\pajeon\at_here\130315_guide\3_spots_navi_guide.pdf" />
-    <None Include="Assets\pajeon\at_here\130319_guide\1_sign_up_guide.pdf" />
-    <None Include="Assets\pajeon\at_here\130319_guide\2_sign_in_guide.pdf" />
-    <None Include="Assets\pajeon\at_here\130319_guide\3_storage_select_guide.pdf" />
-    <None Include="Assets\pajeon\at_here\gui_guide.pdf" />
     <None Include="packages.config" />
     <None Include="Properties\AppManifest.xml" />
     <None Include="Properties\WMAppManifest.xml">
@@ -266,9 +256,6 @@
     <Content Include="Assets\pajeon\at_here\130315_png\tab_pick_highlight.png" />
     <Content Include="Assets\pajeon\at_here\130315_png\tab_pin.png" />
     <Content Include="Assets\pajeon\at_here\130315_png\tab_pin_highlight.png" />
-    <Content Include="Assets\pajeon\at_here\130315_screenshot\mobile-pick-page.png" />
-    <Content Include="Assets\pajeon\at_here\130315_screenshot\mobile-pin-page.png" />
-    <Content Include="Assets\pajeon\at_here\130315_screenshot\spot-list-page.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\1_sign_up_input_email.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\1_sign_up_input_name.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\1_sign_up_input_password.png" />
@@ -286,18 +273,8 @@
     <Content Include="Assets\pajeon\at_here\130319_png\3_storage_select_skip.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\input.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\loading01.png" />
-    <Content Include="Assets\pajeon\at_here\130319_png\loading02.png" />
-    <Content Include="Assets\pajeon\at_here\130319_png\loading03.png" />
-    <Content Include="Assets\pajeon\at_here\130319_png\loading04.png" />
-    <Content Include="Assets\pajeon\at_here\130319_png\loading05.png" />
-    <Content Include="Assets\pajeon\at_here\130319_png\loading06.png" />
-    <Content Include="Assets\pajeon\at_here\130319_png\loading07.png" />
-    <Content Include="Assets\pajeon\at_here\130319_png\loading08.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\sign_out.png" />
     <Content Include="Assets\pajeon\at_here\130319_png\sign_out_p.png" />
-    <Content Include="Assets\pajeon\at_here\130319_screenshot\sign_in.png" />
-    <Content Include="Assets\pajeon\at_here\130319_screenshot\sign_up.png" />
-    <Content Include="Assets\pajeon\at_here\130319_screenshot\storage_select.png" />
     <Content Include="Assets\pajeon\at_here\png\app_ApplicationIcon.png" />
     <Content Include="Assets\pajeon\at_here\png\app_MediumFlipCycleTile.png" />
     <Content Include="Assets\pajeon\at_here\png\app_MediumIconicTile.png" />
@@ -377,67 +354,16 @@
     <Content Include="Assets\pajeon\at_here\png\upload_icon_spotname.png" />
     <Content Include="Assets\pajeon\at_here\png\upload_list_delete.png" />
     <Content Include="Assets\pajeon\at_here\png\upload_list_delete_p.png" />
-    <Content Include="Assets\pajeon\at_here\screenshot\pick_page.png" />
-    <Content Include="Assets\pajeon\at_here\screenshot\pin_page_1.png" />
-    <Content Include="Assets\pajeon\at_here\screenshot\pin_page_2.png" />
-    <Content Include="Assets\pajeon\at_here\screenshot\pin_page_3.png" />
-    <Content Include="Assets\pajeon\at_here\screenshot\setting_off.png" />
-    <Content Include="Assets\pajeon\at_here\screenshot\setting_on.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\filelist_edit.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\filelist_like.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\filelist_like_p.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\filelist_view.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_bar_check.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_bar_circle.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_bar_delete.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_bar_map.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_bar_new.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_bar_setting.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_bar_upload.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_checkbox.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_checkbox_p.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_download.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_edit.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_like.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_like_p.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_logo.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\general_view.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\icon_file_doc.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\icon_file_etc.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\icon_file_folder.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\icon_file_hwp.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\icon_file_image.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\icon_file_pdf.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\icon_file_ppt.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\icon_file_sound.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\icon_file_video.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\icon_file_xls.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\icon_file_zip.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\login_btn.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\login_logo.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\map_now.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\map_pin.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\map_point.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png%402x\splash_logo.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\filelist_download.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\filelist_edit.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\filelist_like.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\filelist_like_p.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\filelist_view.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_bar_check.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_bar_circle.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_bar_delete.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\general_bar_map.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_bar_new.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_bar_relocate.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_bar_setting.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_bar_upload.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_checkbox.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_checkbox_p.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\general_download.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_edit.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\general_like.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\general_like_p.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_logo.png" />
     <Content Include="Assets\pajeon\at_here\png\general_transparent.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\general_view.png" />
@@ -454,55 +380,8 @@
     <Content Include="Assets\pajeon\pin_the_cloud\png\icon_file_zip.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\login_btn.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\login_logo.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\map_now.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\map_pin.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\png\map_point.png" />
     <Content Include="Assets\pajeon\pin_the_cloud\png\splash_logo.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\filelist_download.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\filelist_like.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\filelist_like_p.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\general_bar_upload.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\general_checkbox_p.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\general_like.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\general_like_p.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\general_logo.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\login_logo.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\map_now.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\map_pin.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\map_point.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\re%402x\splash_logo.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\screenshot\explorer.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\screenshot\filelist.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\screenshot\filelist_me.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\screenshot\filelist_me_edit.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\screenshot\login.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\screenshot\mapview.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\screenshot\mySpace.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\screenshot\mySpace_edit.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\screenshot\splash.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\screenshot\upload-list.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\screenshot\upload-list_edit.png" />
-    <Content Include="Assets\pajeon\pin_the_cloud\screenshot\upload.png" />
-    <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Tiles\FlipCycleTileMedium.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Tiles\FlipCycleTileSmall.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Tiles\IconicTileMediumLarge.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Tiles\IconicTileSmall.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\Toolkit.Content\ApplicationBar.Add.png" />
-    <Content Include="Assets\Toolkit.Content\ApplicationBar.Cancel.png" />
-    <Content Include="Assets\Toolkit.Content\ApplicationBar.Check.png" />
-    <Content Include="Assets\Toolkit.Content\ApplicationBar.Delete.png" />
-    <Content Include="Assets\Toolkit.Content\ApplicationBar.Select.png" />
     <Content Include="SplashScreenImage.jpg" />
   </ItemGroup>
   <ItemGroup>

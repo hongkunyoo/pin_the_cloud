@@ -223,11 +223,11 @@ namespace PintheCloud.Pages
             {
                 // Get files from the spot and set it to list.
                 List<FileObject> fileList = await this.CurrentSpot.ListFileObjectsAsync();
+                this.PickFileObjectViewModel.IsDataLoaded = true;
                 if (fileList.Count > 0)
                 {
                     base.Dispatcher.BeginInvoke(() =>
                     {
-                        this.PickFileObjectViewModel.IsDataLoaded = true;
                         uiPickFileList.Visibility = Visibility.Visible;
                         uiPickFileListMessage.Visibility = Visibility.Collapsed;
                         this.PickFileObjectViewModel.SetItems(fileList, false);
@@ -268,19 +268,20 @@ namespace PintheCloud.Pages
                 }
                 else
                 {
-                    this.PickFileObjectViewModel.IsDataLoaded = true;
-                    base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, AppResources.NoFileInSpotMessage);
-                    uiPickFileListEditViewImageButton.Visibility = Visibility.Collapsed;
+                    base.Dispatcher.BeginInvoke(() =>
+                    {
+                        base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, AppResources.NoFileInSpotMessage);
+                        uiPickFileListEditViewImageButton.Visibility = Visibility.Collapsed;
+                    });
                 }
             }
             catch
             {
                 base.SetListUnableAndShowMessage(uiPickFileList, uiPickFileListMessage, AppResources.BadLoadingFileMessage);
             }
-            finally
-            {
-                base.SetProgressIndicator(false);
-            }
+            
+            // Hide Process Indicator
+            base.SetProgressIndicator(false);
         }
 
 
@@ -317,7 +318,6 @@ namespace PintheCloud.Pages
 
         private async void SetPinFileListAsync(IStorageManager iStorageManager, string message, FileObjectViewItem folder)
         {
-
             // Set Mutex true and Show Process Indicator
             // Clear selected file and set pin button false.
             base.SetListUnableAndShowMessage(uiPinFileList, uiPinFileMessage, message);
@@ -381,10 +381,7 @@ namespace PintheCloud.Pages
             {
                 base.SetListUnableAndShowMessage(uiPinFileList, uiPinFileMessage, AppResources.BadLoadingFileMessage);
             }
-            finally
-            {
-                base.SetProgressIndicator(false);
-            }
+            base.SetProgressIndicator(false);
         }
 
 
@@ -412,7 +409,6 @@ namespace PintheCloud.Pages
         {
             // Get index
             ApplicationBarMenuItem appBarMenuItem = (ApplicationBarMenuItem)sender;
-
             if (Switcher.GetCurrentStorage().GetStorageName().Equals(appBarMenuItem.Text)) return;
             if (Switcher.GetCurrentStorage().IsSigningIn()) return;
             Switcher.SetStorageTo(appBarMenuItem.Text);
@@ -423,6 +419,8 @@ namespace PintheCloud.Pages
             uiPivotTitleGrid.Background = new SolidColorBrush(ColorHexStringToBrushConverter.GetColorFromHexString(iStorageManager.GetStorageColorHexString()));
             uiCurrentCloudModeImage.Source = new BitmapImage(new Uri(iStorageManager.GetStorageImageUri(), UriKind.Relative));
 
+            // Set List by cloud.
+            base.SetProgressIndicator(false);
             this.PinFileObjectViewModel.IsDataLoaded = false;
             this.SetPinPivot(AppResources.Loading);
         }
@@ -453,18 +451,16 @@ namespace PintheCloud.Pages
                 fileObjectViewItem.SelectFileImage = FileObjectViewModel.ING_IMAGE_URI;
             });
 
-
-            // Upload file from cloud to spot.
-            string blobId = await this.CurrentSpot.AddFileObjectAsync(this.GetCloudStorageFileObjectById(fileObjectViewItem.Id));
-            if (blobId != null)
+            try
             {
+                string blobId = await this.CurrentSpot.AddFileObjectAsync(this.GetCloudStorageFileObjectById(fileObjectViewItem.Id));
                 base.Dispatcher.BeginInvoke(() =>
                 {
                     this.PickFileObjectViewModel.IsDataLoaded = false;
                     fileObjectViewItem.SelectFileImage = FileObjectViewModel.CHECK_NOT_IMAGE_URI;
                 });
             }
-            else
+            catch
             {
                 base.Dispatcher.BeginInvoke(() =>
                 {
