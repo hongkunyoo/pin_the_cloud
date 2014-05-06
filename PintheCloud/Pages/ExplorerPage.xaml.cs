@@ -204,7 +204,7 @@ namespace PintheCloud.Pages
             if (NetworkInterface.GetIsNetworkAvailable())
             {
                 if (!this.PickFileObjectViewModel.IsDataLoaded)
-                    this.SetPickPivotListAsync(AppResources.Loading);
+                    this.SetPickPivotListAsync(message);
             }
             else
             {

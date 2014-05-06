@@ -304,7 +304,6 @@ namespace PintheCloud.Managers
 
 
         #region Private Methods
-
         private async Task<List<FileObject>> _GetChildAsync(FileObject fileObject)
         {
             if (FileObjectViewModel.FOLDER.Equals(fileObject.Type.ToString()))
@@ -522,29 +521,6 @@ namespace PintheCloud.Managers
             }
             return root;
         }
-        #endregion
-
-
-
-        #region Not Using Methods
-        //private async Task DeleteFile(string fileId)
-        //{
-        //    await service.Files.Delete(fileId).ExecuteAsync();
-        //}
-        //public async Task<Stream> DownloadFileStreamAsync2(string downloadUrl)
-        //{
-        //    var downloader = new MediaDownloader(this.service);
-        //    MemoryStream ms = new MemoryStream();
-        //    var progress = await downloader.DownloadAsync(downloadUrl, ms);
-        //    if (progress.Status == DownloadStatus.Completed)
-        //    {
-        //        return ms;
-        //    }
-        //    else
-        //    {
-        //        return null;
-        //    }
-        //}
         #endregion
     }
 }

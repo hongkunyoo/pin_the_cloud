@@ -138,15 +138,8 @@ namespace PintheCloud.Managers
 
         public async Task<StorageAccount> GetStorageAccountAsync()
         {
-            try
-            {
-                if (this.CurrentAccount == null)
-                    await TaskHelper.WaitSignInTask(this.GetStorageName());
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
+            if (this.CurrentAccount == null)
+                await TaskHelper.WaitSignInTask(this.GetStorageName());
             return this.CurrentAccount;
         }
 
@@ -227,7 +220,6 @@ namespace PintheCloud.Managers
             {
                 throw new ShareException(sourceFileId, ShareException.ShareType.DOWNLOAD);
             }
-
             return result.Stream;
         }
 
@@ -280,28 +272,17 @@ namespace PintheCloud.Managers
 
 
         #region Private Methods
-        ///////////////////
-        // Private Methods
-        ///////////////////
-
         private async Task<LiveConnectClient> GetLiveConnectClientAsync()
         {
             LiveAuthClient liveAuthClient = new LiveAuthClient(LIVE_CLIENT_ID);
             string[] scopes = new[] { "wl.basic", "wl.signin", "wl.offline_access", "wl.skydrive", "wl.skydrive_update", "wl.contacts_skydrive" };
             LiveLoginResult liveLoginResult = null;
 
-            try
-            {
-                // Get Current live connection session
-                // If session doesn't exist, get new one.
-                liveLoginResult = await liveAuthClient.InitializeAsync(scopes);
-                if (liveLoginResult.Status != LiveConnectSessionStatus.Connected)
-                    liveLoginResult = await liveAuthClient.LoginAsync(scopes);
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
+            // Get Current live connection session
+            // If session doesn't exist, get new one.
+            liveLoginResult = await liveAuthClient.InitializeAsync(scopes);
+            if (liveLoginResult.Status != LiveConnectSessionStatus.Connected)
+                liveLoginResult = await liveAuthClient.LoginAsync(scopes);
             return new LiveConnectClient(liveLoginResult.Session);
         }
 
@@ -347,145 +328,6 @@ namespace PintheCloud.Managers
 
 
 
-        #endregion
-
-        #region Not Using Methods
-        /////////////////////////////////////////////////////
-        // CAUTION: NOT STABLE VERSION. THERE MIGHT BE A BUG.
-        //
-        // Summary:
-        //     Download a folder by folder id.
-        //
-        // Parameters:
-        //  sourceFolderId:
-        //      The id of the folder you want to download.
-        //
-        // Returns:
-        //     The StorageFolder where you downloaded folder.
-        //public async Task<StorageFolder> DownloadFolderAsync(string sourceFolderId, StorageFolder folder)
-        //{
-        //    FileObject file = await this.GetFileAsync(sourceFolderId);
-        //    file.FileList = await this._GetChildAsync(file);
-
-        //    int index = folder.Path.IndexOf("Local");
-        //    string folderUriString = ((folder.Path.Substring(index + "Local".Length, folder.Path.Length - (index + "Local".Length))));
-        //    folderUriString = folderUriString.Replace("\\", "/");
-        //    foreach (FileObject f in file.FileList)
-        //    {
-        //        if ("folder".Equals(f.Type))
-        //        {
-        //            StorageFolder innerFolder = await folder.CreateFolderAsync(MyEncoder.Encode(f.Name));
-        //            await this.DownloadFolderAsync(f.Id, innerFolder);
-        //        }
-        //        else
-        //        {
-        //            await this.DownloadFileAsync(f.Id, new Uri(folderUriString + "/" + f.Name, UriKind.Relative));
-        //        }
-        //    }
-
-        //    return folder;
-        //}
-        // Summary:
-        //      Model mapping method
-        //
-        // Returns:
-        //      FileObject from a dictionary.
-
-        //private FileObject _GetData(IDictionary<string, object> dic)
-        //{
-        //    string id = (string)(dic["id"] ?? "");
-        //    string name = (string)(dic["name"] ?? "");
-        //    string parent_id = (string)(dic["parent_id"] ?? "/");
-        //    int size = (int)dic["size"];
-        //    string type = id.Split('.').First();
-        //    string typeDetail = name.Split('.').Last();
-        //    string createAt = (string)dic["created_time"] ?? DateTime.Now.ToString();
-        //    string updateAt = (string)dic["updated_time"] ?? DateTime.Now.ToString();
-
-        //    return new FileObject(id, name, parent_id, size, type, typeDetail, createAt, updateAt);
-        //}
-
-        // Summary:
-        //     Download a file by file id.
-        //
-        // Parameters:
-        //  sourceFileId:
-        //      The id of the file you want to download.
-        //
-        //  destinationUri:
-        //      The local destination of the downloaded file as an Uri format.
-        //
-        // Returns:
-        //     The downloaded file.
-        //public async Task<StorageFile> DownloadFileAsync(string sourceFileId, Uri destinationUri)
-        //{
-
-        //    ProgressBar progressBar = new ProgressBar();
-        //    progressBar.Value = 0;
-        //    var progressHandler = new Progress<LiveOperationProgress>(
-        //        (progress) => { progressBar.Value = progress.ProgressPercentage; });
-
-        //    System.Threading.CancellationTokenSource ctsDownload = new System.Threading.CancellationTokenSource();
-
-        //    try
-        //    {
-        //        LiveOperationResult result = await this.LiveClient.BackgroundDownloadAsync(sourceFileId + "/content", destinationUri, ctsDownload.Token, progressHandler);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        System.Diagnostics.Debug.WriteLine(ex.ToString());
-        //        return null;
-        //    }
-        //    return await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appdata:///local/" + destinationUri));
-        //}
-
-
-        // Summary:
-        //     Upload files by StorageFile.
-        //
-        // Parameters:
-        //  sourceFolderId:
-        //      The id of the place you want to upload.
-        //
-        //  file:
-        //      The file you want to upload.
-        //
-        // Returns:
-        //     The StorageFolder where you downloaded folder.
-        //public async Task<bool> UploadFileAsync(string folderIdToStore, StorageFile file)
-        //{
-        //    ProgressBar progressBar = new ProgressBar();
-        //    progressBar.Value = 0;
-        //    var progressHandler = new Progress<LiveOperationProgress>(
-        //        (progress) => { progressBar.Value = progress.ProgressPercentage; });
-
-        //    System.Threading.CancellationTokenSource ctsUpload = new System.Threading.CancellationTokenSource();
-        //    try
-        //    {
-        //        Stream input = await file.OpenStreamForReadAsync();
-        //        LiveOperationResult result = await this.LiveClient
-        //            .UploadAsync(folderIdToStore, "plzdo.pdf", input, OverwriteOption.Overwrite, ctsUpload.Token, progressHandler);
-        //    }
-        //    catch (System.Threading.Tasks.TaskCanceledException ex)
-        //    {
-        //        ctsUpload.Cancel();
-        //        System.Diagnostics.Debug.WriteLine("taskcancel : " + ex.ToString());
-        //        return false;
-        //    }
-        //    catch (LiveConnectException exception)
-        //    {
-        //        ctsUpload.Cancel();
-        //        System.Diagnostics.Debug.WriteLine("LiveConnection : " + exception.ToString());
-        //        return false;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        ctsUpload.Cancel();
-        //        System.Diagnostics.Debug.WriteLine("exception : " + e.ToString());
-        //        return false;
-        //    }
-        //    return true;
-        //}
         #endregion
     }
 }

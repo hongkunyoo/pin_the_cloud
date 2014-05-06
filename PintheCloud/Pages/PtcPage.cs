@@ -30,7 +30,6 @@ namespace PintheCloud.Pages
         protected const string PIVOT_KEY = "PIVOT_KEY";
 
         protected const string SPOT_VIEW_MODEL_KEY = "SPOT_VIEW_MODEL_KEY";
-        protected const string SELECTED_FILE_KEY = "SELECTED_FILE_KEY";
 
         protected const string NULL_PASSWORD = "null";
         public const double STATUS_BAR_HEIGHT = 32.0;

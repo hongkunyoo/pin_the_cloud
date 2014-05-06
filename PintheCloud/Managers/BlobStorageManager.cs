@@ -84,14 +84,7 @@ namespace PintheCloud.Managers
         /// <returns>List of the FileObject containing file meta information</returns>
         public Task<List<FileObject>> GetFilesFromSpotAsync(string account, string spotId)
         {
-            try
-            {
-                return this._GetFilesFromFolderByIdAsync(account + "/" + spotId);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return this._GetFilesFromFolderByIdAsync(account + "/" + spotId);
         }
 
 
@@ -185,15 +178,8 @@ namespace PintheCloud.Managers
         /// <returns>True if succeeded, false if not.</returns>
         public async Task<bool> DeleteFileAsync(string id)
         {
-            try
-            {
-                CloudBlockBlob blockBlob = this.Container.GetBlockBlobReference(id);
-                await blockBlob.DeleteAsync();
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
+            CloudBlockBlob blockBlob = this.Container.GetBlockBlobReference(id);
+            await blockBlob.DeleteAsync();
             return true;
         }
 
@@ -242,14 +228,7 @@ namespace PintheCloud.Managers
         # region Private Methods
         private async Task<List<FileObject>> _GetFilesFromFolderByIdAsync(string id)
         {
-            try
-            {
-                return await this._GetFileObjectListFromBlobClient(this.CONTAINER_NAME + "/" + id + "/");
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
+            return await this._GetFileObjectListFromBlobClient(this.CONTAINER_NAME + "/" + id + "/");
         }
 
 
@@ -275,19 +254,12 @@ namespace PintheCloud.Managers
         {
             List<FileObject> list = new List<FileObject>();
             BlobContinuationToken token = null;
-            try
+            do
             {
-                do
-                {
-                    BlobResultSegment blobListSegment = await this.BlobClient.ListBlobsSegmentedAsync(prefix, token);
-                    list.AddRange(this._GetDataList(blobListSegment.Results));
-                    token = blobListSegment.ContinuationToken;
-                } while (token != null);
-            }
-            catch(Exception ex)
-            {
-                throw ex;
-            }
+                BlobResultSegment blobListSegment = await this.BlobClient.ListBlobsSegmentedAsync(prefix, token);
+                list.AddRange(this._GetDataList(blobListSegment.Results));
+                token = blobListSegment.ContinuationToken;
+            } while (token != null);
             return list;
         }
 
