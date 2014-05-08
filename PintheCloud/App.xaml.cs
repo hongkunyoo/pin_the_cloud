@@ -149,7 +149,7 @@ namespace PintheCloud
 
         // 응용 프로그램이 닫힐 때(예: 사용자가 [뒤로]를 누르는 경우) 실행할 코드입니다.
         // 이 코드는 응용 프로그램이 비활성화될 때는 실행되지 않습니다.
-        private async void Application_Closing(object sender, ClosingEventArgs e)
+        private void Application_Closing(object sender, ClosingEventArgs e)
         {
         }
 

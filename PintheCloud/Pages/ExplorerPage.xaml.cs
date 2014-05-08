@@ -36,7 +36,6 @@ namespace PintheCloud.Pages
     {
         // Const Instances
         private const string PICK_PIVOT_TITLE_GRID_COLOR_HEX_STRING = "00A4BF";
-        private const string PICK_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/at_here/png/general_bar_download.png";
         private const string PIN_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_upload.png";
         private const string DELETE_APP_BAR_BUTTON_ICON_URI = "/Assets/pajeon/pin_the_cloud/png/general_bar_delete.png";
 
@@ -56,6 +55,7 @@ namespace PintheCloud.Pages
         private ApplicationBarIconButton PinFileAppBarButton = new ApplicationBarIconButton();
         private ApplicationBarMenuItem[] AppBarMenuItems = null;
         private Popup SubmitSpotPasswordParentPopup = new Popup();
+        private bool DownloadButton = false;
 
         private string SpotId = null;
         private string SpotName = null;
@@ -67,12 +67,11 @@ namespace PintheCloud.Pages
         private List<FileObjectViewItem> PickSelectedFileList = new List<FileObjectViewItem>();
 
         private FileObjectViewModel PinFileObjectViewModel = new FileObjectViewModel();
+        private List<FileObject> CurrentFileObjectList = new List<FileObject>();
         private List<FileObjectViewItem> PinSelectedFileList = new List<FileObjectViewItem>();
 
-        private List<FileObject> CurrentFileObjectList = new List<FileObject>();
         private SpotObject CurrentSpot = null;
 
-        private bool DownloadButton = false;
 
 
         // Constructer
@@ -80,8 +79,8 @@ namespace PintheCloud.Pages
         {
             InitializeComponent();
 
-            // Set pin app bar button
-            this.PickDeleteAppBarButton.Text = AppResources.Pick;
+            // Set app bar button
+            this.PickDeleteAppBarButton.Text = AppResources.Delete;
             this.PickDeleteAppBarButton.IconUri = new Uri(DELETE_APP_BAR_BUTTON_ICON_URI, UriKind.Relative);
             this.PickDeleteAppBarButton.IsEnabled = false;
             this.PickDeleteAppBarButton.Click += PickDeleteAppBarButton_Click;

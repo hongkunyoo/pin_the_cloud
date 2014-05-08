@@ -392,4 +392,7 @@
   <data name="BadCreateSpotMessage" xml:space="preserve">
     <value>Create spot process met error. Please try it again</value>
   </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
 </root>

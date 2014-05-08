@@ -270,6 +270,15 @@ namespace PintheCloud.Resources {
         /// <summary>
         ///   Delete과(와) 유사한 지역화된 문자열을 찾습니다.
         /// </summary>
+        public static string Delete {
+            get {
+                return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Delete과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
         public static string DeleteFileCaption {
             get {
                 return ResourceManager.GetString("DeleteFileCaption", resourceCulture);
