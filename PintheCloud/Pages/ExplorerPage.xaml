@@ -147,18 +147,18 @@
                                 </Grid>
                             </Button>
                         </Grid>
+                        <StackPanel x:Name="uiPinFileSignInPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Visibility="Collapsed">
+                        	<Image Source="/Assets/pajeon/at_here/png/pin_empty.png" Stretch="None" Margin="0,0,0,12"/>
+                        	<Utilities:ImageButton 
+                        		ImageSource="/Assets/pajeon/at_here/png/pin_login_button.png"
+                        		ImagePressedSource="/Assets/pajeon/at_here/png/pin_login_button_p.png"
+                        		Style="{StaticResource ImageButtonStyle}"
+                        		x:Name="uiPinFileSignInButton" IsEnabled="True" HorizontalAlignment="Center" Click="uiPinFileSignInButton_Click" />
+                        </StackPanel>
                         <Grid x:Name="uiPinFileListGrid" Grid.Row="1" Visibility="Collapsed">
                         	<TextBlock x:Name="uiPinFileMessage" Text="{Binding LocalizedResources.Loading, Source={StaticResource LocalizedStrings}}" TextWrapping="Wrap" Visibility="Collapsed" FontSize="22" Margin="28,25,44,0" />
                         	<phone:LongListSelector x:Name="uiPinFileList" ItemsSource="{Binding Items}" ItemTemplate="{StaticResource uiPinFileListItemTemplate}" SelectionChanged="uiPinFileList_SelectionChanged" Style="{StaticResource CustomLongListSelectorStyle}" Visibility="Collapsed" Padding="0"/>
                         </Grid>
-                        <StackPanel x:Name="uiPinFileSignInPanel" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="1" Visibility="Collapsed">
-                            <Image Source="/Assets/pajeon/at_here/png/pin_empty.png" Stretch="None" Margin="0,0,0,12"/>
-							<Utilities:ImageButton 
-								ImageSource="/Assets/pajeon/at_here/png/pin_login_button.png"
-								ImagePressedSource="/Assets/pajeon/at_here/png/pin_login_button_p.png"
-								Style="{StaticResource ImageButtonStyle}"
-								x:Name="uiPinFileSignInButton" IsEnabled="True" HorizontalAlignment="Center" Click="uiPinFileSignInButton_Click" />
-                        </StackPanel>
                     </Grid>
                 </phone:PivotItem>
             </phone:Pivot>

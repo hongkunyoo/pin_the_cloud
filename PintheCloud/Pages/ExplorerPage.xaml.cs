@@ -726,11 +726,15 @@ namespace PintheCloud.Pages
                                         {
                                             base.Dispatcher.BeginInvoke(() =>
                                             {
-                                                uiPickFileList.Visibility = Visibility.Visible;
-                                                uiPickFileListMessage.Visibility = Visibility.Collapsed;
                                                 MessageBox.Show(AppResources.BadSignInMessage, AppResources.BadSignInCaption, MessageBoxButton.OK);
                                             });
                                         }
+
+                                        base.Dispatcher.BeginInvoke(() =>
+                                        {
+                                            uiPickFileList.Visibility = Visibility.Visible;
+                                            uiPickFileListMessage.Visibility = Visibility.Collapsed;
+                                        });
                                     }
                                 }
                             }
@@ -833,10 +837,9 @@ namespace PintheCloud.Pages
                     fileObjectViewItem.SelectFileImage = FileObjectViewModel.FAIL_IMAGE_URI;
                 });
             }
-            finally
-            {
-                base.SetProgressIndicator(false); 
-            }
+
+            // Hide Progress Indicator
+            base.SetProgressIndicator(false); 
         }
 
 
